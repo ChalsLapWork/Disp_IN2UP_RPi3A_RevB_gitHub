@@ -152,9 +152,10 @@ return data;
 
 /*  Control de Display de VFD de despliegue por thread  */
 void* SubProceso_Tx_VFD(void* arg) {//consumidor
-    
+   while(1){
 	printf(" EStoy en hilo tx vfd subproceso "); 
-	
+	delay(1);}
+
 	/*QueueTxVFD *q = (QueueTxVFD *)arg;
 	struct VFD_DATA data;
 	unsigned char estado124,mem[20];
