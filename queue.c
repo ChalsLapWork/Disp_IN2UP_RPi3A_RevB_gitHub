@@ -272,7 +272,7 @@ if(pthread_attr_setstacksize(&attr,stacksize)!=0){
 		case 4:printf("\n       Creando Hilo Transmisor");
 		       if(pthread_create(&Proc2_Tx_VFD,&attr,SubProceso_Tx_VFD,&qVFDtx)!=0){//ret==0 :all OK	
 				  fprintf(stderr," \n Error creando el hilo SubProc TX VFD");
-				  exit(EXIT_FAILURE):}
+				  exit(EXIT_FAILURE);}
 			   else{NoErrorOK();}
 			   estado++;
 			   break;
