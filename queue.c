@@ -231,9 +231,12 @@ const unsigned char SIZE_CMD=7;//numero de comandos
 const unsigned char s[7]={0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2};
 unsigned char i=0;
 pthread_attr_t attr;
-size_t stacksize=1024*1024;// memoria para el hilo
+size_t stacksize=2*1024*1024;// memoria para el hilo
 pthread_attr_init(&attr);
-pthread_attr_setstacksize(&attr,stacksize);
+if(pthread_attr_setstacksize(&attr,stacksize)!=0){
+	 fprintf(stderr,"\n Error config tamaño de pila");
+	 exit(EXIT_FAILURE);}
+
 
 /*
 	pthread_mutex_lock(&vfd.sync.mutex_free);
@@ -264,12 +267,10 @@ pthread_attr_setstacksize(&attr,stacksize);
 			   estado++;break;
 		case 3:NoErrorOK();estado++;break;
 		case 4:printf("\n       Creando Hilo Transmisor");
-		       switch(pthread_create(&Proc2_Tx_VFD,&attr,SubProceso_Tx_VFD,&qVFDtx)){//ret==0 :all OK	
-				case 0:NoErrorOK();break;//todo ok
-				case EAGAIN:errorCritico("Recursos insuficientes,Error Proc Tx VFD");break;
-				case EINVAL:errorCritico("Arg invalidos,Error de Proc Tx VFD");break;
-				case EPERM:errorCritico("Permisos Insuficientes,Error Proc Tx VFD");break;
-				default:errorCritico("Error desconocido Proc Tx VFD");break;}
+		       if(pthread_create(&Proc2_Tx_VFD,&attr,SubProceso_Tx_VFD,&qVFDtx)!=0){//ret==0 :all OK	
+				  fprintf(stderr," \n Error creando el hilo SubProc TX VFD");
+				  exit(EXIT_FAILURE):}
+			   else{NoErrorOK();}
 			   estado++;
 			   break;
 	    case 5:printf("\n       Init, comenzar a llenar los FIFOs Init para Transmitir");
