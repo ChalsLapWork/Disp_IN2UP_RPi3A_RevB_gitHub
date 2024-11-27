@@ -65,7 +65,7 @@ void init_queues(void){
 
 //** Proceso Hilo encargado de limpiar el Proceso Init VFD
 void *Proceso_Limpiador(void *arg) {
-struct Queue *q=(struct queueus*)arg;//
+struct Queue *q=(struct Queue*)arg;//
 unsigned char estado;	
     printf("\n       Proceso Limpiador de VFD activo");
 	pthread_mutex_lock(&vfd.sync.mutex_free);
@@ -105,8 +105,8 @@ void init_Queue_with_Thread(status Queue *q){
 
 
 //encola regresa TRUE: si esta llena , FALSE: si esta vacia
-void enqueue(QueueTxVFD *q,struct VFD_DATA dato1){
-	Node* new_node = (Node*)malloc(sizeof(Node));
+void enqueue(struct Queue *q,struct VFD_DATA dato1){
+	struct Node* new_node = (struct Node*)malloc(sizeof(Node));
 	new_node->dato=dato1;
 	new_node->next=NULL;
     pthread_mutex_lock(&q->s.mutex); //&vfd.sync.mutex_init_VFD);
@@ -154,7 +154,7 @@ void* SubProceso_Tx_VFD(void* arg) {//consumidor
 
 	   case 50:if(Transmissor_a_VFD(data,&mem[0]))estado124=3;break;
 	   default:estado124=1;break;}}//fin switch y while
-	   q->v->config.bits.Proc_VFD_Tx_running=FALSE;
+	   vfd.config.bits.Proc_VFD_Tx_running=FALSE;
        printf("\n       Hilo TX VFD Apagado:%d",estado124);
  	   NoErrorOK();
     
@@ -243,7 +243,7 @@ if(pthread_attr_setstacksize(&attr,stacksize)!=0){
 */
 
 
- if(q->v->config.bits.init_VFD){
+ if(vfd.config.bits.init_VFD){
 	   errorCritico("ya esta inizializado Proceso, Error de duplicacion");}	   	   
  while(!ret){
 	switch(estado){
