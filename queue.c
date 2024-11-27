@@ -31,7 +31,8 @@ pthread_mutex_t mutex0;//mutex de VFD TX
 pthread_cond_t  cond1;//de uso general
 pthread_mutex_t mutex1;//de uso general
 unsigned char sync1;//variable de recursos de los mutex1
-
+pthread_cond_t  *cond_free;//pointer para init 
+pthread_mutex_t *mutex_free;//mutex
 
 void init_queues(void){
 	pthread_t Proc1_Init_VFD;//Proceso para inizializar el VFD
@@ -129,15 +130,15 @@ void enqueue(struct Queue *q,struct VFD_DATA dato1){
 struct VFD_DATA dequeue(struct Queue  *q) {
 	pthread_mutex_lock(&s->mutex);//vfd.sync.mutex_init_VFD);
 	while(q->size==0)
-	    pthread_cond_wait(&q->s.cond,&q->s.mutex);//vfd.sync.cond_init_TX_VFD,&vfd.sync.mutex_init_VFD);	//espera si la cola esta vacia
-    Node *temp=q->head;
+	    pthread_cond_wait(q->s.cond,q->s.mutex);//vfd.sync.cond_init_TX_VFD,&vfd.sync.mutex_init_VFD);	//espera si la cola esta vacia
+    struct Node *temp=q->head;
 	struct VFD_DATA data=temp->dato;
 	q->head=q->head->next;
     if(q->head==NULL)
 	     q->tail=NULL;
     q->size--;
 	free(temp);		 
-    pthread_mutex_unlock(&q->s.mutex);//vfd.sync.mutex_init_VFD);
+    pthread_mutex_unlock(q->s.mutex);//vfd.sync.mutex_init_VFD);
 	q->nLibres++;q->nOcupados--;
 return data;
 }//fin de queue+++++++++++++++++++++++++++++++++
@@ -253,7 +254,7 @@ if(pthread_attr_setstacksize(&attr,stacksize)!=0){
  while(!ret){
 	switch(estado){
 		case 1:printf("\n       Init VFD starting. . .");estado++;break;
-		case 2:pthread_mutex_lock(&vfd.sync.mutex_free);
+		case 2:pthread_mutex_lock(&mtexvfd.sync.mutex_free);
 		       vfd.config.bits.init_VFD=FALSE;//no se ha terminado de init
 			   vfd.config.bits.Proc_VFD_Tx_running=TRUE;//no se ha iniziado este proceso
 			   vfd.config.bits.VDF_busy=TRUE;//Nadie mas puede usar el VFD
