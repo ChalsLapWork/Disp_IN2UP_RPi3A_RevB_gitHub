@@ -92,6 +92,12 @@ struct _Sync2{
    pthread_mutex_t mutex;
 };//synscronia estructura+++++++++++++++++++++++++++++++++++
 
+struct VFD_DATA{
+  unsigned char x;
+  unsigned char y;
+  unsigned char p;
+};
+
 
 struct Node{
   //unsigned char Xdata[SIZE_MAX_FIFO];
@@ -130,11 +136,6 @@ struct _DISPLAY_VFD_{
     		
 };//fin display VFD----------------------------------------------
 
-struct VFD_DATA{
-  unsigned char x;
-  unsigned char y;
-  unsigned char p;
-};
 
 struct Queue{
   struct Node *head,*tail;

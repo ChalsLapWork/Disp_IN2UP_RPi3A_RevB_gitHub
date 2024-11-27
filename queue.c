@@ -139,7 +139,7 @@ return data;
 
 /*  Control de Display de VFD de despliegue por thread  */
 void* SubProceso_Tx_VFD(void* arg) {//consumidor
-	QueueTxVFD *q = (QueueTxVFD *)arg;
+	struct Queue *q = (struct Queue *)arg;
 	struct VFD_DATA data;
 	unsigned char estado124,mem[20];
 
@@ -149,7 +149,7 @@ void* SubProceso_Tx_VFD(void* arg) {//consumidor
 	 switch(estado124){
 	   case 1:NoErrorOK();estado124++;break;
 	   case 2://printf("\n       estoy corriendo  ");break;
-       case 3:q->v->config.bits.Proc_VFD_Tx_running=TRUE;estado124++;break;
+       case 3:vfd.config.bits.Proc_VFD_Tx_running=TRUE;estado124++;break;
 	   case 4:data=dequeue(q);estado124++;break;     
 
 	   case 50:if(Transmissor_a_VFD(data,&mem[0]))estado124=3;break;
@@ -212,7 +212,7 @@ static union W7{//access word:
 
 //Proceso  unico de padre unico  y sin instancias
 void* Init_VFD(void* arg){  //Proceso Productor<---Proceso/hilo/THread
-QueueTxVFD *q=(QueueTxVFD*)arg;//
+struct Queue *q=(struct Queue*)arg;//
 pthread_t Proc2_Tx_VFD;//Proceso Transmisor al VFD, para despliegue de pantalla
 unsigned char ret=0,estado;
 const unsigned char SIZE_CMD=7;//numero de comandos
