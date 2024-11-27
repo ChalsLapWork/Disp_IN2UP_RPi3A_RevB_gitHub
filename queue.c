@@ -18,20 +18,22 @@
 
 struct _DISPLAY_VFD_ vfd;
 struct Queue qVFDtx;//queue de transmision vfd 
+//struct _Sync2 s1;//sincronia 
 void init_Queue_with_Thread(struct Queue  *q);
 struct VFD_DATA dequeue(struct Queue   *q);
 void enqueue(struct Queue  *q,struct VFD_DATA dato1);
 void* SubProceso_Tx_VFD(void* arg);
-
 unsigned char  buffer6[SIZE_BUFFER6];//FIFO graficos con S.O, aqui guarda el dato
 unsigned char  buffer7[SIZE_BUFFER6];//FIFO graficos con SO. aqui guarda el parametro=char|box|pos|
 unsigned char  buffer8[SIZE_BUFFER6];//FIFO graficos con SO. aqui guarda el parametro numero 3
+pthread_cond_t  cond0;//mutex de VFD Tx
+pthread_mutex_t mutex0;//mutex de VFD TX
 
 
 void init_queues(void){
 	pthread_t Proc1_Init_VFD;//Proceso para inizializar el VFD
 	pthread_t Proc_limpiador;//proceso que limpia recursos del proceso hilo init VFD
-
+    
 	init_FIFO_General_1byte(&vfd.x,&buffer6[0],SIZE_BUFFER6);
     init_FIFO_General_1byte(&vfd.y,&buffer7[0],SIZE_BUFFER6);
     init_FIFO_General_1byte(&vfd.p,&buffer8[0],SIZE_BUFFER6);
@@ -41,7 +43,11 @@ void init_queues(void){
 	vfd.f1.pop=vfd_FIFO_pop;                                                                                                                                                                                                                                                                                                                                                                                                                      
 	vfd.f1.resetFIFOS=vfd_FIFOs_RESET;
 	//qVFDtx.v=&vfd;//misma estructura en los dos lados,
-	qVFDtx.s=
+	
+	//pthread_mutex_init(&vfd.sync.mutex_init_VFD,NULL);//
+	//pthread_cond_init(&vfd.sync.cond_init_TX_VFD,NULL);
+	pthread_mutex_init(&vfd.sync.mutex_free,NULL);//
+	pthread_cond_init(&vfd.sync.cond_free,NULL);  
 	init_Queue_with_Thread(&qVFDtx);//fifos Transmisor data al Display
 	vfd.config.bits.recurso_VFD_Ocupado=TRUE;//recurso ocupado, VFD nadie lo puede usar
 	NoErrorOK();
@@ -76,8 +82,8 @@ unsigned char estado;
 	    case 3:pthread_cond_wait(&vfd.sync.cond_free,&vfd.sync.mutex_free);
 		       estado++;break;
 		case 4:usleep(3);estado++;break;
-		case 5:pthread_mutex_destroy(&vfd.sync.mutex_init_VFD);
-			   pthread_cond_destroy( &vfd.sync.cond_init_TX_VFD);
+		case 5://pthread_mutex_destroy(&vfd.sync.mutex_init_VFD);
+			   //pthread_cond_destroy( &vfd.sync.cond_init_TX_VFD);
 			   pthread_mutex_destroy(&vfd.sync.mutex_free);
 			   pthread_cond_destroy( &vfd.sync.cond_free);
 			   pthread_mutex_destroy(&q->s.mutex);
@@ -90,16 +96,16 @@ unsigned char estado;
 
 
 
-void init_Queue_with_Thread(status Queue *q){
-      q->head=q->tail=NULL;
+void init_Queue_with_Thread(status Queue *q){    
+	  q->head=q->tail=NULL;
 	  q->size=0;
 	  q->nLibres=SIZE_MAX_FIFO;
 	  q->nOcupados=0;
-	  pthread_mutex_init(&vfd.sync.mutex_init_VFD,NULL);//
-	  pthread_cond_init(&vfd.sync.cond_init_TX_VFD,NULL);
-	  pthread_mutex_init(&vfd.sync.mutex_free,NULL);//
-	  pthread_cond_init(&vfd.sync.cond_free,NULL);
-	  
+	  sync=0xAA;//mutexs usados,no disponibles
+	  q->s.mutex=&mutex0;
+	  q->s.cond=&cond0;
+	  pthread_mutex_init(q->s.mutex);
+	  pthread_cond_init(q->s.cond);
 }//fin de init FIFO transmit VFD+++++++++++++++++++++++++
   
 

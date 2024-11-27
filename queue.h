@@ -81,15 +81,16 @@ union _Byte5_{
 };
 
  struct _Sync{
-	pthread_cond_t  cond_init_TX_VFD;//condicion de init VFD transmisor
-	pthread_mutex_t mutex_init_VFD;//mutex para init VFD y transmisor
+	//pthread_cond_t  cond_init_TX_VFD;//condicion de init VFD transmisor
+	//pthread_mutex_t mutex_init_VFD;//mutex para init VFD y transmisor
 	pthread_mutex_t mutex_free;//mutex para liberar 
 	pthread_cond_t  cond_free;//mutex cond para liberar
 };//control de sincronia entre los hilos 
  
 struct _Sync2{
-   pthread_cond_t  cond;
-   pthread_mutex_t mutex;
+   pthread_cond_t  *cond;
+   pthread_mutex_t *mutex;
+   //unsigned char sem;//semaforo para que no se empalme su uso
 };//synscronia estructura+++++++++++++++++++++++++++++++++++
 
 struct VFD_DATA{
@@ -115,7 +116,7 @@ struct _DISPLAY_VFD_{
 	struct _FIFO_1byte_ p;//parametro 3
 	struct _FIFO_func_  f1;//funciones para guardar lo que se grafica
 	union  _Byte5_ config;//banderas de configuracion y control para el display y menus
-	struct _Sync   sync;//syncronia y control de hilos
+	//struct _Sync   sync;//syncronia y control de hilos
  	struct _box_control{
 		 unsigned char boxs[SIZE_BOXES];
 		 unsigned char box0;
@@ -144,7 +145,7 @@ struct Queue{
     unsigned char nLibres;
 	unsigned char nOcupados;
   #endif
-  struct _Sync2 *s;//apuntador sync de mutex que usar la queue
+  struct _Sync2 s;//apuntador sync de mutex que usar la queue
 };
 
 
