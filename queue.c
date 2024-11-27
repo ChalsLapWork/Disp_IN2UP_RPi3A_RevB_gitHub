@@ -156,25 +156,23 @@ void* SubProceso_Tx_VFD(void* arg) {//consumidor
 	struct VFD_DATA data;
 	unsigned char estado124,mem[20];
 
-	while(1){
-	printf(" EStoy en hilo tx vfd subproceso v2"); 
-	delay(1);}
-
-/*	
+	printf("\n       Proceso Tx VFD running");
 	while(!vfd.config.bits.init_VFD||q->size>0){
 	 switch(estado124){
-	   case 1:NoErrorOK();
+	   case 1:NoErrorOK();estado124++;break;
+	   case 2:printf("\n       estoy corriendo  ");break;
+
 	          printf("\n       Tx, Lectura de init=%d",vfd.config.bits.init_VFD);
 	          estado124++;NoErrorOK();break;//start para iniciar el proceso
-	   case 2:q->v->config.bits.Proc_VFD_Tx_running=TRUE;estado124++;break;
-	   case 3:data=dequeue(q);
+	   case 3:q->v->config.bits.Proc_VFD_Tx_running=TRUE;estado124++;break;
+	   case 4:data=dequeue(q);
 	          estado124++;break;
-	   case 4:if(Transmissor_a_VFD(data,&mem[0]))estado124=3;break;
+	   case 5:if(Transmissor_a_VFD(data,&mem[0]))estado124=3;break;
 	   default:estado124=1;break;}}//fin switch y while
 	   q->v->config.bits.Proc_VFD_Tx_running=FALSE;
        printf("\n       Hilo TX VFD Apagado:%d",estado124);
  	   NoErrorOK();
-        */
+    
 return NULL;
 }//fin del subproceso de envio de datos al display+++++++++++++
 
