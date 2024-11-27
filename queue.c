@@ -47,7 +47,7 @@ void init_queues(void){
 	vfd.f1.pop=vfd_FIFO_pop;                                                                                                                                                                                                                                                                                                                                                                                                                      
 	vfd.f1.resetFIFOS=vfd_FIFOs_RESET;
 	//qVFDtx.v=&vfd;//misma estructura en los dos lados,
-	
+	mutex_free=&mutex1;cond_free=cond1;
 	pthread_mutex_init(&mutex1,NULL);//
 	pthread_cond_init(&cond1,NULL);  
 	sync1=0xAA;//mutexs ocupados
@@ -112,7 +112,7 @@ void init_Queue_with_Thread(status Queue *q){
 
 //encola regresa TRUE: si esta llena , FALSE: si esta vacia
 void enqueue(struct Queue *q,struct VFD_DATA dato1){
-	struct Node* new_node = (struct Node*)malloc(sizeof(Node));
+	struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
 	new_node->dato=dato1;
 	new_node->next=NULL;
     pthread_mutex_lock(q->s.mutex); //&vfd.sync.mutex_init_VFD);
@@ -128,7 +128,7 @@ void enqueue(struct Queue *q,struct VFD_DATA dato1){
 }//fin enqueue++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 struct VFD_DATA dequeue(struct Queue  *q) {
-	pthread_mutex_lock(&s->mutex);//vfd.sync.mutex_init_VFD);
+	pthread_mutex_lock(s->mutex);//vfd.sync.mutex_init_VFD);
 	while(q->size==0)
 	    pthread_cond_wait(q->s.cond,q->s.mutex);//vfd.sync.cond_init_TX_VFD,&vfd.sync.mutex_init_VFD);	//espera si la cola esta vacia
     struct Node *temp=q->head;
@@ -254,7 +254,7 @@ if(pthread_attr_setstacksize(&attr,stacksize)!=0){
  while(!ret){
 	switch(estado){
 		case 1:printf("\n       Init VFD starting. . .");estado++;break;
-		case 2:pthread_mutex_lock(&mtexvfd.sync.mutex_free);
+		case 2:pthread_mutex_lock(mutex_free);
 		       vfd.config.bits.init_VFD=FALSE;//no se ha terminado de init
 			   vfd.config.bits.Proc_VFD_Tx_running=TRUE;//no se ha iniziado este proceso
 			   vfd.config.bits.VDF_busy=TRUE;//Nadie mas puede usar el VFD
@@ -267,17 +267,15 @@ if(pthread_attr_setstacksize(&attr,stacksize)!=0){
 			   else{NoErrorOK();}
 			   estado++;
 			   break;
-	    case 5:printf("\n       Init, comenzar a llenar los FIFOs Init para Transmitir");
+	    case 5:printf("\n       Init, llenar FIFOs Init para Transmitir");
 			   NoErrorOK();estado++;break;
 		case 6:if(VFDcommand(s[i]))estado++;break; // init display  ESC@= 1BH,40H
-		case 7:if(++i<SIZE_CMD)estado=6;else{estado++;}break;
+		case 7:if(++i<SIZE_CMD)estado--;else{estado++;}break;
 		case 8:vfd.config.bits.init_VFD=TRUE;estado++;break;//se usa en limpieza esta bandera
-		
-		
-		case 9:pthread_cond_signal(   );estado++;break;
+		case 9:pthread_cond_signal(cond_free,mutex_free);estado++;break;
         case 10:estado=0;ret=TRUE;break;
 		default:estado=1;break;}}//fin switch while 
-  pthread_join(Proc2_Tx_VFD,NULL);
+  pthread_join(Proc2_Tx_VFD,NULL);//esperamos termine de transmitir a display el otro hilo
   pthread_attr_destroy(&attr);
   vfd.config.bits.Proc_VFD_Tx_running=FALSE;//Ya se Destruyo Proceso VFDtx
   printf("\n       Init Sub Proceso Init Terminado");
@@ -391,9 +389,9 @@ void reset_FIFO_general_UChar(struct _FIFO_1byte_ *s,
 
 //FIFO para ingresar un dato a desplegar vfd.f1.append(14,0,_BOX_);
 //Return false|true   TRUE: si se agrego sin problemas
-unsigned char vfd_FIFO_push(unsigned char x,unsigned char y,unsigned char p){
+unsigned char vfd_FIFO_push(struct Queue *q,struct VFD_DATA dato){
 const unsigned char BYTES_BOX=250; //numero de ciclos, mas que bytes por comando de una box cdraw 
-struct VFD_DATA dato;
+//struct VFD_DATA dato;
 const unsigned char DELAY_TIME=1; 
     switch(p){//1100 0000 los dos MSB indican que proqrametro es
     	case _BOX_:if(x==0)
@@ -416,13 +414,7 @@ const unsigned char DELAY_TIME=1;
     	case _POS_  :break;
     	case _BOLD_ :break;
     	default:break;}
-     //n=vfd.x.appendByte(x,&vfd.x);deprecated
-	 //n+=vfd.y.appendByte(y,&vfd.y);deprecated
-	 //n+=vfd.p.appendByte(p,&vfd.p);deprecated
-	 dato.x=x;dato.y=y;dato.p=p;
-     enqueue(&qVFDtx,dato);
-	 //if(n==3){//fifo llena
-	   //   ret=TRUE;}deprecated
+     enqueue(q,dato);
 return TRUE;//ret;
 }//fin vfd_FIFO_push-------------------------------------------
 

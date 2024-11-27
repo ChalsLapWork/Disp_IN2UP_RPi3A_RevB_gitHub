@@ -58,7 +58,8 @@ struct _FIFO_1byte_{//FIFO PARA UNA VARIABLE para un byte
 
 
 struct _FIFO_func_{
-	  unsigned char (*append)(unsigned char x,unsigned char y, unsigned char p);
+	  //unsigned char (*append)(unsigned char x,unsigned char y, unsigned char p);
+      unsigned char (*append)(struct Queue q,struct VFD_DATA dato);
 	  unsigned char (*pop)(unsigned char *x,unsigned char *y, unsigned char *p);
 	  unsigned char (*resetFIFOS)(void);//resetear todas las FIFOs Y arrays y registros
 };//fin _FIFO_func_----------------------------------------
@@ -253,7 +254,7 @@ unsigned char FIFO_general_1byte_pop(unsigned char *dato,struct _FIFO_1byte_ *s)
 void reset_FIFO_general_UChar(struct _FIFO_1byte_ *s,
             unsigned char *arr,unsigned char size);
 void Testing_SO_Debug(void);
-unsigned char vfd_FIFO_push(unsigned char x,unsigned char y,unsigned char p);
+unsigned char vfd_FIFO_push(struct Queue q,struct VFD_DATA dato);
 unsigned char vfd_FIFO_pop(unsigned char *x,unsigned char *y,unsigned char *p);
 unsigned char vfd_FIFOs_RESET(void);
 void init_FIFO_General_1byte(struct _FIFO_1byte_ *s,

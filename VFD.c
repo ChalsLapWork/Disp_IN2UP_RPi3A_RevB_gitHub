@@ -96,7 +96,9 @@ return ret;
 //	vfd.f1.append(c,0,_CHAR_);// FIFO_Display_DDS_Char_push(c,0xFE);//0xFE means that is just a char display          
 //}//fin VFDserial_SendChar_DDS---------------------------------
 unsigned char VFDserial_SendChar1(unsigned char c){
-	return vfd.f1.append(c,0,_CHAR_);
+struct VFD_DATA dato;
+    dato.p=_CHAR_;dato.x=c;dato.y=0;
+	return vfd.f1.append(&qVFDtx,dato);
 }//------------------------------------------------------------------
 
 
