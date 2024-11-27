@@ -13,31 +13,14 @@
 #include <wiringPi.h>
 #include "VFDisplay.h"
 
-typedef struct Node{
-  //unsigned char Xdata[SIZE_MAX_FIFO];
-  //unsigned char Ydata[SIZE_MAX_FIFO];
-  //unsigned char Pdata[SIZE_MAX_FIFO];
-  struct VFD_DATA dato;
-  struct Node *next;
-}Node;//Nodo para crear las queues+++++++++++++++++++++++++++
 
-typedef struct Queue{
-  Node *head,*tail;
-  int size;
-  
-  #if(SIZE_MAX_FIFO<255)
-    unsigned char nLibres;
-	unsigned char nOcupados;
-  #endif
-  struct _DISPLAY_VFD_ *v;//pointer to the control general of vfd
-}QueueTxVFD;
 
 
 struct _DISPLAY_VFD_ vfd;
-QueueTxVFD qVFDtx;//queue de transmision vfd 
-void init_Queue_with_Thread(QueueTxVFD *q);
-struct VFD_DATA dequeue(QueueTxVFD  *q);
-void enqueue(QueueTxVFD *q,struct VFD_DATA dato1);
+struct Queue qVFDtx;//queue de transmision vfd 
+void init_Queue_with_Thread(struct Queue  *q);
+struct VFD_DATA dequeue(struct Queue   *q);
+void enqueue(struct Queue  *q,struct VFD_DATA dato1);
 void* SubProceso_Tx_VFD(void* arg);
 
 unsigned char  buffer6[SIZE_BUFFER6];//FIFO graficos con S.O, aqui guarda el dato
@@ -58,6 +41,7 @@ void init_queues(void){
 	vfd.f1.pop=vfd_FIFO_pop;                                                                                                                                                                                                                                                                                                                                                                                                                      
 	vfd.f1.resetFIFOS=vfd_FIFOs_RESET;
 	qVFDtx.v=&vfd;//misma estructura en los dos lados,
+	qVFDtx.s=
 	init_Queue_with_Thread(&qVFDtx);//fifos Transmisor data al Display
 	vfd.config.bits.recurso_VFD_Ocupado=TRUE;//recurso ocupado, VFD nadie lo puede usar
 	NoErrorOK();
@@ -65,7 +49,7 @@ void init_queues(void){
 	switch(pthread_create(&Proc1_Init_VFD,NULL,Init_VFD,&qVFDtx)){
 		case 0:NoErrorOK();
 		        printf("\n       Creando Proceso Limpiador de INIT VFD");
-		       if(pthread_create(&Proc_limpiador,NULL,Proceso_Limpiador,NULL)==0){NoErrorOK();}
+		       if(pthread_create(&Proc_limpiador,NULL,Proceso_Limpiador,&qVFDtx)==0){NoErrorOK();}
 			   break;
 		case EAGAIN:errorCritico("Recursos insuficientes,Error de hilo init VFD");break;
 		case EINVAL:errorCritico("Arg invalidos,Error de hilo init VFD");break;
@@ -81,6 +65,7 @@ void init_queues(void){
 
 //** Proceso Hilo encargado de limpiar el Proceso Init VFD
 void *Proceso_Limpiador(void *arg) {
+QueueTxVFD *q=(QueueTxVFD*)arg;//
 unsigned char estado;	
     printf("\n       Proceso Limpiador de VFD activo");
 	pthread_mutex_lock(&vfd.sync.mutex_free);
@@ -95,6 +80,8 @@ unsigned char estado;
 			   pthread_cond_destroy( &vfd.sync.cond_init_TX_VFD);
 			   pthread_mutex_destroy(&vfd.sync.mutex_free);
 			   pthread_cond_destroy( &vfd.sync.cond_free);
+			   pthread_mutex_destroy(&q->s.mutex);
+			   pthread_cond_destroy(&q->s.cond);
 			   estado++;break;
 		case 6:NoErrorOK();estado++;break;
 		default:estado=1;break;}
@@ -122,7 +109,7 @@ void enqueue(QueueTxVFD *q,struct VFD_DATA dato1){
 	Node* new_node = (Node*)malloc(sizeof(Node));
 	new_node->dato=dato1;
 	new_node->next=NULL;
-    pthread_mutex_lock(&vfd.sync.mutex_init_VFD);
+    pthread_mutex_lock(&q->s.mutex); //&vfd.sync.mutex_init_VFD);
 	if(q->tail==NULL){
 		  q->head=new_node;
 		  q->tail=new_node;}
@@ -130,14 +117,14 @@ void enqueue(QueueTxVFD *q,struct VFD_DATA dato1){
 	     q->tail=new_node;}
 	q->size++;	 
 	q->nLibres--;q->nOcupados++;
-    pthread_cond_signal(&vfd.sync.cond_init_TX_VFD); // Notifica que la cola no está vacía
-    pthread_mutex_unlock(&vfd.sync.mutex_init_VFD);
+    pthread_cond_signal(&q->s.cond);//vfd.sync.cond_init_TX_VFD); // Notifica que la cola no está vacía
+    pthread_mutex_unlock(&q->s.mutex);//vfd.sync.mutex_init_VFD);
 }//fin enqueue++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 struct VFD_DATA dequeue(QueueTxVFD  *q) {
-	pthread_mutex_lock(&vfd.sync.mutex_init_VFD);
+	pthread_mutex_lock(&s->mutex);//vfd.sync.mutex_init_VFD);
 	while(q->size==0)
-	    pthread_cond_wait(&vfd.sync.cond_init_TX_VFD,&vfd.sync.mutex_init_VFD);	//espera si la cola esta vacia
+	    pthread_cond_wait(&q->s.cond,&q->s.mutex);//vfd.sync.cond_init_TX_VFD,&vfd.sync.mutex_init_VFD);	//espera si la cola esta vacia
     Node *temp=q->head;
 	struct VFD_DATA data=temp->dato;
 	q->head=q->head->next;
@@ -145,7 +132,7 @@ struct VFD_DATA dequeue(QueueTxVFD  *q) {
 	     q->tail=NULL;
     q->size--;
 	free(temp);		 
-    pthread_mutex_unlock(&vfd.sync.mutex_init_VFD);
+    pthread_mutex_unlock(&q->s.mutex);//vfd.sync.mutex_init_VFD);
 	q->nLibres++;q->nOcupados--;
 return data;
 }//fin de queue+++++++++++++++++++++++++++++++++
@@ -156,18 +143,16 @@ void* SubProceso_Tx_VFD(void* arg) {//consumidor
 	struct VFD_DATA data;
 	unsigned char estado124,mem[20];
 
+
 	printf("\n       Proceso Tx VFD running");
 	while(!vfd.config.bits.init_VFD||q->size>0){
 	 switch(estado124){
 	   case 1:NoErrorOK();estado124++;break;
-	   case 2:printf("\n       estoy corriendo  ");break;
+	   case 2://printf("\n       estoy corriendo  ");break;
+       case 3:q->v->config.bits.Proc_VFD_Tx_running=TRUE;estado124++;break;
+	   case 4:data=dequeue(q);estado124++;break;     
 
-	          printf("\n       Tx, Lectura de init=%d",vfd.config.bits.init_VFD);
-	          estado124++;NoErrorOK();break;//start para iniciar el proceso
-	   case 3:q->v->config.bits.Proc_VFD_Tx_running=TRUE;estado124++;break;
-	   case 4:data=dequeue(q);
-	          estado124++;break;
-	   case 5:if(Transmissor_a_VFD(data,&mem[0]))estado124=3;break;
+	   case 50:if(Transmissor_a_VFD(data,&mem[0]))estado124=3;break;
 	   default:estado124=1;break;}}//fin switch y while
 	   q->v->config.bits.Proc_VFD_Tx_running=FALSE;
        printf("\n       Hilo TX VFD Apagado:%d",estado124);

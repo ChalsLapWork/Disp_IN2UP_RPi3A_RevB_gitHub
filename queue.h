@@ -87,6 +87,22 @@ union _Byte5_{
 	pthread_cond_t  cond_free;//mutex cond para liberar
 };//control de sincronia entre los hilos 
  
+struct _Sync2{
+   pthread_cond_t  cond;
+   pthread_mutex_t mutex;
+};//synscronia estructura+++++++++++++++++++++++++++++++++++
+
+
+struct Node{
+  //unsigned char Xdata[SIZE_MAX_FIFO];
+  //unsigned char Ydata[SIZE_MAX_FIFO];
+  //unsigned char Pdata[SIZE_MAX_FIFO];
+  struct VFD_DATA dato;
+  struct Node *next;
+};//Nodo para crear las queues+++++++++++++++++++++++++++
+
+
+
 struct _DISPLAY_VFD_{
 	struct _FIFO_1byte_ x;//parametro 1
 	struct _FIFO_1byte_ y;//parametro 2
@@ -120,6 +136,15 @@ struct VFD_DATA{
   unsigned char p;
 };
 
+struct Queue{
+  struct Node *head,*tail;
+  int size;  
+  #if(SIZE_MAX_FIFO<255)
+    unsigned char nLibres;
+	unsigned char nOcupados;
+  #endif
+  struct _Sync2 *s;//apuntador sync de mutex que usar la queue
+};
 
 
 /*  FIN DDS ESTRUCURA ********************************************++++*/
