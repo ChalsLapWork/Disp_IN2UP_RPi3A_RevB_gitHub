@@ -57,14 +57,6 @@ struct _FIFO_1byte_{//FIFO PARA UNA VARIABLE para un byte
 
 
 
-struct _FIFO_func_{
-	  //unsigned char (*append)(unsigned char x,unsigned char y, unsigned char p);
-      unsigned char (*append)(struct Queue q,struct VFD_DATA dato);
-	  unsigned char (*pop)(unsigned char *x,unsigned char *y, unsigned char *p);
-	  unsigned char (*resetFIFOS)(void);//resetear todas las FIFOs Y arrays y registros
-};//fin _FIFO_func_----------------------------------------
-
-
 union _Byte5_{
 	unsigned short int bytes1;
 	struct{
@@ -148,6 +140,15 @@ struct Queue{
   #endif
   struct _Sync2 s;//apuntador sync de mutex que usar la queue
 };
+
+
+struct _FIFO_func_{
+	  //unsigned char (*append)(unsigned char x,unsigned char y, unsigned char p);
+      unsigned char (*append)(struct Queue q,struct VFD_DATA dato);
+	  unsigned char (*pop)(unsigned char *x,unsigned char *y, unsigned char *p);
+	  unsigned char (*resetFIFOS)(void);//resetear todas las FIFOs Y arrays y registros
+};//fin _FIFO_func_----------------------------------------
+
 
 
 /*  FIN DDS ESTRUCURA ********************************************++++*/

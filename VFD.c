@@ -3,6 +3,7 @@
 #include "queue.h"
 #include <wiringPi.h>
 extern struct _DISPLAY_VFD_ vfd;
+extern struct Queue qVFDtx;//queue de transmision vfd 
 
 
 
@@ -79,15 +80,15 @@ return ret;
 
 //regresa true cuando se cumpla todo el methodo hasta el final
 unsigned char delay_us_VFD(unsigned short int t){
-auto unsigned char ret=0;
+/*auto unsigned char ret=0;
 union W7{//access word: 
 	unsigned  short int wordx;   //   	0xaabb        //         aa
 	unsigned char byte[2];        //byte[0]=aa,byte[1]=bb
 }w16;
-
+DEPRECATED
   w16.wordx=t;
   if(vfd.f1.append(w16.byte[0],w16.byte[1],_DELAY_US))
-        ret=TRUE;
+        ret=TRUE;*/
 return ret;    
 }//--------------------------------------------------
 
