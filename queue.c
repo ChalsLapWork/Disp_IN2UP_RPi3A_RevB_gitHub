@@ -40,7 +40,7 @@ void init_queues(void){
     vfd.f1.append=vfd_FIFO_push;
 	vfd.f1.pop=vfd_FIFO_pop;                                                                                                                                                                                                                                                                                                                                                                                                                      
 	vfd.f1.resetFIFOS=vfd_FIFOs_RESET;
-	qVFDtx.v=&vfd;//misma estructura en los dos lados,
+	//qVFDtx.v=&vfd;//misma estructura en los dos lados,
 	qVFDtx.s=
 	init_Queue_with_Thread(&qVFDtx);//fifos Transmisor data al Display
 	vfd.config.bits.recurso_VFD_Ocupado=TRUE;//recurso ocupado, VFD nadie lo puede usar
@@ -65,7 +65,7 @@ void init_queues(void){
 
 //** Proceso Hilo encargado de limpiar el Proceso Init VFD
 void *Proceso_Limpiador(void *arg) {
-QueueTxVFD *q=(QueueTxVFD*)arg;//
+struct Queue *q=(struct queueus*)arg;//
 unsigned char estado;	
     printf("\n       Proceso Limpiador de VFD activo");
 	pthread_mutex_lock(&vfd.sync.mutex_free);
@@ -90,7 +90,7 @@ unsigned char estado;
 
 
 
-void init_Queue_with_Thread(QueueTxVFD *q){
+void init_Queue_with_Thread(status Queue *q){
       q->head=q->tail=NULL;
 	  q->size=0;
 	  q->nLibres=SIZE_MAX_FIFO;
