@@ -28,6 +28,9 @@ unsigned char  buffer7[SIZE_BUFFER6];//FIFO graficos con SO. aqui guarda el para
 unsigned char  buffer8[SIZE_BUFFER6];//FIFO graficos con SO. aqui guarda el parametro numero 3
 pthread_cond_t  cond0;//mutex de VFD Tx
 pthread_mutex_t mutex0;//mutex de VFD TX
+pthread_cond_t  cond1;//de uso general
+pthread_mutex_t mutex1;//de uso general
+unsigned char sync1;//variable de recursos de los mutex1
 
 
 void init_queues(void){
@@ -44,10 +47,9 @@ void init_queues(void){
 	vfd.f1.resetFIFOS=vfd_FIFOs_RESET;
 	//qVFDtx.v=&vfd;//misma estructura en los dos lados,
 	
-	//pthread_mutex_init(&vfd.sync.mutex_init_VFD,NULL);//
-	//pthread_cond_init(&vfd.sync.cond_init_TX_VFD,NULL);
-	pthread_mutex_init(&vfd.sync.mutex_free,NULL);//
-	pthread_cond_init(&vfd.sync.cond_free,NULL);  
+	pthread_mutex_init(&mutex1,NULL);//
+	pthread_cond_init(&cond1,NULL);  
+	sync1=0xAA;//mutexs ocupados
 	init_Queue_with_Thread(&qVFDtx);//fifos Transmisor data al Display
 	vfd.config.bits.recurso_VFD_Ocupado=TRUE;//recurso ocupado, VFD nadie lo puede usar
 	NoErrorOK();
@@ -55,13 +57,10 @@ void init_queues(void){
 	switch(pthread_create(&Proc1_Init_VFD,NULL,Init_VFD,&qVFDtx)){
 		case 0:NoErrorOK();
 		        printf("\n       Creando Proceso Limpiador de INIT VFD");
-		       if(pthread_create(&Proc_limpiador,NULL,Proceso_Limpiador,&qVFDtx)==0){NoErrorOK();}
+		       if(pthread_create(&Proc_limpiador,NULL,Proceso_Limpiador,&qVFDtx)==0){
+				   NoErrorOK();else{errorCritico("Error de Proc Limpiador");}}
 			   break;
-		case EAGAIN:errorCritico("Recursos insuficientes,Error de hilo init VFD");break;
-		case EINVAL:errorCritico("Arg invalidos,Error de hilo init VFD");break;
-		case EPERM:errorCritico("Permisos Insuficientes,Error de hilo init VFD");break;
 		default:errorCritico("Error desconocido de hilo init VFD");break;}
-	//pthread_detach(Proc_Init_VFD);//que muera sin monitor y libere recursos
     pthread_detach(Proc1_Init_VFD);//no espera que terminen este proceso y el hilo continua
 	pthread_detach(Proc_limpiador);//este hilo continua no espera que terminen los proc hijos
 	printf("\n       Fin de  Init Queues");
@@ -84,8 +83,8 @@ unsigned char estado;
 		case 4:usleep(3);estado++;break;
 		case 5://pthread_mutex_destroy(&vfd.sync.mutex_init_VFD);
 			   //pthread_cond_destroy( &vfd.sync.cond_init_TX_VFD);
-			   pthread_mutex_destroy(&vfd.sync.mutex_free);
-			   pthread_cond_destroy( &vfd.sync.cond_free);
+			   pthread_mutex_destroy(&mutex1);
+			   pthread_cond_destroy( &cond1);sync1=0;//recurso libre
 			   pthread_mutex_destroy(&q->s.mutex);
 			   pthread_cond_destroy(&q->s.cond);
 			   estado++;break;
@@ -115,7 +114,7 @@ void enqueue(struct Queue *q,struct VFD_DATA dato1){
 	struct Node* new_node = (struct Node*)malloc(sizeof(Node));
 	new_node->dato=dato1;
 	new_node->next=NULL;
-    pthread_mutex_lock(&q->s.mutex); //&vfd.sync.mutex_init_VFD);
+    pthread_mutex_lock(q->s.mutex); //&vfd.sync.mutex_init_VFD);
 	if(q->tail==NULL){
 		  q->head=new_node;
 		  q->tail=new_node;}
@@ -123,11 +122,11 @@ void enqueue(struct Queue *q,struct VFD_DATA dato1){
 	     q->tail=new_node;}
 	q->size++;	 
 	q->nLibres--;q->nOcupados++;
-    pthread_cond_signal(&q->s.cond);//vfd.sync.cond_init_TX_VFD); // Notifica que la cola no está vacía
-    pthread_mutex_unlock(&q->s.mutex);//vfd.sync.mutex_init_VFD);
+    pthread_cond_signal(q->s.cond);//vfd.sync.cond_init_TX_VFD); // Notifica que la cola no está vacía
+    pthread_mutex_unlock(q->s.mutex);//vfd.sync.mutex_init_VFD);
 }//fin enqueue++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-struct VFD_DATA dequeue(QueueTxVFD  *q) {
+struct VFD_DATA dequeue(struct Queue  *q) {
 	pthread_mutex_lock(&s->mutex);//vfd.sync.mutex_init_VFD);
 	while(q->size==0)
 	    pthread_cond_wait(&q->s.cond,&q->s.mutex);//vfd.sync.cond_init_TX_VFD,&vfd.sync.mutex_init_VFD);	//espera si la cola esta vacia
@@ -274,7 +273,7 @@ if(pthread_attr_setstacksize(&attr,stacksize)!=0){
 		case 8:vfd.config.bits.init_VFD=TRUE;estado++;break;//se usa en limpieza esta bandera
 		
 		
-		case 9:pthread_cond_signal(&vfd.sync.cond_init_TX_VFD);estado++;break;
+		case 9:pthread_cond_signal(   );estado++;break;
         case 10:estado=0;ret=TRUE;break;
 		default:estado=1;break;}}//fin switch while 
   pthread_join(Proc2_Tx_VFD,NULL);
