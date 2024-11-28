@@ -186,7 +186,8 @@ static union W7{//access word:
 	  box0=mem+3;
 	   pen=mem+4;
     nbytes=mem+5;
-	 datos=mem+6;//este debe ser la ultima variable|
+	 index=mem+6;
+	 datos=mem+7;//este debe ser la ultima variable|
 
       switch(*estado1){//DRIVER DE VIDEO
     	  case 1:*timer=0;*index=0;ret=0;*nbytes=0;(*estado1)++;break;
@@ -210,12 +211,10 @@ static union W7{//access word:
 #if ( DEPURANDO_SIN_DISPLAY_ENCENDIDO == 1 )
 		                   if(digitalRead(R_BUSY_PIN)==1)(*estado1)++;
 #else 
-                           (*estado1)++;     						   
-#endif			   
 						   break;
-          case TRANSMTIR+2:writePort(*(datos+*index));
-		  			       printf(" %d ",*(datos+*index));
-		                   *(datos+*index)=0;
+           case TRANSMTIR+2:printf(" %d ",*(datos+*index));
+		                    writePort(*(datos + (*index)++));//writePort(*(datos+*index));
+		                   //*(datos+*index)=0;
 						   *estado1=TRANSMTIR;
 						   break;
 		  case SALIR_TX:cleanArray(datos,DATOS_SIZE,0);*estado1=0;ret=TRUE;break;
