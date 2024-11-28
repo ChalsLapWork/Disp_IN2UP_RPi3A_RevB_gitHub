@@ -3,6 +3,8 @@
 #include "queue.h"
 #include <wiringPi.h>
 #include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
 extern struct _DISPLAY_VFD_ vfd;
 extern struct Queue qVFDtx;//queue de transmision vfd 
 
@@ -175,7 +177,7 @@ count =*(mem+1);// estado5&0x1F; //xxx1 1111
       case 6:vfd.config.bits.VDF_busy=TRUE;
              qVFDtx.isPadreAlive=TRUE;
              (*estado)++;break;
-      case 7:if(pthread_create(&Proc_Tx_VFD,SubProceso_Tx_VFD,&qVFDtx)!=0){
+      case 7:if(pthread_create(&Proc_Tx_VFD,&attr,SubProceso_Tx_VFD,&qVFDtx)!=0){
                   fprintf(stderr,"\n Error en creacion hilo: 174");
                   exit(EXIT_FAILURE);}
       case 8:if(VFDserial_SendChar1(*(Ptr+(*count))))(*estado)++;break;
