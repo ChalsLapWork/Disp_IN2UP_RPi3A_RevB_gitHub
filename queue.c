@@ -211,6 +211,8 @@ static union W7{//access word:
 #if ( DEPURANDO_SIN_DISPLAY_ENCENDIDO == 1 )
 		                   if(digitalRead(R_BUSY_PIN)==1)(*estado1)++;
 #else 
+                           (*estado1)++;
+#endif
 						   break;
            case TRANSMTIR+2:printf(" %d ",*(datos+*index));
 		                    writePort(*(datos + (*index)++));//writePort(*(datos+*index));
