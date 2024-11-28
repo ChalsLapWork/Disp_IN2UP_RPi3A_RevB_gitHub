@@ -104,8 +104,8 @@ void init_Queue_with_Thread(struct Queue *q){
 	  sync=0xAA;//mutexs usados,no disponibles
 	  q->s.mutex=&mutex0;
 	  q->s.cond=&cond0;
-	  pthread_mutex_init(q->s.mutex);
-	  pthread_cond_init(q->s.cond);
+	  pthread_mutex_init(q->s.mutex,NULL);
+	  pthread_cond_init(q->s.cond,NULL);
 }//fin de init FIFO transmit VFD+++++++++++++++++++++++++
   
 
