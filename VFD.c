@@ -80,8 +80,8 @@ return ret;
 
 //regresa true cuando se cumpla todo el methodo hasta el final
 unsigned char delay_us_VFD(unsigned short int t){
-/*auto unsigned char ret=0;
-union W7{//access word: 
+unsigned char ret=0;
+/*union W7{//access word: 
 	unsigned  short int wordx;   //   	0xaabb        //         aa
 	unsigned char byte[2];        //byte[0]=aa,byte[1]=bb
 }w16;

@@ -47,7 +47,7 @@ void init_queues(void){
 	vfd.f1.pop=vfd_FIFO_pop;                                                                                                                                                                                                                                                                                                                                                                                                                      
 	vfd.f1.resetFIFOS=vfd_FIFOs_RESET;
 	//qVFDtx.v=&vfd;//misma estructura en los dos lados,
-	mutex_free=&mutex1;cond_free=cond1;
+	mutex_free=&mutex1;cond_free=&cond1;
 	pthread_mutex_init(&mutex1,NULL);//
 	pthread_cond_init(&cond1,NULL);  
 	sync1=0xAA;//mutexs ocupados
@@ -59,7 +59,7 @@ void init_queues(void){
 		case 0:NoErrorOK();
 		        printf("\n       Creando Proceso Limpiador de INIT VFD");
 		       if(pthread_create(&Proc_limpiador,NULL,Proceso_Limpiador,&qVFDtx)==0){
-				   NoErrorOK();else{errorCritico("Error de Proc Limpiador");}}
+				   NoErrorOK();}else{errorCritico("Error de Proc Limpiador");}
 			   break;
 		default:errorCritico("Error desconocido de hilo init VFD");break;}
     pthread_detach(Proc1_Init_VFD);//no espera que terminen este proceso y el hilo continua
@@ -74,18 +74,18 @@ void *Proceso_Limpiador(void *arg) {
 struct Queue *q=(struct Queue*)arg;//
 unsigned char estado;	
     printf("\n       Proceso Limpiador de VFD activo");
-	pthread_mutex_lock(&vfd.sync.mutex_free);
+	pthread_mutex_lock(mutex_free);
 	printf("\n       Limpieza de  recursos de init VFD...");
 	switch(estado){
 		case 1:if(vfd.config.bits.init_VFD==1)estado++;break;
 		case 2:if(vfd.config.bits.Proc_VFD_Tx_running==0)estado++;break;
-	    case 3:pthread_cond_wait(&vfd.sync.cond_free,&vfd.sync.mutex_free);
+	    case 3:pthread_cond_wait(cond_free,mutex_free);
 		       estado++;break;
 		case 4:usleep(3);estado++;break;
 		case 5://pthread_mutex_destroy(&vfd.sync.mutex_init_VFD);
 			   //pthread_cond_destroy( &vfd.sync.cond_init_TX_VFD);
-			   pthread_mutex_destroy(&mutex1);
-			   pthread_cond_destroy( &cond1);sync1=0;//recurso libre
+			   pthread_mutex_destroymutex_free);
+			   pthread_cond_destroy(cond_free);sync1=0;//recurso libre
 			   pthread_mutex_destroy(&q->s.mutex);
 			   pthread_cond_destroy(&q->s.cond);
 			   estado++;break;
@@ -128,7 +128,7 @@ void enqueue(struct Queue *q,struct VFD_DATA dato1){
 }//fin enqueue++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 struct VFD_DATA dequeue(struct Queue  *q) {
-	pthread_mutex_lock(s->mutex);//vfd.sync.mutex_init_VFD);
+	pthread_mutex_lock(q->s.mutex);//vfd.sync.mutex_init_VFD);
 	while(q->size==0)
 	    pthread_cond_wait(q->s.cond,q->s.mutex);//vfd.sync.cond_init_TX_VFD,&vfd.sync.mutex_init_VFD);	//espera si la cola esta vacia
     struct Node *temp=q->head;
