@@ -112,6 +112,7 @@ struct Queue{
 	unsigned char nOcupados;
   #endif
   struct _Sync2 s;//apuntador sync de mutex que usar la queue
+  unsigned char isPadreAlive;//el proceso que encola esta vivo?, para saber si el transmisor ya tiene que terminar
 };
 
 

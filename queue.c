@@ -129,7 +129,7 @@ void enqueue(struct Queue *q,struct VFD_DATA dato1){
 
 struct VFD_DATA dequeue(struct Queue  *q) {
 	pthread_mutex_lock(q->s.mutex);//vfd.sync.mutex_init_VFD);
-	while(q->size==0)
+	while(q->size==0)//aqui sabemos que esta vacia la queue
 	    pthread_cond_wait(q->s.cond,q->s.mutex);//vfd.sync.cond_init_TX_VFD,&vfd.sync.mutex_init_VFD);	//espera si la cola esta vacia
     struct Node *temp=q->head;
 	struct VFD_DATA data=temp->dato;
@@ -151,14 +151,13 @@ void* SubProceso_Tx_VFD(void* arg) {//consumidor
 
 
 	printf("\n       Proceso Tx VFD running");
-	while(!vfd.config.bits.init_VFD||q->size>0){
+	while(q->isPadreAlive||q->size>0){//funcionan mientras este vivo init o haya datos en queue
 	 switch(estado124){
 	   case 1:NoErrorOK();estado124++;break;
 	   case 2://printf("\n       estoy corriendo  ");break;
        case 3:vfd.config.bits.Proc_VFD_Tx_running=TRUE;estado124++;break;
 	   case 4:data=dequeue(q);estado124++;break;     
-
-	   case 50:if(Transmissor_a_VFD(data,&mem[0]))estado124=3;break;
+	   case 5:if(Transmissor_a_VFD(data,&mem[0]))estado124--;break;
 	   default:estado124=1;break;}}//fin switch y while
 	   vfd.config.bits.Proc_VFD_Tx_running=FALSE;
        printf("\n       Hilo TX VFD Apagado:%d",estado124);
@@ -210,9 +209,9 @@ static union W7{//access word:
 		  case TRANSMTIR+1:if(digitalRead(R_BUSY_PIN)==1)(*estado1)++;break;
           case TRANSMTIR+2:writePort(*(datos+*index));
 		                   *(datos+*index)=0;*estado1=TRANSMTIR;break;
-		  case SALIR_TX:cleanArray(datos,DATOS_SIZE,0);*estado1=1;break;
+		  case SALIR_TX:cleanArray(datos,DATOS_SIZE,0);*estado1=0;ret=TRUE;break;
 		  default:*estado1=1;break;}//fin estado principal-----------------------------------------      
-
+return ret;
 }//transmisor de datos a VFD+++++++++++++++++++++++++++++++++++++++++
 
 
@@ -258,6 +257,7 @@ if(pthread_attr_setstacksize(&attr,stacksize)!=0){
 		       vfd.config.bits.init_VFD=FALSE;//no se ha terminado de init
 			   vfd.config.bits.Proc_VFD_Tx_running=TRUE;//no se ha iniziado este proceso
 			   vfd.config.bits.VDF_busy=TRUE;//Nadie mas puede usar el VFD
+               qVFDtx.isPadreAlive=TRUE;
 			   estado++;break;
 		case 3:NoErrorOK();estado++;break;
 		case 4:printf("\n       Creando Hilo Transmisor");
@@ -273,7 +273,8 @@ if(pthread_attr_setstacksize(&attr,stacksize)!=0){
 		case 7:if(++i<SIZE_CMD)estado--;else{estado++;}break;
 		case 8:vfd.config.bits.init_VFD=TRUE;estado++;break;//se usa en limpieza esta bandera
 		case 9:pthread_cond_signal(cond_free);estado++;break;
-        case 10:estado=0;ret=TRUE;break;
+        case 10:qVFDtx.isPadreAlive=FALSE;estado++;break;
+		case 10:estado=0;ret=TRUE;break;
 		default:estado=1;break;}}//fin switch while 
   pthread_join(Proc2_Tx_VFD,NULL);//esperamos termine de transmitir a display el otro hilo
   pthread_attr_destroy(&attr);
