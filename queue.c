@@ -22,7 +22,7 @@ struct Queue qVFDtx;//queue de transmision vfd
 void init_Queue_with_Thread(struct Queue  *q);
 struct VFD_DATA dequeue(struct Queue   *q);
 void enqueue(struct Queue  *q,struct VFD_DATA dato1);
-void* SubProceso_Tx_VFD(void* arg);
+
 unsigned char  buffer6[SIZE_BUFFER6];//FIFO graficos con S.O, aqui guarda el dato
 unsigned char  buffer7[SIZE_BUFFER6];//FIFO graficos con SO. aqui guarda el parametro=char|box|pos|
 unsigned char  buffer8[SIZE_BUFFER6];//FIFO graficos con SO. aqui guarda el parametro numero 3

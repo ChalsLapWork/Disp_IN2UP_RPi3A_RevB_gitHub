@@ -160,8 +160,8 @@ pthread_t Proc_Tx_VFD;
 pthread_attr_t attr;
 size_t stacksize=2*1024*1024;
 
-estado=*mem; //estado5&0xE0; //111x xxxx
-count =*(mem+1);// estado5&0x1F; //xxx1 1111
+estado=mem; //estado5&0xE0; //111x xxxx
+count =mem+1;// estado5&0x1F; //xxx1 1111
   switch(*estado){//1110 0000
       case 1:if(!qVFDtx.isPadreAlive)(*estado)++;break; //esta ocuipado el VFD en otro proceso?
 	  case 2:*count=0;pthread_attr_init(&attr);
@@ -181,7 +181,7 @@ count =*(mem+1);// estado5&0x1F; //xxx1 1111
                   fprintf(stderr,"\n Error en creacion hilo: 174");
                   exit(EXIT_FAILURE);}
       case 8:if(VFDserial_SendChar1(*(Ptr+(*count))))(*estado)++;break;
-      case 9:if(++(*count)<(size+1))(*estado)--;else{(*estado)++;}break;
+      case 9:if(++(*count)<(Size+1))(*estado)--;else{(*estado)++;}break;
       case 10:qVFDtx.isPadreAlive=FALSE;(*estado)++;break;
       case 11:(*estado)=0;ret=TRUE;break;
       default:(*estado)=1;break;}

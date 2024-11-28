@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include "errorController.h"
 #include <pthread.h>
-
+#include "vfd.h"
 
 #define DEPURANDO_SIN_DISPLAY_ENCENDIDO 1//1=CIERTO 0=DISPLAY ESTA ENCENDIDO Y FUNCIONANDO
 

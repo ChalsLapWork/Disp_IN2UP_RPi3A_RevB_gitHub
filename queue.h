@@ -289,3 +289,4 @@ void Terminar_subProcesos(void);
 void* Init_VFD(void* arg);
 unsigned char Transmissor_a_VFD(struct VFD_DATA v,unsigned char *mem);
 void *Proceso_Limpiador(void *arg);
+void* SubProceso_Tx_VFD(void* arg);
