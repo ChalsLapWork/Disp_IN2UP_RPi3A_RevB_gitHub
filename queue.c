@@ -391,8 +391,9 @@ void reset_FIFO_general_UChar(struct _FIFO_1byte_ *s,
 //Return false|true   TRUE: si se agrego sin problemas
 unsigned char vfd_FIFO_push(struct Queue *q,struct VFD_DATA dato){
 const unsigned char BYTES_BOX=250; //numero de ciclos, mas que bytes por comando de una box cdraw 
-//struct VFD_DATA dato;
+unsigned char x,y,p;
 const unsigned char DELAY_TIME=1; 
+    x=dato.x;y=dato.y;p=dato.p;
     switch(p){//1100 0000 los dos MSB indican que proqrametro es
     	case _BOX_:if(x==0)
     		            return FALSE; 
