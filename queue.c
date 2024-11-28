@@ -96,7 +96,7 @@ unsigned char estado;
 
 
 
-void init_Queue_with_Thread(status Queue *q){    
+void init_Queue_with_Thread(struct Queue *q){    
 	  q->head=q->tail=NULL;
 	  q->size=0;
 	  q->nLibres=SIZE_MAX_FIFO;

@@ -103,6 +103,27 @@ struct Node{
 
 
 
+
+struct Queue{
+  struct Node *head,*tail;
+  int size;  
+  #if(SIZE_MAX_FIFO<255)
+    unsigned char nLibres;
+	unsigned char nOcupados;
+  #endif
+  struct _Sync2 s;//apuntador sync de mutex que usar la queue
+};
+
+
+struct _FIFO_func_{
+	  //unsigned char (*append)(unsigned char x,unsigned char y, unsigned char p);
+      unsigned char (*append)(struct Queue q,struct VFD_DATA dato);
+	  unsigned char (*pop)(unsigned char *x,unsigned char *y, unsigned char *p);
+	  unsigned char (*resetFIFOS)(void);//resetear todas las FIFOs Y arrays y registros
+};//fin _FIFO_func_----------------------------------------
+
+
+
 struct _DISPLAY_VFD_{
 	struct _FIFO_1byte_ x;//parametro 1
 	struct _FIFO_1byte_ y;//parametro 2
@@ -129,26 +150,6 @@ struct _DISPLAY_VFD_{
 	   }v;
     		
 };//fin display VFD----------------------------------------------
-
-
-struct Queue{
-  struct Node *head,*tail;
-  int size;  
-  #if(SIZE_MAX_FIFO<255)
-    unsigned char nLibres;
-	unsigned char nOcupados;
-  #endif
-  struct _Sync2 s;//apuntador sync de mutex que usar la queue
-};
-
-
-struct _FIFO_func_{
-	  //unsigned char (*append)(unsigned char x,unsigned char y, unsigned char p);
-      unsigned char (*append)(struct Queue q,struct VFD_DATA dato);
-	  unsigned char (*pop)(unsigned char *x,unsigned char *y, unsigned char *p);
-	  unsigned char (*resetFIFOS)(void);//resetear todas las FIFOs Y arrays y registros
-};//fin _FIFO_func_----------------------------------------
-
 
 
 /*  FIN DDS ESTRUCURA ********************************************++++*/
