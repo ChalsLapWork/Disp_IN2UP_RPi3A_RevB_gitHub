@@ -281,7 +281,7 @@ if(pthread_attr_setstacksize(&attr,stacksize)!=0){
 	    case 5:printf("\n       Init, llenar FIFOs Init para Transmitir");
 			   NoErrorOK();estado++;break;
 		case 6:if(VFDcommand(s[i]))estado++;break; // init display  ESC@= 1BH,40H
-		case 7:if(++i<SIZE_CMD)estado--;else{estado++;}break;
+		case 7:if(++i<(SIZE_CMD+1))estado--;else{estado++;}break;
 		case 8:vfd.config.bits.init_VFD=TRUE;estado++;break;//se usa en limpieza esta bandera
 		case 9:pthread_cond_signal(cond_free);estado++;break;
         case 10:qVFDtx.isPadreAlive=FALSE;estado++;break;
