@@ -100,6 +100,7 @@ void init_Queue_with_Thread(struct Queue *q){
 	  q->head=q->tail=NULL;
 	  q->size=0;
 	  q->nLibres=SIZE_MAX_FIFO;
+	  q->Tamano=SIZE_MAX_FIFO;
 	  q->nOcupados=0;
 	  sync1=0xAA;//mutexs usados,no disponibles
 	  q->s.mutex=&mutex0;
