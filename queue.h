@@ -117,7 +117,7 @@ struct Queue{
 
 struct _FIFO_func_{
 	  //unsigned char (*append)(unsigned char x,unsigned char y, unsigned char p);
-      unsigned char (*append)(struct Queue q,struct VFD_DATA dato);
+      unsigned char (*append)(struct Queue *q,struct VFD_DATA dato);
 	  unsigned char (*pop)(unsigned char *x,unsigned char *y, unsigned char *p);
 	  unsigned char (*resetFIFOS)(void);//resetear todas las FIFOs Y arrays y registros
 };//fin _FIFO_func_----------------------------------------
