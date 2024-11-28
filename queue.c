@@ -208,7 +208,10 @@ static union W7{//access word:
 		  case TRANSMTIR:  if(*nbytes==*index)*estado1=SALIR_TX;else(*estado1)++;break;
 		  case TRANSMTIR+1:if(digitalRead(R_BUSY_PIN)==1)(*estado1)++;break;
           case TRANSMTIR+2:writePort(*(datos+*index));
-		                   *(datos+*index)=0;*estado1=TRANSMTIR;break;
+		  			       printf(" %d ",*(datos+*index));
+		                   *(datos+*index)=0;
+						   *estado1=TRANSMTIR;
+						   break;
 		  case SALIR_TX:cleanArray(datos,DATOS_SIZE,0);*estado1=0;ret=TRUE;break;
 		  default:*estado1=1;break;}//fin estado principal-----------------------------------------      
 return ret;
