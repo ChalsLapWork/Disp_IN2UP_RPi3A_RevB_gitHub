@@ -84,10 +84,10 @@ unsigned char estado;
 		case 4:usleep(3);estado++;break;
 		case 5://pthread_mutex_destroy(&vfd.sync.mutex_init_VFD);
 			   //pthread_cond_destroy( &vfd.sync.cond_init_TX_VFD);
-			   pthread_mutex_destroymutex_free);
+			   pthread_mutex_destroy(mutex_free);
 			   pthread_cond_destroy(cond_free);sync1=0;//recurso libre
-			   pthread_mutex_destroy(&q->s.mutex);
-			   pthread_cond_destroy(&q->s.cond);
+			   pthread_mutex_destroy(q->s.mutex);
+			   pthread_cond_destroy(q->s.cond);
 			   estado++;break;
 		case 6:NoErrorOK();estado++;break;
 		default:estado=1;break;}
