@@ -272,7 +272,7 @@ if(pthread_attr_setstacksize(&attr,stacksize)!=0){
 		case 6:if(VFDcommand(s[i]))estado++;break; // init display  ESC@= 1BH,40H
 		case 7:if(++i<SIZE_CMD)estado--;else{estado++;}break;
 		case 8:vfd.config.bits.init_VFD=TRUE;estado++;break;//se usa en limpieza esta bandera
-		case 9:pthread_cond_signal(cond_free,mutex_free);estado++;break;
+		case 9:pthread_cond_signal(cond_free);estado++;break;
         case 10:estado=0;ret=TRUE;break;
 		default:estado=1;break;}}//fin switch while 
   pthread_join(Proc2_Tx_VFD,NULL);//esperamos termine de transmitir a display el otro hilo
