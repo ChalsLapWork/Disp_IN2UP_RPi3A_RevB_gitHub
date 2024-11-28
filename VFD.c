@@ -183,11 +183,13 @@ count =mem+1;// estado5&0x1F; //xxx1 1111
       case 8:if(VFDserial_SendChar1(*(Ptr+(*count))))(*estado)++;break;
       case 9:if(++(*count)<(Size+1))(*estado)--;else{(*estado)++;}break;
       case 10:qVFDtx.isPadreAlive=FALSE;(*estado)++;break;
-      case 11:(*estado)=0;ret=TRUE;break;
+      case 11:pthread_join(Proc_Tx_VFD,NULL);
+              pthread_attr_destroy(&attr);
+              vfd.config.bits.Proc_VFD_Tx_running=FALSE;//se murio hilo transmisor al VFD
+              (*estado)++;break;
+      case 12:(*estado)=0;ret=TRUE;break;
       default:(*estado)=1;break;}
-   pthread_join(Proc_Tx_VFD,NULL);
-   pthread_attr_destroy(&attr);
-   vfd.config.bits.Proc_VFD_Tx_running=FALSE;//se murio hilo transmisor al VFD
+   
 *Snd=0;
 return ret;                       /* Return error code */
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
