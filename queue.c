@@ -137,10 +137,10 @@ struct VFD_DATA dequeue(struct Queue  *q) {
 	q->head=q->head->next;
     if(q->head==NULL)
 	     q->tail=NULL;
-    q->size--;
+    q->size--;q->nLibres++;q->nOcupados--;
 	free(temp);		 
     pthread_mutex_unlock(q->s.mutex);//vfd.sync.mutex_init_VFD);
-	q->nLibres++;q->nOcupados--;
+
 return data;
 }//fin de queue+++++++++++++++++++++++++++++++++
 
@@ -289,6 +289,7 @@ if(pthread_attr_setstacksize(&attr,stacksize)!=0){
 		default:estado=1;break;}}//fin switch while 
   pthread_join(Proc2_Tx_VFD,NULL);//esperamos termine de transmitir a display el otro hilo
   pthread_attr_destroy(&attr);
+  pthread_mutex_unlock(mutex_free);
   vfd.config.bits.Proc_VFD_Tx_running=FALSE;//Ya se Destruyo Proceso VFDtx
   printf("\n       Init Sub Proceso Init Terminado");
   NoErrorOK();		
