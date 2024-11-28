@@ -215,7 +215,7 @@ static union W7{//access word:
                            (*estado1)++;
 #endif
 						   break;
-           case TRANSMTIR+2:printf(" %d ",*(datos+*index));
+           case TRANSMTIR+2:printf(" %#X ",*(datos+*index));
 		                    writePort(*(datos + (*index)++));//writePort(*(datos+*index));
 		                   //*(datos+*index)=0;
 						   *estado1=TRANSMTIR;
