@@ -2,6 +2,7 @@
 #include "system.h"
 #include "queue.h"
 #include <wiringPi.h>
+#include <pthread.h>
 extern struct _DISPLAY_VFD_ vfd;
 extern struct Queue qVFDtx;//queue de transmision vfd 
 
@@ -55,6 +56,26 @@ unsigned char VFDcommand(unsigned char cmd){ //unsigned char *p){
 	//Se le quito el error con 125us lo dejamos en 125us
 return VFDserial_SendChar1(cmd);	    	   
 }//fin vfd command----------------------------------------------------
+
+
+//despliegue de datos en el display
+void test_display(void){
+unsigned char r[12]=" Hola mundo ";
+unsigned char n;
+unsigned char mem[2];
+    printf("\n      Iniciando prueba de Puertos Fisicos.\n");
+    delay(4);
+    while(1){
+          
+        VFDserial_SendBlock1(&r[0],sizeof(r),&n,&mem[0]);
+        delay(1);
+
+    }//fin while++++++++++++++++++++++++++++++++
+   
+     
+
+}//fin de prueba de despliegue de datos en el VFD
+
 
 
 // pusimos estos delay y el tamaño de la Font no obedecia
@@ -122,3 +143,49 @@ auto unsigned char ret=FALSE;
 return ret;	
 }//fin vfd command----------------------------------------------------
 
+/* Metodo Multi-Padre pero solo una Estancia ala Vez      */
+unsigned char VFDserial_SendBlock1(
+    unsigned char *Ptr,//pointer to variable a desplegar
+    unsigned char Size,//numero de bytes a desplegar
+    unsigned char *Snd,//regreso de estado
+    unsigned char *mem)//memoria de manejo de varibles de la func
+{//static unsigned char estado5;//111x xxxx
+auto unsigned char ret=0; 
+unsigned char *estado;
+unsigned char *count;
+struct Queue q;
+pthread_t Proc_Tx_VFD;
+pthread_attr_t attr;
+size_t stacksize=2*1024*1024;
+
+estado=*mem; //estado5&0xE0; //111x xxxx
+count =*(mem+1);// estado5&0x1F; //xxx1 1111
+  switch(*estado){//1110 0000
+      case 1:if(!qVFDtx.isPadreAlive)(*estado)++;break; //esta ocuipado el VFD en otro proceso?
+	  case 2:*count=0;pthread_attr_init(&attr);
+             (*estado)++;break;
+      case 3:if(pthread_attr_setstacksize(&attr,stacksize)){
+                fprintf(stderr,"\n error en hilo 163");
+                 exit(EXIT_FAILURE);}
+             (*estado)++;break;
+      case 4:if(!vfd.config.bits.Proc_VFD_Tx_running)
+                  (*estado)++;break;
+      case 5:vfd.config.bits.Proc_VFD_Tx_running=TRUE;
+             (*estado)++;break;
+      case 6:vfd.config.bits.VDF_busy=TRUE;
+             qVFDtx.isPadreAlive=TRUE;
+             (*estado)++;break;
+      case 7:if(pthread_create(&Proc_Tx_VFD,SubProceso_Tx_VFD,&qVFDtx)!=0){
+                  fprintf(stderr,"\n Error en creacion hilo: 174");
+                  exit(EXIT_FAILURE);}
+      case 8:if(VFDserial_SendChar1(*(Ptr+(*count))))(*estado)++;break;
+      case 9:if(++(*count)<(size+1))(*estado)--;else{(*estado)++;}break;
+      case 10:qVFDtx.isPadreAlive=FALSE;(*estado)++;break;
+      case 11:(*estado)=0;ret=TRUE;break;
+      default:(*estado)=1;break;}
+   pthread_join(Proc_Tx_VFD,NULL);
+   pthread_attr_destroy(&attr);
+   vfd.config.bits.Proc_VFD_Tx_running=FALSE;//se murio hilo transmisor al VFD
+*Snd=0;
+return ret;                       /* Return error code */
+}//fin insertar en la FIFO un comando para graficar varios carateres.------------------------

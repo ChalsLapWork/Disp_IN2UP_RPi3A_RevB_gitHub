@@ -45,7 +45,8 @@ void teclado_Control(unsigned char c,unsigned short int EnTime,unsigned short in
 unsigned char Basura(unsigned char c);
 unsigned char VFDserial_SendChar1(unsigned char c);
 //unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned short Size,unsigned short *Snd,unsigned char inst);
-unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned short Size,unsigned char *inst);
+//unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned short Size,unsigned char *inst);
+unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned char Size,unsigned char *Snd,unsigned char *mem);
 //unsigned char xInit_VFD(struct DPM m);
 //unsigned char VFDcommand(unsigned char cmd,unsigned char s);
 //unsigned char FontSizeVFD(unsigned char m);
@@ -69,3 +70,4 @@ unsigned char FontSizeVFD(unsigned char m,unsigned char *mem);
 unsigned char delay_us_VFD(unsigned short int t);
 void initParallelPort_Global(void);
 void writePort(unsigned char value);
+void test_display(void);
