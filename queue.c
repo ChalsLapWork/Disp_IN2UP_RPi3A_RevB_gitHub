@@ -206,7 +206,13 @@ static union W7{//access word:
                    default:*estado1=SALIR_TX;break;}//fin-switch selection of operation++++++++++++
 		  case CHARS_X:*(datos+0)=v.x;*nbytes=1;*estado1=TRANSMTIR;break;
 		  case TRANSMTIR:  if(*nbytes==*index)*estado1=SALIR_TX;else(*estado1)++;break;
-		  case TRANSMTIR+1:if(digitalRead(R_BUSY_PIN)==1)(*estado1)++;break;
+		  case TRANSMTIR+1:
+#if ( DEPURANDO_SIN_DISPLAY_ENCENDIDO == 1 )
+		                   if(digitalRead(R_BUSY_PIN)==1)(*estado1)++;
+#else 
+                           (*estado1)++;     						   
+#endif			   
+						   break;
           case TRANSMTIR+2:writePort(*(datos+*index));
 		  			       printf(" %d ",*(datos+*index));
 		                   *(datos+*index)=0;

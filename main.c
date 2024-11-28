@@ -10,6 +10,8 @@
 #include <pthread.h>
 
 
+#define DEPURANDO_SIN_DISPLAY_ENCENDIDO 1//1=CIERTO 0=DISPLAY ESTA ENCENDIDO Y FUNCIONANDO
+
 void signal_handler(int signalnum){
     #if(debug_level1==1)
        printf(" signal:%d",signalnum);
