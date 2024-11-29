@@ -184,7 +184,7 @@ count =mem+1;// estado5&0x1F; //xxx1 1111
                  printf("\n\033[31mError Creacion de Hilo:\033[1;31m%d ",debug);
                  delay(11);
                  exit(EXIT_FAILURE);}     
-              (*estado)=11;break;   
+              (*estado)++;break;   
       case 8:if(VFDserial_SendChar1(*(Ptr+(*count))))(*estado)++;break;
       case 9:if(++(*count)<(Size+1))(*estado)--;else{(*estado)++;}break;
       case 10:qVFDtx.isPadreAlive=FALSE;(*estado)++;break;
