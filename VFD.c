@@ -157,7 +157,7 @@ unsigned char *count;
 struct Queue q;
 pthread_t Proc_Tx_VFD;
 pthread_attr_t attr;
-size_t stacksize=64000; //1024*1024;
+size_t stacksize=1024*1024;
 unsigned char debug;
 
 estado=mem; //estado5&0xE0; //111x xxxx
