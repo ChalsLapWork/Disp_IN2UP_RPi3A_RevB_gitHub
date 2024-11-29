@@ -183,6 +183,8 @@ count =mem+1;// estado5&0x1F; //xxx1 1111
              printf(" creacion de Test TX: %d",debug);
                   //fprintf(stderr,"\n Error en creacion hilo:174");
                   //exit(EXIT_FAILURE);}
+            delay(4);
+            exit(EXIT_FAILURE);     
       case 8:if(VFDserial_SendChar1(*(Ptr+(*count))))(*estado)++;break;
       case 9:if(++(*count)<(Size+1))(*estado)--;else{(*estado)++;}break;
       case 10:qVFDtx.isPadreAlive=FALSE;(*estado)++;break;
