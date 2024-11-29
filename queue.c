@@ -150,7 +150,7 @@ void* SubProceso_Tx_VFD(void* arg) {//consumidor
 	struct VFD_DATA data;
 	unsigned char estado124,mem[20];
 */
-    int k;
+    int k=0;
     while(k<1000000000){
         printf(" %d ",k++);
 		usleep(120);

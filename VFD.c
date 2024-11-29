@@ -66,18 +66,15 @@ void test_display(void){
 unsigned char r[12]=" Hola mundo ";
 unsigned char n;
 unsigned char mem[2];
-    printf("\n      \033[35mIniciando prueba de Puertos Fisicos.\033[0m\n");
-    delay(4);
-    NoErrorOK();
+    printf("\n       \033[35mIniciando prueba de Puertos Fisicos.\033[0m\n");
+    delay(1);
+    NoErrorOK();delay(4);
     while(1){
           
         VFDserial_SendBlock1(&r[0],sizeof(r),&n,&mem[0]);
         delay(1);
 
     }//fin while++++++++++++++++++++++++++++++++
-   
-     
-
 }//fin de prueba de despliegue de datos en el VFD
 
 
@@ -189,8 +186,8 @@ count =mem+1;// estado5&0x1F; //xxx1 1111
       case 8:if(VFDserial_SendChar1(*(Ptr+(*count))))(*estado)++;break;
       case 9:if(++(*count)<(Size+1))(*estado)--;else{(*estado)++;}break;
       case 10:qVFDtx.isPadreAlive=FALSE;(*estado)++;break;
-      case 11:pthread_join(Proc_Tx_VFD,NULL);
-              pthread_attr_destroy(&attr);
+      case 11:pthread_detach(Proc_Tx_VFD);//pthread_join(Proc_Tx_VFD,NULL);
+              //pthread_attr_destroy(&attr);
               vfd.config.bits.Proc_VFD_Tx_running=FALSE;//se murio hilo transmisor al VFD
               (*estado)++;break;
       case 12:(*estado)=0;ret=TRUE;break;
