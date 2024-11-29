@@ -238,7 +238,7 @@ pthread_attr_t attr;
 size_t stacksize=2*1024*1024;// memoria para el hilo
 pthread_attr_init(&attr);
 if(pthread_attr_setstacksize(&attr,stacksize)!=0){
-	 fprintf(stderr,"\n Error config tamaño de pila");
+	 fprintf(stderr,"\n\033[31mError config tamaño de pila");
 	 exit(EXIT_FAILURE);}
 
 

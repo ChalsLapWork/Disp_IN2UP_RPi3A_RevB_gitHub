@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "errorController.h"
 extern struct _DISPLAY_VFD_ vfd;
 extern struct Queue qVFDtx;//queue de transmision vfd 
 
@@ -65,8 +66,9 @@ void test_display(void){
 unsigned char r[12]=" Hola mundo ";
 unsigned char n;
 unsigned char mem[2];
-    printf("\n      Iniciando prueba de Puertos Fisicos.\n");
+    printf("\n      \033[35mIniciando prueba de Puertos Fisicos.\n");
     delay(4);
+    NoErrorOK();
     while(1){
           
         VFDserial_SendBlock1(&r[0],sizeof(r),&n,&mem[0]);
@@ -168,7 +170,7 @@ count =mem+1;// estado5&0x1F; //xxx1 1111
 	  case 2:*count=0;pthread_attr_init(&attr);
              (*estado)++;break;
       case 3:if(pthread_attr_setstacksize(&attr,stacksize)){
-                fprintf(stderr,"\n error en hilo 163");
+                fprintf(stderr,"\n \033[31mError en hilo:173");
                  exit(EXIT_FAILURE);}
              (*estado)++;break;
       case 4:if(!vfd.config.bits.Proc_VFD_Tx_running)
@@ -178,12 +180,10 @@ count =mem+1;// estado5&0x1F; //xxx1 1111
       case 6:vfd.config.bits.VDF_busy=TRUE;
              qVFDtx.isPadreAlive=TRUE;
              (*estado)++;break;
-      case 7://if(pthread_create(&Proc_Tx_VFD,&attr,SubProceso_Tx_VFD,&qVFDtx)!=0){
-             debug=pthread_create(&Proc_Tx_VFD,&attr,SubProceso_Tx_VFD,&qVFDtx);
-             if(debug!=0){
-               printf("\n\033[31mError Creacion de Hilo: \033[1;31m%d",debug);
-               delay(4);
-               exit(EXIT_FAILURE);}     
+      case 7:if((debug=pthread_create(&Proc_Tx_VFD,&attr,SubProceso_Tx_VFD,&qVFDtx))!=0){
+                 printf("\n\033[31mError Creacion de Hilo: \033[1;31m%d",debug);
+                 delay(4);
+                 exit(EXIT_FAILURE);}     
       case 8:if(VFDserial_SendChar1(*(Ptr+(*count))))(*estado)++;break;
       case 9:if(++(*count)<(Size+1))(*estado)--;else{(*estado)++;}break;
       case 10:qVFDtx.isPadreAlive=FALSE;(*estado)++;break;
