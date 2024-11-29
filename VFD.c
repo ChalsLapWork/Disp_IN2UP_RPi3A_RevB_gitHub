@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "errorController.h"
+#include <unistd.h>
 extern struct _DISPLAY_VFD_ vfd;
 extern struct Queue qVFDtx;//queue de transmision vfd 
 
