@@ -66,7 +66,7 @@ void test_display(void){
 unsigned char r[12]=" Hola mundo ";
 unsigned char n;
 unsigned char mem[2];
-    printf("\n      \033[35mIniciando prueba de Puertos Fisicos.\n");
+    printf("\n      \033[35mIniciando prueba de Puertos Fisicos.\033[0m\n");
     delay(4);
     NoErrorOK();
     while(1){
@@ -160,7 +160,7 @@ unsigned char *count;
 struct Queue q;
 pthread_t Proc_Tx_VFD;
 pthread_attr_t attr;
-size_t stacksize=1024*1024;
+size_t stacksize=3000000;
 unsigned char debug;
 
 estado=mem; //estado5&0xE0; //111x xxxx
