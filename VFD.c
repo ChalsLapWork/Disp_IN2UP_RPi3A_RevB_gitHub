@@ -160,7 +160,7 @@ unsigned char *count;
 struct Queue q;
 pthread_t Proc_Tx_VFD;
 pthread_attr_t attr;
-size_t stacksize=5000000;
+size_t stacksize=1024;
 unsigned char debug;
 
 estado=mem; //estado5&0xE0; //111x xxxx
@@ -171,6 +171,7 @@ count =mem+1;// estado5&0x1F; //xxx1 1111
              (*estado)++;break;
       case 3:if(pthread_attr_setstacksize(&attr,stacksize)){
                 fprintf(stderr,"\n \033[31mError en hilo:173");
+                delay(4);
                  exit(EXIT_FAILURE);}
              (*estado)++;break;
       case 4:if(!vfd.config.bits.Proc_VFD_Tx_running)
@@ -181,9 +182,10 @@ count =mem+1;// estado5&0x1F; //xxx1 1111
              qVFDtx.isPadreAlive=TRUE;
              (*estado)++;break;
       case 7:if((debug=pthread_create(&Proc_Tx_VFD,&attr,SubProceso_Tx_VFD,&qVFDtx))!=0){
-                 printf("\n\033[31mError Creacion de Hilo: \033[1;31m%d",debug);
+                 printf("\n\033[31mError Creacion de Hilo:\033[1;31m%d ",debug);
                  delay(4);
                  exit(EXIT_FAILURE);}     
+              (*estado)=11;break;   
       case 8:if(VFDserial_SendChar1(*(Ptr+(*count))))(*estado)++;break;
       case 9:if(++(*count)<(Size+1))(*estado)--;else{(*estado)++;}break;
       case 10:qVFDtx.isPadreAlive=FALSE;(*estado)++;break;

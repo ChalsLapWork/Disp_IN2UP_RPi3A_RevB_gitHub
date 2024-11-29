@@ -146,11 +146,17 @@ return data;
 
 /*  Control de Display de VFD de despliegue por thread  */
 void* SubProceso_Tx_VFD(void* arg) {//consumidor
-	struct Queue *q = (struct Queue *)arg;
+/*	struct Queue *q = (struct Queue *)arg;
 	struct VFD_DATA data;
 	unsigned char estado124,mem[20];
+*/
+    int k;
+    while(1){
+        printf(" %d ",k++);
+		usleep(1200);
+	}//fin while ++++++++++++++++++++++++
 
-
+/*
 	printf("\n       Proceso Tx VFD running");
 	while(q->isPadreAlive||q->size>0){//funcionan mientras este vivo init o haya datos en queue
 	 switch(estado124){
@@ -163,7 +169,7 @@ void* SubProceso_Tx_VFD(void* arg) {//consumidor
 	   vfd.config.bits.Proc_VFD_Tx_running=FALSE;
        printf("\n       Hilo TX VFD Apagado:%d",estado124);
  	   NoErrorOK();
-    
+*/    
 return NULL;
 }//fin del subproceso de envio de datos al display+++++++++++++
 
