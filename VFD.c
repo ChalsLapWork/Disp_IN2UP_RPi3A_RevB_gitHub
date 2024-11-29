@@ -166,8 +166,9 @@ count =mem+1;// estado5&0x1F; //xxx1 1111
       case 1:if(!qVFDtx.isPadreAlive)(*estado)++;break; //esta ocuipado el VFD en otro proceso?
 	  case 2:*count=0;pthread_attr_init(&attr);
              (*estado)++;break;
-      case 3:if(pthread_attr_setstacksize(&attr,stacksize)){
-                fprintf(stderr,"\n \033[31mError en hilo:173");
+      case 3:if((debug=pthread_attr_setstacksize(&attr,stacksize))!=0){
+                fprintf(stderr,"\n \033[31mError en hilo:170\033[0m\n");
+                printf("\033[31m error:%d \033[0m",debug);
                 delay(4);
                  exit(EXIT_FAILURE);}
              (*estado)++;break;
