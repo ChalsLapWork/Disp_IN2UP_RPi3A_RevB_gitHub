@@ -89,7 +89,8 @@ unsigned char estado;
 			   pthread_mutex_destroy(q->s.mutex);
 			   pthread_cond_destroy(q->s.cond);
 			   estado++;break;
-		case 6:NoErrorOK();estado++;break;
+		case 6:NoErrorOK();printf("\n");usleep(300);
+			   estado++;break;
 		default:estado=1;break;}
     return NULL;
 }//fin del proceso hilo limpiador+++++++++++++++++++++++++++++++
