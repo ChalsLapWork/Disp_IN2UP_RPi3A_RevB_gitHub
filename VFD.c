@@ -67,8 +67,8 @@ unsigned char r[12]=" Hola mundo ";
 unsigned char n;
 unsigned char mem[2];
     printf("\n       \033[35mIniciando prueba de Puertos Fisicos.\033[0m\n");
-    delay(1);
-    NoErrorOK();delay(4);
+    usdelay(1000);
+    NoErrorOK();usdelay(400);
     while(1){
           
         VFDserial_SendBlock1(&r[0],sizeof(r),&n,&mem[0]);
