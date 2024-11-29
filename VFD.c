@@ -183,7 +183,7 @@ count =mem+1;// estado5&0x1F; //xxx1 1111
              (*estado)++;break;
       case 7:if((debug=pthread_create(&Proc_Tx_VFD,&attr,SubProceso_Tx_VFD,&qVFDtx))!=0){
                  printf("\n\033[31mError Creacion de Hilo:\033[1;31m%d ",debug);
-                 delay(4);
+                 delay(11);
                  exit(EXIT_FAILURE);}     
               (*estado)=11;break;   
       case 8:if(VFDserial_SendChar1(*(Ptr+(*count))))(*estado)++;break;

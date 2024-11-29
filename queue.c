@@ -151,9 +151,9 @@ void* SubProceso_Tx_VFD(void* arg) {//consumidor
 	unsigned char estado124,mem[20];
 */
     int k;
-    while(1){
+    while(k<1000000000){
         printf(" %d ",k++);
-		usleep(1200);
+		usleep(120);
 	}//fin while ++++++++++++++++++++++++
 
 /*
