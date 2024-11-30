@@ -65,13 +65,13 @@ return VFDserial_SendChar1(cmd);
 //despliegue de datos en el display
 void test_display(void){
 unsigned char r[12]=" Hola mundo ";
-unsigned char n;
+unsigned char n,j;
 unsigned char mem[2];
     printf("\n       \033[35mIniciando prueba de Puertos Fisicos.\033[0m\n");
     usleep(1000);
     NoErrorOK();usleep(400);
     while(1){
-          
+        printf("\n %d ",j++);  
         VFDserial_SendBlock1(&r[0],sizeof(r),&n,&mem[0]);
         usleep(1000);
 
