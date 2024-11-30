@@ -164,7 +164,7 @@ void* SubProceso_Tx_VFD(void* arg) {//consumidor
 	while(q->isPadreAlive||q->size>0){//funcionan mientras este vivo init o haya datos en queue
 	 switch(estado124){
 	   case 1:NoErrorOK();
-	          printf("\n");usleep(100);
+	          printf("\n");usleep(1000);
 		      estado124++;break;
        case 2:vfd.config.bits.Proc_VFD_Tx_running=TRUE;estado124++;break;
 	   case 3:data=dequeue(q);estado124++;break;     
@@ -230,6 +230,7 @@ static union W7{//access word:
 		                    writePort(*(datos + (*index)++));//writePort(*(datos+*index));
 		                   //*(datos+*index)=0;
 						   *estado1=TRANSMTIR;
+						   usleep(10123);
 						   break;
 		  case SALIR_TX:cleanArray(datos,DATOS_SIZE,0);*estado1=0;ret=TRUE;break;
 		  default:*estado1=1;break;}//fin estado principal-----------------------------------------      
