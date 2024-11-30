@@ -71,7 +71,7 @@ unsigned char mem[2];
     usleep(1000);
     NoErrorOK();usleep(400);
     while(1){
-        printf("\n %d ",j++);  
+        printf("\n %d ",j++);usleep(200);  
         VFDserial_SendBlock1(&r[0],sizeof(r),&n,&mem[0]);
         usleep(1000);
 
