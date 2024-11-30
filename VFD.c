@@ -68,12 +68,12 @@ unsigned char r[12]=" Hola mundo ";
 unsigned char n,j;
 unsigned char mem[2];
     printf("\n       \033[35mIniciando prueba de Puertos Fisicos.\033[0m\n");
-    usleep(1000);
-    NoErrorOK();usleep(400);
+    usleep(10000);
+    NoErrorOK();usleep(4000);
     while(1){
-        printf("\n %d ",j++);usleep(200);  
+        printf("\n %d ",j++);usleep(20000);  
         VFDserial_SendBlock1(&r[0],sizeof(r),&n,&mem[0]);
-        usleep(1000);
+        usleep(10000);
 
     }//fin while++++++++++++++++++++++++++++++++
 }//fin de prueba de despliegue de datos en el VFD
