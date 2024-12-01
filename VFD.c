@@ -174,13 +174,11 @@ count =mem+1;// estado5&0x1F; //xxx1 1111
                  exit(EXIT_FAILURE);}
              (*estado)++;break;
       case 4:if(!vfd.config.bits.Proc_VFD_Tx_running)
-                  (*estado)++;break;
-      case 5:vfd.config.bits.Proc_VFD_Tx_running=TRUE;
-             (*estado)++;break;
-      case 6:vfd.config.bits.VDF_busy=TRUE;
+                  (*estado)++;break
+      case 5:vfd.config.bits.VDF_busy=TRUE;
              qVFDtx.isPadreAlive=TRUE;
              (*estado)++;break;
-      case 7:if((debug=pthread_create(&Proc_Tx_VFD,&attr,SubProceso_Tx_VFD,&qVFDtx))!=0){
+      case 6:if((debug=pthread_create(&Proc_Tx_VFD,&attr,SubProceso_Tx_VFD,&qVFDtx))!=0){
                  printf("\n\033[31mError Creacion de Hilo:\033[1;31m%d ",debug);
                  delay(11);
                  exit(EXIT_FAILURE);}     
@@ -190,9 +188,9 @@ count =mem+1;// estado5&0x1F; //xxx1 1111
       case 10:qVFDtx.isPadreAlive=FALSE;(*estado)++;break;
       case 11:pthread_detach(Proc_Tx_VFD);//pthread_join(Proc_Tx_VFD,NULL);
               //pthread_attr_destroy(&attr);
-              vfd.config.bits.Proc_VFD_Tx_running=FALSE;//se murio hilo transmisor al VFD
               (*estado)++;break;
-      case 12:(*estado)=0;ret=TRUE;break;
+      case 12:if(!vfd.config.bits.Proc_VFD_Tx_running)(*estado)++;break;
+      case 13:(*estado)=0;ret=TRUE;break;
       default:(*estado)=1;break;}
    
 *Snd=0;
