@@ -83,3 +83,4 @@ void initParallelPort_Global(void);
 void writePort(unsigned char value);
 void test_display(void);
 void* Mon_VFD(void* arg);  //Proceso Productor<---Proceso/hilo/THread
+void *Clean_VFD(void *arg);

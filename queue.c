@@ -88,8 +88,8 @@ unsigned char estado;
 			   //pthread_cond_destroy( &vfd.sync.cond_init_TX_VFD);
 			   pthread_mutex_destroy(mutex_free);
 			   pthread_cond_destroy(cond_free);sync1=0;//recurso libre
-			   pthread_mutex_destroy(q->s.mutex);
-			   pthread_cond_destroy(q->s.cond);
+			   pthread_mutex_destroy(q->s.m_Tx);
+			   pthread_cond_destroy(q->s.cond_Tx);
 			   estado++;break;
 		case 6:NoErrorOK();printf("\n");usleep(300);
 			   estado++;break;
@@ -119,7 +119,7 @@ void enqueue(struct Queue *q,struct VFD_DATA dato1){
 	struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
 	new_node->dato=dato1;
 	new_node->next=NULL;
-    pthread_mutex_lock(q->s.mutex); //&vfd.sync.mutex_init_VFD);
+    pthread_mutex_lock(q->s.m_Tx); //&vfd.sync.mutex_init_VFD);
 	if(q->tail==NULL){
 		  q->head=new_node;
 		  q->tail=new_node;}
@@ -127,14 +127,14 @@ void enqueue(struct Queue *q,struct VFD_DATA dato1){
 	     q->tail=new_node;}
 	q->size++;	 
 	q->nLibres--;q->nOcupados++;
-    pthread_cond_signal(q->s.cond);//vfd.sync.cond_init_TX_VFD); // Notifica que la cola no está vacía
-    pthread_mutex_unlock(q->s.mutex);//vfd.sync.mutex_init_VFD);
+    pthread_cond_signal(q->s.cond_Tx);//vfd.sync.cond_init_TX_VFD); // Notifica que la cola no está vacía
+    pthread_mutex_unlock(q->s.m_Tx);//vfd.sync.mutex_init_VFD);
 }//fin enqueue++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 struct VFD_DATA dequeue(struct Queue  *q) {
-	pthread_mutex_lock(q->s.mutex);//vfd.sync.mutex_init_VFD);
+	pthread_mutex_lock(q->s.m_Tx);//vfd.sync.mutex_init_VFD);
 	while(q->size==0)//aqui sabemos que esta vacia la queue
-	    pthread_cond_wait(q->s.cond,q->s.mutex);//vfd.sync.cond_init_TX_VFD,&vfd.sync.mutex_init_VFD);	//espera si la cola esta vacia
+	    pthread_cond_wait(q->s.cond_Tx,q->s.m_Tx);//vfd.sync.cond_init_TX_VFD,&vfd.sync.mutex_init_VFD);	//espera si la cola esta vacia
     struct Node *temp=q->head;
 	struct VFD_DATA data=temp->dato;
 	q->head=q->head->next;
@@ -142,7 +142,7 @@ struct VFD_DATA dequeue(struct Queue  *q) {
 	     q->tail=NULL;
     q->size--;q->nLibres++;q->nOcupados--;
 	free(temp);		 
-    pthread_mutex_unlock(q->s.mutex);//vfd.sync.mutex_init_VFD);
+    pthread_mutex_unlock(q->s.m_Tx);//vfd.sync.mutex_init_VFD);
 
 return data;
 }//fin de queue+++++++++++++++++++++++++++++++++
