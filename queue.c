@@ -19,7 +19,6 @@
 struct _DISPLAY_VFD_ vfd;
 struct Queue qVFDtx;//queue de transmision vfd 
 //struct _Sync2 s1;//sincronia 
-void init_Queue_with_Thread(struct Queue  *q);
 struct VFD_DATA dequeue(struct Queue   *q);
 void enqueue(struct Queue  *q,struct VFD_DATA dato1);
 
@@ -105,11 +104,10 @@ void init_Queue_with_Thread(struct Queue *q){
 	  q->nLibres=SIZE_MAX_FIFO;
 	  q->Tamano=SIZE_MAX_FIFO;
 	  q->nOcupados=0;
-	  sync1=0xAA;//mutexs usados,no disponibles
-	  q->s.mutex=&mutex_Tx_SendBlock;
-	  q->s.cond=&cond_Tx_SendBlock;
-	  pthread_mutex_init(q->s.mutex,NULL);
-	  pthread_cond_init(q->s.cond,NULL);
+	  q->s.m_Tx=&mutex_Tx_SendBlock;
+	  q->s.cond_Tx=&cond_Tx_SendBlock;
+	  pthread_mutex_init(q->s.m_Tx,NULL);
+	  pthread_cond_init(q->s.cond_Tx,NULL);
 }//fin de init FIFO transmit VFD+++++++++++++++++++++++++
   
 
