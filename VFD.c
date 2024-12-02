@@ -177,39 +177,9 @@ size_t stacksize=1024*1024;
       case 9:if((debug=pthread_create(&Proc_limp_VFD,NULL,Clean_VFD,&vfd.q))!=0){
                 printf("\n\033[31mError Creacion Hilo:177\033[0m");
                 exit(EXIT_FAILURE);}(*estado)++;break;          
-      case 10:pthread_detach(Proc_TX_VFD);pthread_detach(Proc_limp_VFD);(*estado)++;break;
-      case 11:    
-     
-
-      poner en el limpiador     
-	vfd.config.bits.recurso_VFD_Ocupado=FALSE;
-
-
-      case 2:*count=0;pthread_attr_init(&attr);
-             (*estado)++;break;
-      case 3:if((debug=pthread_attr_setstacksize(&attr,stacksize))!=0){
-                fprintf(stderr,"\n \033[31mError en hilo:170\033[0m\n");
-                printf("\033[31m error:%d \033[0m",debug);
-                delay(4);
-                 exit(EXIT_FAILURE);}
-             (*estado)++;break;
-      
-    
-      case 6:if((debug=pthread_create(&Proc_Tx_VFD,&attr,SubProceso_Tx_VFD,&qVFDtx))!=0){
-                 printf("\n\033[31mError Creacion de Hilo:\033[1;31m%d ",debug);
-                 delay(11);
-                 exit(EXIT_FAILURE);}     
-              (*estado)++;break;   
-      case 8:if(VFDserial_SendChar1(*(Ptr+(*count))))(*estado)++;break;
-      case 9:if(++(*count)<(Size+1))(*estado)--;else{(*estado)++;}break;
-      case 10:qVFDtx.isPadreAlive=FALSE;(*estado)++;break;
-      case 11:pthread_detach(Proc_Tx_VFD);//pthread_join(Proc_Tx_VFD,NULL);
-              //pthread_attr_destroy(&attr);
-              (*estado)++;break;
-      case 12:if(!vfd.config.bits.Proc_VFD_Tx_running)(*estado)++;break;
-      case 13:(*estado)=0;ret=TRUE;break;
-      default:(*estado)=1;break;}
-   
+      case 10:pthread_detach(Proc_TX_VFD);
+              pthread_detach(Proc_limp_VFD);(*estado)++;break;
+      default:*estado=1;break;}
 *Snd=0;
 return ret;                       /* Return error code */
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
