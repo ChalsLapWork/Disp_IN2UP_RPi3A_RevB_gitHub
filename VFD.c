@@ -14,6 +14,17 @@ extern struct _DISPLAY_VFD_ vfd;
 extern struct Queue qVFDtx;//queue de transmision vfd 
 
 
+pthread_cond_t  cond_Tx_SendBlock;//condicional exclusivo para send Block
+pthread_mutex_t mutex_Tx_SendBlock;//mutex exclusivo para send block
+//pthread_cond_t  cond_Mon_SendBlock;//condicional exclusivo para send Block
+//pthread_mutex_t mutex_Mon_SendBlock;//mutex exclusivo para send block
+pthread_cond_t  cond_Free_SendBlock;//condicional exclusivo para send Block
+pthread_mutex_t mutex_Free_SendBlock;//mutex exclusivo para send block
+pthread_t Proc_TX_VFD;//Proceso para inizializar el VFD
+pthread_t Proc_limp_VFD;//proceso que limpia recursos del proceso hilo init VFD
+//pthread_t Proc_Mon;
+
+
 
 // Estructura para manejar los pines y datos
 typedef struct {
