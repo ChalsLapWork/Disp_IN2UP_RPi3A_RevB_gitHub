@@ -36,6 +36,7 @@
 #define DATOS_SIZE 14U //tamaño del buffer de transmision al VFD
 #define SIZE_MAX_FIFO 10//TAMAÑÑO de fifo de transmision a VFD
 
+#define SIZE_MAX_SENDBLOCK 20 //TAMAÑO maximo de envio en bloque de la funcion
 
 
 
@@ -70,6 +71,7 @@ union _Byte5_{
 		unsigned short ADC_DATO:1;
 		unsigned short Proc_VFD_Tx_running:1;//esta corriendo el hilo que transmite a la VFD
 		unsigned short recurso_VFD_Ocupado:1;//recurso esta 0:libre o 1:ocupado?
+        unsigned short isProc_Free_running;
 	}bits;
 };
 
@@ -78,13 +80,20 @@ union _Byte5_{
 	//pthread_mutex_t mutex_init_VFD;//mutex para init VFD y transmisor
 	pthread_mutex_t mutex_free;//mutex para liberar 
 	pthread_cond_t  cond_free;//mutex cond para liberar
+
 };//control de sincronia entre los hilos 
  
 struct _Sync2{
-   pthread_cond_t  *cond;
-   pthread_mutex_t *mutex;
+   pthread_cond_t  *cond_free;
+   pthread_mutex_t *m_Free;
+   pthread_cond_t  *cond_Tx;
+   pthread_mutex_t *m_Tx;
+   pthread_cond_t  *cond_Mon;
+   pthread_mutex_t *m_Mon;
    //unsigned char sem;//semaforo para que no se empalme su uso
 };//synscronia estructura+++++++++++++++++++++++++++++++++++
+
+
 
 struct VFD_DATA{
   unsigned char x;
@@ -114,6 +123,8 @@ struct Queue{
   #endif
   struct _Sync2 s;//apuntador sync de mutex que usar la queue
   unsigned char isPadreAlive;//el proceso que encola esta vivo?, para saber si el transmisor ya tiene que terminar
+  unsigned char *p;//pointer char to be send
+  unsigned char size;//size to be send
 };
 
 
@@ -132,7 +143,9 @@ struct _DISPLAY_VFD_{
 	struct _FIFO_1byte_ p;//parametro 3
 	struct _FIFO_func_  f1;//funciones para guardar lo que se grafica
 	union  _Byte5_ config;//banderas de configuracion y control para el display y menus
-	//struct _Sync   sync;//syncronia y control de hilos
+    struct _Sync2   mutex;//syncronia y control de hilos
+	struct Queue q;//pila para manejar el VFD
+	size_t pthread_attr_t attr_mon,attr_free,atrr_Tx;//atributos  
  	struct _box_control{
 		 unsigned char boxs[SIZE_BOXES];
 		 unsigned char box0;

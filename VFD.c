@@ -155,17 +155,37 @@ unsigned char VFDserial_SendBlock1(
 auto unsigned char ret=0; 
 unsigned char *estado;
 unsigned char *count;
-struct Queue q;
-pthread_t Proc_Tx_VFD;
-pthread_attr_t attr;
-size_t stacksize=1024*1024;
 unsigned char debug;
+size_t stacksize=1024*1024;
 
-estado=mem; //estado5&0xE0; //111x xxxx
-count =mem+1;// estado5&0x1F; //xxx1 1111
+  estado=mem; //estado5&0xE0; //111x xxxx
+  count =mem+1;// estado5&0x1F; //xxx1 1111
   switch(*estado){//1110 0000
       case 1:if(!qVFDtx.isPadreAlive)(*estado)++;break; //esta ocuipado el VFD en otro proceso?
-	  case 2:*count=0;pthread_attr_init(&attr);
+	  case 2:if(!vfd.config.bits.Proc_VFD_Tx_running)(*estado)++;break;//todos los hilos Tx a VFD apagados
+      case 3:if(!vfd.config.bits.isProc_Free_running)(*estado)++;break;
+      case 4:vfd.config.bits.recurso_VFD_Ocupado=TRUE;(*estado)++;break;//recurso ocupado, VFD nadie lo puede usar
+      case 5:vfd.mutex.m_Free=&mutex_Free_SendBlock;
+             vfd.mutex.cond_free=&cond_Free_SendBlock;(*estado)++;break;
+      case 6:pthread_mutex_init(vfd.mutex.m_Free,NULL);
+             pthread_cond_init(vfd.mutex.cond_free,NULL);(*estado)++;break; 
+      case 7:init_Queue_with_Thread(&vfd.q);(*estado)++;break;
+      case 8:vfd.q.size=Size;vfd.q->p=Ptr;(*estado)++;break;
+      case 8:if((debug=pthread_create(&Proc_TX_VFD,NULL,Mon_VFD,&vfd.q))!=0){
+                printf("\n\033[31mError Creacion Hilo:174\033[0m");
+                exit(EXIT_FAILURE);}(*estado)++;break;
+      case 9:if((debug=pthread_create(&Proc_limp_VFD,NULL,Clean_VFD,&vfd.q))!=0){
+                printf("\n\033[31mError Creacion Hilo:177\033[0m");
+                exit(EXIT_FAILURE);}(*estado)++;break;          
+      case 10:pthread_detach(Proc_TX_VFD);pthread_detach(Proc_limp_VFD);(*estado)++;break;
+      case 11:    
+     
+
+      poner en el limpiador     
+	vfd.config.bits.recurso_VFD_Ocupado=FALSE;
+
+
+      case 2:*count=0;pthread_attr_init(&attr);
              (*estado)++;break;
       case 3:if((debug=pthread_attr_setstacksize(&attr,stacksize))!=0){
                 fprintf(stderr,"\n \033[31mError en hilo:170\033[0m\n");
@@ -173,11 +193,8 @@ count =mem+1;// estado5&0x1F; //xxx1 1111
                 delay(4);
                  exit(EXIT_FAILURE);}
              (*estado)++;break;
-      case 4:if(!vfd.config.bits.Proc_VFD_Tx_running)
-                  (*estado)++;break
-      case 5:vfd.config.bits.VDF_busy=TRUE;
-             qVFDtx.isPadreAlive=TRUE;
-             (*estado)++;break;
+      
+    
       case 6:if((debug=pthread_create(&Proc_Tx_VFD,&attr,SubProceso_Tx_VFD,&qVFDtx))!=0){
                  printf("\n\033[31mError Creacion de Hilo:\033[1;31m%d ",debug);
                  delay(11);
@@ -196,3 +213,77 @@ count =mem+1;// estado5&0x1F; //xxx1 1111
 *Snd=0;
 return ret;                       /* Return error code */
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
+
+
+
+
+//Proceso  unico de Padre unico, PROCESO
+void* Mon_VFD(void* arg){  //Proceso Productor<---Proceso/hilo/THread
+struct Queue *q=(struct Queue*)arg;//
+unsigned char ret=0,estado;
+unsigned char i=0,debug,*count;
+pthread_attr_t attr;
+size_t stacksize=2*1024*1024;// memoria para el hilo
+
+ pthread_attr_init(&attr);
+ if(pthread_attr_setstacksize(&attr,stacksize)!=0){
+	  fprintf(stderr,"\n\033[31mError config tamaño de pila\033[0m");
+	  exit(EXIT_FAILURE);}   	   
+ while(!ret){
+	switch(estado){
+		case 1:printf("\n       Mon VFD starting. . .");estado++;break;
+		case 2:pthread_mutex_lock(vfd.mutex.m_Free);
+			   vfd.config.bits.Proc_VFD_Tx_running=TRUE;//no se ha iniziado este proceso
+			   vfd.config.bits.VDF_busy=TRUE;//Nadie mas puede usar el VFD
+               qVFDtx.isPadreAlive=TRUE;
+			   estado++;break;
+		case 3:NoErrorOK();estado++;break;
+		case 4:printf("\n       Creando Hilo Transmisor");
+		       if((debug=pthread_create(&Proc_TX_VFD,&attr,SubProceso_Tx_VFD,&q))!=0){//ret==0 :all OK	
+				    printf("\n\033[31mError Creacion de Hilo:\033[1;31m%d ",debug);
+                   //fprintf(stderr,"\n\033[31mError creando el hilo SubProc TX VFD\033[0m");
+				    exit(EXIT_FAILURE);}
+			   else{NoErrorOK();}estado++;break;
+	    case 5:printf("\n       Init, llenar FIFOs Init para Transmitir");
+			   NoErrorOK();*count=0;estado++;break;
+		case 6:if(VFDserial_SendChar1(*(q->p+(*count))))(*estado)++;break;
+        case 9:if(++(*count)<(q->size+1))(*estado)--;else{(*estado)++;}break;
+		case 7:if(++i<(q->size+1))estado--;else{estado++;}break;
+		case 9:pthread_cond_signal(vfd.mutex.cond_free);estado++;break;
+        case 10:qVFDtx.isPadreAlive=FALSE;estado++;break;
+		case 11:estado=0;ret=TRUE;break;
+		default:estado=1;break;}}//fin switch while 
+  pthread_join(Proc_TX_VFD,NULL);//esperamos termine de transmitir a display el otro hilo
+  pthread_attr_destroy(&attr);
+  pthread_mutex_unlock(vfd.mutex.m_Free);
+  printf("\n       Init Sub Proceso Init Terminado");
+  NoErrorOK();		
+return NULL;
+}//fin init VFD -------------------------------------------------------------------
+
+//** Proceso Hilo encargado de limpiar el Proceso Init VFD
+void *Clean_VFD(void *arg) {
+struct Queue *q=(struct Queue*)arg;//
+unsigned char estado;	
+    printf("\n       Proceso Limpiador de VFD activo");
+	pthread_mutex_lock(vfd.mutex.m_Free);
+	printf("\n       Limpieza de  recursos de init VFD...");
+	switch(estado){
+	    case 1:pthread_cond_wait(vfd.mutex.cond_free,vfd.mutex.m_Free);estado++;break;
+		case 2:usleep(3);estado++;break;
+		case 3:pthread_mutex_destroy(vfd.mutex.m_Free);
+			   pthread_cond_destroy(vfd.mutex.cond_free);
+			   pthread_mutex_destroy(vfd.mutex.m_Tx);
+			   pthread_cond_destroy(vfd.mutex.cond_Tx);
+			   estado++;break;
+        case 4:vfd.config.bits.Proc_VFD_Tx_running=FALSE;estado++;break;
+        case 5:vfd.config.bits.isProc_Free_running=FALSE;estado++;break;
+        case 6:vfd.config.bits.recurso_VFD_Ocupado=FALSE;estado++;break;
+		case 7:NoErrorOK();printf("\n");usleep(300);
+			   estado++;break;
+               
+		default:estado=1;break;}
+    return NULL;
+}//fin del proceso hilo limpiador+++++++++++++++++++++++++++++++
+
+

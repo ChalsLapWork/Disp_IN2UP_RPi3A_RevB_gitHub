@@ -26,13 +26,15 @@ void enqueue(struct Queue  *q,struct VFD_DATA dato1);
 unsigned char  buffer6[SIZE_BUFFER6];//FIFO graficos con S.O, aqui guarda el dato
 unsigned char  buffer7[SIZE_BUFFER6];//FIFO graficos con SO. aqui guarda el parametro=char|box|pos|
 unsigned char  buffer8[SIZE_BUFFER6];//FIFO graficos con SO. aqui guarda el parametro numero 3
-pthread_cond_t  cond0;//mutex de VFD Tx
-pthread_mutex_t mutex0;//mutex de VFD TX
+pthread_cond_t  cond_VFD;//mutex de VFD Tx
+pthread_mutex_t mutex_VFD;//mutex de VFD TX
 pthread_cond_t  cond1;//de uso general
 pthread_mutex_t mutex1;//de uso general
 unsigned char sync1;//variable de recursos de los mutex1
 pthread_cond_t  *cond_free;//pointer para init 
 pthread_mutex_t *mutex_free;//mutex
+extern pthread_cond_t  cond_Tx_SendBlock;//condicional exclusivo para send Block
+extern pthread_mutex_t mutex_Tx_SendBlock;//mutex exclusivo para send block
 
 void init_queues(void){
 	pthread_t Proc1_Init_VFD;//Proceso para inizializar el VFD
@@ -104,8 +106,8 @@ void init_Queue_with_Thread(struct Queue *q){
 	  q->Tamano=SIZE_MAX_FIFO;
 	  q->nOcupados=0;
 	  sync1=0xAA;//mutexs usados,no disponibles
-	  q->s.mutex=&mutex0;
-	  q->s.cond=&cond0;
+	  q->s.mutex=&mutex_Tx_SendBlock;
+	  q->s.cond=&cond_Tx_SendBlock;
 	  pthread_mutex_init(q->s.mutex,NULL);
 	  pthread_cond_init(q->s.cond,NULL);
 }//fin de init FIFO transmit VFD+++++++++++++++++++++++++
