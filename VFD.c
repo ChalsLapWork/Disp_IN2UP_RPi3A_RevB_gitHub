@@ -170,7 +170,7 @@ size_t stacksize=1024*1024;
       case 6:pthread_mutex_init(vfd.mutex.m_Free,NULL);
              pthread_cond_init(vfd.mutex.cond_free,NULL);(*estado)++;break; 
       case 7:init_Queue_with_Thread(&vfd.q);(*estado)++;break;
-      case 8:vfd.q.size=Size;vfd.q->p=Ptr;(*estado)++;break;
+      case 8:vfd.q.sizeStream=Size;vfd.q->p=Ptr;(*estado)++;break;
       case 8:if((debug=pthread_create(&Proc_TX_VFD,NULL,Mon_VFD,&vfd.q))!=0){
                 printf("\n\033[31mError Creacion Hilo:174\033[0m");
                 exit(EXIT_FAILURE);}(*estado)++;break;
@@ -217,8 +217,8 @@ size_t stacksize=2*1024*1024;// memoria para el hilo
 	    case 5:printf("\n       Init, llenar FIFOs Init para Transmitir");
 			   NoErrorOK();*count=0;estado++;break;
 		case 6:if(VFDserial_SendChar1(*(q->p+(*count))))(*estado)++;break;
-        case 9:if(++(*count)<(q->size+1))(*estado)--;else{(*estado)++;}break;
-		case 7:if(++i<(q->size+1))estado--;else{estado++;}break;
+        case 7:if(++(*count)<(q->size+1))(*estado)--;else{(*estado)++;}break;
+		case 8:if(++i<(q->sizeStream+1))estado--;else{estado++;}break;
 		case 9:pthread_cond_signal(vfd.mutex.cond_free);estado++;break;
         case 10:qVFDtx.isPadreAlive=FALSE;estado++;break;
 		case 11:estado=0;ret=TRUE;break;

@@ -115,7 +115,7 @@ struct Node{
 
 struct Queue{
   struct Node *head,*tail;
-  int size;  
+  int size;  //size of the queue
   #if(SIZE_MAX_FIFO<255)
     unsigned char nLibres;
 	unsigned char nOcupados;
@@ -124,7 +124,7 @@ struct Queue{
   struct _Sync2 s;//apuntador sync de mutex que usar la queue
   unsigned char isPadreAlive;//el proceso que encola esta vivo?, para saber si el transmisor ya tiene que terminar
   unsigned char *p;//pointer char to be send
-  unsigned char size;//size to be send
+  unsigned char sizeStream;//size to be send to vfd
 };
 
 
