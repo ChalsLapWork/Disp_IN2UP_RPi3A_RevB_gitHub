@@ -145,7 +145,7 @@ struct _DISPLAY_VFD_{
 	union  _Byte5_ config;//banderas de configuracion y control para el display y menus
     struct _Sync2   mutex;//syncronia y control de hilos
 	struct Queue q;//pila para manejar el VFD
-	size_t pthread_attr_t attr_mon,attr_free,atrr_Tx;//atributos  
+	//size_t pthread_attr_t attr_mon,attr_free,atrr_Tx;//atributos  
  	struct _box_control{
 		 unsigned char boxs[SIZE_BOXES];
 		 unsigned char box0;

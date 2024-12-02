@@ -216,8 +216,8 @@ size_t stacksize=2*1024*1024;// memoria para el hilo
 			   else{NoErrorOK();}estado++;break;
 	    case 5:printf("\n       Init, llenar FIFOs Init para Transmitir");
 			   NoErrorOK();*count=0;estado++;break;
-		case 6:if(VFDserial_SendChar1(*(q->p+(*count))))(*estado)++;break;
-        case 7:if(++(*count)<(q->size+1))(*estado)--;else{(*estado)++;}break;
+		case 6:if(VFDserial_SendChar1(*(q->p+(*count))))estado++;break;
+        case 7:if(++(*count)<(q->size+1))(*estado)--;else{estado++;}break;
 		case 8:if(++i<(q->sizeStream+1))estado--;else{estado++;}break;
 		case 9:pthread_cond_signal(vfd.mutex.cond_free);estado++;break;
         case 10:qVFDtx.isPadreAlive=FALSE;estado++;break;

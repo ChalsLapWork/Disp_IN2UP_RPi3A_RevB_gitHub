@@ -1,4 +1,5 @@
 
+#include <pthread.h>
 
 #define keyEN  0x22U
 #define keyDN  0x23U
