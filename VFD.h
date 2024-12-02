@@ -1,7 +1,10 @@
 #ifndef _VFD_H_
 #define _VFD_H_
 
-#include <pthread.h>
+#ifndef _PTHREAD_H_
+  #define _PTHREAD_H_
+  #include <pthread.h>
+#endif
 
 #define keyEN  0x22U
 #define keyDN  0x23U
