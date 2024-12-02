@@ -218,25 +218,25 @@ size_t stacksize=2*1024*1024;// memoria para el hilo
 	switch(estado){
 		case 1:printf("\n       Mon VFD starting. . .");estado++;break;
         case 2:if(!vfd.config.bits.Proc_VFD_Tx_running)estado++;break;
-		case 2:pthread_mutex_lock(vfd.mutex.m_Free);
+		case 3:pthread_mutex_lock(vfd.mutex.m_Free);
 			   vfd.config.bits.VDF_busy=TRUE;//Nadie mas puede usar el VFD
                qVFDtx.isPadreAlive=TRUE;
 			   estado++;break;
-		case 3:NoErrorOK();estado++;break;
-		case 4:printf("\n       Creando Hilo Transmisor");
+		case 4:NoErrorOK();estado++;break;
+		case 5:printf("\n       Creando Hilo Transmisor");
 		       if((debug=pthread_create(&Proc_TX_VFD,&attr,SubProceso_Tx_VFD,&q))!=0){//ret==0 :all OK	
 				    printf("\n\033[31mError Creacion de Hilo:\033[1;31m%d ",debug);
                    //fprintf(stderr,"\n\033[31mError creando el hilo SubProc TX VFD\033[0m");
 				    exit(EXIT_FAILURE);}
 			   else{NoErrorOK();}estado++;break;
-	    case 5:printf("\n       Init, llenar FIFOs Init para Transmitir");
+	    case 6:printf("\n       Init, llenar FIFOs Init para Transmitir");
 			   NoErrorOK();*count=0;estado++;break;
-		case 6:if(VFDserial_SendChar1(*(q->p+(*count))))estado++;break;
-        case 7:if(++(*count)<(q->size+1))estado--;else{estado++;}break;
-		case 8:if(++i<(q->sizeStream+1))estado--;else{estado++;}break;
-		case 9:pthread_cond_signal(vfd.mutex.cond_free);estado++;break;
-        case 10:qVFDtx.isPadreAlive=FALSE;estado++;break;
-		case 11:estado=0;ret=TRUE;break;
+		case 7:if(VFDserial_SendChar1(*(q->p+(*count))))estado++;break;
+        case 8:if(++(*count)<(q->size+1))estado--;else{estado++;}break;
+		case 9:if(++i<(q->sizeStream+1))estado--;else{estado++;}break;
+		case 10:pthread_cond_signal(vfd.mutex.cond_free);estado++;break;
+        case 11:qVFDtx.isPadreAlive=FALSE;estado++;break;
+		case 12:estado=0;ret=TRUE;break;
 		default:estado=1;break;}}//fin switch while 
   pthread_join(Proc_TX_VFD,NULL);//esperamos termine de transmitir a display el otro hilo
   pthread_attr_destroy(&attr);
