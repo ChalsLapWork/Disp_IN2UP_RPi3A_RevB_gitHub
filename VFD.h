@@ -22,13 +22,13 @@
 
 pthread_cond_t  cond_Tx_SendBlock;//condicional exclusivo para send Block
 pthread_mutex_t mutex_Tx_SendBlock;//mutex exclusivo para send block
-pthread_cond_t  cond_Mon_SendBlock;//condicional exclusivo para send Block
-pthread_mutex_t mutex_Mon_SendBlock;//mutex exclusivo para send block
+//pthread_cond_t  cond_Mon_SendBlock;//condicional exclusivo para send Block
+//pthread_mutex_t mutex_Mon_SendBlock;//mutex exclusivo para send block
 pthread_cond_t  cond_Free_SendBlock;//condicional exclusivo para send Block
 pthread_mutex_t mutex_Free_SendBlock;//mutex exclusivo para send block
 pthread_t Proc_TX_VFD;//Proceso para inizializar el VFD
 pthread_t Proc_limp_VFD;//proceso que limpia recursos del proceso hilo init VFD
-pthread_t Proc_Mon;
+//pthread_t Proc_Mon;
 
 typedef union{//access word: 
 	unsigned  short int coord16;   //   	0xaabb   
@@ -89,4 +89,5 @@ void writePort(unsigned char value);
 void test_display(void);
 void* Mon_VFD(void* arg);  //Proceso Productor<---Proceso/hilo/THread
 void *Clean_VFD(void *arg);
+
 #endif
