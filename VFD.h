@@ -1,3 +1,5 @@
+#ifndef _VFD_H_
+#define _VFD_H_
 
 #include <pthread.h>
 
@@ -84,3 +86,4 @@ void writePort(unsigned char value);
 void test_display(void);
 void* Mon_VFD(void* arg);  //Proceso Productor<---Proceso/hilo/THread
 void *Clean_VFD(void *arg);
+#endif

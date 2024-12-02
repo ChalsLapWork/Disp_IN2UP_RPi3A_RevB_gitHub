@@ -1,4 +1,7 @@
+
+
 #include <pthread.h>
+
 #define SIZE_BUF_TFT 5
 #define SIZE_IO_TX_BUFFER 85 //ARRAY donde se guarda la direccion de la cabeza del paquete a enviar
 #define SIZE_B 60//ARRAY donde se guarda los paquetes que se van a enviar
