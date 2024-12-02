@@ -6,7 +6,10 @@
 #if(debug_level1==1)
   #include <stdio.h>
 #endif
-#include <pthread.h>
+#ifndef _PTHREAD_H_
+  #define _PTHREAD_H_
+  #include <pthread.h>
+#endif
 #include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>

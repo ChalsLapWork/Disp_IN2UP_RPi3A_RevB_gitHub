@@ -7,7 +7,10 @@
 #include <signal.h>
 #include <unistd.h>
 #include "errorController.h"
-#include <pthread.h>
+#ifndef _PTHREAD_H_
+  #define _PTHREAD_H_
+  #include <pthread.h>
+#endif
 #include "VFD.h"
 
 #define DEPURANDO_SIN_DISPLAY_ENCENDIDO 1//1=CIERTO 0=DISPLAY ESTA ENCENDIDO Y FUNCIONANDO
