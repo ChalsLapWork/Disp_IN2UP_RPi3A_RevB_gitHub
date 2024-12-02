@@ -82,7 +82,7 @@ unsigned char estado;
 	printf("\n       Limpieza de  recursos de init VFD...");
 	switch(estado){
 		case 1:if(vfd.config.bits.init_VFD==1)estado++;break;
-		case 2:if(vfd.config.bits.Proc_VFD_Tx_running==0)estado++;break;
+		case 2:if(!vfd.config.bits.Proc_VFD_Tx_running)estado++;break;
 	    case 3:pthread_cond_wait(cond_free,mutex_free);
 		       estado++;break;
 		case 4:usleep(3);estado++;break;
@@ -166,16 +166,17 @@ void* SubProceso_Tx_VFD(void* arg) {//consumidor
 	printf("\n       \033[0;36mProceso Tx VFD running\033[0m");usleep(199);
 	while(q->isPadreAlive||q->size>0){//funcionan mientras este vivo init o haya datos en queue
 	 switch(estado124){
-	   case 1:NoErrorOK();
-	          printf("\n");usleep(1000);
+	   case 1:if(!vfd.config.bits.Proc_VFD_Tx_running)estado124++;break;
+	   case 2:vfd.config.bits.Proc_VFD_Tx_running=TRUE;estado124++;break;
+	   case 3:NoErrorOK();
+	          printf("\n");usleep(100);
 		      estado124++;break;
-       case 2:if(!vfd.config.bits.Proc_VFD_Tx_running)estado124++;break;
-	   case 3:data=dequeue(q);estado124++;break;     
-	   case 4:if(Transmissor_a_VFD(data,&mem[0]))estado124--;break;
+	   case 4:data=dequeue(q);estado124++;break;     
+	   case 5:if(Transmissor_a_VFD(data,&mem[0]))estado124--;break;
 	   default:estado124=1;break;}}//fin switch y while
        printf("\n       \033[0;33mHilo TX VFD Apagado:\033[0m%d",estado124);
-	   vfd.config.bits.Proc_VFD_Tx_running=FALSE;
- 	   NoErrorOK();  
+ 	   vfd.config.bits.Proc_VFD_Tx_running=FALSE;
+	   NoErrorOK();  
        usleep(1000);
 
 return NULL;
@@ -260,13 +261,13 @@ if(pthread_attr_setstacksize(&attr,stacksize)!=0){
 /*
 	pthread_mutex_lock(&vfd.sync.mutex_free);
 	vfd.config.bits.init_VFD=FALSE;
-	vfd.config.bits.Proc_VFD_Tx_running=TRUE;
+	
 	vfd.config.bits.VDF_busy=TRUE;
 	while(++i<10){
 	printf("\n       Init VFD running");
 	usleep(12200);}
 	vfd.config.bits.init_VFD=TRUE;
-	vfd.config.bits.Proc_VFD_Tx_running=FALSE;
+	
 	vfd.config.bits.VDF_busy=FALSE;
 	pthread_cond_signal(&vfd.sync.cond_free);
 	pthread_mutex_unlock(&vfd.sync.mutex_free);
@@ -281,7 +282,7 @@ if(pthread_attr_setstacksize(&attr,stacksize)!=0){
 		case 1:printf("\n       Init VFD starting. . .");estado++;break;
 		case 2:pthread_mutex_lock(mutex_free);
 		       vfd.config.bits.init_VFD=FALSE;//no se ha terminado de init
-			   vfd.config.bits.Proc_VFD_Tx_running=TRUE;//no se ha iniziado este proceso
+			
 			   vfd.config.bits.VDF_busy=TRUE;//Nadie mas puede usar el VFD
                qVFDtx.isPadreAlive=TRUE;
 			   estado++;break;
@@ -305,7 +306,6 @@ if(pthread_attr_setstacksize(&attr,stacksize)!=0){
   pthread_join(Proc2_Tx_VFD,NULL);//esperamos termine de transmitir a display el otro hilo
   pthread_attr_destroy(&attr);
   pthread_mutex_unlock(mutex_free);
-  vfd.config.bits.Proc_VFD_Tx_running=FALSE;//Ya se Destruyo Proceso VFDtx
   printf("\n       Init Sub Proceso Init Terminado");
   NoErrorOK();		
 

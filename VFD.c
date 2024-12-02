@@ -79,13 +79,14 @@ return VFDserial_SendChar1(cmd);
 //despliegue de datos en el display
 void test_display(void){
 unsigned char r[12]=" Hola mundo ";
-unsigned char n,j=0;
+unsigned char n;
+int j=0;
 unsigned char mem[2];
     printf("\n       \033[35mIniciando prueba de Puertos Fisicos.\033[0m\n");
     usleep(90000);
     NoErrorOK();usleep(80000);
     while(1){
-        printf(" %d ",j++);usleep(90000);  
+        printf(" %i ",j++);usleep(90000);  
         VFDserial_SendBlock1(&r[0],sizeof(r),&n,&mem[0]);
         usleep(80000);
 
@@ -216,8 +217,8 @@ size_t stacksize=2*1024*1024;// memoria para el hilo
  while(!ret){
 	switch(estado){
 		case 1:printf("\n       Mon VFD starting. . .");estado++;break;
+        case 2:if(!vfd.config.bits.Proc_VFD_Tx_running)estado++;break;
 		case 2:pthread_mutex_lock(vfd.mutex.m_Free);
-			   vfd.config.bits.Proc_VFD_Tx_running=TRUE;//no se ha iniziado este proceso
 			   vfd.config.bits.VDF_busy=TRUE;//Nadie mas puede usar el VFD
                qVFDtx.isPadreAlive=TRUE;
 			   estado++;break;
@@ -260,10 +261,9 @@ unsigned char estado;
 			   pthread_mutex_destroy(vfd.mutex.m_Tx);
 			   pthread_cond_destroy(vfd.mutex.cond_Tx);
 			   estado++;break;
-        case 4:vfd.config.bits.Proc_VFD_Tx_running=FALSE;estado++;break;
-        case 5:vfd.config.bits.isProc_Free_running=FALSE;estado++;break;
-        case 6:vfd.config.bits.recurso_VFD_Ocupado=FALSE;estado++;break;
-		case 7:NoErrorOK();printf("\n");usleep(300);
+        case 4:vfd.config.bits.isProc_Free_running=FALSE;estado++;break;
+        case 5:vfd.config.bits.recurso_VFD_Ocupado=FALSE;estado++;break;
+		case 6:NoErrorOK();printf("\n");usleep(300);
 			   estado++;break;
                
 		default:estado=1;break;}
