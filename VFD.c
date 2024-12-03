@@ -228,9 +228,14 @@ size_t stacksize=2*1024*1024;// memoria para el hilo
 				    printf("\n\033[31mError Creacion de Hilo:\033[1;31m%d ",debug);
                    //fprintf(stderr,"\n\033[31mError creando el hilo SubProc TX VFD\033[0m");
 				    exit(EXIT_FAILURE);}
-			   else{NoErrorOK();}estado++;break;
+			   else{NoErrorOK();}
+               estado++;
+               break;
 	    case 6:printf("\n       Init, llenar FIFOs Init para Transmitir");
-			   NoErrorOK();*count=0;estado++;break;
+			   NoErrorOK();
+               *count=0;
+               estado++;
+               break;
 		case 7:if(VFDserial_SendChar1(*(q->p+(*count))))estado++;break;
         case 8:if(++(*count)<(q->size+1))estado--;else{estado++;}break;
 		case 9:if(++i<(q->sizeStream+1))estado--;else{estado++;}break;
