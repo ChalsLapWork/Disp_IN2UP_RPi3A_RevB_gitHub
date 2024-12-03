@@ -163,21 +163,20 @@ void* SubProceso_Tx_VFD(void* arg) {//consumidor
 */
 
 
-	printf("\n       \033[0;36mProceso Tx VFD running\033[0m");usleep(199);
+	mensOK("Proceso Tx VFD running",CIAN);
 	while(q->isPadreAlive||q->size>0){//funcionan mientras este vivo init o haya datos en queue
 	 switch(estado124){
 	   case 1:if(!vfd.config.bits.Proc_VFD_Tx_running)estado124++;break;
 	   case 2:vfd.config.bits.Proc_VFD_Tx_running=TRUE;estado124++;break;
 	   case 3:NoErrorOK();
-	          printf("\n");usleep(100);
+	          printf("\n");
 		      estado124++;break;
 	   case 4:data=dequeue(q);estado124++;break;     
 	   case 5:if(Transmissor_a_VFD(data,&mem[0]))estado124--;break;
 	   default:estado124=1;break;}}//fin switch y while
-       printf("\n       \033[0;33mHilo TX VFD Apagado:\033[0m%d",estado124);
+       mensOK("Hilo TX VFD Apagado",AMARILLO);
  	   vfd.config.bits.Proc_VFD_Tx_running=FALSE;
-	   NoErrorOK();  
-       usleep(1000);
+	   NoErrorOK();
 
 return NULL;
 }//fin del subproceso de envio de datos al display+++++++++++++

@@ -82,14 +82,11 @@ unsigned char r[12]=" Hola mundo ";
 unsigned char n;
 int j=0;
 unsigned char mem[2];
-    printf("\n       \033[35mIniciando prueba de Puertos Fisicos.\033[0m\n");
-    usleep(90000);
-    NoErrorOK();usleep(80000);
+    mensOK("Iniciando prueba de Puertos Fisicos.",MAGNETA);
+    NoErrorOK();
     while(1){
-        printf(" %i ",j++);usleep(90000);  
+        printf(">%i=",j++);usleep(9000);  
         VFDserial_SendBlock1(&r[0],sizeof(r),&n,&mem[0]);
-        usleep(80000);
-
     }//fin while++++++++++++++++++++++++++++++++
 }//fin de prueba de despliegue de datos en el VFD
 
@@ -186,13 +183,17 @@ size_t stacksize=1024*1024;
              pthread_cond_init(vfd.mutex.cond_free,NULL);(*estado)++;break; 
       case 7:init_Queue_with_Thread(&vfd.q);(*estado)++;break;
       case 8:vfd.q.sizeStream=Size;vfd.q.p=Ptr;(*estado)++;break;
-      case 9:if((debug=pthread_create(&Proc_TX_VFD,NULL,Mon_VFD,&vfd.q))!=0){
-                printf("\n\033[31mError Creacion Hilo:174\033[0m");
-                exit(EXIT_FAILURE);}(*estado)++;break;
-      case 10:if((debug=pthread_create(&Proc_limp_VFD,NULL,Clean_VFD,&vfd.q))!=0){
-                printf("\n\033[31mError Creacion Hilo:177\033[0m");
-                exit(EXIT_FAILURE);}(*estado)++;break;          
-      case 11:pthread_detach(Proc_TX_VFD);
+      case 9:mensOK("Creando Monitor",RESET);(*estado)++;break;
+      case 10:if((debug=pthread_create(&Proc_TX_VFD,NULL,Mon_VFD,&vfd.q))!=0){
+                errorCritico2("Error Creacion Hilo",174);}
+              else{NoErrorOK();}
+              (*estado)++;break;
+      case 11:mensOK("Creando Limpiador",AZUL);(*estado)++;break;
+      case 12:if((debug=pthread_create(&Proc_limp_VFD,NULL,Clean_VFD,&vfd.q))!=0){
+                errorCritico2("Error Creacion Hilo",177);}
+              else{NoErrorOK();}
+              (*estado)++;break;          
+      case 13:pthread_detach(Proc_TX_VFD);
               pthread_detach(Proc_limp_VFD);(*estado)++;break;
       default:*estado=1;break;}
 *Snd=0;
@@ -211,26 +212,24 @@ pthread_attr_t attr;
 size_t stacksize=2*1024*1024;// memoria para el hilo
 
  pthread_attr_init(&attr);
+ mensOK("Asignando Recursos a Tx",RESET);
  if(pthread_attr_setstacksize(&attr,stacksize)!=0){
-	  fprintf(stderr,"\n\033[31mError config tamaño de pila\033[0m");
-	  exit(EXIT_FAILURE);}   	   
+	  errorCritico2("Error config tamaño de pila:",217);}
+ else{NoErrorOK();}        	   
  while(!ret){
 	switch(estado){
-		case 1:printf("\n       Mon VFD starting. . .");estado++;break;
+		case 1:mensOK("Mon VFD starting. . .",RESET);estado++;break;
         case 2:if(!vfd.config.bits.Proc_VFD_Tx_running)estado++;break;
 		case 3:pthread_mutex_lock(vfd.mutex.m_Free);
 			   vfd.config.bits.VDF_busy=TRUE;//Nadie mas puede usar el VFD
                q->isPadreAlive=TRUE;
 			   estado++;break;
 		case 4:NoErrorOK();estado++;break;
-		case 5:printf("\n       Creando Hilo Transmisor");
+		case 5:mensOK("Creando Hilo Transmisor",RESET);
 		       if((debug=pthread_create(&Proc_TX_VFD,&attr,SubProceso_Tx_VFD,&q))!=0){//ret==0 :all OK	
-				    printf("\n\033[31mError Creacion de Hilo:\033[1;31m%d ",debug);
-                   //fprintf(stderr,"\n\033[31mError creando el hilo SubProc TX VFD\033[0m");
-				    exit(EXIT_FAILURE);}
+				    errorCritico2("Error Creacion de Hilo:",debug);}
 			   else{NoErrorOK();}estado++;break;
-	    case 6:printf("\n       Init, llenar FIFOs Init para Transmitir");
-			   NoErrorOK();count=0;estado++;break;
+	    case 6:mensOK("llenar FIFOs para Transmitir");count=0;estado++;break;
 		case 7:if(VFDserial_SendChar1(*(q->p+count)))estado++;break;
         case 8:if(++count<(q->size+1))estado--;else{estado++;}break;
 		case 9:if(++i<(q->sizeStream+1))estado--;else{estado++;}break;
@@ -239,9 +238,9 @@ size_t stacksize=2*1024*1024;// memoria para el hilo
 		case 12:estado=0;ret=TRUE;break;
 		default:estado=1;break;}}//fin switch while 
   pthread_join(Proc_TX_VFD,NULL);//esperamos termine de transmitir a display el otro hilo
+  mensOK("Sub Proceso TX Terminado",RESET);
   pthread_attr_destroy(&attr);
   pthread_mutex_unlock(vfd.mutex.m_Free);
-  printf("\n       Init Sub Proceso Init Terminado");
   NoErrorOK();		
 return NULL;
 }//fin init VFD -------------------------------------------------------------------
@@ -250,9 +249,9 @@ return NULL;
 void *Clean_VFD(void *arg) {
 struct Queue *q=(struct Queue*)arg;//
 unsigned char estado;	
-    printf("\n       Proceso Limpiador de VFD activo");
+    mensOK("Proceso Limpiador de VFD activo",AMARILLO);
 	pthread_mutex_lock(vfd.mutex.m_Free);
-	printf("\n       Limpieza de  recursos de init VFD...");
+	mensOK("Limpieza de  recursos de init VFD...",RESET);
 	switch(estado){
 	    case 1:pthread_cond_wait(vfd.mutex.cond_free,vfd.mutex.m_Free);estado++;break;
 		case 2:usleep(3);estado++;break;
