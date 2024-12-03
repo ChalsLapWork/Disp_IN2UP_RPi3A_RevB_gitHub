@@ -28,7 +28,7 @@ int main(void){
   signal(SIGINT,signal_handler);//asocia el manejador de salida del programa
   configPuertos();
   init_queues();
-  usleep(1000000);
+  usleep(1000);
   test_display();
 
 
