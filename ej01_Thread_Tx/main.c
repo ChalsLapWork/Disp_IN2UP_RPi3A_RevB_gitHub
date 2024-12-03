@@ -33,7 +33,7 @@ void transmitir_lento(const char *str) {
         putchar(*str++);
         printf("\033[0m");
         fflush(stdout);
-        usleep(50000);  // Simula retardo de 0.5 segundos
+        usleep(5000);  // Simula retardo de 0.005 segundos
     }
     printf("\n");
 }
@@ -95,7 +95,7 @@ int main() {
     // El hilo padre continúa indefinidamente (o hasta que lo detengas manualmente).
     while (1) {
         enviar_mensaje("Mensaje en bucle infinito");
-        usleep(1000000);  // Envía mensajes cada segundo
+        usleep(10000);  // Envía mensajes cada 0.001seg
     }
 
     return 0;
