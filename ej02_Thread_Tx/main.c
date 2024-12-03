@@ -22,12 +22,14 @@ typedef struct {
     _Atomic int head;  // Índice de escritura (hilo padre)
     _Atomic int tail;  // Índice de lectura (hilo hijo)
     pthread_mutex_t mutex;
+    pthread_cond_t cond;
 } circular_buffer_t;
 
 circular_buffer_t buffer = {
     .head = 0,
     .tail = 0,
     .mutex = PTHREAD_MUTEX_INITIALIZER
+    .cond  = PTHREAD_COND_INITIALIZER
 };
 
 // Función que simula la transmisión lenta
