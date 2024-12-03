@@ -22,12 +22,14 @@ typedef struct {
     _Atomic int head;  // Índice de escritura (hilo padre)
     _Atomic int tail;  // Índice de lectura (hilo hijo)
     pthread_mutex_t mutex;
+    pthread_cond_t cond;
 } circular_buffer_t;
 
 circular_buffer_t buffer = {
     .head = 0,
     .tail = 0,
-    .mutex = PTHREAD_MUTEX_INITIALIZER
+    .mutex = PTHREAD_MUTEX_INITIALIZER,
+    .cond =  PTHREAD_COND_INITIALIZER
 };
 
 // Función que simula la transmisión lenta
@@ -47,7 +49,7 @@ void* hilo_hijo(void *arg) {
   while(1){  
     pthread_mutex_lock(&buffer.mutex);
     while (buffer.head = buffer.tail) {
-      pthread_cond_wait(&buffer.cond, &buffer.mutex);}
+        pthread_cond_wait(&buffer.cond, &buffer.mutex);}
     char mensaje[MAX_MESSAGE_LEN];// Extrae el mensaje del buffer
     strncpy(mensaje, buffer.buffer[buffer.tail], MAX_MESSAGE_LEN);
     buffer.tail = (buffer.tail + 1) % BUFFER_SIZE;
