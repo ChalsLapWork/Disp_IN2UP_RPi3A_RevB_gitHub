@@ -43,24 +43,19 @@ void* hilo_hijo(void *arg) {
     while (1) {
         if (buffer.head != buffer.tail) {  // Verifica si hay mensajes disponibles
             pthread_mutex_lock(&buffer.mutex);
-
-            // Extrae el mensaje del buffer
-            char mensaje[MAX_MESSAGE_LEN];
+            char mensaje[MAX_MESSAGE_LEN];// Extrae el mensaje del buffer
             strncpy(mensaje, buffer.buffer[buffer.tail], MAX_MESSAGE_LEN);
             buffer.tail = (buffer.tail + 1) % BUFFER_SIZE;
-
             pthread_mutex_unlock(&buffer.mutex);
-
             transmitir_lento(mensaje);  // Transmite lentamente
-        } else {
-            usleep(1000);  // Pequeña espera para evitar consumo intensivo de CPU
-        }
-    }
-    return NULL;
+        } else {usleep(100);}  // Pequeña espera para evitar consumo intensivo de CPU
+    }//fin while
+return NULL;
 }
 
 // Función del hilo padre: Produce mensajes sin bloquearse
-void enviar_mensaje(const char *mensaje) {
+unsigned char enviar_mensaje(const char *mensaje) {
+unsigned char ret=0;
     int next_head = (buffer.head + 1) % BUFFER_SIZE;
 
     if (next_head != buffer.tail) {  // Solo escribe si hay espacio en el buffer
@@ -68,12 +63,12 @@ void enviar_mensaje(const char *mensaje) {
         strncpy(buffer.buffer[buffer.head], mensaje, MAX_MESSAGE_LEN);
         buffer.head = next_head;
         pthread_mutex_unlock(&buffer.mutex);
-    } else {
-        printf(" Buffer lleno, mens descartado: %s\n", mensaje);  // Manejo del desborde
-    }
-}
+        ret=TRUE;}
+    //else {printf(" Buffer lleno, mens descartado: %s\n", mensaje);}  // Manejo del desborde
+return ret;}// fin de enviar mensaje
 
 int main() {
+    unsigned char estado;
     pthread_t hijo;
 
     // Crear el hilo hijo (sin esperar que termine)
@@ -89,13 +84,16 @@ int main() {
     for (int i = 0; i < 3; i++) {
         enviar_mensaje(mensajes[i]);
         printf("Padre: Enviado \"%s\"\n", mensajes[i]);
-        usleep(200000);  // Simula tareas en tiempo real (sin bloquearse)
+        usleep(20000);  // Simula tareas en tiempo real (sin bloquearse)
     }
 
     // El hilo padre continúa indefinidamente (o hasta que lo detengas manualmente).
     while (1) {
-        enviar_mensaje("Mensaje en bucle infinito");
-        usleep(10000);  // Envía mensajes cada 0.001seg
+      switch(estado){
+         case 1:if(enviar_mensaje("Mensaje en bucle infinito"))estado++;break;
+         case 2:estado=1;break;
+         default:estado=1;break;}
+      //usleep(10000);  // Envía mensajes cada 0.001seg
     }
 
     return 0;
