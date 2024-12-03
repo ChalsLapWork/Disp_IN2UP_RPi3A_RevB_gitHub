@@ -13,6 +13,9 @@
 
 #define BUFFER_SIZE 220  // Tamaño del buffer circular
 #define MAX_MESSAGE_LEN 256
+#ifndef TRUE
+  #define TRUE 1
+#endif
 
 typedef struct {
     char buffer[BUFFER_SIZE][MAX_MESSAGE_LEN];
