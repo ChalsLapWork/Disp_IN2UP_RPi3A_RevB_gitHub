@@ -220,7 +220,7 @@ size_t stacksize=2*1024*1024;// memoria para el hilo
         case 2:if(!vfd.config.bits.Proc_VFD_Tx_running)estado++;break;
 		case 3:pthread_mutex_lock(vfd.mutex.m_Free);
 			   vfd.config.bits.VDF_busy=TRUE;//Nadie mas puede usar el VFD
-               qVFDtx.isPadreAlive=TRUE;
+               q->isPadreAlive=TRUE;
 			   estado++;break;
 		case 4:NoErrorOK();estado++;break;
 		case 5:printf("\n       Creando Hilo Transmisor");
@@ -235,7 +235,7 @@ size_t stacksize=2*1024*1024;// memoria para el hilo
         case 8:if(++(*count)<(q->size+1))estado--;else{estado++;}break;
 		case 9:if(++i<(q->sizeStream+1))estado--;else{estado++;}break;
 		case 10:pthread_cond_signal(vfd.mutex.cond_free);estado++;break;
-        case 11:qVFDtx.isPadreAlive=FALSE;estado++;break;
+        case 11:q->isPadreAlive=FALSE;estado++;break;//ya puede morir el hijo, si esta vacia la queue
 		case 12:estado=0;ret=TRUE;break;
 		default:estado=1;break;}}//fin switch while 
   pthread_join(Proc_TX_VFD,NULL);//esperamos termine de transmitir a display el otro hilo
