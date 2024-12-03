@@ -35,7 +35,7 @@ circular_buffer_t buffer = {
 // Función que simula la transmisión lenta
 void transmitir_lento(const char *str) {
     while (*str) {
-        printf("\033[36m");
+        printf("\033[35m");
         putchar(*str++);
         printf("\033[0m");
         fflush(stdout);
