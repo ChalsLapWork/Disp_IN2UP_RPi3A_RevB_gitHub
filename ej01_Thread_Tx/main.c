@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdatomic.h>
+#include <stdbool.n>
 
 #define BUFFER_SIZE 220  // Tamaño del buffer circular
 #define MAX_MESSAGE_LEN 256
@@ -36,7 +37,7 @@ void transmitir_lento(const char *str) {
         usleep(5000);  // Simula retardo de 0.005 segundos
     }
     printf("\n");
-}
+}   
 
 // Hilo hijo: Consume mensajes del buffer y los transmite
 void* hilo_hijo(void *arg) {
