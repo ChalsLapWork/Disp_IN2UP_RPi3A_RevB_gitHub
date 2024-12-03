@@ -82,7 +82,7 @@ unsigned char r[12]=" Hola mundo ";
 unsigned char n;
 int j=0;
 unsigned char mem[2];
-    mensOK("Iniciando prueba de Puertos Fisicos.",MAGNETA);
+    mensOK("Iniciando prueba de Puertos Fisicos.",CMAGNETA);
     NoErrorOK();
     while(1){
         printf(">%i=",j++);usleep(9000);  
@@ -249,7 +249,7 @@ return NULL;
 void *Clean_VFD(void *arg) {
 struct Queue *q=(struct Queue*)arg;//
 unsigned char estado;	
-    mensOK("Proceso Limpiador de VFD activo",AMARILLO);
+    mensOK("Proceso Limpiador de VFD activo",CAMARILLO);
 	pthread_mutex_lock(vfd.mutex.m_Free);
 	mensOK("Limpieza de  recursos de init VFD...",CRESET);
 	switch(estado){
