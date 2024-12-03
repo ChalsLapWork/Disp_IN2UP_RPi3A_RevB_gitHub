@@ -2,10 +2,12 @@
 #include "errorController.h"
 #include "stdio.h"
 #include "stdlib.h"
+#include <unistd.h>
 
 
 void errorCritico(char *c){  
-    printf("\n\033[0;031m%s\033[0m\n",c);usleep(10000);
+    printf("\n\033[0;031m%s\033[0m\n",c);
+    usleep(10000);
     exit(-1);
 }//fin error critico+++++++++++++++++++++++++++++++++++
 
