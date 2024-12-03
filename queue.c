@@ -163,7 +163,7 @@ void* SubProceso_Tx_VFD(void* arg) {//consumidor
 */
 
 
-	mensOK("Proceso Tx VFD running",CIAN);
+	mensOK("Proceso Tx VFD running",CCIAN);
 	while(q->isPadreAlive||q->size>0){//funcionan mientras este vivo init o haya datos en queue
 	 switch(estado124){
 	   case 1:if(!vfd.config.bits.Proc_VFD_Tx_running)estado124++;break;
@@ -174,7 +174,7 @@ void* SubProceso_Tx_VFD(void* arg) {//consumidor
 	   case 4:data=dequeue(q);estado124++;break;     
 	   case 5:if(Transmissor_a_VFD(data,&mem[0]))estado124--;break;
 	   default:estado124=1;break;}}//fin switch y while
-       mensOK("Hilo TX VFD Apagado",AMARILLO);
+       mensOK("Hilo TX VFD Apagado",CAMARILLO);
  	   vfd.config.bits.Proc_VFD_Tx_running=FALSE;
 	   NoErrorOK();
 

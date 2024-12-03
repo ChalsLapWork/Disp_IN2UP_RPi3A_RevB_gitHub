@@ -183,12 +183,12 @@ size_t stacksize=1024*1024;
              pthread_cond_init(vfd.mutex.cond_free,NULL);(*estado)++;break; 
       case 7:init_Queue_with_Thread(&vfd.q);(*estado)++;break;
       case 8:vfd.q.sizeStream=Size;vfd.q.p=Ptr;(*estado)++;break;
-      case 9:mensOK("Creando Monitor",RESET);(*estado)++;break;
+      case 9:mensOK("Creando Monitor",CRESET);(*estado)++;break;
       case 10:if((debug=pthread_create(&Proc_TX_VFD,NULL,Mon_VFD,&vfd.q))!=0){
                 errorCritico2("Error Creacion Hilo",174);}
               else{NoErrorOK();}
               (*estado)++;break;
-      case 11:mensOK("Creando Limpiador",AZUL);(*estado)++;break;
+      case 11:mensOK("Creando Limpiador",CAZUL);(*estado)++;break;
       case 12:if((debug=pthread_create(&Proc_limp_VFD,NULL,Clean_VFD,&vfd.q))!=0){
                 errorCritico2("Error Creacion Hilo",177);}
               else{NoErrorOK();}
@@ -212,24 +212,24 @@ pthread_attr_t attr;
 size_t stacksize=2*1024*1024;// memoria para el hilo
 
  pthread_attr_init(&attr);
- mensOK("Asignando Recursos a Tx",RESET);
+ mensOK("Asignando Recursos a Tx",CRESET);
  if(pthread_attr_setstacksize(&attr,stacksize)!=0){
 	  errorCritico2("Error config tamaño de pila:",217);}
  else{NoErrorOK();}        	   
  while(!ret){
 	switch(estado){
-		case 1:mensOK("Mon VFD starting. . .",RESET);estado++;break;
+		case 1:mensOK("Mon VFD starting. . .",CRESET);estado++;break;
         case 2:if(!vfd.config.bits.Proc_VFD_Tx_running)estado++;break;
 		case 3:pthread_mutex_lock(vfd.mutex.m_Free);
 			   vfd.config.bits.VDF_busy=TRUE;//Nadie mas puede usar el VFD
                q->isPadreAlive=TRUE;
 			   estado++;break;
 		case 4:NoErrorOK();estado++;break;
-		case 5:mensOK("Creando Hilo Transmisor",RESET);
+		case 5:mensOK("Creando Hilo Transmisor",CRESET);
 		       if((debug=pthread_create(&Proc_TX_VFD,&attr,SubProceso_Tx_VFD,&q))!=0){//ret==0 :all OK	
 				    errorCritico2("Error Creacion de Hilo:",debug);}
 			   else{NoErrorOK();}estado++;break;
-	    case 6:mensOK("llenar FIFOs para Transmitir");count=0;estado++;break;
+	    case 6:mensOK("llenar FIFOs para Transmitir",CRESET);count=0;estado++;break;
 		case 7:if(VFDserial_SendChar1(*(q->p+count)))estado++;break;
         case 8:if(++count<(q->size+1))estado--;else{estado++;}break;
 		case 9:if(++i<(q->sizeStream+1))estado--;else{estado++;}break;
@@ -238,7 +238,7 @@ size_t stacksize=2*1024*1024;// memoria para el hilo
 		case 12:estado=0;ret=TRUE;break;
 		default:estado=1;break;}}//fin switch while 
   pthread_join(Proc_TX_VFD,NULL);//esperamos termine de transmitir a display el otro hilo
-  mensOK("Sub Proceso TX Terminado",RESET);
+  mensOK("Sub Proceso TX Terminado",CRESET);
   pthread_attr_destroy(&attr);
   pthread_mutex_unlock(vfd.mutex.m_Free);
   NoErrorOK();		
@@ -251,7 +251,7 @@ struct Queue *q=(struct Queue*)arg;//
 unsigned char estado;	
     mensOK("Proceso Limpiador de VFD activo",AMARILLO);
 	pthread_mutex_lock(vfd.mutex.m_Free);
-	mensOK("Limpieza de  recursos de init VFD...",RESET);
+	mensOK("Limpieza de  recursos de init VFD...",CRESET);
 	switch(estado){
 	    case 1:pthread_cond_wait(vfd.mutex.cond_free,vfd.mutex.m_Free);estado++;break;
 		case 2:usleep(3);estado++;break;

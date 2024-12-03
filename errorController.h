@@ -1,12 +1,12 @@
-#define ROJO 31
-#define NEGRO 30
-#define VERDE 32
-#define AMARILLO 33
-#define AZUL 34
-#define MAGNETA 35
-#define CIAN 36
-#define BLANCO 37
-#define RESET 0
+#define CROJO     31
+#define CNEGRO    30
+#define CVERDE    32
+#define CAMARILLO 33
+#define CAZUL     34
+#define CMAGNETA  35
+#define CCIAN     36
+#define CBLANCO   37
+#define CRESET    0
 
 void errorCritico(char *c);
 void NoErrorOK(void);
