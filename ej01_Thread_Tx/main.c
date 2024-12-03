@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdatomic.h>
-#include <stdbool.n>
+#include <stdbool.h>
 
 #define BUFFER_SIZE 220  // Tamaño del buffer circular
 #define MAX_MESSAGE_LEN 256
