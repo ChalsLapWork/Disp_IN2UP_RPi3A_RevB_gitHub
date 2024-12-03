@@ -28,7 +28,7 @@ typedef struct {
 circular_buffer_t buffer = {
     .head = 0,
     .tail = 0,
-    .mutex = PTHREAD_MUTEX_INITIALIZER
+    .mutex = PTHREAD_MUTEX_INITIALIZER,
     .cond  = PTHREAD_COND_INITIALIZER
 };
 
