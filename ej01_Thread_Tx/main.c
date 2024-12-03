@@ -37,7 +37,7 @@ void transmitir_lento(const char *str) {
         putchar(*str++);
         printf("\033[0m");
         fflush(stdout);
-        usleep(5000);  // Simula retardo de 0.005 segundos
+        usleep(900);  // Simula retardo de 900useg
     }
     printf("\n");
 }   
@@ -52,7 +52,7 @@ void* hilo_hijo(void *arg) {
             buffer.tail = (buffer.tail + 1) % BUFFER_SIZE;
             pthread_mutex_unlock(&buffer.mutex);
             transmitir_lento(mensaje);  // Transmite lentamente
-        } else {usleep(100);}  // Pequeña espera para evitar consumo intensivo de CPU
+        } else {usleep(800);}  // Pequeña espera para evitar consumo intensivo de CPU
     }//fin while
 return NULL;
 }
@@ -88,14 +88,15 @@ int main() {
     for (int i = 0; i < 3; i++) {
         enviar_mensaje(mensajes[i]);
         printf("Padre: Enviado \"%s\"\n", mensajes[i]);
-        usleep(20000);  // Simula tareas en tiempo real (sin bloquearse)
+        usleep(200000);  // Simula tareas en tiempo real (sin bloquearse)
     }
 
     // El hilo padre continúa indefinidamente (o hasta que lo detengas manualmente).
     while (1) {
       switch(estado){
          case 1:if(enviar_mensaje("Mensaje en bucle infinito"))estado++;break;
-         case 2:estado=1;break;
+         case 2:printf(" Estoy en main ");
+                estado=1;break;
          default:estado=1;break;}
       //usleep(10000);  // Envía mensajes cada 0.001seg
     }
