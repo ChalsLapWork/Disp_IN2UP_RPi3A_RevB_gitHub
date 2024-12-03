@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <stdatomic.h>
 
-#define BUFFER_SIZE 10  // Tamaño del buffer circular
+#define BUFFER_SIZE 80  // Tamaño del buffer circular
 #define MAX_MESSAGE_LEN 256
 
 typedef struct {
@@ -67,7 +67,7 @@ void enviar_mensaje(const char *mensaje) {
         buffer.head = next_head;
         pthread_mutex_unlock(&buffer.mutex);
     } else {
-        printf("Buffer lleno, mensaje descartado: %s\n", mensaje);  // Manejo del desborde
+        printf(" Buffer lleno, mens descartado: %s\n", mensaje);  // Manejo del desborde
     }
 }
 
