@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <stdatomic.h>
 
-#define BUFFER_SIZE 80  // Tamaño del buffer circular
+#define BUFFER_SIZE 220  // Tamaño del buffer circular
 #define MAX_MESSAGE_LEN 256
 
 typedef struct {
@@ -29,9 +29,11 @@ circular_buffer_t buffer = {
 // Función que simula la transmisión lenta
 void transmitir_lento(const char *str) {
     while (*str) {
+        printf("\033[36m");
         putchar(*str++);
+        printf("\033[0m");
         fflush(stdout);
-        usleep(500000);  // Simula retardo de 0.5 segundos
+        usleep(50000);  // Simula retardo de 0.5 segundos
     }
     printf("\n");
 }
