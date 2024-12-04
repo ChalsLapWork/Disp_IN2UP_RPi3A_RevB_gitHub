@@ -62,7 +62,7 @@ unsigned char VFDclrscr1(unsigned char *instancia);
 unsigned char VFDboxLine1(unsigned char pen,unsigned char mode,unsigned short int x1,unsigned short y1,unsigned short int x2,unsigned short y2);
 //unsigned char VFDserial_SendBlock2(const unsigned char *Ptr,unsigned short Size,unsigned char *inst);
 //unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned char Size,unsigned char *Snd,unsigned char *mem);
-unsigned char VFDserial_SendBlock1(const char *Ptr);
+unsigned char VFDserial_SendBlock1(const char *c);
 //unsigned char FontSizeVFD(unsigned char m,unsigned char *s1,unsigned char *s2);
 //unsigned char VFDcommand(unsigned char cmd,unsigned char *inst1,unsigned char *inst2);
 void VFDclrscr(void);

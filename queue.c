@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <wiringPi.h>
 #include "VFDisplay.h"
+#include <string.h>
 
 
 
@@ -37,6 +38,7 @@ pthread_cond_t  *cond_free;//pointer para init
 pthread_mutex_t *mutex_free;//mutex
 extern pthread_cond_t  cond_Tx_SendBlock;//condicional exclusivo para send Block
 extern pthread_mutex_t mutex_Tx_SendBlock;//mutex exclusivo para send block
+extern circular_buffer_t buffer;
 pthread_t SubProc_SendBlock_TX_VFD;
 
 
