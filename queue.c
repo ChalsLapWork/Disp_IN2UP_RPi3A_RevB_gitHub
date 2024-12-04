@@ -74,7 +74,7 @@ void init_queues(void){
 	pthread_detach(Proc_limpiador);//este hilo continua no espera que terminen los proc hijos
 	mensOK("Creando Proceso TX General Rev.2");
     */
-	if((debug=pthread_create(&SubProc_SendBlock_TX_VFD,NULL,SubProceso_Tx_VFD,NULL))!=0){	
+	if((debug=pthread_create(&SubProc_SendBlock_TX_VFD,NULL,SubProceso_SendBlock_Tx_VFD,NULL))!=0){	
 	    errorCritico2("Error creacion Hilo:",75);}
 	else{NoErrorOK();}		 
 	printf("\n       Fin de  Init Queues");
@@ -167,7 +167,7 @@ void* SubProceso_SendBlock_Tx_VFD(void* arg) {//consumidor
     strncpy(mensaje, buffer.buffer[buffer.tail], MAX_MESSAGE_LEN);
     buffer.tail = (buffer.tail + 1) % BUFFER_SIZE;
     pthread_mutex_unlock(&buffer.mutex);
-    transmitir_lento(mensaje);  // Transmite lentamente
+    Transmissor_SendBlock_VFD(mensaje);  // Transmite lentamente
   }//fin while+++++++++
 return NULL;}//+++++++++++++++++++++++++++++++++++++
 //fin del subproceso de envio de datos al display+++++++++++++

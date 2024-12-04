@@ -40,8 +40,8 @@ int main(void){
   NoErrorOK();
   printf("\n ");
 
-  pthread_cancel(SubProc_TX_VFD);
-  pthread_join(SubProc_TX_VFD, NULL);
+  pthread_cancel(SubProc_SendBlock_TX_VFD);
+  pthread_join(SubProc_SendBlock_TX_VFD, NULL);
   pthread_exit(NULL);//exit(1);
 
   //sleep(500);//tiempo para transmitir los printf anteriores antes de matar el proceso
