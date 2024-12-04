@@ -104,15 +104,25 @@ return VFDserial_SendChar1(cmd);
 void test_display(void){
 const char *mens[]={" hola mundo ",
                         "  mensaje No.2 ",
-                        "  Tercera line del mensaje"};
+                        "  Tercera line del mensaje",
+                        "  cuarta line del mensaje",
+                        "  quinta line del mensaje",
+                        "  sexta line del mensaje",
+                        "   777 line del mensaje",
+                        "  888888 line del mensaje",
+                        "  999999a line del mensaje",
+                        "  1010101 line del mensaje",
+                        "  11111111 line del mensaje",
+                        "  112121212 line del mensaje"
+                        };
 unsigned char n;
 int j=0;
     mensOK("Iniciando prueba de Puertos Fisicos.",CCIAN);
     NoErrorOK();printf("\n");
     while(j++<4123456){
-        for(int i=0;i<3;i++){  
+        for(int i=0;i<12;i++){  
             VFDserial_SendBlock1(mens[i]);
-            printf(" %d",j);        
+            //      
         }}//fin while++++++++++++++++++++++++++++++++
     printf(" \n j=%d",j);
 }//fin de prueba de despliegue de datos en el VFD
