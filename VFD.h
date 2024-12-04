@@ -25,7 +25,15 @@ typedef union{//access word:
 	unsigned char byte[2];        //byte[0]=aa,byte[1]=bb
 }coordn16; //coordenadas de 2 bytes 
 
+typedef struct {
+    char buffer[BUFFER_SIZE][MAX_MESSAGE_LEN];
+    _Atomic int head;  // Índice de escritura (hilo padre)
+    _Atomic int tail;  // Índice de lectura (hilo hijo)
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+} circular_buffer_t;
 
+extern circular_buffer_t buffer;
 
 void VFDkeypad_ISR(unsigned char c);
 void init_VFD_BIOS(void);
