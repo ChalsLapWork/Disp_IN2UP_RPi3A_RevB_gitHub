@@ -35,7 +35,8 @@ int main(void){
   test_display();
 
 
-
+  usleep(4000000);
+  usleep(4000000);
   printf("\n       Hilo Principal Terminado");
   NoErrorOK();
   printf("\n ");
