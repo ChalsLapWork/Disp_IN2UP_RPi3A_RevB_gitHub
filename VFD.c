@@ -122,8 +122,8 @@ unsigned char n;
 int j=0;
     mensOK("Iniciando prueba de Puertos Fisicos.",CMAGNETA);
     NoErrorOK();
-    for(int i=0;i<3;i++)  
-        VFDserial_SendBlock1(&mens[i],sizeof(&mens[i]),&n);
+    for(int i=0;i<3;i++){  
+        VFDserial_SendBlock1(&mens[i]);
     }//fin while++++++++++++++++++++++++++++++++
 }//fin de prueba de despliegue de datos en el VFD
 

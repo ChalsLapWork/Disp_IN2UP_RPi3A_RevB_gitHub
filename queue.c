@@ -37,7 +37,7 @@ pthread_cond_t  *cond_free;//pointer para init
 pthread_mutex_t *mutex_free;//mutex
 extern pthread_cond_t  cond_Tx_SendBlock;//condicional exclusivo para send Block
 extern pthread_mutex_t mutex_Tx_SendBlock;//mutex exclusivo para send block
-pthread_t SubProc_TX_VFD;
+pthread_t SubProc_SendBlock_TX_VFD;
 
 
 void init_queues(void){
@@ -71,7 +71,7 @@ void init_queues(void){
     pthread_detach(Proc1_Init_VFD);//no espera que terminen este proceso y el hilo continua
 	pthread_detach(Proc_limpiador);//este hilo continua no espera que terminen los proc hijos
 	mensOK("Creando Proceso TX General Rev.2");
-    if((debug=pthread_create(&SubProceso_Tx_VFD,NULL,SubProceso_Tx_VFD,NULL))!=0){	
+    if((debug=pthread_create(&SubProc_SendBlock_TX_VFD,NULL,SubProceso_Tx_VFD,NULL))!=0){	
 	    errorCritico2("Error creacion Hilo:",75);}
 	else{NoErrorOK();}		 
 	printf("\n       Fin de  Init Queues");

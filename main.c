@@ -15,6 +15,9 @@
 
 #define DEPURANDO_SIN_DISPLAY_ENCENDIDO 1//1=CIERTO 0=DISPLAY ESTA ENCENDIDO Y FUNCIONANDO
 
+extern pthread_t SubProc_SendBlock_TX_VFD;
+
+
 void signal_handler(int signalnum){
     #if(debug_level1==1)
        printf(" signal:%d",signalnum);
@@ -36,6 +39,9 @@ int main(void){
   printf("\n       Hilo Principal Terminado");
   NoErrorOK();
   printf("\n ");
+
+  pthread_cancel(SubProc_TX_VFD);
+  pthread_join(SubProc_TX_VFD, NULL);
   pthread_exit(NULL);//exit(1);
 
   //sleep(500);//tiempo para transmitir los printf anteriores antes de matar el proceso
