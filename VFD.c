@@ -119,10 +119,9 @@ unsigned char n;
 int j=0;
     mensOK("Iniciando prueba de Puertos Fisicos.",CCIAN);
     NoErrorOK();printf("\n");
-    while(j++<4123456){
+    while(1){
         for(int i=0;i<12;i++){  
-            VFDserial_SendBlock1(mens[i]);
-            //      
+            VFDserial_SendBlock1(mens[i]);   
         }}//fin while++++++++++++++++++++++++++++++++
     printf(" \n j=%d",j);
 }//fin de prueba de despliegue de datos en el VFD
