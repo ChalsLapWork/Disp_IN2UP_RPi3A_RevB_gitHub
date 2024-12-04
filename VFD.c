@@ -233,10 +233,10 @@ size_t stacksize=2*1024*1024;// memoria para el hilo
                q->isPadreAlive=TRUE;
 			   estado++;break;
 		case 4:NoErrorOK();estado++;break;
-		case 5:mensOK("Creando Hilo Transmisor",CRESET);
-		       if((debug=pthread_create(&Proc_TX_VFD,&attr,SubProceso_Tx_VFD,&q))!=0){//ret==0 :all OK	
-				    errorCritico2("Error Creacion de Hilo:",debug);}
-			   else{NoErrorOK();}estado++;break;
+		case 5://mensOK("Creando Hilo Transmisor",CRESET);
+		       //if((debug=pthread_create(&Proc_TX_VFD,&attr,SubProceso_Tx_VFD,&q))!=0){//ret==0 :all OK	
+			   //	    errorCritico2("Error Creacion de Hilo:",debug);}
+			   // else{NoErrorOK();}estado++;break;
 	    case 6:mensOK("llenar FIFOs para Transmitir",CRESET);count=0;estado++;break;
 		case 7:if(VFDserial_SendChar1(*(q->p+count)))estado++;break;
         case 8:if(++count<(q->size+1))estado--;else{estado++;}break;

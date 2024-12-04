@@ -61,7 +61,7 @@ void init_queues(void){
 	vfd.config.bits.recurso_VFD_Ocupado=TRUE;//recurso ocupado, VFD nadie lo puede usar
 	NoErrorOK();
 	printf("\n       Creando Proceso Init VFD");
-	switch(pthread_create(&Proc1_Init_VFD,NULL,Init_VFD,&qVFDtx)){
+	/*switch(pthread_create(&Proc1_Init_VFD,NULL,Init_VFD,&qVFDtx)){
 		case 0:NoErrorOK();
 		        printf("\n       Creando Proceso Limpiador de INIT VFD");
 		       if(pthread_create(&Proc_limpiador,NULL,Proceso_Limpiador,&qVFDtx)==0){
@@ -71,7 +71,8 @@ void init_queues(void){
     pthread_detach(Proc1_Init_VFD);//no espera que terminen este proceso y el hilo continua
 	pthread_detach(Proc_limpiador);//este hilo continua no espera que terminen los proc hijos
 	mensOK("Creando Proceso TX General Rev.2");
-    if((debug=pthread_create(&SubProc_SendBlock_TX_VFD,NULL,SubProceso_Tx_VFD,NULL))!=0){	
+    */
+	if((debug=pthread_create(&SubProc_SendBlock_TX_VFD,NULL,SubProceso_Tx_VFD,NULL))!=0){	
 	    errorCritico2("Error creacion Hilo:",75);}
 	else{NoErrorOK();}		 
 	printf("\n       Fin de  Init Queues");
