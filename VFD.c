@@ -107,11 +107,12 @@ const char *mens[]={" hola mundo ",
                         "  Tercera line del mensaje"};
 unsigned char n;
 int j=0;
-    mensOK("Iniciando prueba de Puertos Fisicos.",CMAGNETA);
-    NoErrorOK();
-    for(int i=0;i<3;i++){  
-        VFDserial_SendBlock1(mens[i]);
-    }//fin while++++++++++++++++++++++++++++++++
+    mensOK("Iniciando prueba de Puertos Fisicos.",CCIAN);
+    NoErrorOK();printf("\n");
+    while(j++<4123456){
+        for(int i=0;i<3;i++){  
+            VFDserial_SendBlock1(mens[i]);
+        }}//fin while++++++++++++++++++++++++++++++++
 }//fin de prueba de despliegue de datos en el VFD
 
 
