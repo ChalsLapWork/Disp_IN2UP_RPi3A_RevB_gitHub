@@ -7,14 +7,8 @@
 
 void configPuertos(void){
   printf("\n       Started Configuracion de Puertos");
-  /*pinMode(BIT0_PIN,OUTPUT);
-    pinMode(BIT1_PIN,OUTPUT);
-    pinMode(BIT2_PIN,OUTPUT);
-    pinMode(BIT3_PIN,OUTPUT);
-    pinMode(BIT4_PIN,OUTPUT);
-    pinMode(BIT5_PIN,OUTPUT);
-    pinMode(BIT6_PIN,OUTPUT);*/
-  
+  for(int i=0;i<8;i++)
+      pinMode(i,OUTPUT);
   pinMode(WR_PIN  ,OUTPUT);
   pinMode(R_BUSY_PIN,INPUT);
 #if (debug_level1==1) 
