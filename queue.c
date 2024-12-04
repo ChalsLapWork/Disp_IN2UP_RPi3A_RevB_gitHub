@@ -37,11 +37,13 @@ pthread_cond_t  *cond_free;//pointer para init
 pthread_mutex_t *mutex_free;//mutex
 extern pthread_cond_t  cond_Tx_SendBlock;//condicional exclusivo para send Block
 extern pthread_mutex_t mutex_Tx_SendBlock;//mutex exclusivo para send block
+pthread_t SubProc_TX_VFD;
+
 
 void init_queues(void){
 	pthread_t Proc1_Init_VFD;//Proceso para inizializar el VFD
 	pthread_t Proc_limpiador;//proceso que limpia recursos del proceso hilo init VFD
-    
+    unsigned char debug;
 	init_FIFO_General_1byte(&vfd.x,&buffer6[0],SIZE_BUFFER6);
     init_FIFO_General_1byte(&vfd.y,&buffer7[0],SIZE_BUFFER6);
     init_FIFO_General_1byte(&vfd.p,&buffer8[0],SIZE_BUFFER6);
@@ -68,6 +70,10 @@ void init_queues(void){
 		default:errorCritico("Error desconocido de hilo init VFD");break;}
     pthread_detach(Proc1_Init_VFD);//no espera que terminen este proceso y el hilo continua
 	pthread_detach(Proc_limpiador);//este hilo continua no espera que terminen los proc hijos
+	mensOK("Creando Proceso TX General Rev.2");
+    if((debug=pthread_create(&SubProceso_Tx_VFD,NULL,SubProceso_Tx_VFD,NULL))!=0){	
+	    errorCritico2("Error creacion Hilo:",75);}
+	else{NoErrorOK();}		 
 	printf("\n       Fin de  Init Queues");
 	NoErrorOK();
 	vfd.config.bits.recurso_VFD_Ocupado=FALSE;
@@ -149,95 +155,30 @@ return data;
 }//fin de queue+++++++++++++++++++++++++++++++++
 
 /*  Control de Display de VFD de despliegue por thread  */
-void* SubProceso_Tx_VFD(void* arg) {//consumidor
-	struct Queue *q = (struct Queue *)arg;
-	struct VFD_DATA data;
-	unsigned char estado124,mem[20];
+void* SubProceso_SendBlock_Tx_VFD(void* arg) {//consumidor
+  while(1){  
+    pthread_mutex_lock(&buffer.mutex);
+    while (buffer.head == buffer.tail) {
+      pthread_cond_wait(&buffer.cond, &buffer.mutex);}
+    char mensaje[MAX_MESSAGE_LEN];// Extrae el mensaje del buffer
+    strncpy(mensaje, buffer.buffer[buffer.tail], MAX_MESSAGE_LEN);
+    buffer.tail = (buffer.tail + 1) % BUFFER_SIZE;
+    pthread_mutex_unlock(&buffer.mutex);
+    transmitir_lento(mensaje);  // Transmite lentamente
+  }//fin while+++++++++
+return NULL;}//+++++++++++++++++++++++++++++++++++++
+//fin del subproceso de envio de datos al display+++++++++++++
 
-/*
-    int k=0;
-    while(k<1000000000){
-        printf(" %d ",k++);
-		usleep(120);
-	}//fin while ++++++++++++++++++++++++
-*/
-
-
-	mensOK("Proceso Tx VFD running",CCIAN);
-	while(q->isPadreAlive||q->size>0){//funcionan mientras este vivo init o haya datos en queue
-	 switch(estado124){
-	   case 1:if(!vfd.config.bits.Proc_VFD_Tx_running)estado124++;break;
-	   case 2:vfd.config.bits.Proc_VFD_Tx_running=TRUE;estado124++;break;
-	   case 3:NoErrorOK();
-	          printf("\n");
-		      estado124++;break;
-	   case 4:data=dequeue(q);estado124++;break;     
-	   case 5:if(Transmissor_a_VFD(data,&mem[0]))estado124--;break;
-	   default:estado124=1;break;}}//fin switch y while
-       mensOK("Hilo TX VFD Apagado",CAMARILLO);
- 	   vfd.config.bits.Proc_VFD_Tx_running=FALSE;
-	   NoErrorOK();
-
-return NULL;
-}//fin del subproceso de envio de datos al display+++++++++++++
-
-//methodo que se usa en un hilo transmisor VFD+++++++++++++++++++++++
-unsigned char Transmissor_a_VFD(struct VFD_DATA v,unsigned char *mem){
-unsigned char ret=0,*estado1;
-coordn16 coordenadas;
-const unsigned char DELAY_TIME=1;
-enum{   CHARS_X=20,  PUNTO_X=30,     POS_X=40, DELAY_X=50,  
-      DELAYUS_X=60,DELAYMS_X=70, TRANSMTIR=80,SALIR_TX=99};
-unsigned char *box1,*box0,*nbytes;
-unsigned char *pen,*mode,*ibox0,*x1,*y1,*x2,*y2;
-unsigned char *timer,*index,*datos;
-static union W7{//access word: 
-	unsigned  short int wordx; //0xaabb //aa
-	unsigned char byte[2];     //byte[0]=aa,byte[1]=bb
-}w16;
-
-   estado1=mem+0;
-	  box1=mem+2;
-	  box0=mem+3;
-	   pen=mem+4;
-    nbytes=mem+5;
-	 index=mem+6;
-	 datos=mem+7;//este debe ser la ultima variable|
-
-      switch(*estado1){//DRIVER DE VIDEO
-    	  case 1:*timer=0;*index=0;ret=0;*nbytes=0;(*estado1)++;break;
-		  case 2:switch(v.p){
-                   case _BOX_:if(vfd.config.bits.BOX_enable){box1=&v.x;(*estado1)++;}
-							  else{ *estado1=SALIR_TX;}break;
-				   case _CHAR_:     *estado1=CHARS_X;break;
-				   case _PUNTO_:    *estado1=PUNTO_X;break;	
-				   case _RAYA_:     break;
-				   case _BOLD_:     *estado1=SALIR_TX;break;//debug
-				   case _POS_:      *estado1=POS_X;break;
-				   case _DDS_BORRAR:*estado1=POS_X;break;
-				   case _DDS_reZOOM:*estado1=POS_X;break;
-				   case _DELAY_:    *estado1=DELAY_X;
-				   case _DELAY_US:  *estado1=DELAYUS_X;break;
-				   case _DELAY_MS:  *estado1=DELAYMS_X;break;	  
-                   default:*estado1=SALIR_TX;break;}//fin-switch selection of operation++++++++++++
-		  case CHARS_X:*(datos+0)=v.x;*nbytes=1;*estado1=TRANSMTIR;break;
-		  case TRANSMTIR:  if(*nbytes==*index)*estado1=SALIR_TX;else(*estado1)++;break;
-		  case TRANSMTIR+1:
-#if ( DEPURANDO_SIN_DISPLAY_ENCENDIDO == 1 )
-		                   if(digitalRead(R_BUSY_PIN)==1)(*estado1)++;
-#else 
-                           (*estado1)++;
-#endif
-						   break;
-           case TRANSMTIR+2:printf(" %#X ",*(datos+*index));
-		                    writePort(*(datos + (*index)++));//writePort(*(datos+*index));
-		                   //*(datos+*index)=0;
-						   *estado1=TRANSMTIR;
-						   usleep(10123);
-						   break;
-		  case SALIR_TX:cleanArray(datos,DATOS_SIZE,0);*estado1=0;ret=TRUE;break;
-		  default:*estado1=1;break;}//fin estado principal-----------------------------------------      
-return ret;
+//deprecated:methodo que se usa en un hilo transmisor VFD+++++++++++++++++++++++
+unsigned char Transmissor_SendBlock_VFD(const char *str){
+   while(*str){			                    		
+        printf("\033[35m");
+        putchar(*str);
+		writePort((unsigned char)*str++);//writePort(*(datos+*index))
+        printf("\033[0m");
+        fflush(stdout);//salida inmediata de buffer printf
+		usleep(900);}
+    printf("\n");				
 }//transmisor de datos a VFD+++++++++++++++++++++++++++++++++++++++++
 
 

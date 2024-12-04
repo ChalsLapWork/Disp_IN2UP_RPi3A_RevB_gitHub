@@ -3,13 +3,28 @@
 #include "queue.h"
 #include <wiringPi.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include "errorController.h"
+#include <stdio.h>
+#include <string.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <stdatomic.h>
+#include <stdbool.h>
+
+
+
 #ifndef _PTHREAD_H_
   #define _PTHREAD_H_
   #include <pthread.h>
 #endif
+
+
+#define BUFFER_SIZE 10  // Tamaño del buffer circular
+#define MAX_MESSAGE_LEN 40
+#ifndef TRUE
+  #define TRUE 1
+#endif
+
 extern struct _DISPLAY_VFD_ vfd;
 extern struct Queue qVFDtx;//queue de transmision vfd 
 
@@ -30,6 +45,23 @@ pthread_t Proc_limp_VFD;//proceso que limpia recursos del proceso hilo init VFD
 typedef struct {
     int pins[8];      // Pines GPIO para datos
 } ParallelPort;
+
+typedef struct {
+    char buffer[BUFFER_SIZE][MAX_MESSAGE_LEN];
+    _Atomic int head;  // Índice de escritura (hilo padre)
+    _Atomic int tail;  // Índice de lectura (hilo hijo)
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+} circular_buffer_t;
+
+circular_buffer_t buffer = {
+    .head = 0,
+    .tail = 0,
+    .mutex = PTHREAD_MUTEX_INITIALIZER,
+    .cond  = PTHREAD_COND_INITIALIZER
+};
+
+
 
 ParallelPort port = { .pins = {0, 1, 2, 3, 4, 5, 6, 7} };
 void initParallelPort(ParallelPort *port);
@@ -60,6 +92,11 @@ void writePort(unsigned char value){
    digitalWrite(WR_PIN,HIGH);//comando de escritura OFF
 }//fin write port++++++++++++++++++++++++++++++++++++++++++
 
+/*void writePort_SendBlock(const char value){
+   digitalWrite(WR_PIN,LOW);//comando de escritura 
+   writeParallelPort(&port,value);
+   digitalWrite(WR_PIN,HIGH);//comando de escritura OFF
+}*///fin write port++++++++++++++++++++++++++++++++++++++++++
 
 
 //VFD comando en MODO operativo----------------------------------
@@ -78,15 +115,15 @@ return VFDserial_SendChar1(cmd);
 
 //despliegue de datos en el display
 void test_display(void){
-unsigned char r[12]=" Hola mundo ";
+const char *mens[]={" hola mundo ",
+                        "  mensaje No.2 ",
+                        "  Tercera line del mensaje"};
 unsigned char n;
 int j=0;
-unsigned char mem[2];
     mensOK("Iniciando prueba de Puertos Fisicos.",CMAGNETA);
     NoErrorOK();
-    while(1){
-        printf(">%i=",j++);usleep(9000);  
-        VFDserial_SendBlock1(&r[0],sizeof(r),&n,&mem[0]);
+    for(int i=0;i<3;i++)  
+        VFDserial_SendBlock1(&mens[i],sizeof(&mens[i]),&n);
     }//fin while++++++++++++++++++++++++++++++++
 }//fin de prueba de despliegue de datos en el VFD
 
@@ -158,46 +195,17 @@ return ret;
 }//fin vfd command----------------------------------------------------
 
 /* Metodo Multi-Padre pero solo una Estancia ala Vez      */
-unsigned char VFDserial_SendBlock1(
-    unsigned char *Ptr,//pointer to variable a desplegar
-    unsigned char Size,//numero de bytes a desplegar
-    unsigned char *Snd,//regreso de estado
-    unsigned char *mem)//memoria de manejo de varibles de la func
-{//static unsigned char estado5;//111x xxxx
-auto unsigned char ret=0; 
-unsigned char *estado;
-unsigned char *count;
-unsigned char debug;
-size_t stacksize=1024*1024;
-
-  estado=mem; //estado5&0xE0; //111x xxxx
-  count =mem+1;// estado5&0x1F; //xxx1 1111
-  switch(*estado){//1110 0000
-      case 1:if(!qVFDtx.isPadreAlive)(*estado)++;break; //esta ocuipado el VFD en otro proceso?
-	  case 2:if(!vfd.config.bits.Proc_VFD_Tx_running)(*estado)++;break;//todos los hilos Tx a VFD apagados
-      case 3:if(!vfd.config.bits.isProc_Free_running)(*estado)++;break;
-      case 4:vfd.config.bits.recurso_VFD_Ocupado=TRUE;(*estado)++;break;//recurso ocupado, VFD nadie lo puede usar
-      case 5:vfd.mutex.m_Free=&mutex_Free_SendBlock;
-             vfd.mutex.cond_free=&cond_Free_SendBlock;(*estado)++;break;
-      case 6:pthread_mutex_init(vfd.mutex.m_Free,NULL);
-             pthread_cond_init(vfd.mutex.cond_free,NULL);(*estado)++;break; 
-      case 7:init_Queue_with_Thread(&vfd.q);(*estado)++;break;
-      case 8:vfd.q.sizeStream=Size;vfd.q.p=Ptr;(*estado)++;break;
-      case 9:mensOK("Creando Monitor",CRESET);(*estado)++;break;
-      case 10:if((debug=pthread_create(&Proc_TX_VFD,NULL,Mon_VFD,&vfd.q))!=0){
-                errorCritico2("Error Creacion Hilo",174);}
-              else{NoErrorOK();}
-              (*estado)++;break;
-      case 11:mensOK("Creando Limpiador",CAZUL);(*estado)++;break;
-      case 12:if((debug=pthread_create(&Proc_limp_VFD,NULL,Clean_VFD,&vfd.q))!=0){
-                errorCritico2("Error Creacion Hilo",177);}
-              else{NoErrorOK();}
-              (*estado)++;break;          
-      case 13:pthread_detach(Proc_TX_VFD);
-              pthread_detach(Proc_limp_VFD);(*estado)++;break;
-      default:*estado=1;break;}
-*Snd=0;
-return ret;                       /* Return error code */
+unsigned char VFDserial_SendBlock1(const char *Ptr){
+unsigned char ret=0; 
+   int next_head = (buffer.head + 1) % BUFFER_SIZE;
+   pthread_mutex_lock(&buffer.mutex);
+   if (next_head != buffer.tail) {  // Solo escribe si hay espacio en el buffer
+        strncpy(buffer.buffer[buffer.head], Ptr, MAX_MESSAGE_LEN);
+        buffer.head = next_head;
+        pthread_cond_signal(&buffer.cond);  // Despierta al hijo
+        ret=TRUE;}
+     pthread_mutex_unlock(&buffer.mutex);
+return ret;// fin de enviar mensaje++++++++++++++++++++++
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
 
 

@@ -25,6 +25,8 @@ typedef union{//access word:
 	unsigned char byte[2];        //byte[0]=aa,byte[1]=bb
 }coordn16; //coordenadas de 2 bytes 
 
+
+
 void VFDkeypad_ISR(unsigned char c);
 void init_VFD_BIOS(void);
 void VFDposicionDDS(unsigned short int x,unsigned short int y);
@@ -52,14 +54,15 @@ unsigned char Basura(unsigned char c);
 unsigned char VFDserial_SendChar1(unsigned char c);
 //unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned short Size,unsigned short *Snd,unsigned char inst);
 //unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned short Size,unsigned char *inst);
-unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned char Size,unsigned char *Snd,unsigned char *mem);
 //unsigned char xInit_VFD(struct DPM m);
 //unsigned char VFDcommand(unsigned char cmd,unsigned char s);
 //unsigned char FontSizeVFD(unsigned char m);
 //unsigned char VFDclrscr(void);
 unsigned char VFDclrscr1(unsigned char *instancia);
 unsigned char VFDboxLine1(unsigned char pen,unsigned char mode,unsigned short int x1,unsigned short y1,unsigned short int x2,unsigned short y2);
-unsigned char VFDserial_SendBlock2(const unsigned char *Ptr,unsigned short Size,unsigned char *inst);
+//unsigned char VFDserial_SendBlock2(const unsigned char *Ptr,unsigned short Size,unsigned char *inst);
+//unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned char Size,unsigned char *Snd,unsigned char *mem);
+unsigned char VFDserial_SendBlock1(const char *Ptr);
 //unsigned char FontSizeVFD(unsigned char m,unsigned char *s1,unsigned char *s2);
 //unsigned char VFDcommand(unsigned char cmd,unsigned char *inst1,unsigned char *inst2);
 void VFDclrscr(void);
