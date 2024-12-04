@@ -20,6 +20,15 @@
 #define FONTSIZE3   0x03U //12x24
 #define FONTSIZE4   0x04U  //16x32
 
+
+#define BUFFER_SIZE 10  // Tamaño del buffer circular
+#define MAX_MESSAGE_LEN 40
+#ifndef TRUE
+  #define TRUE 1
+#endif
+
+
+
 typedef union{//access word: 
 	unsigned  short int coord16;   //   	0xaabb   
 	unsigned char byte[2];        //byte[0]=aa,byte[1]=bb

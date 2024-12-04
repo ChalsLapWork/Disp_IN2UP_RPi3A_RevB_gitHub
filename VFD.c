@@ -19,12 +19,6 @@
 #endif
 
 
-#define BUFFER_SIZE 10  // Tamaño del buffer circular
-#define MAX_MESSAGE_LEN 40
-#ifndef TRUE
-  #define TRUE 1
-#endif
-
 extern struct _DISPLAY_VFD_ vfd;
 extern struct Queue qVFDtx;//queue de transmision vfd 
 
