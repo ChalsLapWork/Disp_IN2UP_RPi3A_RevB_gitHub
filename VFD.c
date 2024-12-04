@@ -112,6 +112,7 @@ int j=0;
     while(j++<4123456){
         for(int i=0;i<3;i++){  
             VFDserial_SendBlock1(mens[i]);
+            printf(" %d",j);        
         }}//fin while++++++++++++++++++++++++++++++++
     printf(" \n j=%d",j);
 }//fin de prueba de despliegue de datos en el VFD
