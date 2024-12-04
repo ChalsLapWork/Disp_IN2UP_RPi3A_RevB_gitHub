@@ -11,8 +11,8 @@
 #include <stdatomic.h>
 #include <stdbool.h>
 
-#define BUFFER_SIZE 220  // Tamaño del buffer circular
-#define MAX_MESSAGE_LEN 256
+#define BUFFER_SIZE 10  // Tamaño del buffer circular
+#define MAX_MESSAGE_LEN 40
 #ifndef TRUE
   #define TRUE 1
 #endif
@@ -39,10 +39,9 @@ void transmitir_lento(const char *str) {
         putchar(*str++);
         printf("\033[0m");
         fflush(stdout);
-        usleep(900);  // Simula retardo de 900useg
-    }
+        usleep(900); } // Simula retardo de 900useg
     printf("\n");
-}   
+}//transmitir lento++++++++++++++++++++++++++++++++   
 
 // Hilo hijo: Consume mensajes del buffer y los transmite
 void* hilo_hijo(void *arg) {
@@ -55,9 +54,9 @@ void* hilo_hijo(void *arg) {
     buffer.tail = (buffer.tail + 1) % BUFFER_SIZE;
     pthread_mutex_unlock(&buffer.mutex);
     transmitir_lento(mensaje);  // Transmite lentamente
-  }//fin while+++++++++ 
+  }//fin while+++++++++
 return NULL;
-}
+}//+++++++++++++++++++++++++++++++++++++++++++++++++
 
 // Función del hilo padre: Produce mensajes sin bloquearse
 unsigned char enviar_mensaje(const char *mensaje) {
@@ -70,11 +69,11 @@ unsigned char ret=0;
         pthread_cond_signal(&buffer.cond);  // Despierta al hijo
         ret=TRUE;}
      pthread_mutex_unlock(&buffer.mutex);
-return ret;}// fin de enviar mensaje
+return ret;}// fin de enviar mensaje++++++++++++++++++++++
 
 int main() {
-    unsigned char estado;
-    pthread_t hijo;
+unsigned char estado;
+pthread_t hijo;
 
     // Crear el hilo hijo (sin esperar que termine)
     pthread_create(&hijo, NULL, hilo_hijo, NULL);
@@ -105,5 +104,5 @@ int main() {
     pthread_cancel(hijo);  // En algún punto deberías cancelar el hijo (opcional)
     pthread_join(hijo, NULL);  // Se uniría solo si decides terminar el programa
 
-    return 0;
-}
+return 0;
+}//fin de main++++++++++++++++++++++++++++++++++++++++++++++
