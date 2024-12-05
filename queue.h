@@ -1,4 +1,8 @@
-#include <pthread.h>
+
+#ifndef _PTHREAD_H_
+  #define _PTHREAD_H_
+  #include <pthread.h>
+#endif
 #define SIZE_BUF_TFT 5
 #define SIZE_IO_TX_BUFFER 85 //ARRAY donde se guarda la direccion de la cabeza del paquete a enviar
 #define SIZE_B 60//ARRAY donde se guarda los paquetes que se van a enviar
@@ -36,6 +40,7 @@
 #define DATOS_SIZE 14U //tamaño del buffer de transmision al VFD
 #define SIZE_MAX_FIFO 10//TAMAÑÑO de fifo de transmision a VFD
 
+#define SIZE_MAX_SENDBLOCK 20 //TAMAÑO maximo de envio en bloque de la funcion
 
 
 
@@ -57,13 +62,6 @@ struct _FIFO_1byte_{//FIFO PARA UNA VARIABLE para un byte
 
 
 
-struct _FIFO_func_{
-	  unsigned char (*append)(unsigned char x,unsigned char y, unsigned char p);
-	  unsigned char (*pop)(unsigned char *x,unsigned char *y, unsigned char *p);
-	  unsigned char (*resetFIFOS)(void);//resetear todas las FIFOs Y arrays y registros
-};//fin _FIFO_func_----------------------------------------
-
-
 union _Byte5_{
 	unsigned short int bytes1;
 	struct{
@@ -77,23 +75,81 @@ union _Byte5_{
 		unsigned short ADC_DATO:1;
 		unsigned short Proc_VFD_Tx_running:1;//esta corriendo el hilo que transmite a la VFD
 		unsigned short recurso_VFD_Ocupado:1;//recurso esta 0:libre o 1:ocupado?
+        unsigned short isProc_Free_running;
 	}bits;
 };
 
  struct _Sync{
-	pthread_cond_t  cond_init_TX_VFD;//condicion de init VFD transmisor
-	pthread_mutex_t mutex_init_VFD;//mutex para init VFD y transmisor
+	//pthread_cond_t  cond_init_TX_VFD;//condicion de init VFD transmisor
+	//pthread_mutex_t mutex_init_VFD;//mutex para init VFD y transmisor
 	pthread_mutex_t mutex_free;//mutex para liberar 
 	pthread_cond_t  cond_free;//mutex cond para liberar
+
 };//control de sincronia entre los hilos 
  
+struct _Sync2{
+   pthread_cond_t  *cond_free;
+   pthread_mutex_t *m_Free;
+   pthread_cond_t  *cond_Tx;
+   pthread_mutex_t *m_Tx;
+   pthread_cond_t  *cond_Mon;
+   pthread_mutex_t *m_Mon;
+   //unsigned char sem;//semaforo para que no se empalme su uso
+};//synscronia estructura+++++++++++++++++++++++++++++++++++
+
+
+
+struct VFD_DATA{
+  unsigned char x;
+  unsigned char y;
+  unsigned char p;
+};
+
+
+struct Node{
+  //unsigned char Xdata[SIZE_MAX_FIFO];
+  //unsigned char Ydata[SIZE_MAX_FIFO];
+  //unsigned char Pdata[SIZE_MAX_FIFO];
+  struct VFD_DATA dato;
+  struct Node *next;
+};//Nodo para crear las queues+++++++++++++++++++++++++++
+
+
+
+
+struct Queue{
+  struct Node *head,*tail;
+  int size;  //size of the queue
+  #if(SIZE_MAX_FIFO<255)
+    unsigned char nLibres;
+	unsigned char nOcupados;
+	unsigned char Tamano;//tamaño de cantidad de datos a guardar numero fijo
+  #endif
+  struct _Sync2 s;//apuntador sync de mutex que usar la queue
+  unsigned char isPadreAlive;//el proceso que encola esta vivo?, para saber si el transmisor ya tiene que terminar
+  unsigned char *p;//pointer char to be send
+  unsigned char sizeStream;//size to be send to vfd
+};
+
+
+struct _FIFO_func_{
+	  //unsigned char (*append)(unsigned char x,unsigned char y, unsigned char p);
+      unsigned char (*append)(struct Queue *q,struct VFD_DATA dato);
+	  unsigned char (*pop)(unsigned char *x,unsigned char *y, unsigned char *p);
+	  unsigned char (*resetFIFOS)(void);//resetear todas las FIFOs Y arrays y registros
+};//fin _FIFO_func_----------------------------------------
+
+
+
 struct _DISPLAY_VFD_{
 	struct _FIFO_1byte_ x;//parametro 1
 	struct _FIFO_1byte_ y;//parametro 2
 	struct _FIFO_1byte_ p;//parametro 3
 	struct _FIFO_func_  f1;//funciones para guardar lo que se grafica
 	union  _Byte5_ config;//banderas de configuracion y control para el display y menus
-	struct _Sync   sync;//syncronia y control de hilos
+    struct _Sync2   mutex;//syncronia y control de hilos
+	struct Queue q;//pila para manejar el VFD
+	//size_t pthread_attr_t attr_mon,attr_free,atrr_Tx;//atributos  
  	struct _box_control{
 		 unsigned char boxs[SIZE_BOXES];
 		 unsigned char box0;
@@ -113,13 +169,6 @@ struct _DISPLAY_VFD_{
 	   }v;
     		
 };//fin display VFD----------------------------------------------
-
-struct VFD_DATA{
-  unsigned char x;
-  unsigned char y;
-  unsigned char p;
-};
-
 
 
 /*  FIN DDS ESTRUCURA ********************************************++++*/
@@ -226,7 +275,7 @@ unsigned char FIFO_general_1byte_pop(unsigned char *dato,struct _FIFO_1byte_ *s)
 void reset_FIFO_general_UChar(struct _FIFO_1byte_ *s,
             unsigned char *arr,unsigned char size);
 void Testing_SO_Debug(void);
-unsigned char vfd_FIFO_push(unsigned char x,unsigned char y,unsigned char p);
+unsigned char vfd_FIFO_push(struct Queue *q,struct VFD_DATA dato);
 unsigned char vfd_FIFO_pop(unsigned char *x,unsigned char *y,unsigned char *p);
 unsigned char vfd_FIFOs_RESET(void);
 void init_FIFO_General_1byte(struct _FIFO_1byte_ *s,
@@ -257,3 +306,7 @@ void Terminar_subProcesos(void);
 void* Init_VFD(void* arg);
 unsigned char Transmissor_a_VFD(struct VFD_DATA v,unsigned char *mem);
 void *Proceso_Limpiador(void *arg);
+//void* SubProceso_Tx_VFD(void* arg);
+void* SubProceso_SendBlock_Tx_VFD(void* arg);
+void init_Queue_with_Thread(struct Queue  *q);
+unsigned char Transmissor_SendBlock_VFD(const char *str);

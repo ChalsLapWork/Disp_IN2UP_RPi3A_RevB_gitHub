@@ -2,7 +2,36 @@
 #include "system.h"
 #include "queue.h"
 #include <wiringPi.h>
+#include <stdio.h>
+#include "errorController.h"
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdatomic.h>
+#include <stdbool.h>
+
+
+
+#ifndef _PTHREAD_H_
+  #define _PTHREAD_H_
+  #include <pthread.h>
+#endif
+
+
 extern struct _DISPLAY_VFD_ vfd;
+extern struct Queue qVFDtx;//queue de transmision vfd 
+
+
+pthread_cond_t  cond_Tx_SendBlock;//condicional exclusivo para send Block
+pthread_mutex_t mutex_Tx_SendBlock;//mutex exclusivo para send block
+//pthread_cond_t  cond_Mon_SendBlock;//condicional exclusivo para send Block
+//pthread_mutex_t mutex_Mon_SendBlock;//mutex exclusivo para send block
+pthread_cond_t  cond_Free_SendBlock;//condicional exclusivo para send Block
+pthread_mutex_t mutex_Free_SendBlock;//mutex exclusivo para send block
+pthread_t Proc_TX_VFD;//Proceso para inizializar el VFD
+pthread_t Proc_limp_VFD;//proceso que limpia recursos del proceso hilo init VFD
+//pthread_t Proc_Mon;
 
 
 
@@ -10,6 +39,16 @@ extern struct _DISPLAY_VFD_ vfd;
 typedef struct {
     int pins[8];      // Pines GPIO para datos
 } ParallelPort;
+
+
+circular_buffer_t buffer = {
+    .head = 0,
+    .tail = 0,
+    .mutex = PTHREAD_MUTEX_INITIALIZER,
+    .cond  = PTHREAD_COND_INITIALIZER
+};
+
+
 
 ParallelPort port = { .pins = {0, 1, 2, 3, 4, 5, 6, 7} };
 void initParallelPort(ParallelPort *port);
@@ -40,6 +79,11 @@ void writePort(unsigned char value){
    digitalWrite(WR_PIN,HIGH);//comando de escritura OFF
 }//fin write port++++++++++++++++++++++++++++++++++++++++++
 
+/*void writePort_SendBlock(const char value){
+   digitalWrite(WR_PIN,LOW);//comando de escritura 
+   writeParallelPort(&port,value);
+   digitalWrite(WR_PIN,HIGH);//comando de escritura OFF
+}*///fin write port++++++++++++++++++++++++++++++++++++++++++
 
 
 //VFD comando en MODO operativo----------------------------------
@@ -54,6 +98,34 @@ unsigned char VFDcommand(unsigned char cmd){ //unsigned char *p){
 	//Se le quito el error con 125us lo dejamos en 125us
 return VFDserial_SendChar1(cmd);	    	   
 }//fin vfd command----------------------------------------------------
+
+
+//despliegue de datos en el display
+void test_display(void){
+const char *mens[]={" hola mundo ",
+                        "  mensaje No.2 ",
+                        "  Tercera line del mensaje",
+                        "  cuarta line del mensaje",
+                        "  quinta line del mensaje",
+                        "  sexta line del mensaje",
+                        "   777 line del mensaje",
+                        "  888888 line del mensaje",
+                        "  999999a line del mensaje",
+                        "  1010101 line del mensaje",
+                        "  11111111 line del mensaje",
+                        "  112121212 line del mensaje"
+                        };
+unsigned char n;
+int j=0;
+    mensOK("Iniciando prueba de Puertos Fisicos.",CCIAN);
+    NoErrorOK();printf("\n");
+    while(1){
+        for(int i=0;i<12;i++){  
+            VFDserial_SendBlock1(mens[i]);   
+        }}//fin while++++++++++++++++++++++++++++++++
+    printf(" \n j=%d",j);
+}//fin de prueba de despliegue de datos en el VFD
+
 
 
 // pusimos estos delay y el tamaño de la Font no obedecia
@@ -79,15 +151,15 @@ return ret;
 
 //regresa true cuando se cumpla todo el methodo hasta el final
 unsigned char delay_us_VFD(unsigned short int t){
-auto unsigned char ret=0;
-union W7{//access word: 
+unsigned char ret=0;
+/*union W7{//access word: 
 	unsigned  short int wordx;   //   	0xaabb        //         aa
 	unsigned char byte[2];        //byte[0]=aa,byte[1]=bb
 }w16;
-
+DEPRECATED
   w16.wordx=t;
   if(vfd.f1.append(w16.byte[0],w16.byte[1],_DELAY_US))
-        ret=TRUE;
+        ret=TRUE;*/
 return ret;    
 }//--------------------------------------------------
 
@@ -96,7 +168,9 @@ return ret;
 //	vfd.f1.append(c,0,_CHAR_);// FIFO_Display_DDS_Char_push(c,0xFE);//0xFE means that is just a char display          
 //}//fin VFDserial_SendChar_DDS---------------------------------
 unsigned char VFDserial_SendChar1(unsigned char c){
-	return vfd.f1.append(c,0,_CHAR_);
+struct VFD_DATA dato;
+    dato.p=_CHAR_;dato.x=c;dato.y=0;
+	return vfd.f1.append(&qVFDtx,dato);
 }//------------------------------------------------------------------
 
 
@@ -118,4 +192,88 @@ auto unsigned char ret=FALSE;
     if(ret==3)ret=TRUE;else ret=FALSE;		    
 return ret;	
 }//fin vfd command----------------------------------------------------
+
+/* Metodo Multi-Padre pero solo una Estancia ala Vez      */
+unsigned char VFDserial_SendBlock1(const char *Ptr){
+unsigned char ret=0; 
+   int next_head = (buffer.head + 1) % BUFFER_SIZE;
+   pthread_mutex_lock(&buffer.mutex);
+   if (next_head != buffer.tail) {  // Solo escribe si hay espacio en el buffer
+        strncpy(buffer.buffer[buffer.head], Ptr, MAX_MESSAGE_LEN);
+        buffer.head = next_head;
+        pthread_cond_signal(&buffer.cond);  // Despierta al hijo
+        ret=TRUE;}
+     pthread_mutex_unlock(&buffer.mutex);
+return ret;// fin de enviar mensaje++++++++++++++++++++++
+}//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
+
+
+
+
+//Proceso  unico de Padre unico, PROCESO
+void* Mon_VFD(void* arg){  //Proceso Productor<---Proceso/hilo/THread
+struct Queue *q=(struct Queue*)arg;//
+unsigned char ret=0,estado;
+unsigned char i=0,debug,count;
+pthread_attr_t attr;
+size_t stacksize=2*1024*1024;// memoria para el hilo
+
+ pthread_attr_init(&attr);
+ mensOK("Asignando Recursos a Tx",CRESET);
+ if(pthread_attr_setstacksize(&attr,stacksize)!=0){
+	  errorCritico2("Error config tamaño de pila:",217);}
+ else{NoErrorOK();}        	   
+ while(!ret){
+	switch(estado){
+		case 1:mensOK("Mon VFD starting. . .",CRESET);estado++;break;
+        case 2:if(!vfd.config.bits.Proc_VFD_Tx_running)estado++;break;
+		case 3:pthread_mutex_lock(vfd.mutex.m_Free);
+			   vfd.config.bits.VDF_busy=TRUE;//Nadie mas puede usar el VFD
+               q->isPadreAlive=TRUE;
+			   estado++;break;
+		case 4:NoErrorOK();estado++;break;
+		case 5://mensOK("Creando Hilo Transmisor",CRESET);
+		       //if((debug=pthread_create(&Proc_TX_VFD,&attr,SubProceso_Tx_VFD,&q))!=0){//ret==0 :all OK	
+			   //	    errorCritico2("Error Creacion de Hilo:",debug);}
+			   // else{NoErrorOK();}estado++;break;
+	    case 6:mensOK("llenar FIFOs para Transmitir",CRESET);count=0;estado++;break;
+		case 7:if(VFDserial_SendChar1(*(q->p+count)))estado++;break;
+        case 8:if(++count<(q->size+1))estado--;else{estado++;}break;
+		case 9:if(++i<(q->sizeStream+1))estado--;else{estado++;}break;
+		case 10:pthread_cond_signal(vfd.mutex.cond_free);estado++;break;
+        case 11:q->isPadreAlive=FALSE;estado++;break;//ya puede morir el hijo, si esta vacia la queue
+		case 12:estado=0;ret=TRUE;break;
+		default:estado=1;break;}}//fin switch while 
+  pthread_join(Proc_TX_VFD,NULL);//esperamos termine de transmitir a display el otro hilo
+  mensOK("Sub Proceso TX Terminado",CRESET);
+  pthread_attr_destroy(&attr);
+  pthread_mutex_unlock(vfd.mutex.m_Free);
+  NoErrorOK();		
+return NULL;
+}//fin init VFD -------------------------------------------------------------------
+
+//** Proceso Hilo encargado de limpiar el Proceso Init VFD
+void *Clean_VFD(void *arg) {
+struct Queue *q=(struct Queue*)arg;//
+unsigned char estado;	
+    mensOK("Proceso Limpiador de VFD activo",CAMARILLO);
+	pthread_mutex_lock(vfd.mutex.m_Free);
+	mensOK("Limpieza de  recursos de init VFD...",CRESET);
+	switch(estado){
+	    case 1:pthread_cond_wait(vfd.mutex.cond_free,vfd.mutex.m_Free);estado++;break;
+		case 2:usleep(3);estado++;break;
+		case 3:pthread_mutex_destroy(vfd.mutex.m_Free);
+			   pthread_cond_destroy(vfd.mutex.cond_free);
+			   pthread_mutex_destroy(vfd.mutex.m_Tx);
+			   pthread_cond_destroy(vfd.mutex.cond_Tx);
+			   estado++;break;
+        case 4:vfd.config.bits.isProc_Free_running=FALSE;estado++;break;
+        case 5:vfd.config.bits.recurso_VFD_Ocupado=FALSE;estado++;break;
+		case 6:NoErrorOK();printf("\n");usleep(300);
+			   estado++;break;
+               
+		default:estado=1;break;}
+    return NULL;
+}//fin del proceso hilo limpiador+++++++++++++++++++++++++++++++
+
 
