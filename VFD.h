@@ -23,16 +23,25 @@
 
 #define BUFFER_SIZE 10  // Tamaño del buffer circular
 #define MAX_MESSAGE_LEN 40
+#define MAX_BLOCK_CHAR_VDF_SIZE 40 
+
 #ifndef TRUE
   #define TRUE 1
 #endif
 
 
+typedef uint8_t uchar;
 
 typedef union{//access word: 
 	unsigned  short int coord16;   //   	0xaabb   
 	unsigned char byte[2];        //byte[0]=aa,byte[1]=bb
 }coordn16; //coordenadas de 2 bytes 
+
+// Estructura para almacenar bloques de datos
+typedef struct {
+    uchar datos[MAX_BLOCK_CHAR_VDF_SIZE];
+    size_t longitud;
+} bloque_t;
 
 typedef struct {
     char buffer[BUFFER_SIZE][MAX_MESSAGE_LEN];
@@ -42,7 +51,17 @@ typedef struct {
     pthread_cond_t cond;
 } circular_buffer_t;
 
+typedef struct {
+    bloque_t buffer[BUFFER_SIZE];
+    _Atomic int head;  // Índice de escritura (hilo principal)
+    _Atomic int tail;  // Índice de lectura (hilo hijo)
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+} circular_buffer_t_byteBlock;
+
+
 extern circular_buffer_t buffer;
+extern circular_buffer_t_byteBlock buffer2;
 
 void VFDkeypad_ISR(unsigned char c);
 void init_VFD_BIOS(void);
@@ -99,5 +118,6 @@ void writePort(unsigned char value);
 void test_display(void);
 void* Mon_VFD(void* arg);  //Proceso Productor<---Proceso/hilo/THread
 void *Clean_VFD(void *arg);
+unsigned char VFD_sendBlockChars(const uchar *datos, size_t longitud);
 
 #endif

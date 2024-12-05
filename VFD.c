@@ -49,6 +49,12 @@ circular_buffer_t buffer = {
 };
 
 
+circular_buffer_t buffer2 = {
+    .head = 0,
+    .tail = 0,
+    .mutex = PTHREAD_MUTEX_INITIALIZER,
+    .cond  = PTHREAD_COND_INITIALIZER
+};
 
 ParallelPort port = { .pins = {0, 1, 2, 3, 4, 5, 6, 7} };
 void initParallelPort(ParallelPort *port);
@@ -78,6 +84,15 @@ void writePort(unsigned char value){
    writeParallelPort(&port,value);
    digitalWrite(WR_PIN,HIGH);//comando de escritura OFF
 }//fin write port++++++++++++++++++++++++++++++++++++++++++
+
+
+// Simula la función VFD_sendChar (lenta)
+void VFD_sendChar(uchar c) {
+    printf(" \033[33m0x%02X\033[0m ",c);
+    writeport(c);
+}//fin de VFD_sendChar+++++++++++++++++++++++++++++++++++++
+
+
 
 /*void writePort_SendBlock(const char value){
    digitalWrite(WR_PIN,LOW);//comando de escritura 
@@ -208,6 +223,23 @@ return ret;// fin de enviar mensaje++++++++++++++++++++++
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
 
 
+
+// Función que el hilo principal llama para enviar un bloque de caracteres
+unsigned char VFD_sendBlockChars(const uchar *datos, size_t longitud) {
+unsigned char ret = 0;
+int next_head = (buffer2.head + 1) % BUFFER_SIZE;
+
+    pthread_mutex_lock(&buffer2.mutex);
+    if (next_head != buffer2.tail && longitud <= MAX_BLOCK_CHAR_VDF_SIZE) {
+        bloque_t *bloque = &buffer2.buffer[buffer2.head];
+        bloque->longitud = longitud;
+        memcpy(bloque->datos, datos, longitud);
+        buffer2.head = next_head;
+        pthread_cond_signal(&buffer2.cond);
+        ret = 1;}
+    pthread_mutex_unlock(&buffer2.mutex);
+return ret;
+}//VFD_sendBlockChars++++++++++++++++++++++++++++++++++++++
 
 
 //Proceso  unico de Padre unico, PROCESO

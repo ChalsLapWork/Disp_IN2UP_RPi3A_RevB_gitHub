@@ -29,23 +29,16 @@ void enqueue(struct Queue  *q,struct VFD_DATA dato1);
 unsigned char  buffer6[SIZE_BUFFER6];//FIFO graficos con S.O, aqui guarda el dato
 unsigned char  buffer7[SIZE_BUFFER6];//FIFO graficos con SO. aqui guarda el parametro=char|box|pos|
 unsigned char  buffer8[SIZE_BUFFER6];//FIFO graficos con SO. aqui guarda el parametro numero 3
-pthread_cond_t  cond_VFD;//mutex de VFD Tx
-pthread_mutex_t mutex_VFD;//mutex de VFD TX
-pthread_cond_t  cond1;//de uso general
-pthread_mutex_t mutex1;//de uso general
 unsigned char sync1;//variable de recursos de los mutex1
-pthread_cond_t  *cond_free;//pointer para init 
-pthread_mutex_t *mutex_free;//mutex
 extern pthread_cond_t  cond_Tx_SendBlock;//condicional exclusivo para send Block
 extern pthread_mutex_t mutex_Tx_SendBlock;//mutex exclusivo para send block
 extern circular_buffer_t buffer;
-pthread_t SubProc_SendBlock_TX_VFD;
-
+pthread_t SubProc_SendBlock_TX_VFD;//send strings to VFD 
+pthread_t SubProc_SendBlock_chars_TX_VFD;//send bytes stream to VFD
 
 void init_queues(void){
-	pthread_t Proc1_Init_VFD;//Proceso para inizializar el VFD
-	pthread_t Proc_limpiador;//proceso que limpia recursos del proceso hilo init VFD
-    unsigned char debug;
+const unsigned char init_VFD[]={0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2};
+unsigned char debug;
 	init_FIFO_General_1byte(&vfd.x,&buffer6[0],SIZE_BUFFER6);
     init_FIFO_General_1byte(&vfd.y,&buffer7[0],SIZE_BUFFER6);
     init_FIFO_General_1byte(&vfd.p,&buffer8[0],SIZE_BUFFER6);
@@ -53,34 +46,21 @@ void init_queues(void){
     vfd.config.bytes1=0;//init all parameter into zero
     vfd.f1.append=vfd_FIFO_push;
 	vfd.f1.pop=vfd_FIFO_pop;                                                                                                                                                                                                                                                                                                                                                                                                                      
-	vfd.f1.resetFIFOS=vfd_FIFOs_RESET;
-	//qVFDtx.v=&vfd;//misma estructura en los dos lados,
-	mutex_free=&mutex1;cond_free=&cond1;
-	pthread_mutex_init(&mutex1,NULL);//
-	pthread_cond_init(&cond1,NULL);  
+	vfd.f1.resetFIFOS=vfd_FIFOs_RESET; 
 	sync1=0xAA;//mutexs ocupados
 	init_Queue_with_Thread(&qVFDtx);//fifos Transmisor data al Display
 	vfd.config.bits.recurso_VFD_Ocupado=TRUE;//recurso ocupado, VFD nadie lo puede usar
 	NoErrorOK();
 	printf("\n       Creando Proceso Init VFD");
-	/*switch(pthread_create(&Proc1_Init_VFD,NULL,Init_VFD,&qVFDtx)){
-		case 0:NoErrorOK();
-		        printf("\n       Creando Proceso Limpiador de INIT VFD");
-		       if(pthread_create(&Proc_limpiador,NULL,Proceso_Limpiador,&qVFDtx)==0){
-				   NoErrorOK();}else{errorCritico("Error de Proc Limpiador");}
-			   break;
-		default:errorCritico("Error desconocido de hilo init VFD");break;}
-    pthread_detach(Proc1_Init_VFD);//no espera que terminen este proceso y el hilo continua
-	pthread_detach(Proc_limpiador);//este hilo continua no espera que terminen los proc hijos
-	mensOK("Creando Proceso TX General Rev.2");
-    */
+	if((debug=pthread_create(&SubProc_SendBlock_chars_TX_VFD,NULL,Subproceso_sendBlockBytes_Tx_VFD,NULL))!=0){
+	    errorCritico2("Error creacion Hilo:",67);}else{NoErrorOK();}
 	if((debug=pthread_create(&SubProc_SendBlock_TX_VFD,NULL,SubProceso_SendBlock_Tx_VFD,NULL))!=0){	
-	    errorCritico2("Error creacion Hilo:",75);}
-	else{NoErrorOK();}		 
+	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}		 
+	VFD_sendBlockChars(init_VFD,sizeof(init_VFD));
 	printf("\n       Fin de  Init Queues");
-	NoErrorOK();
 	vfd.config.bits.recurso_VFD_Ocupado=FALSE;
-}//fin init queue++++++++++
+	NoErrorOK();
+}//fin init queue+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //** Proceso Hilo encargado de limpiar el Proceso Init VFD
 void *Proceso_Limpiador(void *arg) {
@@ -172,6 +152,23 @@ void* SubProceso_SendBlock_Tx_VFD(void* arg) {//consumidor
 return NULL;}//+++++++++++++++++++++++++++++++++++++
 //fin del subproceso de envio de datos al display+++++++++++++
 
+// SubProceso hilo que envía un bloque de datos bytes al VFD 
+void* Subproceso_sendBlockBytes_Tx_VFD(void* arg) {
+    while (1) {
+        pthread_mutex_lock(&buffer2.mutex);
+        while (buffer2.head == buffer2.tail) {
+            pthread_cond_wait(&buffer2.cond, &buffer2.mutex);}
+        bloque_t bloque = buffer2.buffer[buffer2.tail];
+        buffer2.tail = (buffer2.tail + 1) % BUFFER_SIZE;
+        pthread_mutex_unlock(&buffer2.mutex);
+        for (size_t i = 0; i < bloque2.longitud; i++) {
+            VFD_sendChar(bloque2.datos[i]);}
+    }//fin while++++++++++++++++++++++++++++++++++++++++++++
+return NULL;
+}//fin de subproceso de send Block Bytes TX VFD++++++++++++
+
+
+
 //deprecated:metho	do que se usa en un hilo transmisor VFD+++++++++++++++++++++++
 unsigned char Transmissor_SendBlock_VFD(const char *str){
    while(*str){			                    		
@@ -199,23 +196,6 @@ pthread_attr_init(&attr);
 if(pthread_attr_setstacksize(&attr,stacksize)!=0){
 	 fprintf(stderr,"\n\033[31mError config tamaño de pila");
 	 exit(EXIT_FAILURE);}
-
-
-/*
-	pthread_mutex_lock(&vfd.sync.mutex_free);
-	vfd.config.bits.init_VFD=FALSE;
-	
-	vfd.config.bits.VDF_busy=TRUE;
-	while(++i<10){
-	printf("\n       Init VFD running");
-	usleep(12200);}
-	vfd.config.bits.init_VFD=TRUE;
-	
-	vfd.config.bits.VDF_busy=FALSE;
-	pthread_cond_signal(&vfd.sync.cond_free);
-	pthread_mutex_unlock(&vfd.sync.mutex_free);
-    printf("\n       Proceso Init VFD Terminado");
-*/
 
 
  if(vfd.config.bits.init_VFD){
