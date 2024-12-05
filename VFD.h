@@ -1,6 +1,7 @@
 #ifndef _VFD_H_
 #define _VFD_H_
 
+#include <stdint.h>
 #ifndef _PTHREAD_H_
   #define _PTHREAD_H_
   #include <pthread.h>
@@ -119,5 +120,5 @@ void test_display(void);
 void* Mon_VFD(void* arg);  //Proceso Productor<---Proceso/hilo/THread
 void *Clean_VFD(void *arg);
 unsigned char VFD_sendBlockChars(const uchar *datos, size_t longitud);
-
+void VFD_sendChar(uchar c);
 #endif

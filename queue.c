@@ -34,7 +34,7 @@ extern pthread_cond_t  cond_Tx_SendBlock;//condicional exclusivo para send Block
 extern pthread_mutex_t mutex_Tx_SendBlock;//mutex exclusivo para send block
 extern circular_buffer_t buffer;
 pthread_t SubProc_SendBlock_TX_VFD;//send strings to VFD 
-pthread_t SubProc_SendBlock_chars_TX_VFD;//send bytes stream to VFD
+pthread_t SubProc_SendBlock_chars_TX_VFD;//send bytes 	stream to VFD
 
 void init_queues(void){
 const unsigned char init_VFD[]={0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2};
@@ -184,57 +184,8 @@ unsigned char Transmissor_SendBlock_VFD(const char *str){
 
 //Proceso  unico de padre unico  y sin instancias
 void* Init_VFD(void* arg){  //Proceso Productor<---Proceso/hilo/THread
-struct Queue *q=(struct Queue*)arg;//
-pthread_t Proc2_Tx_VFD;//Proceso Transmisor al VFD, para despliegue de pantalla
-unsigned char ret=0,estado;
-const unsigned char SIZE_CMD=7;//numero de comandos
-const unsigned char s[7]={0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2};
-unsigned char i=0;
-pthread_attr_t attr;
-size_t stacksize=2*1024*1024;// memoria para el hilo
-pthread_attr_init(&attr);
-if(pthread_attr_setstacksize(&attr,stacksize)!=0){
-	 fprintf(stderr,"\n\033[31mError config tamaño de pila");
-	 exit(EXIT_FAILURE);}
-
-
- if(vfd.config.bits.init_VFD){
-	   errorCritico("ya esta inizializado Proceso, Error de duplicacion");}	   	   
- while(!ret){
-	switch(estado){
-		case 1:printf("\n       Init VFD starting. . .");estado++;break;
-		case 2:pthread_mutex_lock(mutex_free);
-		       vfd.config.bits.init_VFD=FALSE;//no se ha terminado de init
-			
-			   vfd.config.bits.VDF_busy=TRUE;//Nadie mas puede usar el VFD
-               qVFDtx.isPadreAlive=TRUE;
-			   estado++;break;
-		case 3:NoErrorOK();estado++;break;
-		case 4:printf("\n       Creando Hilo Transmisor");
-		       if(pthread_create(&Proc2_Tx_VFD,&attr,SubProceso_SendBlock_Tx_VFD,&qVFDtx)!=0){//ret==0 :all OK	
-				  fprintf(stderr," \n Error creando el hilo SubProc TX VFD");
-				  exit(EXIT_FAILURE);}
-			   else{NoErrorOK();}
-			   estado++;
-			   break;
-	    case 5:printf("\n       Init, llenar FIFOs Init para Transmitir");
-			   NoErrorOK();estado++;break;
-		case 6:if(VFDcommand(s[i]))estado++;break; // init display  ESC@= 1BH,40H
-		case 7:if(++i<(SIZE_CMD+1))estado--;else{estado++;}break;
-		case 8:vfd.config.bits.init_VFD=TRUE;estado++;break;//se usa en limpieza esta bandera
-		case 9:pthread_cond_signal(cond_free);estado++;break;
-        case 10:qVFDtx.isPadreAlive=FALSE;estado++;break;
-		case 11:estado=0;ret=TRUE;break;
-		default:estado=1;break;}}//fin switch while 
-  pthread_join(Proc2_Tx_VFD,NULL);//esperamos termine de transmitir a display el otro hilo
-  pthread_attr_destroy(&attr);
-  pthread_mutex_unlock(mutex_free);
-  printf("\n       Init Sub Proceso Init Terminado");
-  NoErrorOK();		
-
 return NULL;
 }//fin init VFD -------------------------------------------------------------------
-
 
 
 void Terminar_subProcesos(void){
