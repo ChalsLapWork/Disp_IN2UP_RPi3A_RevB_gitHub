@@ -1,0 +1,1 @@
+Esta Rama ya no se usa solo se guarda para ver los ejemplos del uso de los threads que se usaron aqui para inizializar el display, y las tecnicas de init de los threads, si funcionan los threads que inizializan el display
