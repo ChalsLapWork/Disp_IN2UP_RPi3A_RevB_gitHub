@@ -49,7 +49,7 @@ circular_buffer_t buffer = {
 };
 
 
-circular_buffer_t buffer2 = {
+circular_buffer_t_byteBlock buffer2 = {
     .head = 0,
     .tail = 0,
     .mutex = PTHREAD_MUTEX_INITIALIZER,
