@@ -136,7 +136,7 @@ void* Subproceso_sendBlockBytes_Tx_VFD(void* arg) {
         bloque_t bloque = buffer2.buffer[buffer2.tail];
         buffer2.tail = (buffer2.tail + 1) % BUFFER_SIZE;
         pthread_mutex_unlock(&buffer2.mutex);
-        for (size_t i = 0; i < bloque2.longitud; i++) {
+        for (size_t i = 0; i < bloque.longitud; i++) {
             VFD_sendChar(bloque.datos[i]);}
     }//fin while++++++++++++++++++++++++++++++++++++++++++++
 return NULL;
