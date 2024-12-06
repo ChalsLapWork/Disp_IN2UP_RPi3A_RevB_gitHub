@@ -62,31 +62,6 @@ unsigned char debug;
 	NoErrorOK();
 }//fin init queue+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-//** Proceso Hilo encargado de limpiar el Proceso Init VFD
-void *Proceso_Limpiador(void *arg) {
-struct Queue *q=(struct Queue*)arg;//
-unsigned char estado;	
-    printf("\n       Proceso Limpiador de VFD activo");
-	pthread_mutex_lock(mutex_free);
-	printf("\n       Limpieza de  recursos de init VFD...");
-	switch(estado){
-		case 1:if(vfd.config.bits.init_VFD==1)estado++;break;
-		case 2:if(!vfd.config.bits.Proc_VFD_Tx_running)estado++;break;
-	    case 3:pthread_cond_wait(cond_free,mutex_free);
-		       estado++;break;
-		case 4:usleep(3);estado++;break;
-		case 5://pthread_mutex_destroy(&vfd.sync.mutex_init_VFD);
-			   //pthread_cond_destroy( &vfd.sync.cond_init_TX_VFD);
-			   pthread_mutex_destroy(mutex_free);
-			   pthread_cond_destroy(cond_free);sync1=0;//recurso libre
-			   pthread_mutex_destroy(q->s.m_Tx);
-			   pthread_cond_destroy(q->s.cond_Tx);
-			   estado++;break;
-		case 6:NoErrorOK();printf("\n");usleep(300);
-			   estado++;break;
-		default:estado=1;break;}
-    return NULL;
-}//fin del proceso hilo limpiador+++++++++++++++++++++++++++++++
 
 
 
