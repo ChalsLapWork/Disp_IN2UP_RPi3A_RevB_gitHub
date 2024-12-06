@@ -89,7 +89,7 @@ void writePort(unsigned char value){
 // Simula la función VFD_sendChar (lenta)
 void VFD_sendChar(uchar c) {
     printf(" \033[33m0x%02X\033[0m ",c);
-    writeport(c);
+    writePort(c);
 }//fin de VFD_sendChar+++++++++++++++++++++++++++++++++++++
 
 
