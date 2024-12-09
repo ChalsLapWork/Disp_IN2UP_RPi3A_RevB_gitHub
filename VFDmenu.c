@@ -21,7 +21,8 @@ auto unsigned char ret=0;
 		                     break;		
          default: errorCritico2("error de InitArbol",19);break;                     
         }//fin switch ++EN CONSTRUCCION ++++++++++++++++++++++++++++++++++++
-
+return ret;
+}//fin portal inicion++++++++++++++++++++++++++++++++++++++++++++++
 
 
 

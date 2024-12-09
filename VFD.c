@@ -266,8 +266,8 @@ return NULL;
 }//fin init VFD -------------------------------------------------------------------
 
 //** Proceso Hilo encargado de limpiar el Proceso Init VFD
-void *Clean_VFD(void *arg) {
-struct Queue *q=(struct Queue*)arg;//
+void *Clean_VFD(void *arg) {//HILO DEPRECATED
+/*truct Queue *q=(struct Queue*)arg;//
 unsigned char estado;	
     mensOK("Proceso Limpiador de VFD activo",CAMARILLO);
 	pthread_mutex_lock(vfd.mutex.m_Free);
@@ -285,7 +285,7 @@ unsigned char estado;
 		case 6:NoErrorOK();printf("\n");usleep(300);
 			   estado++;break;
                
-		default:estado=1;break;}
+		default:estado=1;break;}*/
     return NULL;
 }//fin del proceso hilo limpiador+++++++++++++++++++++++++++++++
 

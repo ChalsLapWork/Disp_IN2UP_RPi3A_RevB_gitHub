@@ -1000,8 +1000,8 @@ unsigned char digitoUpDown(unsigned char *inst);
 unsigned char digitoRtLeft(unsigned char *inst);
 unsigned char enterCursorDDS(unsigned char *inst);
 unsigned char enterCursorDDS_v2(unsigned char *inst);
-unsigned char menus_service(byte *mem);
-unsigned char find_Next_Context(byte *context);
-void cambio_contexto(byte contexto);
+unsigned char menus_service(unsigned char *mem);
+unsigned char find_Next_Context(unsigned char *context);
+void cambio_contexto(unsigned char contexto);
 
 #endif /* VFDMENU_H_ */
