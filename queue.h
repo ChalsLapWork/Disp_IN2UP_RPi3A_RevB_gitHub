@@ -161,7 +161,7 @@ struct _Contexto{
 		unsigned char solicitaCambioA;//a donde se ccambiar de contexto
 };
 
-struct _Menu_{
+struct _Menu1_{
    struct _Contexto contexto;    
 };
 
@@ -174,7 +174,7 @@ struct _DISPLAY_VFD_{
 	union  _Byte5_ config;//banderas de configuracion y control para el display y menus
     struct _Sync2   mutex;//syncronia y control de hilos
 	struct Queue q;//pila para manejar el VFD   
-	struct _Menu_ menu;  
+	struct _Menu1_ menu;  
 
 	//size_t pthread_attr_t attr_mon,attr_free,atrr_Tx;//atributos  
  	struct _box_control{

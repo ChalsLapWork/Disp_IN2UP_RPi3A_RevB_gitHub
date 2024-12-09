@@ -704,7 +704,7 @@ Undefined : "contextoActual" Referenced from "AnguloVibracionProcesadorCentral" 
 
 
 
-
+/*
 struct _Contexto{
 		unsigned char padre;   //contexto padre ,//de donde vengo
 		unsigned char Anterior;//contexto anterior
@@ -720,7 +720,7 @@ struct _Contexto{
 		unsigned char Anterior3;
 		unsigned char Anterior4;
 		unsigned char solicitaCambioA;//a donde se ccambiar de contexto
-};
+};*/
 
 //struct _SubMenus{
 //	unsigned char estado[SIZE_PID];//cada estado es un hilo ocupado
@@ -762,7 +762,7 @@ struct _Menu_{
 	//struct _SubMenus subMenu;
 	struct _Returns ret;
 	struct _FIFO_1byte_ menus;//historial de menus por los que paso
-	void (*cambio_Contexto)(byte contexto);
+	void (*cambio_Contexto)(unsigned char contexto);
 	union _Bytes_{
 	  	unsigned char byteReg;
 	  	struct{
@@ -987,8 +987,8 @@ void keypad_Timer(void);
 void display_Error(unsigned char x,unsigned char y,unsigned char *mens,unsigned char size);
 //unsigned char xRun_Menu(void);
 unsigned char InitArbolMenu(unsigned char destino);
-//unsigned char   PortalinicioDisplay(void);
-unsigned char  PortalinicioDisplay(byte *mem);
+unsigned char   PortalinicioDisplay(void);
+//unsigned char  PortalinicioDisplay(byte *mem);
 unsigned char displayMenuInsight(void);
 unsigned char DDS_HANDLER(void);
 unsigned char display5UChars1(unsigned short int posx,unsigned short int posy,unsigned char *p);
@@ -1000,8 +1000,8 @@ unsigned char digitoUpDown(unsigned char *inst);
 unsigned char digitoRtLeft(unsigned char *inst);
 unsigned char enterCursorDDS(unsigned char *inst);
 unsigned char enterCursorDDS_v2(unsigned char *inst);
-byte menus_service(byte *mem);
-byte find_Next_Context(byte *context);
+unsigned char menus_service(byte *mem);
+unsigned char find_Next_Context(byte *context);
 void cambio_contexto(byte contexto);
 
 #endif /* VFDMENU_H_ */
