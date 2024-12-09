@@ -1,5 +1,6 @@
 #include "VFDmenu.h"
 #include "errorController.h"
+#include "system.h"
 
 struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
 
