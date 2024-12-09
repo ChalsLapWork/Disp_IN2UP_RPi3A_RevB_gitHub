@@ -224,8 +224,9 @@ return ret;
 
 
 //Proceso  unico de Padre unico, PROCESO
+//Funcion DEPRECATED
 void* Mon_VFD(void* arg){  //Proceso Productor<---Proceso/hilo/THread
-struct Queue *q=(struct Queue*)arg;//
+/*struct Queue *q=(struct Queue*)arg;//
 unsigned char ret=0,estado;
 unsigned char i=0,debug,count;
 pthread_attr_t attr;
@@ -260,7 +261,7 @@ size_t stacksize=2*1024*1024;// memoria para el hilo
   mensOK("Sub Proceso TX Terminado",CRESET);
   pthread_attr_destroy(&attr);
   pthread_mutex_unlock(vfd.mutex.m_Free);
-  NoErrorOK();		
+  NoErrorOK();*/		
 return NULL;
 }//fin init VFD -------------------------------------------------------------------
 

@@ -15,7 +15,8 @@
 #ifndef VFDMENU_H_
 #define VFDMENU_H_
 
-#include "PE_Types.h"
+//#include "PE_Types.h"
+
 #include "queue.h"
 
 #ifndef HW_VER_2

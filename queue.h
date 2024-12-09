@@ -161,7 +161,7 @@ struct _Contexto{
 		unsigned char solicitaCambioA;//a donde se ccambiar de contexto
 };
 
-struct __Menu_{
+struct _Menu_{
    struct _Contexto contexto;    
 };
 
@@ -339,6 +339,6 @@ void init_Queue_with_Thread(struct Queue  *q);
 unsigned char Transmissor_SendBlock_VFD(const char *str);
 void *Subproceso_sendBlockBytes_Tx_VFD(void *arg);
 void init_menu(void);
-void *Run_Menu(void arg);
+void *Run_Menu(void *arg);
 void xControl_Principal_de_Menus_Operativo();
 #endif 
