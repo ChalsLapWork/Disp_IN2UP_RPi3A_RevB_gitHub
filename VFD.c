@@ -201,7 +201,7 @@ return ret;// fin de enviar mensaje++++++++++++++++++++++
 unsigned char inicializar_VFD(const uchar *datos, size_t longitud){	
     pthread_mutex_lock(&vfd.mutex.VDF_busy);  
 	VFD_sendBlockChars(datos,longitud);//Init VFD
-    pthread_mutex__unlock(&vfd.mutex.VDF_busy);
+    pthread_mutex_unlock(&vfd.mutex.VDF_busy);
 }//fin de inizializacion de VFD++++++++++++++++++++++++++++++
 
 

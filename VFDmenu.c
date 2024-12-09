@@ -29,7 +29,7 @@ return ret;
 
 //Este metodo Solo se ejecuta una vez sin instancias
 unsigned char  PortalinicioDisplay(void){//Funcion Suprema de Despliegue de la Pantalla0
-
+unsigned char ret;
     mensOK("Estoy en portal Inicio",CAMARILLO);   
     ret=1;
  

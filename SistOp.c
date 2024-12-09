@@ -17,7 +17,7 @@ unsigned char ret,estado9;
 if(!vfd.config.bits.init_Menu){
          ret=PORTAL_INICIO;}
 else{ 
-   switch(menu.contexto.solicitaCambioA){
+   switch(vfd.menu.contexto.solicitaCambioA){
 	   case PORTAL_INICIO:switch(menu.contexto.Anterior){
 		   	   	   	   	   	      case PORTAL_INICIO:ret=PORTAL_INICIO;break;
 		   	   	   	   	   	      case  MENU_INSIGHT:ret=PORTAL_INICIO;break;

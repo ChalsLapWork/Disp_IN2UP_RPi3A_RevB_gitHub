@@ -26,7 +26,7 @@
 #define EN_EL_TRABAJO  0xAA
 #define DONDE_ESTOY    EN_LA_CASA
 
-#if(HW_VER_2==3)
+/*#if(HW_VER_2==3)
 
   #pragma message("version de Hardware 2.3 pines que cambian")
   #pragma message("Led3_Process  Pin28[QSPI_CS0]")
@@ -39,7 +39,7 @@
 #else
 #error "Version de Hardware Desconosida"
 #endif	
-	
+*/	
 
 #define VERSION_FIRMWARE   "Version F.W 33.11.0" //add frecq CONTROL from menu, Driver to control ADC's 
 #define VERSION2 "v39.24.1.71"   //branch:feature6_OS_&_Pantalla
