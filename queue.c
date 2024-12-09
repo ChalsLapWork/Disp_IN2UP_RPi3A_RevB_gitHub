@@ -16,6 +16,7 @@
 #include <wiringPi.h>
 #include "VFDisplay.h"
 #include <string.h>
+#include "VFDmenu.h"
 
 
 
@@ -33,8 +34,10 @@ unsigned char sync1;//variable de recursos de los mutex1
 extern pthread_cond_t  cond_Tx_SendBlock;//condicional exclusivo para send Block
 extern pthread_mutex_t mutex_Tx_SendBlock;//mutex exclusivo para send block
 extern circular_buffer_t buffer;
+extern struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
 pthread_t SubProc_SendBlock_TX_VFD;//send strings to VFD 
 pthread_t SubProc_SendBlock_chars_TX_VFD;//send bytes 	stream to VFD
+pthread_t SubProc_Run_Menu;//proceso que gestiona el cambio de menu
 
 void init_queues(void){
 const unsigned char init_VFD[]={0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2};
@@ -48,6 +51,7 @@ unsigned char debug;
 	vfd.f1.pop=vfd_FIFO_pop;                                                                                                                                                                                                                                                                                                                                                                                                                      
 	vfd.f1.resetFIFOS=vfd_FIFOs_RESET; 
 	sync1=0xAA;//mutexs ocupados
+	pthread_mutex_init(&vfd.mutex.VDF_busy,NULL);
 	init_Queue_with_Thread(&qVFDtx);//fifos Transmisor data al Display
 	vfd.config.bits.recurso_VFD_Ocupado=TRUE;//recurso ocupado, VFD nadie lo puede usar
 	NoErrorOK();
@@ -56,11 +60,11 @@ unsigned char debug;
 	    errorCritico2("Error creacion Hilo:",67);}else{NoErrorOK();}
 	if((debug=pthread_create(&SubProc_SendBlock_TX_VFD,NULL,SubProceso_SendBlock_Tx_VFD,NULL))!=0){	
 	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}		 
-	VFD_sendBlockChars(init_VFD,sizeof(init_VFD));
-	printf("\n       Fin de  Init Queues");
+	inicializar_VFD((init_VFD,sizeof(init_VFD));// VFD_sendBlockChars(init_VFD,sizeof(init_VFD));//Init VFD
+	printf("\n       Fin de Init Queues");
 	vfd.config.bits.recurso_VFD_Ocupado=FALSE;
 	NoErrorOK();
-}//fin init queue+++++++++++++++++++++++++++++++++++++++++++++++++++++
+}//fin init queue+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
@@ -161,6 +165,82 @@ unsigned char Transmissor_SendBlock_VFD(const char *str){
 void* Init_VFD(void* arg){  //Proceso Productor<---Proceso/hilo/THread
 return NULL;
 }//fin init VFD -------------------------------------------------------------------
+
+
+//despliegue de datos en el display
+void init_menu(void){
+unsigned char debug;
+   vfd.config.bits.init_Menu=0;//no esta init el VFD
+   vfd.config.bits.MenuPendiente=TRUE;//hay pendiente un menu por desplegar
+   vfd.config.bits.Menu_Ready=FALSE;//no se a desplegado menu solicitado
+   if((debug=pthread_create(&SubProc_Run_Menu,NULL,Run_Menu,NULL))!=0)
+       errorCritico("errorCreacion hilo",175);
+   else{pthread_detach(SubProc_Run_Menu);}//hilo independiente	   
+}//fin del init Menu+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+//Proceso de control de Menus
+void *Run_Menu(void arg){
+   xControl_Principal_de_Menus_Operativo();
+}//fin de run menu++++++++++++++++++++++++++++++++++++++++++++
+
+
+//Proceso Thread de control de menus
+/*Controla la salida segura de los menu de modo Operativo para que termine de hacer la tarea el
+ * menu actual y luego se pase al siguiente menu cuando acabe y se presione el escape "x"
+ *   se mete el contexto Actual  */
+void xControl_Principal_de_Menus_Operativo(void){
+unsigned char contexto;
+unsigned char estado3;
+const NORMAL=30,INIT_M=1,TERMINAR=90;
+
+ while(vfd.config.bits.MenuPendiente){ //hilo corriendo  
+	switch(estado3){//Maquina de Estados
+	  case INIT_M:  if(!vfd.config.init_menu)estado3++;else{estado3=30;}break;
+	  case INIT_M+1:vfd.config.MenuPendiente=TRUE;estado3++;break;
+	  case INIT_M+2:pthread_mutex_lock(&vfd.config.VDF_busy);estado3++;break;//Mejora de la funcion: recurso.solicitar
+	  case INIT_M+5:contexto=find_contexto_Siguiente()estado3++;break;
+	  case INIT_M+6:InitArbolMenu(contexto);estado3++;break;
+	  case INIT_m+7:if(MenuActualScreen.func1())estado3=TERMINAR;//se despliega el MenuÂ¡Â¡
+					else{errorCritico2("Error de Despliegue de menu",201);}break;
+	  case TERMINAR:vfd.config.bits.init_Menu=TRUE;//no esta init el VFD
+                    vfd.config.bits.MenuPendiente=FALSE;//hay pendiente un menu por desplegar
+                    vfd.menu.contexto.Actual=contexto;
+					pthread_mutex_unlock(&vfd.config.VDF_busy);//liberar recurso
+	  default:estado3=1;break;}
+   }//fin de WHILE bandera de Menu Pendiente--------------------   
+	return;
+
+
+
+
+const char *mens[]={" hola mundo ",
+                        "  mensaje No.2 ",
+                        "  Tercera line del mensaje",
+                        "  cuarta line del mensaje",
+                        "  quinta line del mensaje",
+                        "  sexta line del mensaje",
+                        "   777 line del mensaje",
+                        "  888888 line del mensaje",
+                        "  999999a line del mensaje",
+                        "  1010101 line del mensaje",
+                        "  11111111 line del mensaje",
+                        "  112121212 line del mensaje"
+                        };
+unsigned char n;
+int j=0;
+    mensOK("Iniciando prueba de Puertos Fisicos.",CCIAN);
+    NoErrorOK();printf("\n");
+    while(1){
+        for(int i=0;i<12;i++){  
+            VFDserial_SendBlock1(mens[i]);   
+        }}//fin while++++++++++++++++++++++++++++++++
+    printf(" \n j=%d",j);
+}//fin de prueba de despliegue de datos en el VFD+++++++++++++++++++++++++++++
+//fin del control operativo del menu de escape-----------------------------------------
+ 
+
+
 
 
 void Terminar_subProcesos(void){

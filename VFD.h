@@ -121,4 +121,5 @@ void* Mon_VFD(void* arg);  //Proceso Productor<---Proceso/hilo/THread
 void *Clean_VFD(void *arg);
 unsigned char VFD_sendBlockChars(const uchar *datos, size_t longitud);
 void VFD_sendChar(uchar c);
+unsigned char inicializar_VFD(const uchar *datos, size_t longitud);
 #endif

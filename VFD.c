@@ -115,31 +115,6 @@ return VFDserial_SendChar1(cmd);
 }//fin vfd command----------------------------------------------------
 
 
-//despliegue de datos en el display
-void test_display(void){
-const char *mens[]={" hola mundo ",
-                        "  mensaje No.2 ",
-                        "  Tercera line del mensaje",
-                        "  cuarta line del mensaje",
-                        "  quinta line del mensaje",
-                        "  sexta line del mensaje",
-                        "   777 line del mensaje",
-                        "  888888 line del mensaje",
-                        "  999999a line del mensaje",
-                        "  1010101 line del mensaje",
-                        "  11111111 line del mensaje",
-                        "  112121212 line del mensaje"
-                        };
-unsigned char n;
-int j=0;
-    mensOK("Iniciando prueba de Puertos Fisicos.",CCIAN);
-    NoErrorOK();printf("\n");
-    while(1){
-        for(int i=0;i<12;i++){  
-            VFDserial_SendBlock1(mens[i]);   
-        }}//fin while++++++++++++++++++++++++++++++++
-    printf(" \n j=%d",j);
-}//fin de prueba de despliegue de datos en el VFD
 
 
 
@@ -222,6 +197,12 @@ unsigned char ret=0;
 return ret;// fin de enviar mensaje++++++++++++++++++++++
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
 
+//init el VFD+++++++++++++++++++++++++++++++++++++++++++++++ 
+unsigned char inicializar_VFD(const uchar *datos, size_t longitud){	
+    pthread_mutex_lock(&vfd.mutex.VDF_busy);  
+	VFD_sendBlockChars(datos,longitud);//Init VFD
+    pthread_mutex__unlock(&vfd.mutex.VDF_busy);
+}//fin de inizializacion de VFD++++++++++++++++++++++++++++++
 
 
 // Función que el hilo principal llama para enviar un bloque de caracteres
@@ -260,7 +241,6 @@ size_t stacksize=2*1024*1024;// memoria para el hilo
 		case 1:mensOK("Mon VFD starting. . .",CRESET);estado++;break;
         case 2:if(!vfd.config.bits.Proc_VFD_Tx_running)estado++;break;
 		case 3:pthread_mutex_lock(vfd.mutex.m_Free);
-			   vfd.config.bits.VDF_busy=TRUE;//Nadie mas puede usar el VFD
                q->isPadreAlive=TRUE;
 			   estado++;break;
 		case 4:NoErrorOK();estado++;break;
