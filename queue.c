@@ -17,6 +17,7 @@
 #include "VFDisplay.h"
 #include <string.h>
 #include "VFDmenu.h"
+#include "SistOp.h"
 
 
 
