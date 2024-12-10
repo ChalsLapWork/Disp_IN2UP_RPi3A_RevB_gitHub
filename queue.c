@@ -201,9 +201,9 @@ enum{NORMAL=30,INIT_M=1,TERMINAR=90};
 	  case INIT_M:  if(!vfd.config.bits.init_Menu)estado3++;else{estado3=30;}break;
 	  case INIT_M+1:vfd.config.bits.MenuPendiente=TRUE;estado3++;break;
 	  case INIT_M+2:pthread_mutex_lock(&vfd.mutex.VDF_busy);estado3++;break;//Mejora de la funcion: recurso.solicitar
-	  case INIT_M+5:contexto=find_contexto_Siguiente();estado3++;break;
-	  case INIT_M+6:InitArbolMenu(contexto);estado3++;break;
-	  case INIT_M+7:if(MenuActualScreen.func1())estado3=TERMINAR;//se despliega el MenuÂ¡Â¡
+	  case INIT_M+3:contexto=find_contexto_Siguiente();estado3++;break;
+	  case INIT_M+4:InitArbolMenu(contexto);estado3++;break;
+	  case INIT_M+5:if(MenuActualScreen.func1())estado3=TERMINAR;//se despliega el MenuÂ¡Â¡
 					else{errorCritico2("Error de Despliegue de menu",201);}break;
 	  case TERMINAR:vfd.config.bits.init_Menu=TRUE;//no esta init el VFD
                     vfd.config.bits.MenuPendiente=FALSE;//hay pendiente un menu por desplegar
