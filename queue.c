@@ -174,7 +174,7 @@ unsigned char debug;
    vfd.config.bits.MenuPendiente=TRUE;//hay pendiente un menu por desplegar
    vfd.config.bits.Menu_Ready=FALSE;//no se a desplegado menu solicitado
    if((debug=pthread_create(&SubProc_Run_Menu,NULL,Run_Menu,NULL))!=0)
-       errorCritico("errorCreacion hilo",175);
+       errorCritico2("errorCreacion hilo",175);
    else{pthread_detach(SubProc_Run_Menu);}//hilo independiente	   
 }//fin del init Menu+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -198,15 +198,15 @@ enum{NORMAL=30,INIT_M=1,TERMINAR=90};
 	switch(estado3){//Maquina de Estados
 	  case INIT_M:  if(!vfd.config.bits.init_Menu)estado3++;else{estado3=30;}break;
 	  case INIT_M+1:vfd.config.MenuPendiente=TRUE;estado3++;break;
-	  case INIT_M+2:pthread_mutex_lock(&vfd.config.VDF_busy);estado3++;break;//Mejora de la funcion: recurso.solicitar
-	  case INIT_M+5:contexto=find_contexto_Siguiente()estado3++;break;
+	  case INIT_M+2:pthread_mutex_lock(&vfd.mutex.VDF_busy);estado3++;break;//Mejora de la funcion: recurso.solicitar
+	  case INIT_M+5:contexto=find_contexto_Siguiente();estado3++;break;
 	  case INIT_M+6:InitArbolMenu(contexto);estado3++;break;
 	  case INIT_M+7:if(MenuActualScreen.func1())estado3=TERMINAR;//se despliega el MenuÂ¡Â¡
 					else{errorCritico2("Error de Despliegue de menu",201);}break;
 	  case TERMINAR:vfd.config.bits.init_Menu=TRUE;//no esta init el VFD
                     vfd.config.bits.MenuPendiente=FALSE;//hay pendiente un menu por desplegar
                     vfd.menu.contexto.Actual=contexto;
-					pthread_mutex_unlock(&vfd.config.VDF_busy);//liberar recurso
+					pthread_mutex_unlock(&vfd.mutex.VDF_busy);//liberar recurso
 	  default:estado3=1;break;}
    }//fin de WHILE bandera de Menu Pendiente--------------------   
 	return;
