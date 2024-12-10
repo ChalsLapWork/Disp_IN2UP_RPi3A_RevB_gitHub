@@ -139,6 +139,30 @@ return ret;
 }// fin font size for the VFD----------------------------------------------------
 
 
+
+
+/*limpia el VFD de caracteres y todo   */
+unsigned char VFDclrscr1(unsigned char *mem){//AUTORIZADO 2:BYTES DE memoria
+unsigned char ret=0;
+//	monitorDDS_Halt();//debug, quitar un dia que la version este super probada 
+unsigned char *estado4,*c;
+  estado4=mem;
+        c=mem+1;
+  switch(*estado4){
+	 case 1:if(VFDserial_SendChar1(0x0CU))//(Display Clear)   Display screen is cleared and cursor moves to home position.
+		         estado4++;
+	        c=0;
+	        break;
+	 case 2:if(delay_ms_VFD(1)){//con 50 sigue sin borrar el anterior
+	            ret=TRUE;estado=1;}
+	         break;
+	 default:estado=1;break;}
+  *instancia=estado;
+  *instancia2=c;
+return ret;    
+}//fin clear screen VFD-------------------------------------------------------------
+
+
 //regresa true cuando se cumpla todo el methodo hasta el final
 unsigned char delay_us_VFD(unsigned short int t){
 unsigned char ret=0;
@@ -158,9 +182,10 @@ return ret;
 //	vfd.f1.append(c,0,_CHAR_);// FIFO_Display_DDS_Char_push(c,0xFE);//0xFE means that is just a char display          
 //}//fin VFDserial_SendChar_DDS---------------------------------
 unsigned char VFDserial_SendChar1(unsigned char c){
-struct VFD_DATA dato;
-    dato.p=_CHAR_;dato.x=c;dato.y=0;
-	return vfd.f1.append(&qVFDtx,dato);
+//struct VFD_DATA dato;
+    //dato.p=_CHAR_;dato.x=c;dato.y=0;
+	//return vfd.f1.append(&qVFDtx,dato);
+return VFD_sendBlockChars(c,1);//Init VFD
 }//------------------------------------------------------------------
 
 

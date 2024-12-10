@@ -195,6 +195,7 @@ void xControl_Principal_de_Menus_Operativo(void){
 unsigned char contexto;
 unsigned char estado3;
 enum{NORMAL=30,INIT_M=1,TERMINAR=90};
+unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despliegue
 
  while(vfd.config.bits.MenuPendiente){ //hilo corriendo  
 	switch(estado3){//Maquina de Estados
@@ -203,8 +204,8 @@ enum{NORMAL=30,INIT_M=1,TERMINAR=90};
 	  case INIT_M+2:pthread_mutex_lock(&vfd.mutex.VDF_busy);estado3++;break;//Mejora de la funcion: recurso.solicitar
 	  case INIT_M+3:contexto=find_contexto_Siguiente();estado3++;break;
 	  case INIT_M+4:InitArbolMenu(contexto);estado3++;break;
-	  case INIT_M+5:if(MenuActualScreen.func1())estado3=TERMINAR;//se despliega el MenuÂ¡Â¡
-					else{errorCritico2("Error de Despliegue de menu",201);}break;
+	  case INIT_M+5:if(MenuActualScreen.func1(&mem[0]))estado3=TERMINAR;break;//se despliega el MenuÂ¡Â¡
+					
 	  case TERMINAR:vfd.config.bits.init_Menu=TRUE;//no esta init el VFD
                     vfd.config.bits.MenuPendiente=FALSE;//hay pendiente un menu por desplegar
                     vfd.menu.contexto.Actual=contexto;

@@ -702,6 +702,7 @@ Undefined : "contextoActual" Referenced from "AnguloVibracionProcesadorCentral" 
 #define SIZE_BUFF  20//Tama�o de los Buffers
 #define SIZE_MEMO_APP 40 //tama�o de la memoria para los hilos en ejecucion
 
+#define MEMO_MAX_FUNC_DISPL_MENU  50 //bytes maximo de memoria para funciones de display de menus, 
 
 
 /*
@@ -987,8 +988,8 @@ void keypad_Timer(void);
 void display_Error(unsigned char x,unsigned char y,unsigned char *mens,unsigned char size);
 //unsigned char xRun_Menu(void);
 unsigned char InitArbolMenu(unsigned char destino);
-unsigned char   PortalinicioDisplay(void);
-//unsigned char  PortalinicioDisplay(byte *mem);
+//unsigned char   PortalinicioDisplay(void);
+unsigned char  PortalinicioDisplay(byte *mem);
 unsigned char displayMenuInsight(void);
 unsigned char DDS_HANDLER(void);
 unsigned char display5UChars1(unsigned short int posx,unsigned short int posy,unsigned char *p);
