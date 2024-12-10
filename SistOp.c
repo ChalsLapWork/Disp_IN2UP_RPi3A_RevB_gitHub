@@ -18,7 +18,7 @@ if(!vfd.config.bits.init_Menu){
          ret=PORTAL_INICIO;}
 else{ 
    switch(vfd.menu.contexto.solicitaCambioA){
-	   case PORTAL_INICIO:switch(menu.contexto.Anterior){
+	   case PORTAL_INICIO:switch(vfd.menu.contexto.Anterior0){
 		   	   	   	   	   	      case PORTAL_INICIO:ret=PORTAL_INICIO;break;
 		   	   	   	   	   	      case  MENU_INSIGHT:ret=PORTAL_INICIO;break;
 		   	   	   	   	   	      default:break;}

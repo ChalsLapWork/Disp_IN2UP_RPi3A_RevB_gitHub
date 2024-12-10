@@ -180,7 +180,7 @@ unsigned char debug;
 
 
 //Proceso de control de Menus
-void *Run_Menu(void arg){
+void *Run_Menu(void *arg){
    xControl_Principal_de_Menus_Operativo();
 }//fin de run menu++++++++++++++++++++++++++++++++++++++++++++
 
@@ -197,7 +197,7 @@ enum{NORMAL=30,INIT_M=1,TERMINAR=90};
  while(vfd.config.bits.MenuPendiente){ //hilo corriendo  
 	switch(estado3){//Maquina de Estados
 	  case INIT_M:  if(!vfd.config.bits.init_Menu)estado3++;else{estado3=30;}break;
-	  case INIT_M+1:vfd.config.MenuPendiente=TRUE;estado3++;break;
+	  case INIT_M+1:vfd.config.bits.MenuPendiente=TRUE;estado3++;break;
 	  case INIT_M+2:pthread_mutex_lock(&vfd.mutex.VDF_busy);estado3++;break;//Mejora de la funcion: recurso.solicitar
 	  case INIT_M+5:contexto=find_contexto_Siguiente();estado3++;break;
 	  case INIT_M+6:InitArbolMenu(contexto);estado3++;break;
