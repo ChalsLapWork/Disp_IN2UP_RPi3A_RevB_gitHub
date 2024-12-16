@@ -1,6 +1,34 @@
 #include "DSP.h"
 #include "errorController.h"
 
+
+/* MODO DE PROCESAMIENTO PARA GIRAR LOS DATOS A LA VIBRACION DE LAS ORDENADAS*/
+#define MODO_DE_VIBRACION   GIRO_DE_PLANO_CARTESIANO// GIRO_DE_COORDENADAS_POLARES //GIRO_DE_PLANO_CARTESIANO, GIRO_DE_COORDENADAS_POLARES
+#define DDS_X    192
+
+#define DDS_X_1d8 23  //1/4 de pantalla en las X lado negativo de X
+#define DDS_X_2d8 45  // 1/2 de la pantalla de las X lado negativo de X
+#define DDS_X_3d8 71  //3/4 de pantalla X lado negativo de X
+#define DDS_X_4d8 96
+#define DDS_X_CX  DDS_X_4d8 //TAMAÑO DE LA MITAD DE RESOLUCION PUNTOS DE LA PANTALLA EN X 192/2 la mitad del ordenada  poitivo  y negativo
+#define DDS_X_5d8 120
+#define DDS_X_6d8 144
+#define DDS_X_7d8 168
+#define DDS_X_8d8 192
+
+#define DDS_Y_1d8 16//128/2  la mitad de la absisa  positivo y negativo
+#define DDS_Y_2d8  32
+#define DDS_Y_3d8  48
+#define DDS_Y_4d8  64
+#define DDS_Y_5d8  80
+#define DDS_Y_6d8  96  
+#define DDS_Y_7d8  112
+#define DDS_Y_8d8  128
+#define DDS_Y_CY   DDS_Y_4d8 
+
+unsigned short int pixelConversionX[3];//DDS_X_8d8];//convierte el pixel Analogo a pixel del zoom actual
+unsigned short int pixelConversionY[3];//DDS_Y_8d8];//convierte el pixel Analogo a pixel del zoom actual
+
 struct _Detection Deteccion;
 struct ZoomControl zoom;
 
@@ -168,3 +196,42 @@ unsigned short int maxx,maxy,ymax,ymin;
       
 }//fin zoom init -----------------------------------------------------------------------------------------
 
+
+
+
+/*version1:   generar pixel analogos generamos una lista del pixel digital del DDS coordenadas versus el pixel analogo
+ * entre que rango y que rango corresponde un pixel digital DDS
+ * version2: vamos a rellenar los arrays con los valores corrrespondienes de analogo signed a pixel DDS para
+ * la conversion mas facil y rapida corespondiente al zoom seleccionado */
+void generarPixelsAnalogos(void){//signed short int Min,signed short int miny){
+
+unsigned short int pixelSize;//tamaño del pixel de analogo versus DDS por zoom selected
+unsigned short int jj,i,j;
+unsigned char k=0;
+       pixelSize=zoom.Maxx/DDS_X_4d8;//DDS_X_4d8=96;  //95..192  ->0..Max
+       if(pixelSize==0)//menor al 96,tamaño del pixel es portanto 1
+    	   pixelSize=1;
+      for(i=DDS_X_4d8,j=0;i<DDS_X_8d8;i++,j+=pixelSize)//parte poitiva de 95 a 192 en x
+    		   pixelConversionX[i]=j;
+    	   /* genera la parte negativa de las ordenadas  x*/
+       jj=zoom.Maxx;//Rellenar  Y  0..95 con->-Max..0
+       for(i=DDS_X_4d8-1,j=pixelSize;i>=0;i--,j+=pixelSize){
+    	   if(i>DDS_X_4d8)
+    		   break;
+    	   pixelConversionX[i]=j;}
+       zoom.pixelSizeX=pixelSize;
+       /* genera la parte positiva de las absisas Y  con calculo inteligente*/
+       pixelSize=(unsigned char)(zoom.Maxy/DDS_Y_4d8);
+       if(pixelSize==0)
+    	   pixelSize=1;//seguro anti fallos.
+       for(i=DDS_Y_4d8-1,j=1;i>=0;i--,j+=pixelSize){ // 0..64  +Max..0
+           if(i>DDS_Y_4d8)
+        	   break;
+    	   pixelConversionY[i]=j;}
+      /* gener las ordenadas negativas*/   //  64..127 0..-Max      
+        for(i=DDS_Y_4d8,j=0;i<=DDS_Y_8d8;i++,j+=pixelSize)    
+        	pixelConversionY[i]=j;
+       zoom.pixelSizeY=pixelSize;
+       
+}//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   	   
+           
