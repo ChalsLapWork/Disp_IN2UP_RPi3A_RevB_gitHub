@@ -151,7 +151,7 @@ unsigned char *estado4,*c;
         c=mem+1;
   switch(*estado4){
 	 case 1:if(VFDserial_SendChar1(0x0CU))//(Display Clear)   Display screen is cleared and cursor moves to home position.
-		         estado4++;
+		         (*estado4)++;
 	        break;
 	 case 2:usleep(1000);ret=TRUE;*estado4=0;break;
 	 default:*estado4=1;break;}
