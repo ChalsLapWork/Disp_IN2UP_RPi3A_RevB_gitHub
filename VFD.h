@@ -124,4 +124,6 @@ void *Clean_VFD(void *arg);
 unsigned char VFD_sendBlockChars(const uchar *datos, size_t longitud);
 void VFD_sendChar(uchar c);
 unsigned char inicializar_VFD(const uchar *datos, size_t longitud);
+void init_mutex_VFD(void);
+
 #endif
