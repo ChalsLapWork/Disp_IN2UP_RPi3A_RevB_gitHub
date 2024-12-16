@@ -4,6 +4,8 @@
 #include "Memoria.h"
 #include "delay.h"
 #include "queue.h"
+#include "VFD.h"
+#include "DSP.h"
 
 struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
 extern struct _PRODUCTO_ producto;
@@ -68,8 +70,8 @@ union W16{
     mensOK("Estoy en portal Inicio",CAMARILLO);   
     NoErrorOK();    
     switch(*estado){ 
-       case 1://Deteccion.CuadroMadreReady=FALSE;
-              //keypad.b.enable=FALSE;
+       case 1:Deteccion.CuadroMadreReady=FALSE;
+              keypad.b.enable=FALSE;
               (*estado)++;break;
        case 2:if(VFDclrscr1(mem_2bytes))estado++;break;
        case 3:delay_ms_VFD(200);estado++;break;

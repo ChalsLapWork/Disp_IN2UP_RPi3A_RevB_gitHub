@@ -405,7 +405,7 @@ struct _Detection{
     signed short int CosdAngulovibrRad;//guarda el valor de coseno(angulode cibracion enRad)
     signed short int SindAngulovibrRad;//guarda el valor de seno(angulode vibracion enRad)
     signed short int  datos[20][20];    
-}; 
+}; //fin DETECCION +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
