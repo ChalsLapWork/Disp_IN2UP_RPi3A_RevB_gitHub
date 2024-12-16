@@ -71,37 +71,37 @@ union W16{
         mem_2bytes=mem+6;//6,7
         aux0_uchar=mem+8;
 
-
-    mensOK("Estoy en portal Inicio",CAMARILLO);   
-    NoErrorOK();    
+		
     switch(*estado){ 
-       case 1:Deteccion.CuadroMadreReady=FALSE;
+	   case 1:mensOK("Estoy en portal Inicio",CAMARILLO);(*estado)++;break;	
+       case 2:Deteccion.CuadroMadreReady=FALSE;
               //keypad.b.enable=FALSE;
               (*estado)++;break;
-       case 2:if(VFDclrscr1(mem_2bytes))(*estado)++;break;
-       case 3:delay_ms_VFD(200);(*estado)++;break;
-       case 4:if(VFDposicion(65,0))(*estado)++; break;    //2bytes
-       case 5:if(VFDserial_SendBlock1(&s[0],sizeof(s)))(*estado)++;break;//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
-       case 6:*aux3_char=producto.name[1];aux1_usi=length(&producto.name[0],sizeof(producto.name));  	 
+       case 3:NoErrorOK();(*estado)++;break;			  
+       case 4:if(VFDclrscr1(mem_2bytes))(*estado)++;break;
+       case 5:delay_ms_VFD(200);(*estado)++;break;
+       case 6:if(VFDposicion(65,0))(*estado)++; break;    //2bytes
+       case 7:if(VFDserial_SendBlock1(&s[0],sizeof(s)))(*estado)++;break;//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
+       case 8:*aux3_char=producto.name[1];aux1_usi=length(&producto.name[0],sizeof(producto.name));  	 
     	      *aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);(*estado)++;break;
-       case 7:if(Status_Prod==MEMO){if(VFDposicion(*aux0_uchar,2))(*estado)++;}
+       case 9:if(Status_Prod==MEMO){if(VFDposicion(*aux0_uchar,2))(*estado)++;}
      	 	  else{if(VFDposicion(x[0],y[0])) (*estado)++;}break;
- 	   case 8:if(delay_ms_VFD(2))(*estado)++;break; //Tiempo en pruebas
-	   case 9:if(Status_Prod==MEMO){ss=aux3_char;
-		          if(VFDserial_SendBlock1(ss,(unsigned char)aux1_usi))(*estado)++;}
-	 	 	 else{if(VFDserial_SendBlock1(&a[0],sizeof(a)))(*estado)++;} 
-	         break;
-	   case 10:if(delay_ms_VFD(1))(*estado);break; //Tiempo en pruebas,
-	   case 11:if(VFDposicion(x[1],y[1]))(*estado);break;
-	   case 12:if(VFDserial_SendBlock1(&b[0],sizeof(b)))(*estado);break;
-	   case 13:if(VFDposicion(x[2],y[2]))(*estado);break;
-       case 14:if(VFDserial_SendBlock1(&c[0],sizeof(c)))(*estado);break;
-       case 15:if(delay_us_VFD(100))(*estado);break;
-       case 16:if(VFDposicion(x[3],y[3]))(*estado);break;
-       case 17:if(VFDserial_SendBlock1(&d[0],sizeof(d)))(*estado)++;break;
-	   case 18:if(displayCuadroMadre_VFD())(*estado)++;break;
-       case 19:delay_ms_VFD(2);(*estado)++;break;
-	   case 20:Deteccion.CuadroMadreReady=TRUE;
+ 	   case 10:if(delay_ms_VFD(2))(*estado)++;break; //Tiempo en pruebas
+	   case 11:if(Status_Prod==MEMO){ss=aux3_char;
+		            if(VFDserial_SendBlock1(ss,(unsigned char)aux1_usi))(*estado)++;}
+	 	 	   else{if(VFDserial_SendBlock1(&a[0],sizeof(a)))(*estado)++;} 
+	           break;
+	   case 12:if(delay_ms_VFD(1))(*estado);break; //Tiempo en pruebas,
+	   case 13:if(VFDposicion(x[1],y[1]))(*estado);break;
+	   case 14:if(VFDserial_SendBlock1(&b[0],sizeof(b)))(*estado);break;
+	   case 15:if(VFDposicion(x[2],y[2]))(*estado);break;
+       case 16:if(VFDserial_SendBlock1(&c[0],sizeof(c)))(*estado);break;
+       case 17:if(delay_us_VFD(100))(*estado);break;
+       case 18:if(VFDposicion(x[3],y[3]))(*estado);break;
+       case 19:if(VFDserial_SendBlock1(&d[0],sizeof(d)))(*estado)++;break;
+	   case 20:if(displayCuadroMadre_VFD())(*estado)++;break;
+       case 21:delay_ms_VFD(2);(*estado)++;break;
+	   case 22:Deteccion.CuadroMadreReady=TRUE;
 	           vfd.box.box0=0;//se inicia desde el primer cuadro a graficar.         	    
 	           init_Sensibilidad();
       	       //keypad.b.enable=1;//Habilitado el teclado
