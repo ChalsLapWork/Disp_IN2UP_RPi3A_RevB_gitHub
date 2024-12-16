@@ -6,6 +6,7 @@
 #include "queue.h"
 #include "VFD.h"
 #include "DSP.h"
+#include "BarraDisplay.h"
 
 struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
 extern struct _PRODUCTO_ producto;
@@ -62,7 +63,7 @@ union W16{
          aux3_char=mem+2;
   word_16bits.c[0]=*(mem+4);
   word_16bits.c[1]=*(mem+5);
-          aux1_usi=w16.usi;
+          aux1_usi=word_16bits.usi;
         mem_2bytes=mem+6;//6,7
         aux0_uchar=mem+8;
 
@@ -99,7 +100,7 @@ union W16{
 	   case 21:Deteccion.CuadroMadreReady=TRUE;
 	           vfd.box.box0=0;//se inicia desde el primer cuadro a graficar.         	    
 	           init_Sensibilidad();
-      	       keypad.b.enable=1;//Habilitado el teclado
+      	       //keypad.b.enable=1;//Habilitado el teclado
 	           vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
 	           estado=0;
 	           ret=TRUE;

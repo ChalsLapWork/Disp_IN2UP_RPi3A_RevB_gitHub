@@ -1,5 +1,6 @@
 #include "DSP.h"
 
+struct _Detection Deteccion;
 
 void init_Sensibilidad(void){
 unsigned short int cuadroBase;//conversor de sensilidad para 	

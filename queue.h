@@ -139,6 +139,9 @@ struct Queue{
 };
 
 
+
+
+
 struct _FIFO_func_{
 	  //unsigned char (*append)(unsigned char x,unsigned char y, unsigned char p);
       unsigned char (*append)(struct Queue *q,struct VFD_DATA dato);

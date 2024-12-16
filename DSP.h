@@ -568,7 +568,7 @@ void Monitor_Maestro_de_Voltajes(void);
 void voltage_monitor_catcher(signed short int x,signed short int y);	
 //unsigned short int ADC_getValue16(struct _GLOBAL_CONTEXTO *g);
 void Centrar_Signal_y_OffSet(signed short int datainX,signed short int datainY,signed short int *Xout,signed short int *Yout);
-inline void setOFFSET(signed short int xin,signed short int yin,signed short int *xout,signed short int *yout,signed short int offsetx,signed short int offsety);
+//inline void setOFFSET(signed short int xin,signed short int yin,signed short int *xout,signed short int *yout,signed short int offsetx,signed short int offsety);
 unsigned char CounterOffsetController(unsigned char var);
 unsigned char evaluar_Offset(signed short int inX,signed short int inY,signed short int offsetX,signed short int offsetY);
 void getOFFset(signed short int xin,signed short int  yin,signed short int *offsetX,signed short int *offsetY);
