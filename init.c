@@ -6,7 +6,7 @@
 #include "VFD.h"
 #include "Memoria.h"
 
-extern struct _PRODUCTO_ producto;
+extern struct _PRODUCTO1_ producto;
 
 void configPuertos(void){
   printf("\n       Started Configuracion de Puertos");

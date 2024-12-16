@@ -990,7 +990,7 @@ void display_Error(unsigned char x,unsigned char y,unsigned char *mens,unsigned 
 //unsigned char xRun_Menu(void);
 unsigned char InitArbolMenu(unsigned char destino);
 //unsigned char   PortalinicioDisplay(void);
-unsigned char  PortalinicioDisplay(byte *mem);
+//unsigned char  PortalinicioDisplay(byte *mem);
 unsigned char displayMenuInsight(void);
 unsigned char DDS_HANDLER(void);
 unsigned char display5UChars1(unsigned short int posx,unsigned short int posy,unsigned char *p);

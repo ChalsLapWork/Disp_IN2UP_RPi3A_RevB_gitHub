@@ -115,7 +115,7 @@ unsigned char VFDdrawLine_v5(unsigned char pen,unsigned short int x1, unsigned s
 void VFDcommand_Bold_DDS(unsigned char bold);
 unsigned char VFDcommand_Bold_DDS_v2(unsigned char bold);
 unsigned char FontSizeVFD(unsigned char m,unsigned char *mem);
-unsigned char delay_us_VFD(unsigned short int t);
+//unsigned char delay_us_VFD(unsigned short int t);
 void initParallelPort_Global(void);
 void writePort(unsigned char value);
 void test_display(void);

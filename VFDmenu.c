@@ -9,8 +9,11 @@
 #include "BarraDisplay.h"
 
 struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
-extern struct _PRODUCTO_ producto;
+extern struct _PRODUCTO1_ producto;
 extern struct _DISPLAY_VFD_ vfd;
+extern struct _Detection Deteccion;
+
+
 
 unsigned char InitArbolMenu(unsigned char destino){// initializar estructura de datos de los menus
 auto unsigned char ret=0;	 

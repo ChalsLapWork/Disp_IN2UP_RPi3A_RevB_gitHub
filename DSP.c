@@ -1,13 +1,16 @@
 #include "DSP.h"
+#include "errorController.h"
 
 struct _Detection Deteccion;
+struct ZoomControl zoom;
+
 
 void init_Sensibilidad(void){
 unsigned short int cuadroBase;//conversor de sensilidad para 	
 	    
              Zoom_init();  
-	         Deteccion.EnCurso=NOP;//no hay deteccion
-	         Offset.Status=0;//debug poner control con EEPROM AQUI FIRST_START;//no estamos listos para evaluar el offset
+	         Deteccion.EnCurso=0;//no hay deteccion
+	         //Offset.Status=0;//debug poner control con EEPROM AQUI FIRST_START;//no estamos listos para evaluar el offset
 	         /*if(Deteccion.tipo==NORMAL){
 	        			cuadroBase=(Deteccion.Sensibilidad)/8;//7 cuadros base
 	        			Deteccion.LIM1=cuadroBase;
@@ -53,7 +56,7 @@ unsigned short int maxx,maxy,ymax,ymin;
 	     zoom.Cy=CENTRO_Y;
 	     
 	     switch(zoom.Zoom){
-			case 0:__asm(Halt);//debug error de software        
+			case 0:errorCritico2("error de parametro de software",59);break; // __asm(Halt);//debug error de software        
 			case 1: maxx=ZOOM_MAX_X_01;    maxy=ZOOM_MAX_Y_01;ymax=23919;ymin=369; break;                                 
 			case 2: maxx=ZOOM_MAX_X_02;    maxy=ZOOM_MAX_Y_02;ymax=2649;ymin=81; break;                                 
 			case 3: maxx=ZOOM_MAX_X_03;    maxy=ZOOM_MAX_Y_03;ymax=1407;ymin=43; break;                                 
