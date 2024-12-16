@@ -205,7 +205,7 @@ unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despl
 	  case INIT_M+3:contexto=find_contexto_Siguiente();estado3++;break;
 	  case INIT_M+4:InitArbolMenu(contexto);estado3++;break;
 	  case INIT_M+5:vfd.config.bits.Menu_Ready=0;estado3++;break;//menu no esta terminado aun
-	  case INIT_M+6:if(MenuActualScreen.func1(&mem[0]))estado3=TERMINAR;break;//se despliega el MenuÂ¡Â¡
+	  case INIT_M+6:if(MenuActualScreen.func2(&mem[0]))estado3=TERMINAR;break;//se despliega el MenuÂ¡Â¡
 					
 	  case TERMINAR:vfd.config.bits.init_Menu=TRUE;//no esta init el VFD
                     vfd.config.bits.MenuPendiente=FALSE;//hay pendiente un menu por desplegar
@@ -217,7 +217,7 @@ unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despl
 
 
 
-
+/*
 const char *mens[]={" hola mundo ",
                         "  mensaje No.2 ",
                         "  Tercera line del mensaje",
@@ -240,6 +240,8 @@ int j=0;
             VFDserial_SendBlock1(mens[i]);   
         }}//fin while++++++++++++++++++++++++++++++++
     printf(" \n j=%d",j);
+*/
+
 }//fin de prueba de despliegue de datos en el VFD+++++++++++++++++++++++++++++
 //fin del control operativo del menu de escape-----------------------------------------
  

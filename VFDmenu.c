@@ -7,6 +7,7 @@
 #include "VFD.h"
 #include "DSP.h"
 #include "BarraDisplay.h"
+#include "strings.h"
 
 struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
 extern struct _PRODUCTO1_ producto;

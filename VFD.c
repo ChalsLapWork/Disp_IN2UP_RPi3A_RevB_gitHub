@@ -166,22 +166,6 @@ unsigned char POS_CMD[]={0x1FU,0x24U,0xFFU,0x00U,0x11U,0x00U};
 }// fin posicionVFD-------------------------------------------------------------
 
 
-
-//regresa true cuando se cumpla todo el methodo hasta el final
-unsigned char delay_us_VFD(unsigned short int t){
-unsigned char ret=0;
-/*union W7{//access word: 
-	unsigned  short int wordx;   //   	0xaabb        //         aa
-	unsigned char byte[2];        //byte[0]=aa,byte[1]=bb
-}w16;
-DEPRECATED
-  w16.wordx=t;
-  if(vfd.f1.append(w16.byte[0],w16.byte[1],_DELAY_US))
-        ret=TRUE;*/
-return ret;    
-}//--------------------------------------------------
-
-
 //void VFDserial_SendChar1(unsigned char c){
 //	vfd.f1.append(c,0,_CHAR_);// FIFO_Display_DDS_Char_push(c,0xFE);//0xFE means that is just a char display          
 //}//fin VFDserial_SendChar_DDS---------------------------------
@@ -189,21 +173,14 @@ unsigned char VFDserial_SendChar1(unsigned char c){
 //struct VFD_DATA dato;
     //dato.p=_CHAR_;dato.x=c;dato.y=0;
 	//return vfd.f1.append(&qVFDtx,dato);
-return VFD_sendBlockChars(c,1);//Init VFD
+return VFD_sendBlockChars(&c,1);//Init VFD
 }//------------------------------------------------------------------
 
 
 
 //REGRESA TRUE si ya se ejecuto todo el comando hasta el final
 unsigned char VFDcommand_init(unsigned char cmd){
-auto unsigned char ret=FALSE;
-	//delay1us();
-	//con 1 ms se le quito el error de FontSize
-	//con 100us tiene error de FontSize
-	//con 500us se le quito el error de FontSize
-	//con 250us se le quito el error de FontSize
-	//Se le quito el error con 125us lo dejamos en 125us
- 
+unsigned char ret=FALSE;
   
     ret+=delay_us_VFD(225);
     ret+=VFDserial_SendChar1(cmd);
@@ -219,7 +196,7 @@ unsigned char ret=0,size2;
    pthread_mutex_lock(&buffer.mutex);
    if(size1>MAX_MESSAGE_LEN) size2=MAX_MESSAGE_LEN; else size2=size1;
    if (next_head != buffer.tail) {  // Solo escribe si hay espacio en el buffer
-        strncpy(buffer.buffer[buffer.head], Ptr, size2) //MAX_MESSAGE_LEN);
+        strncpy(buffer.buffer[buffer.head], Ptr, size2); //MAX_MESSAGE_LEN);
         buffer.head = next_head;
         pthread_cond_signal(&buffer.cond);  // Despierta al hijo
         ret=TRUE;}
@@ -324,7 +301,7 @@ unsigned char VFDboxLine1(unsigned char pen,unsigned char mode,
                        unsigned char x1,unsigned char y1,
                        unsigned char x2,unsigned char y2){
 coordn16 coordenadas; //                   mode  pen x1LO x1Hi y1Lo y1Hi x2Lo x2Hi y2Lo y2Hi
-unsigned char datos[]={0x1F,0x28,0x64,0x11,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}
+unsigned char datos[]={0x1F,0x28,0x64,0x11,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
      //                 0    1    2    3    4    5    6     7   8    9    10    11  12   13  
 	
     if((mode!=BOX_VACIA)||(mode!=BOX_LLENA)){mode=BOX_VACIA;}

@@ -514,7 +514,7 @@ struct _OFFSET_{
 
 //declaracion de las funciones
 void init_DSP(void);
-void malloc(struct NodoLista *N);
+//void malloc(struct NodoLista *N);
 void pushFIFO(signed short int x, signed short int y);
 void FiltroDigital_passWideBand(signed short int *x,signed short int *y);
 unsigned char popFIFOdata(signed short int *xx,signed short int *yy,unsigned char mode);
@@ -528,7 +528,7 @@ void normalizeAngle(double *angulo);
 void qsort1(double *ang,double *angMaxInd);
 void bubbleSort(double *ang,double *angMaxInd);
 unsigned char countingMayoria(double *a,double *aM);//*angulo array  *anguloMaximo
-void mallocCV(struct NodoCV *N);
+//void mallocCV(struct NodoCV *N);
 void pushFIFOdisplayCV(unsigned char dato);
 unsigned char popFIFOdisplayCV(void);
 void newbit(unsigned char *pos,unsigned long int *n);
@@ -544,7 +544,7 @@ double cosd(double x);
 unsigned char getFraccionAngVibr(double *ang,double *angMaxInd,unsigned char av);
 void convert2int(double *ang,double *angMaxInd,double*ang2);
 double reBuildAV(unsigned char Entero, unsigned char Frac);
-void mallocCharOp(struct NodoCharOp *N);
+//void mallocCharOp(struct NodoCharOp *N);
 char  pushFIFOcOPc(struct overLoad d);
 struct overLoad popFIFOcOP(void);
 //void pushFIFOcOP_inicioCMD(void);
