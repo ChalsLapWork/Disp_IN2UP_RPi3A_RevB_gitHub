@@ -236,7 +236,7 @@ int next_head = (buffer2.head + 1) % BUFFER_SIZE;
         ret = 1;}
     pthread_mutex_unlock(&buffer2.mutex);
 return ret;
-}//VFD_sendBlockChars++++++++++++++++++++++++++++++++++++++
+}//VFD_sendBlockChars+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 //Proceso  unico de Padre unico, PROCESO

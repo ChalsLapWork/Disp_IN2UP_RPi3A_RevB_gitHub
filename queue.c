@@ -61,10 +61,10 @@ unsigned char debug;
 	if((debug=pthread_create(&SubProc_SendBlock_chars_TX_VFD,NULL,Subproceso_sendBlockBytes_Tx_VFD,NULL))!=0){
 	    errorCritico2("Error creacion Hilo:",67);}else{NoErrorOK();}
 	if((debug=pthread_create(&SubProc_SendBlock_TX_VFD,NULL,SubProceso_SendBlock_Tx_VFD,NULL))!=0){	
-	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}		 
+	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}
 	inicializar_VFD(init_VFD,sizeof(init_VFD));// VFD_sendBlockChars(init_VFD,sizeof(init_VFD));//Init VFD
 	printf("\n       Fin de Init Queues");
-	vfd.config.bits.recurso_VFD_Ocupado=FALSE;
+	vfd.config.bits.recurso_VFD_Ocupado=FA	LSE;
 	NoErrorOK();
 }//fin init queue+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

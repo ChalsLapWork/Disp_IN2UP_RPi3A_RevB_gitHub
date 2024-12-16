@@ -12,6 +12,8 @@
   #include <pthread.h>
 #endif
 #include "VFD.h"
+#include "stdlib.h"
+#include <signal.h>
 
 #define DEPURANDO_SIN_DISPLAY_ENCENDIDO 1//1=CIERTO 0=DISPLAY ESTA ENCENDIDO Y FUNCIONANDO
 
@@ -25,6 +27,18 @@ void signal_handler(int signalnum){
     Terminar_subProcesos();
 }//fin manejador de signal
 
+//Si el programa termina debido a una señal como SIGKILL o SIGSEGV, las funciones registradas con atexit no se ejecutarán.
+void cleanup1(void) {
+  printf("Limpieza 1 ejecutada.\n");
+  pthread_cancel(SubProc_SendBlock_TX_VFD);
+  pthread_join(SubProc_SendBlock_TX_VFD, NULL);
+  pthread_cancel(SubProc_SendBlock_chars_TX_VFD);
+  pthread_join(SubProc_SendBlock_chars_TX_VFD,NULL);
+  pthread_exit(NULL);
+}//*****************************************************
+
+
+
 int main(void){
   printf("\nInsight v3");
   wiringPiSetup();  
@@ -36,17 +50,13 @@ int main(void){
 
 
 
-  usleep(4000000);
-  usleep(4000000);
+  pause();//se detiene el hilo principal hasta que llega una señal
   printf("\n       Hilo Principal Terminado");
   NoErrorOK();
   printf("\n ");
 
-  pthread_cancel(SubProc_SendBlock_TX_VFD);
-  pthread_join(SubProc_SendBlock_TX_VFD, NULL);
-  pthread_cancel(SubProc_SendBlock_chars_TX_VFD);
-  pthread_join(SubProc_SendBlock_chars_TX_VFD,NULL);
-  pthread_exit(NULL);//exit(1);
+  atexit(cleanup1);//se ejecuta cuando algun hilo ejecuta exit()
+
 
   //sleep(500);//tiempo para transmitir los printf anteriores antes de matar el proceso
    
