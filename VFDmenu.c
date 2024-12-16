@@ -1,8 +1,13 @@
 #include "VFDmenu.h"
 #include "errorController.h"
 #include "system.h"
+#include "Memoria.h"
+#include "delay.h"
+#include "queue.h"
 
 struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
+extern struct _PRODUCTO_ producto;
+extern struct _DISPLAY_VFD_ vfd;
 
 unsigned char InitArbolMenu(unsigned char destino){// initializar estructura de datos de los menus
 auto unsigned char ret=0;	 
@@ -41,35 +46,87 @@ const unsigned char x[4]={80,24,24,24};
 const unsigned char y[4]={ 2,10,12,14};
 unsigned char ret=0;
 //unsigned char *inst1,*inst2;//instancias subHilos a ejecutar que se pueden ejecutar en otros lados
-unsigned char *estado,*control,*mem_2bytes;
-
+unsigned char *estado,*control,*mem_2bytes,*aux3_char,*aux0_uchar;
+unsigned short int aux1_usi;
+const unsigned char DEBUG=0x11,MEMO=0x12;
+unsigned char Status_Prod=DEBUG;
 union W16{
    unsigned short int usi;
    unsigned char c[2];
 }word_16bits;
 
-    estado=*mem;
-   control=*mem+1;
-  w16.c[0]=*(mem+4);
-  w16.c[1]=*(mem+5);
-      aux1=w16.usi;
-mem_2bytes=mem+6;//6,7
-     
-
+            estado=mem;
+           control=mem+1;
+         aux3_char=mem+2;
+  word_16bits.c[0]=*(mem+4);
+  word_16bits.c[1]=*(mem+5);
+          aux1_usi=w16.usi;
+        mem_2bytes=mem+6;//6,7
+        aux0_uchar=mem+8;
 
 
     mensOK("Estoy en portal Inicio",CAMARILLO);   
     NoErrorOK();    
     switch(*estado){ 
-       case 1:Deteccion.CuadroMadreReady=FALSE;
-              keypad.b.enable=FALSE;
+       case 1://Deteccion.CuadroMadreReady=FALSE;
+              //keypad.b.enable=FALSE;
               (*estado)++;break;
        case 2:if(VFDclrscr1(mem_2bytes))estado++;break;
-       
-    ret=1;
+       case 3:delay_ms_VFD(200);estado++;break;
+       case 4:if(VFDposicion(65,0))estado++; break;    //2bytes
+       case 5:if(VFDserial_SendBlock1(&s[0],sizeof(s)))(*estado)++;break;//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
+       case 7:*aux3_char=producto.name[1];aux1_usi=length(&producto.name[0],sizeof(producto.name));  	 
+    	      *aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);(*estado)++;break;
+       case 8:if(Status_Prod==MEMO){if(VFDposicion(*aux0_uchar,2))(*estado)++;}
+     	 	  else{if(VFDposicion(x[0],y[0])) estado++;}break;
+ 	   case 9:if(delay_ms_VFD(2))(*estado)++;break; //Tiempo en pruebas
+	   case 10:if(Status_Prod==MEMO){ss=aux3_char;
+		          if(VFDserial_SendBlock1(ss,(unsigned char)aux1_usi))(*estado)++;}
+	 	 	 else{if(VFDserial_SendBlock1(&a[0],sizeof(a)))(*estado)++;} 
+	         break;
+	   case 11:if(delay_ms_VFD(1))(*estado);break; //Tiempo en pruebas,
+	   case 12:if(VFDposicion(x[1],y[1]))(*estado);break;
+	   case 13:if(VFDserial_SendBlock1(&b[0],sizeof(b)))(*estado);break;
+	   case 14:if(VFDposicion(x[2],y[2]))(*estado);break;
+       case 15:if(VFDserial_SendBlock1(&c[0],sizeof(c)))(*estado);break;
+       case 16:if(delay_us_VFD(100))(*estado);break;
+       case 17:if(VFDposicion(x[3],y[3]))(*estado);break;
+       case 18:if(VFDserial_SendBlock1(&d[0],sizeof(d)))(*estado)++;break;
+	   case 19:if(displayCuadroMadre_VFD())(*estado)++;break;
+       case 20:delay_ms_VFD(2);(*estado)++;break;
+	   case 21:Deteccion.CuadroMadreReady=TRUE;
+	           vfd.box.box0=0;//se inicia desde el primer cuadro a graficar.         	    
+	           init_Sensibilidad();
+      	       keypad.b.enable=1;//Habilitado el teclado
+	           vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
+	           estado=0;
+	           ret=TRUE;
+	           break;
+		default:*estado=1;break;}//fin de estructura de +++++++++++++++++++++++
+	
+ word_16bits.usi=aux1_usi;
+        *(mem+4)=word_16bits.c[0];
+        *(mem+5)=word_16bits.c[1];
+          
  
 return ret;   
 }// FIN DESPLIEGUE DEL PORTAL INICIO-------------------------------------------------------------------
 
 
 
+
+
+
+
+unsigned char display_centrarNombres(unsigned char nchars){
+const unsigned char middle=256/2;
+const unsigned char charpixel=8;
+	switch(nchars){
+		case 0:return(middle);break;
+		case 1:return(middle);break;//---*---
+		case 2:return(middle-charpixel);break;
+		case 3:return(middle-charpixel);break;
+		case 4:return(middle-(charpixel*2));break;
+		case 5:return(middle-(charpixel*3));break;
+		default: return(middle-((nchars/2)*charpixel));break;	}
+}//fin unsigned char display_centrarNombres(unsigned char nchars){------------------------------------

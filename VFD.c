@@ -151,16 +151,19 @@ unsigned char *estado4,*c;
   switch(*estado4){
 	 case 1:if(VFDserial_SendChar1(0x0CU))//(Display Clear)   Display screen is cleared and cursor moves to home position.
 		         estado4++;
-	        c=0;
 	        break;
-	 case 2:if(delay_ms_VFD(1)){//con 50 sigue sin borrar el anterior
-	            ret=TRUE;estado=1;}
-	         break;
-	 default:estado=1;break;}
-  *instancia=estado;
-  *instancia2=c;
+	 case 2:usleep(1000);ret=TRUE;*estado4=0;break;
+	 default:*estado4=1;break;}
 return ret;    
 }//fin clear screen VFD-------------------------------------------------------------
+
+unsigned char VFDposicion(unsigned char x,unsigned char y){ //MANDA DEL COMANDO DE POSICION AL vfd
+	//return vfd.f1.append((unsigned char)x,(unsigned char)y,_POS_);//FIFO_Display_DDS_Char_push((unsigned char)x,(unsigned char)y);          
+unsigned char POS_CMD[]={0x1FU,0x24U,0xFFU,0x00U,0x11U,0x00U};
+     POS_CMD[2]=x;POS_CMD[4]=y;
+   	 VFD_sendBlockChars(&POS_CMD[0],6);//
+}// fin posicionVFD-------------------------------------------------------------
+
 
 
 //regresa true cuando se cumpla todo el methodo hasta el final
@@ -209,12 +212,13 @@ return ret;
 }//fin vfd command----------------------------------------------------
 
 /* Metodo Multi-Padre pero solo una Estancia ala Vez      */
-unsigned char VFDserial_SendBlock1(const char *Ptr){
-unsigned char ret=0; 
+unsigned char VFDserial_SendBlock1(const char *Ptr,unsigned char size1){
+unsigned char ret=0,size2; 
    int next_head = (buffer.head + 1) % BUFFER_SIZE;
    pthread_mutex_lock(&buffer.mutex);
+   if(size1>MAX_MESSAGE_LEN) size2=MAX_MESSAGE_LEN; else size2=size1;
    if (next_head != buffer.tail) {  // Solo escribe si hay espacio en el buffer
-        strncpy(buffer.buffer[buffer.head], Ptr, MAX_MESSAGE_LEN);
+        strncpy(buffer.buffer[buffer.head], Ptr, size2) //MAX_MESSAGE_LEN);
         buffer.head = next_head;
         pthread_cond_signal(&buffer.cond);  // Despierta al hijo
         ret=TRUE;}
@@ -313,5 +317,29 @@ unsigned char estado;
 		default:estado=1;break;}*/
     return NULL;
 }//fin del proceso hilo limpiador+++++++++++++++++++++++++++++++
+
+
+unsigned char VFDboxLine1(unsigned char pen,unsigned char mode,
+                       unsigned char x1,unsigned char y1,
+                       unsigned char x2,unsigned char y2){
+coordn16 coordenadas; //                   mode  pen x1LO x1Hi y1Lo y1Hi x2Lo x2Hi y2Lo y2Hi
+unsigned char datos[]={0x1F,0x28,0x64,0x11,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}
+     //                 0    1    2    3    4    5    6     7   8    9    10    11  12   13  
+	
+    if((mode!=BOX_VACIA)||(mode!=BOX_LLENA)){mode=BOX_VACIA;}
+    datos[4]=mode;
+    if(pen>0x01){pen=0;}
+    datos[5]=pen;
+    datos[6]=x1;         
+    datos[8]=y1;
+    datos[10]=x2;
+    datos[12]=y2; 
+    VFD_sendBlockChars(&datos[0],sizeof(datos));
+return 1;
+}// fin draw line -----------------------------------------------------------------------------------------
+
+
+
+
 
 

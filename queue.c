@@ -204,7 +204,8 @@ unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despl
 	  case INIT_M+2:pthread_mutex_lock(&vfd.mutex.VDF_busy);estado3++;break;//Mejora de la funcion: recurso.solicitar
 	  case INIT_M+3:contexto=find_contexto_Siguiente();estado3++;break;
 	  case INIT_M+4:InitArbolMenu(contexto);estado3++;break;
-	  case INIT_M+5:if(MenuActualScreen.func1(&mem[0]))estado3=TERMINAR;break;//se despliega el MenuÂ¡Â¡
+	  case INIT_M+5:vfd.config.bits.Menu_Ready=0;estado3++;break;//menu no esta terminado aun
+	  case INIT_M+6:if(MenuActualScreen.func1(&mem[0]))estado3=TERMINAR;break;//se despliega el MenuÂ¡Â¡
 					
 	  case TERMINAR:vfd.config.bits.init_Menu=TRUE;//no esta init el VFD
                     vfd.config.bits.MenuPendiente=FALSE;//hay pendiente un menu por desplegar
