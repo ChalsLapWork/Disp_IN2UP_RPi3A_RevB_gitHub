@@ -64,7 +64,7 @@ unsigned char debug;
 	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}
 	inicializar_VFD(init_VFD,sizeof(init_VFD));// VFD_sendBlockChars(init_VFD,sizeof(init_VFD));//Init VFD
 	printf("\n       Fin de Init Queues");
-	vfd.config.bits.recurso_VFD_Ocupado=FA	LSE;
+	vfd.config.bits.recurso_VFD_Ocupado=FALSE;
 	NoErrorOK();
 }//fin init queue+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
