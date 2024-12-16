@@ -78,14 +78,14 @@ union W16{
        case 1:Deteccion.CuadroMadreReady=FALSE;
               //keypad.b.enable=FALSE;
               (*estado)++;break;
-       case 2:if(VFDclrscr1(mem_2bytes))estado++;break;
-       case 3:delay_ms_VFD(200);estado++;break;
-       case 4:if(VFDposicion(65,0))estado++; break;    //2bytes
+       case 2:if(VFDclrscr1(mem_2bytes))(*estado)++;break;
+       case 3:delay_ms_VFD(200);(*estado)++;break;
+       case 4:if(VFDposicion(65,0))(*estado)++; break;    //2bytes
        case 5:if(VFDserial_SendBlock1(&s[0],sizeof(s)))(*estado)++;break;//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
        case 6:*aux3_char=producto.name[1];aux1_usi=length(&producto.name[0],sizeof(producto.name));  	 
     	      *aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);(*estado)++;break;
        case 7:if(Status_Prod==MEMO){if(VFDposicion(*aux0_uchar,2))(*estado)++;}
-     	 	  else{if(VFDposicion(x[0],y[0])) estado++;}break;
+     	 	  else{if(VFDposicion(x[0],y[0])) (*estado)++;}break;
  	   case 8:if(delay_ms_VFD(2))(*estado)++;break; //Tiempo en pruebas
 	   case 9:if(Status_Prod==MEMO){ss=aux3_char;
 		          if(VFDserial_SendBlock1(ss,(unsigned char)aux1_usi))(*estado)++;}
@@ -106,7 +106,7 @@ union W16{
 	           init_Sensibilidad();
       	       //keypad.b.enable=1;//Habilitado el teclado
 	           vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
-	           estado=0;
+	           *estado=0;
 	           ret=TRUE;
 	           break;
 		default:*estado=1;break;}//fin de estructura de +++++++++++++++++++++++
