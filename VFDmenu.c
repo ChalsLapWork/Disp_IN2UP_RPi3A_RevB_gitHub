@@ -91,13 +91,13 @@ union W16{
 		            if(VFDserial_SendBlock1(ss,(unsigned char)aux1_usi))(*estado)++;}
 	 	 	   else{if(VFDserial_SendBlock1(&a[0],sizeof(a)))(*estado)++;} 
 	           break;
-	   case 12:if(delay_ms_VFD(1))(*estado);break; //Tiempo en pruebas,
-	   case 13:if(VFDposicion(x[1],y[1]))(*estado);break;
-	   case 14:if(VFDserial_SendBlock1(&b[0],sizeof(b)))(*estado);break;
-	   case 15:if(VFDposicion(x[2],y[2]))(*estado);break;
-       case 16:if(VFDserial_SendBlock1(&c[0],sizeof(c)))(*estado);break;
-       case 17:if(delay_us_VFD(100))(*estado);break;
-       case 18:if(VFDposicion(x[3],y[3]))(*estado);break;
+	   case 12:if(delay_ms_VFD(1))(*estado)++;break; //Tiempo en pruebas,
+	   case 13:if(VFDposicion(x[1],y[1]))(*estado)++;break;
+	   case 14:if(VFDserial_SendBlock1(&b[0],sizeof(b)))(*estado)++;break;
+	   case 15:if(VFDposicion(x[2],y[2]))(*estado)++;break;
+       case 16:if(VFDserial_SendBlock1(&c[0],sizeof(c)))(*estado)++;break;
+       case 17:if(delay_us_VFD(100))(*estado)++;break;
+       case 18:if(VFDposicion(x[3],y[3]))(*estado)++;break;
        case 19:if(VFDserial_SendBlock1(&d[0],sizeof(d)))(*estado)++;break;
 	   case 20:if(displayCuadroMadre_VFD())(*estado)++;break;
        case 21:delay_ms_VFD(2);(*estado)++;break;
