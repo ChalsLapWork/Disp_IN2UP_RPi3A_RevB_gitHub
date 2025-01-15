@@ -79,7 +79,7 @@ union W16{
               (*estado)++;break;
        case 3:NoErrorOK();(*estado)++;break;			  
        case 4:if(VFDclrscr1(mem_2bytes))(*estado)++;break;
-       case 5:delay_ms_VFD(200);(*estado)++;break;
+       case 5:delay_ms_VFD(500);(*estado)++;break;
        case 6:if(VFDposicion(65,0))(*estado)++; break;    //2bytes
        case 7:if(VFDserial_SendBlock1(&s[0],sizeof(s)))(*estado)++;break;//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
        case 8:*aux3_char=producto.name[1];aux1_usi=length(&producto.name[0],sizeof(producto.name));  	 
@@ -96,7 +96,7 @@ union W16{
 	   case 14:if(VFDserial_SendBlock1(&b[0],sizeof(b)))(*estado)++;break;
 	   case 15:if(VFDposicion(x[2],y[2]))(*estado)++;break;
        case 16:if(VFDserial_SendBlock1(&c[0],sizeof(c)))(*estado)++;break;
-       case 17:if(delay_us_VFD(100))(*estado)++;break;
+       case 17:if(delay_us_VFD(100))(*estado)++;breakbr;
        case 18:if(VFDposicion(x[3],y[3]))(*estado)++;break;
        case 19:if(VFDserial_SendBlock1(&d[0],sizeof(d)))(*estado)++;break;
 	   case 20:if(displayCuadroMadre_VFD())(*estado)++;break;
