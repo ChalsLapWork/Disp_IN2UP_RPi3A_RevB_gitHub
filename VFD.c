@@ -100,6 +100,7 @@ void writePort(unsigned char value){
 void VFD_sendChar(uchar c) {
     printf(" \033[33m0x%02X\033[0m ",c);
     writePort(c);
+    usleep(12000);
 }//fin de VFD_sendChar+++++++++++++++++++++++++++++++++++++
 
 
