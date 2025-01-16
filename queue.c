@@ -148,8 +148,6 @@ void* Subproceso_sendBlockBytes_Tx_VFD(void* arg) {
 return NULL;
 }//fin de subproceso de send Block Bytes TX VFD++++++++++++
 
-
-
 //deprecated:metho	do que se usa en un hilo transmisor VFD+++++++++++++++++++++++
 unsigned char Transmissor_SendBlock_VFD(const char *str){
    while(*str){			                    		
@@ -158,7 +156,7 @@ unsigned char Transmissor_SendBlock_VFD(const char *str){
 		writePort((unsigned char)*str++);//writePort(*(datos+*index))
         printf("\033[0m");
         fflush(stdout);//salida inmediata de buffer printf
-		usleep(900);}
+		usleep(12900);}
     printf("\n");				
 }//transmisor de datos a VFD+++++++++++++++++++++++++++++++++++++++++
 
