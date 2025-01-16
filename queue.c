@@ -156,7 +156,7 @@ unsigned char Transmissor_SendBlock_VFD(const char *str){
 		writePort((unsigned char)*str++);//writePort(*(datos+*index))
         printf("\033[0m");
         fflush(stdout);//salida inmediata de buffer printf
-		usleep(12900);}
+		usleep(120900);}
     printf("\n");				
 }//transmisor de datos a VFD+++++++++++++++++++++++++++++++++++++++++
 
