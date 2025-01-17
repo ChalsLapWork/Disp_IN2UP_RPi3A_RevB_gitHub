@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <stdatomic.h>
 #include <stdbool.h>
+#include "delay.h"
+
 
 
 
@@ -49,6 +51,20 @@ circular_buffer_t buffer = {
 };
 
 
+circular_buffer_t_byteBlock buffer2 = {
+    .head = 0,
+    .tail = 0,
+    .mutex = PTHREAD_MUTEX_INITIALIZER,
+    .cond  = PTHREAD_COND_INITIALIZER
+};
+
+
+void init_mutex_VFD(void){
+     pthread_mutex_init( &buffer.mutex,NULL);
+     pthread_mutex_init(&buffer2.mutex,NULL);
+     pthread_cond_init(  &buffer.cond ,NULL);
+     pthread_cond_init( &buffer2.cond ,NULL); 
+}// fin de init mutex VFD++++++++++++++++++++++++++
 
 ParallelPort port = { .pins = {0, 1, 2, 3, 4, 5, 6, 7} };
 void initParallelPort(ParallelPort *port);
@@ -79,6 +95,16 @@ void writePort(unsigned char value){
    digitalWrite(WR_PIN,HIGH);//comando de escritura OFF
 }//fin write port++++++++++++++++++++++++++++++++++++++++++
 
+
+// Simula la función VFD_sendChar (lenta)
+void VFD_sendChar(uchar c) {
+    printf(" \033[33m0x%02X\033[0m ",c);
+    writePort(c);
+    usleep(120000);
+}//fin de VFD_sendChar+++++++++++++++++++++++++++++++++++++
+
+
+
 /*void writePort_SendBlock(const char value){
    digitalWrite(WR_PIN,LOW);//comando de escritura 
    writeParallelPort(&port,value);
@@ -100,31 +126,6 @@ return VFDserial_SendChar1(cmd);
 }//fin vfd command----------------------------------------------------
 
 
-//despliegue de datos en el display
-void test_display(void){
-const char *mens[]={" hola mundo ",
-                        "  mensaje No.2 ",
-                        "  Tercera line del mensaje",
-                        "  cuarta line del mensaje",
-                        "  quinta line del mensaje",
-                        "  sexta line del mensaje",
-                        "   777 line del mensaje",
-                        "  888888 line del mensaje",
-                        "  999999a line del mensaje",
-                        "  1010101 line del mensaje",
-                        "  11111111 line del mensaje",
-                        "  112121212 line del mensaje"
-                        };
-unsigned char n;
-int j=0;
-    mensOK("Iniciando prueba de Puertos Fisicos.",CCIAN);
-    NoErrorOK();printf("\n");
-    while(1){
-        for(int i=0;i<12;i++){  
-            VFDserial_SendBlock1(mens[i]);   
-        }}//fin while++++++++++++++++++++++++++++++++
-    printf(" \n j=%d",j);
-}//fin de prueba de despliegue de datos en el VFD
 
 
 
@@ -149,42 +150,47 @@ return ret;
 }// fin font size for the VFD----------------------------------------------------
 
 
-//regresa true cuando se cumpla todo el methodo hasta el final
-unsigned char delay_us_VFD(unsigned short int t){
+
+
+/*limpia el VFD de caracteres y todo   */
+unsigned char VFDclrscr1(unsigned char *mem){//AUTORIZADO 2:BYTES DE memoria
 unsigned char ret=0;
-/*union W7{//access word: 
-	unsigned  short int wordx;   //   	0xaabb        //         aa
-	unsigned char byte[2];        //byte[0]=aa,byte[1]=bb
-}w16;
-DEPRECATED
-  w16.wordx=t;
-  if(vfd.f1.append(w16.byte[0],w16.byte[1],_DELAY_US))
-        ret=TRUE;*/
+//	monitorDDS_Halt();//debug, quitar un dia que la version este super probada 
+unsigned char *estado4,*c;
+  estado4=mem;
+        c=mem+1;
+  switch(*estado4){
+	 case 1:if(VFDserial_SendChar1(0x0CU))//(Display Clear)   Display screen is cleared and cursor moves to home position.
+		         (*estado4)++;
+	        break;
+	 case 2:usleep(1000);ret=TRUE;*estado4=0;break;
+	 default:*estado4=1;break;}
 return ret;    
-}//--------------------------------------------------
+}//fin clear screen VFD-------------------------------------------------------------
+
+unsigned char VFDposicion(unsigned char x,unsigned char y){ //MANDA DEL COMANDO DE POSICION AL vfd
+	//return vfd.f1.append((unsigned char)x,(unsigned char)y,_POS_);//FIFO_Display_DDS_Char_push((unsigned char)x,(unsigned char)y);          
+unsigned char POS_CMD[]={0x1FU,0x24U,0xFFU,0x00U,0x11U,0x00U};
+     POS_CMD[2]=x;POS_CMD[4]=y;
+   	 VFD_sendBlockChars(&POS_CMD[0],6);//
+}// fin posicionVFD-------------------------------------------------------------
 
 
 //void VFDserial_SendChar1(unsigned char c){
 //	vfd.f1.append(c,0,_CHAR_);// FIFO_Display_DDS_Char_push(c,0xFE);//0xFE means that is just a char display          
 //}//fin VFDserial_SendChar_DDS---------------------------------
 unsigned char VFDserial_SendChar1(unsigned char c){
-struct VFD_DATA dato;
-    dato.p=_CHAR_;dato.x=c;dato.y=0;
-	return vfd.f1.append(&qVFDtx,dato);
+//struct VFD_DATA dato;
+    //dato.p=_CHAR_;dato.x=c;dato.y=0;
+	//return vfd.f1.append(&qVFDtx,dato);
+return VFD_sendBlockChars(&c,1);//Init VFD
 }//------------------------------------------------------------------
 
 
 
 //REGRESA TRUE si ya se ejecuto todo el comando hasta el final
 unsigned char VFDcommand_init(unsigned char cmd){
-auto unsigned char ret=FALSE;
-	//delay1us();
-	//con 1 ms se le quito el error de FontSize
-	//con 100us tiene error de FontSize
-	//con 500us se le quito el error de FontSize
-	//con 250us se le quito el error de FontSize
-	//Se le quito el error con 125us lo dejamos en 125us
- 
+unsigned char ret=FALSE;
   
     ret+=delay_us_VFD(225);
     ret+=VFDserial_SendChar1(cmd);
@@ -194,12 +200,13 @@ return ret;
 }//fin vfd command----------------------------------------------------
 
 /* Metodo Multi-Padre pero solo una Estancia ala Vez      */
-unsigned char VFDserial_SendBlock1(const char *Ptr){
-unsigned char ret=0; 
+unsigned char VFDserial_SendBlock1(const char *Ptr,unsigned char size1){
+unsigned char ret=0,size2; 
    int next_head = (buffer.head + 1) % BUFFER_SIZE;
    pthread_mutex_lock(&buffer.mutex);
+   if(size1>MAX_MESSAGE_LEN) size2=MAX_MESSAGE_LEN; else size2=size1;
    if (next_head != buffer.tail) {  // Solo escribe si hay espacio en el buffer
-        strncpy(buffer.buffer[buffer.head], Ptr, MAX_MESSAGE_LEN);
+        strncpy(buffer.buffer[buffer.head], Ptr, size2); //MAX_MESSAGE_LEN);
         buffer.head = next_head;
         pthread_cond_signal(&buffer.cond);  // Despierta al hijo
         ret=TRUE;}
@@ -207,12 +214,36 @@ unsigned char ret=0;
 return ret;// fin de enviar mensaje++++++++++++++++++++++
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
 
+//init el VFD+++++++++++++++++++++++++++++++++++++++++++++++ 
+unsigned char inicializar_VFD(const uchar *datos, size_t longitud){	
+    pthread_mutex_lock(&vfd.mutex.VDF_busy);  
+	VFD_sendBlockChars(datos,longitud);//Init VFD
+    pthread_mutex_unlock(&vfd.mutex.VDF_busy);
+}//fin de inizializacion de VFD++++++++++++++++++++++++++++++
 
+
+// Función que el hilo principal llama para enviar un bloque de caracteres
+unsigned char VFD_sendBlockChars(const uchar *datos, size_t longitud) {
+unsigned char ret = 0;
+int next_head = (buffer2.head + 1) % BUFFER_SIZE;
+
+    pthread_mutex_lock(&buffer2.mutex);
+    if (next_head != buffer2.tail && longitud <= MAX_BLOCK_CHAR_VDF_SIZE) {
+        bloque_t *bloque = &buffer2.buffer[buffer2.head];
+        bloque->longitud = longitud;
+        memcpy(bloque->datos, datos, longitud);
+        buffer2.head = next_head;
+        pthread_cond_signal(&buffer2.cond);
+        ret = 1;}
+    pthread_mutex_unlock(&buffer2.mutex);
+return ret;
+}//VFD_sendBlockChars+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 //Proceso  unico de Padre unico, PROCESO
+//Funcion DEPRECATED
 void* Mon_VFD(void* arg){  //Proceso Productor<---Proceso/hilo/THread
-struct Queue *q=(struct Queue*)arg;//
+/*struct Queue *q=(struct Queue*)arg;//
 unsigned char ret=0,estado;
 unsigned char i=0,debug,count;
 pthread_attr_t attr;
@@ -228,7 +259,6 @@ size_t stacksize=2*1024*1024;// memoria para el hilo
 		case 1:mensOK("Mon VFD starting. . .",CRESET);estado++;break;
         case 2:if(!vfd.config.bits.Proc_VFD_Tx_running)estado++;break;
 		case 3:pthread_mutex_lock(vfd.mutex.m_Free);
-			   vfd.config.bits.VDF_busy=TRUE;//Nadie mas puede usar el VFD
                q->isPadreAlive=TRUE;
 			   estado++;break;
 		case 4:NoErrorOK();estado++;break;
@@ -248,13 +278,13 @@ size_t stacksize=2*1024*1024;// memoria para el hilo
   mensOK("Sub Proceso TX Terminado",CRESET);
   pthread_attr_destroy(&attr);
   pthread_mutex_unlock(vfd.mutex.m_Free);
-  NoErrorOK();		
+  NoErrorOK();*/		
 return NULL;
 }//fin init VFD -------------------------------------------------------------------
 
 //** Proceso Hilo encargado de limpiar el Proceso Init VFD
-void *Clean_VFD(void *arg) {
-struct Queue *q=(struct Queue*)arg;//
+void *Clean_VFD(void *arg) {//HILO DEPRECATED
+/*truct Queue *q=(struct Queue*)arg;//
 unsigned char estado;	
     mensOK("Proceso Limpiador de VFD activo",CAMARILLO);
 	pthread_mutex_lock(vfd.mutex.m_Free);
@@ -272,8 +302,32 @@ unsigned char estado;
 		case 6:NoErrorOK();printf("\n");usleep(300);
 			   estado++;break;
                
-		default:estado=1;break;}
+		default:estado=1;break;}*/
     return NULL;
 }//fin del proceso hilo limpiador+++++++++++++++++++++++++++++++
+
+
+unsigned char VFDboxLine1(unsigned char pen,unsigned char mode,
+                       unsigned char x1,unsigned char y1,
+                       unsigned char x2,unsigned char y2){
+coordn16 coordenadas; //                   mode  pen x1LO x1Hi y1Lo y1Hi x2Lo x2Hi y2Lo y2Hi
+unsigned char datos[]={0x1F,0x28,0x64,0x11,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+     //                 0    1    2    3    4    5    6     7   8    9    10    11  12   13  
+	
+    if((mode!=BOX_VACIA)||(mode!=BOX_LLENA)){mode=BOX_VACIA;}
+    datos[4]=mode;
+    if(pen>0x01){pen=0;}
+    datos[5]=pen;
+    datos[6]=x1;         
+    datos[8]=y1;
+    datos[10]=x2;
+    datos[12]=y2; 
+    VFD_sendBlockChars(&datos[0],sizeof(datos));
+return 1;
+}// fin draw line -----------------------------------------------------------------------------------------
+
+
+
+
 
 

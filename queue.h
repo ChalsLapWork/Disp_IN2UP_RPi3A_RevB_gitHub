@@ -1,3 +1,6 @@
+#ifndef __QUEUE_H__
+  #define __QUEUE_H__  
+
 
 #ifndef _PTHREAD_H_
   #define _PTHREAD_H_
@@ -71,11 +74,14 @@ union _Byte5_{
 		unsigned short init_VFD:1;//flag init VFD indica si ya se init el VFD comandos de inizializacion
 		unsigned short init_Menu:1;//flag init Menu, enciende e inicializa los menus y el primer menu en pantalla
 		unsigned short BOX_enable:1;
-		unsigned short VDF_busy:1;//se estan mandando comandos  o posiciones
+		//unsigned short VDF_busy:1;//se estan mandando comandos  o posiciones
 		unsigned short ADC_DATO:1;
-		unsigned short Proc_VFD_Tx_running:1;//esta corriendo el hilo que transmite a la VFD
+		unsigned short deprecated1:1;//deprecated
 		unsigned short recurso_VFD_Ocupado:1;//recurso esta 0:libre o 1:ocupado?
-        unsigned short isProc_Free_running;
+        unsigned short Menu_Ready:1;//menu solicitado ya esta desplegado y listo.
+	    unsigned short BorrarDDS:1;//borrar DDS 
+        unsigned short MenuPendiente:1;//hay algun menu pendiente de desplegar?
+
 	}bits;
 };
 
@@ -94,6 +100,7 @@ struct _Sync2{
    pthread_mutex_t *m_Tx;
    pthread_cond_t  *cond_Mon;
    pthread_mutex_t *m_Mon;
+   pthread_mutex_t  VDF_busy;//recurso VFD
    //unsigned char sem;//semaforo para que no se empalme su uso
 };//synscronia estructura+++++++++++++++++++++++++++++++++++
 
@@ -132,6 +139,9 @@ struct Queue{
 };
 
 
+
+
+
 struct _FIFO_func_{
 	  //unsigned char (*append)(unsigned char x,unsigned char y, unsigned char p);
       unsigned char (*append)(struct Queue *q,struct VFD_DATA dato);
@@ -139,6 +149,24 @@ struct _FIFO_func_{
 	  unsigned char (*resetFIFOS)(void);//resetear todas las FIFOs Y arrays y registros
 };//fin _FIFO_func_----------------------------------------
 
+struct _Contexto{
+		unsigned char Actual;  //contexto Actual
+		unsigned char Modificado;
+		unsigned char destino;//al que quiero ir
+		unsigned char control;//el contexto control, controla como llegar al que quiero ir
+		unsigned char final;//el contexto al que me mandan si algo sale mal
+		unsigned char permisos;//guarda los permisos actuales de cada menu
+		unsigned char Anterior0;
+		unsigned char Anterior1;
+		unsigned char Anterior2;
+		unsigned char Anterior3;
+		unsigned char Anterior4;
+		unsigned char solicitaCambioA;//a donde se ccambiar de contexto
+};
+
+struct _Menu1_{
+   struct _Contexto contexto;    
+};
 
 
 struct _DISPLAY_VFD_{
@@ -148,7 +176,9 @@ struct _DISPLAY_VFD_{
 	struct _FIFO_func_  f1;//funciones para guardar lo que se grafica
 	union  _Byte5_ config;//banderas de configuracion y control para el display y menus
     struct _Sync2   mutex;//syncronia y control de hilos
-	struct Queue q;//pila para manejar el VFD
+	struct Queue q;//pila para manejar el VFD   
+	struct _Menu1_ menu;  
+
 	//size_t pthread_attr_t attr_mon,attr_free,atrr_Tx;//atributos  
  	struct _box_control{
 		 unsigned char boxs[SIZE_BOXES];
@@ -307,6 +337,11 @@ void* Init_VFD(void* arg);
 unsigned char Transmissor_a_VFD(struct VFD_DATA v,unsigned char *mem);
 void *Proceso_Limpiador(void *arg);
 //void* SubProceso_Tx_VFD(void* arg);
-void* SubProceso_SendBlock_Tx_VFD(void* arg);
+void *SubProceso_SendBlock_Tx_VFD(void* arg);
 void init_Queue_with_Thread(struct Queue  *q);
 unsigned char Transmissor_SendBlock_VFD(const char *str);
+void *Subproceso_sendBlockBytes_Tx_VFD(void *arg);
+void init_menu(void);
+void *Run_Menu(void *arg);
+void xControl_Principal_de_Menus_Operativo();
+#endif 

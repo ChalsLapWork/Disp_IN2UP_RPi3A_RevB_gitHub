@@ -16,36 +16,33 @@
 #include <wiringPi.h>
 #include "VFDisplay.h"
 #include <string.h>
+#include "VFDmenu.h"
+#include "SistOp.h"
 
 
 
 
 struct _DISPLAY_VFD_ vfd;
 struct Queue qVFDtx;//queue de transmision vfd 
-//struct _Sync2 s1;//sincronia 
+//struct _Sync2 s1;//sincronia 	
 struct VFD_DATA dequeue(struct Queue   *q);
 void enqueue(struct Queue  *q,struct VFD_DATA dato1);
 
 unsigned char  buffer6[SIZE_BUFFER6];//FIFO graficos con S.O, aqui guarda el dato
 unsigned char  buffer7[SIZE_BUFFER6];//FIFO graficos con SO. aqui guarda el parametro=char|box|pos|
 unsigned char  buffer8[SIZE_BUFFER6];//FIFO graficos con SO. aqui guarda el parametro numero 3
-pthread_cond_t  cond_VFD;//mutex de VFD Tx
-pthread_mutex_t mutex_VFD;//mutex de VFD TX
-pthread_cond_t  cond1;//de uso general
-pthread_mutex_t mutex1;//de uso general
 unsigned char sync1;//variable de recursos de los mutex1
-pthread_cond_t  *cond_free;//pointer para init 
-pthread_mutex_t *mutex_free;//mutex
 extern pthread_cond_t  cond_Tx_SendBlock;//condicional exclusivo para send Block
 extern pthread_mutex_t mutex_Tx_SendBlock;//mutex exclusivo para send block
 extern circular_buffer_t buffer;
-pthread_t SubProc_SendBlock_TX_VFD;
-
+extern struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
+pthread_t SubProc_SendBlock_TX_VFD;//send strings to VFD 
+pthread_t SubProc_SendBlock_chars_TX_VFD;//send bytes 	stream to VFD
+pthread_t SubProc_Run_Menu;//proceso que gestiona el cambio de menu
 
 void init_queues(void){
-	pthread_t Proc1_Init_VFD;//Proceso para inizializar el VFD
-	pthread_t Proc_limpiador;//proceso que limpia recursos del proceso hilo init VFD
-    unsigned char debug;
+const unsigned char init_VFD[]={0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2};
+unsigned char debug;
 	init_FIFO_General_1byte(&vfd.x,&buffer6[0],SIZE_BUFFER6);
     init_FIFO_General_1byte(&vfd.y,&buffer7[0],SIZE_BUFFER6);
     init_FIFO_General_1byte(&vfd.p,&buffer8[0],SIZE_BUFFER6);
@@ -53,60 +50,24 @@ void init_queues(void){
     vfd.config.bytes1=0;//init all parameter into zero
     vfd.f1.append=vfd_FIFO_push;
 	vfd.f1.pop=vfd_FIFO_pop;                                                                                                                                                                                                                                                                                                                                                                                                                      
-	vfd.f1.resetFIFOS=vfd_FIFOs_RESET;
-	//qVFDtx.v=&vfd;//misma estructura en los dos lados,
-	mutex_free=&mutex1;cond_free=&cond1;
-	pthread_mutex_init(&mutex1,NULL);//
-	pthread_cond_init(&cond1,NULL);  
+	vfd.f1.resetFIFOS=vfd_FIFOs_RESET; 
 	sync1=0xAA;//mutexs ocupados
+	pthread_mutex_init(&vfd.mutex.VDF_busy,NULL);
 	init_Queue_with_Thread(&qVFDtx);//fifos Transmisor data al Display
 	vfd.config.bits.recurso_VFD_Ocupado=TRUE;//recurso ocupado, VFD nadie lo puede usar
+	init_mutex_VFD();//inizialisa los mutex que manejan el VFD, transmision
 	NoErrorOK();
 	printf("\n       Creando Proceso Init VFD");
-	/*switch(pthread_create(&Proc1_Init_VFD,NULL,Init_VFD,&qVFDtx)){
-		case 0:NoErrorOK();
-		        printf("\n       Creando Proceso Limpiador de INIT VFD");
-		       if(pthread_create(&Proc_limpiador,NULL,Proceso_Limpiador,&qVFDtx)==0){
-				   NoErrorOK();}else{errorCritico("Error de Proc Limpiador");}
-			   break;
-		default:errorCritico("Error desconocido de hilo init VFD");break;}
-    pthread_detach(Proc1_Init_VFD);//no espera que terminen este proceso y el hilo continua
-	pthread_detach(Proc_limpiador);//este hilo continua no espera que terminen los proc hijos
-	mensOK("Creando Proceso TX General Rev.2");
-    */
+	if((debug=pthread_create(&SubProc_SendBlock_chars_TX_VFD,NULL,Subproceso_sendBlockBytes_Tx_VFD,NULL))!=0){
+	    errorCritico2("Error creacion Hilo:",67);}else{NoErrorOK();}
 	if((debug=pthread_create(&SubProc_SendBlock_TX_VFD,NULL,SubProceso_SendBlock_Tx_VFD,NULL))!=0){	
-	    errorCritico2("Error creacion Hilo:",75);}
-	else{NoErrorOK();}		 
-	printf("\n       Fin de  Init Queues");
-	NoErrorOK();
+	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}
+	inicializar_VFD(init_VFD,sizeof(init_VFD));// VFD_sendBlockChars(init_VFD,sizeof(init_VFD));//Init VFD
+	printf("\n       Fin de Init Queues");
 	vfd.config.bits.recurso_VFD_Ocupado=FALSE;
-}//fin init queue++++++++++
+	NoErrorOK();
+}//fin init queue+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-//** Proceso Hilo encargado de limpiar el Proceso Init VFD
-void *Proceso_Limpiador(void *arg) {
-struct Queue *q=(struct Queue*)arg;//
-unsigned char estado;	
-    printf("\n       Proceso Limpiador de VFD activo");
-	pthread_mutex_lock(mutex_free);
-	printf("\n       Limpieza de  recursos de init VFD...");
-	switch(estado){
-		case 1:if(vfd.config.bits.init_VFD==1)estado++;break;
-		case 2:if(!vfd.config.bits.Proc_VFD_Tx_running)estado++;break;
-	    case 3:pthread_cond_wait(cond_free,mutex_free);
-		       estado++;break;
-		case 4:usleep(3);estado++;break;
-		case 5://pthread_mutex_destroy(&vfd.sync.mutex_init_VFD);
-			   //pthread_cond_destroy( &vfd.sync.cond_init_TX_VFD);
-			   pthread_mutex_destroy(mutex_free);
-			   pthread_cond_destroy(cond_free);sync1=0;//recurso libre
-			   pthread_mutex_destroy(q->s.m_Tx);
-			   pthread_cond_destroy(q->s.cond_Tx);
-			   estado++;break;
-		case 6:NoErrorOK();printf("\n");usleep(300);
-			   estado++;break;
-		default:estado=1;break;}
-    return NULL;
-}//fin del proceso hilo limpiador+++++++++++++++++++++++++++++++
 
 
 
@@ -172,6 +133,21 @@ void* SubProceso_SendBlock_Tx_VFD(void* arg) {//consumidor
 return NULL;}//+++++++++++++++++++++++++++++++++++++
 //fin del subproceso de envio de datos al display+++++++++++++
 
+// SubProceso hilo que envía un bloque de datos bytes al VFD 
+void* Subproceso_sendBlockBytes_Tx_VFD(void* arg) {
+    while (1) {
+        pthread_mutex_lock(&buffer2.mutex);
+        while (buffer2.head == buffer2.tail) {
+            pthread_cond_wait(&buffer2.cond, &buffer2.mutex);}
+        bloque_t bloque = buffer2.buffer[buffer2.tail];
+        buffer2.tail = (buffer2.tail + 1) % BUFFER_SIZE;
+        pthread_mutex_unlock(&buffer2.mutex);
+        for (size_t i = 0; i < bloque.longitud; i++) {
+            VFD_sendChar(bloque.datos[i]);}
+    }//fin while++++++++++++++++++++++++++++++++++++++++++++
+return NULL;
+}//fin de subproceso de send Block Bytes TX VFD++++++++++++
+
 //deprecated:metho	do que se usa en un hilo transmisor VFD+++++++++++++++++++++++
 unsigned char Transmissor_SendBlock_VFD(const char *str){
    while(*str){			                    		
@@ -180,80 +156,95 @@ unsigned char Transmissor_SendBlock_VFD(const char *str){
 		writePort((unsigned char)*str++);//writePort(*(datos+*index))
         printf("\033[0m");
         fflush(stdout);//salida inmediata de buffer printf
-		usleep(900);}
+		usleep(120900);}
     printf("\n");				
 }//transmisor de datos a VFD+++++++++++++++++++++++++++++++++++++++++
 
 
 //Proceso  unico de padre unico  y sin instancias
 void* Init_VFD(void* arg){  //Proceso Productor<---Proceso/hilo/THread
-struct Queue *q=(struct Queue*)arg;//
-pthread_t Proc2_Tx_VFD;//Proceso Transmisor al VFD, para despliegue de pantalla
-unsigned char ret=0,estado;
-const unsigned char SIZE_CMD=7;//numero de comandos
-const unsigned char s[7]={0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2};
-unsigned char i=0;
-pthread_attr_t attr;
-size_t stacksize=2*1024*1024;// memoria para el hilo
-pthread_attr_init(&attr);
-if(pthread_attr_setstacksize(&attr,stacksize)!=0){
-	 fprintf(stderr,"\n\033[31mError config tamaño de pila");
-	 exit(EXIT_FAILURE);}
+return NULL;
+}//fin init VFD -------------------------------------------------------------------
+
+
+//despliegue de datos en el display
+void init_menu(void){
+unsigned char debug;
+   vfd.config.bits.init_Menu=0;//no esta init el VFD
+   vfd.config.bits.MenuPendiente=TRUE;//hay pendiente un menu por desplegar
+   vfd.config.bits.Menu_Ready=FALSE;//no se a desplegado menu solicitado
+   pthread_mutex_init(&vfd.mutex.VDF_busy,NULL);//init recurso VFD
+   if((debug=pthread_create(&SubProc_Run_Menu,NULL,Run_Menu,NULL))!=0)
+       errorCritico2("errorCreacion hilo",175);
+   else{pthread_detach(SubProc_Run_Menu);}//hilo independiente	   
+}//fin del init Menu+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+//Proceso de control de Menus
+void *Run_Menu(void *arg){
+   xControl_Principal_de_Menus_Operativo();
+}//fin de run menu++++++++++++++++++++++++++++++++++++++++++++
+
+
+//Proceso Thread de control de menus
+/*Controla la salida segura de los menu de modo Operativo para que termine de hacer la tarea el
+ * menu actual y luego se pase al siguiente menu cuando acabe y se presione el escape "x"
+ *   se mete el contexto Actual  */
+void xControl_Principal_de_Menus_Operativo(void){
+unsigned char contexto;
+unsigned char estado3;
+enum{NORMAL=30,INIT_M=1,TERMINAR=90};
+unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despliegue
+
+ while(vfd.config.bits.MenuPendiente){ //hilo corriendo  
+	switch(estado3){//Maquina de Estados
+	  case INIT_M:  if(!vfd.config.bits.init_Menu)estado3++;else{estado3=30;}break;
+	  case INIT_M+1:vfd.config.bits.MenuPendiente=TRUE;estado3++;break;
+	  case INIT_M+2:pthread_mutex_lock(&vfd.mutex.VDF_busy);estado3++;break;//Mejora de la funcion: recurso.solicitar
+	  case INIT_M+3:contexto=find_contexto_Siguiente();estado3++;break;
+	  case INIT_M+4:InitArbolMenu(contexto);estado3++;break;
+	  case INIT_M+5:vfd.config.bits.Menu_Ready=0;estado3++;break;//menu no esta terminado aun
+	  case INIT_M+6:if(MenuActualScreen.func2(&mem[0]))estado3=TERMINAR;break;//se despliega el MenuÂ¡Â¡
+					
+	  case TERMINAR:vfd.config.bits.init_Menu=TRUE;//no esta init el VFD
+                    vfd.config.bits.MenuPendiente=FALSE;//hay pendiente un menu por desplegar
+                    vfd.menu.contexto.Actual=contexto;
+					pthread_mutex_unlock(&vfd.mutex.VDF_busy);//liberar recurso
+	  default:estado3=1;break;}
+   }//fin de WHILE bandera de Menu Pendiente--------------------   
+	return;
+
 
 
 /*
-	pthread_mutex_lock(&vfd.sync.mutex_free);
-	vfd.config.bits.init_VFD=FALSE;
-	
-	vfd.config.bits.VDF_busy=TRUE;
-	while(++i<10){
-	printf("\n       Init VFD running");
-	usleep(12200);}
-	vfd.config.bits.init_VFD=TRUE;
-	
-	vfd.config.bits.VDF_busy=FALSE;
-	pthread_cond_signal(&vfd.sync.cond_free);
-	pthread_mutex_unlock(&vfd.sync.mutex_free);
-    printf("\n       Proceso Init VFD Terminado");
+const char *mens[]={" hola mundo ",
+                        "  mensaje No.2 ",
+                        "  Tercera line del mensaje",
+                        "  cuarta line del mensaje",
+                        "  quinta line del mensaje",
+                        "  sexta line del mensaje",
+                        "   777 line del mensaje",
+                        "  888888 line del mensaje",
+                        "  999999a line del mensaje",
+                        "  1010101 line del mensaje",
+                        "  11111111 line del mensaje",
+                        "  112121212 line del mensaje"
+                        };
+unsigned char n;
+int j=0;
+    mensOK("Iniciando prueba de Puertos Fisicos.",CCIAN);
+    NoErrorOK();printf("\n");
+    while(1){
+        for(int i=0;i<12;i++){  
+            VFDserial_SendBlock1(mens[i]);   
+        }}//fin while++++++++++++++++++++++++++++++++
+    printf(" \n j=%d",j);
 */
 
+}//fin de prueba de despliegue de datos en el VFD+++++++++++++++++++++++++++++
+//fin del control operativo del menu de escape-----------------------------------------
+ 
 
- if(vfd.config.bits.init_VFD){
-	   errorCritico("ya esta inizializado Proceso, Error de duplicacion");}	   	   
- while(!ret){
-	switch(estado){
-		case 1:printf("\n       Init VFD starting. . .");estado++;break;
-		case 2:pthread_mutex_lock(mutex_free);
-		       vfd.config.bits.init_VFD=FALSE;//no se ha terminado de init
-			
-			   vfd.config.bits.VDF_busy=TRUE;//Nadie mas puede usar el VFD
-               qVFDtx.isPadreAlive=TRUE;
-			   estado++;break;
-		case 3:NoErrorOK();estado++;break;
-		case 4:printf("\n       Creando Hilo Transmisor");
-		       if(pthread_create(&Proc2_Tx_VFD,&attr,SubProceso_SendBlock_Tx_VFD,&qVFDtx)!=0){//ret==0 :all OK	
-				  fprintf(stderr," \n Error creando el hilo SubProc TX VFD");
-				  exit(EXIT_FAILURE);}
-			   else{NoErrorOK();}
-			   estado++;
-			   break;
-	    case 5:printf("\n       Init, llenar FIFOs Init para Transmitir");
-			   NoErrorOK();estado++;break;
-		case 6:if(VFDcommand(s[i]))estado++;break; // init display  ESC@= 1BH,40H
-		case 7:if(++i<(SIZE_CMD+1))estado--;else{estado++;}break;
-		case 8:vfd.config.bits.init_VFD=TRUE;estado++;break;//se usa en limpieza esta bandera
-		case 9:pthread_cond_signal(cond_free);estado++;break;
-        case 10:qVFDtx.isPadreAlive=FALSE;estado++;break;
-		case 11:estado=0;ret=TRUE;break;
-		default:estado=1;break;}}//fin switch while 
-  pthread_join(Proc2_Tx_VFD,NULL);//esperamos termine de transmitir a display el otro hilo
-  pthread_attr_destroy(&attr);
-  pthread_mutex_unlock(mutex_free);
-  printf("\n       Init Sub Proceso Init Terminado");
-  NoErrorOK();		
-
-return NULL;
-}//fin init VFD -------------------------------------------------------------------
 
 
 

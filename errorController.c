@@ -11,6 +11,9 @@ void errorCritico(char *c){
     exit(-1);
 }//fin error critico+++++++++++++++++++++++++++++++++++
 
+
+// c es el string del mensaje del error critico y 'n' 
+/*  n: es numero de linea donde se encuentra el error */
 void errorCritico2(char *c,unsigned char n){  
     printf("\n\033[0;031m%s \033[43mError=%d\033[0m\n",c,n);
     usleep(10000);
