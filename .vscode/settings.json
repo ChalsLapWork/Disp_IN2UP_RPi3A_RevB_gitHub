@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "vfd.h": "c",
+        "system.h": "c",
+        "queue.h": "c"
+    }
+}

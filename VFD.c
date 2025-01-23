@@ -154,14 +154,15 @@ return ret;
 
 /*limpia el VFD de caracteres y todo   */
 unsigned char VFDclrscr1(unsigned char *mem){//AUTORIZADO 2:BYTES DE memoria
-unsigned char ret=0;
-//	monitorDDS_Halt();//debug, quitar un dia que la version este super probada 
+unsigned char ret=0; 
 unsigned char *estado4,*c;
+const unsigned char COMANDO_CLRSCR=10;
   estado4=mem;
         c=mem+1;
+
   switch(*estado4){
-	 case 1:if(VFDserial_SendChar1(0x0CU))//(Display Clear)   Display screen is cleared and cursor moves to home position.
-		         (*estado4)++;
+	 case 1:*(mem+2)=STX;    //if(VFDserial_SendChar1(0x0CU))//(Display Clear)   Display screen is cleared and cursor moves to home position.
+		    *(mem+3)=      
 	        break;
 	 case 2:usleep(1000);ret=TRUE;*estado4=0;break;
 	 default:*estado4=1;break;}
