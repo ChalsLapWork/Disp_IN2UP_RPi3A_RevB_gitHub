@@ -125,5 +125,5 @@ unsigned char VFD_sendBlockChars(const uchar *datos, size_t longitud);
 void VFD_sendChar(uchar c);
 unsigned char inicializar_VFD(const uchar *datos, size_t longitud);
 void init_mutex_VFD(void);
-
+unsigned char getCRC(short int byteSum, int numBytes);
 #endif

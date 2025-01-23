@@ -153,21 +153,51 @@ return ret;
 
 
 /*limpia el VFD de caracteres y todo   */
-unsigned char VFDclrscr1(unsigned char *mem){//AUTORIZADO 2:BYTES DE memoria
+unsigned char VFDclrscr1(unsigned char *mem){//AUTORIZADO 15:BYTES DE memoria
 unsigned char ret=0; 
-unsigned char *estado4,*c;
-const unsigned char COMANDO_CLRSCR=10;
+unsigned char *estado4,*c;//comando limpiar pantalla stx,04,CMD,0CU,CRC,ETX
+unsigned short int suma;//comando delay  stx,04,CMD,xx,CRC,ETX
+const unsigned char DELAY_DESPUES_DE_COMANDO_ms=10;//milisegundos
   estado4=mem;
         c=mem+1;
 
   switch(*estado4){
-	 case 1:*(mem+2)=STX;    //if(VFDserial_SendChar1(0x0CU))//(Display Clear)   Display screen is cleared and cursor moves to home position.
-		    *(mem+3)=      
+	 case 1:suma=0;*(mem+2)=STX;    //if(VFDserial_SendChar1(0x0CU))//(Display Clear)   Display screen is cleared and cursor moves to home position.
+		    suma+=*(mem+3)=0x04;//numero de bytes
+            suma+=*(mem+4)=COMANDO_CLRSCR;
+            suma+=*(mem+5)=0x0CU;
+            *(mem+6)=getCRC(suma,3);
+            *(mem+7)=ETX;      
 	        break;
-	 case 2:usleep(1000);ret=TRUE;*estado4=0;break;
+     case 3:suma=0;*(mem+8)=STX;
+            suma+=*(mem+9)=0x04;
+            suma+=*(mem+10)=COMANDO_DELAY_MS;
+            suma+=*(mem+11)=DELAY_DESPUES_DE_COMANDO_ms;
+            *(mem+12)=getCRC(suma,3);
+            *(mem+13)=ETX;
+            break;
+	 case 3:VFD_sendBlockChars(mem+2,12);
+            ret=TRUE;
+            *estado4=0;break;
 	 default:*estado4=1;break;}
 return ret;    
-}//fin clear screen VFD-------------------------------------------------------------
+}//fin clear screen VFD-----------------------------------------------------------------------------
+
+
+unsigned char getCRC(short int byteSum, int numBytes) {
+    unsigned char crc = 0x5A; // Valor inicial no trivial (e.g., 0x5A)
+    unsigned char data;
+
+    for (int i = 0; i < numBytes; i++) {
+        data = (byteSum >> (i * 8)) & 0xFF; // Extraer cada byte de la suma
+        // Mezcla: aplicar XOR y luego XNOR (complemento bit a bit)
+        crc ^= data;         // Primero XOR del CRC con el byte
+        crc = ~(crc);        // Después XNOR (complemento)
+        crc ^= 0xA3;}         // Agregar entropía fija para evitar patrones triviales
+    // Asegurarse de que el CRC nunca sea todo 0x00 ni todo 0xFF
+    if (crc == 0x00 || crc == 0xFF) { crc ^= 0x5A;} // Introducir un valor fijo para romper el patrón
+    return crc;
+}//**************************************************************************************************
 
 unsigned char VFDposicion(unsigned char x,unsigned char y){ //MANDA DEL COMANDO DE POSICION AL vfd
 	//return vfd.f1.append((unsigned char)x,(unsigned char)y,_POS_);//FIFO_Display_DDS_Char_push((unsigned char)x,(unsigned char)y);          
@@ -202,10 +232,25 @@ return ret;
 
 /* Metodo Multi-Padre pero solo una Estancia ala Vez      */
 unsigned char VFDserial_SendBlock1(const char *Ptr,unsigned char size1){
-unsigned char ret=0,size2; 
+unsigned char ret=0,size2,n=0;//STX,LEN,CMD,char0,..charn,crc,etx 
+unsigned short int suma;
    int next_head = (buffer.head + 1) % BUFFER_SIZE;
+   char temp_buffer[MAX_MESSAGE_LEN+5];
+   unsigned int len=strlen(Ptr)+5;
    pthread_mutex_lock(&buffer.mutex);
-   if(size1>MAX_MESSAGE_LEN) size2=MAX_MESSAGE_LEN; else size2=size1;
+   if(size1>MAX_MESSAGE_LEN-5) size2=MAX_MESSAGE_LEN-5; else size2=size1;
+    suma=0,n=0;
+          temp_buffer[0] = STX;// Prepara el mensaje con los caracteres adicionales
+    suma+=temp_buffer[1] = len;n++;
+    suma+=temp_buffer[2] = COMANDO_STRING;n++;
+     for (unsigned char i = 0; i < size2; i++,n++) {
+        temp_buffer[3 + i] = Ptr[i]; // Copia cada carácter al buffer temporal
+        suma += Ptr[i];             // Suma el valor ASCII del carácter al CRC
+      }//strncpy(&temp_buffer[3], Ptr, size2); // Copia el mensaje original después de los primeros caracteres
+    temp_buffer[3 + size2] = getCRC(suma,n);
+    temp_buffer[4 + size2] = ETX;
+    temp_buffer[5 + size2] = '\0'; // Asegura que el string esté terminado correctamente
+   
    if (next_head != buffer.tail) {  // Solo escribe si hay espacio en el buffer
         strncpy(buffer.buffer[buffer.head], Ptr, size2); //MAX_MESSAGE_LEN);
         buffer.head = next_head;
@@ -226,17 +271,17 @@ unsigned char inicializar_VFD(const uchar *datos, size_t longitud){
 // Función que el hilo principal llama para enviar un bloque de caracteres
 unsigned char VFD_sendBlockChars(const uchar *datos, size_t longitud) {
 unsigned char ret = 0;
-int next_head = (buffer2.head + 1) % BUFFER_SIZE;
+int next_head = (buffer.head + 1) % BUFFER_SIZE;
 
-    pthread_mutex_lock(&buffer2.mutex);
-    if (next_head != buffer2.tail && longitud <= MAX_BLOCK_CHAR_VDF_SIZE) {
-        bloque_t *bloque = &buffer2.buffer[buffer2.head];
+    pthread_mutex_lock(&buffer.mutex);
+    if (next_head != buffer.tail && longitud <= MAX_BLOCK_CHAR_VDF_SIZE) {
+        bloque_t *bloque = &buffer.buffer[buffer.head];
         bloque->longitud = longitud;
         memcpy(bloque->datos, datos, longitud);
-        buffer2.head = next_head;
-        pthread_cond_signal(&buffer2.cond);
+        buffer.head = next_head;
+        pthread_cond_signal(&buffer.cond);
         ret = 1;}
-    pthread_mutex_unlock(&buffer2.mutex);
+    pthread_mutex_unlock(&buffer.mutex);
 return ret;
 }//VFD_sendBlockChars+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

@@ -148,17 +148,121 @@ void* Subproceso_sendBlockBytes_Tx_VFD(void* arg) {
 return NULL;
 }//fin de subproceso de send Block Bytes TX VFD++++++++++++
 
-//deprecated:metho	do que se usa en un hilo transmisor VFD+++++++++++++++++++++++
+
 unsigned char Transmissor_SendBlock_VFD(const char *str){
-   while(*str){			                    		
-        printf("\033[35m");
-        putchar(*str);
-		writePort((unsigned char)*str++);//writePort(*(datos+*index))
-        printf("\033[0m");
-        fflush(stdout);//salida inmediata de buffer printf
-		usleep(120900);}
-    printf("\n");				
+unsigned char estado,estado2,sum,len,cmd,n;
+unsigned char c[MAX_NUM_CHAR_VFD],i;	
+   while(*str){		
+	switch(estado){
+      case 1:printf("\033[35m");estado++;break;
+	  case 2:putchar(*str);sum=0;estado++;break;
+	  case 3:estado++;break;
+	  case 4:if(*str++==STX)estado++;else{estado=99;}break;
+	  case 5: sum=len=*str++;n=1;estado++;break;
+	  case 6:sum+=cmd=*str++;n++;i=0;estado++;break;
+	  case 7:if(len==1)estado++;
+	         else{if(len==0)estado=99;
+			      else{c[i++]=*str++;n++;
+				       if((len-1)==i){estado++;c[i]=0;}}}  
+	         break;
+	  case 8:if(*str++==getCRC(sum,n))estado++;
+	         else{estado=99;}break;
+	  case 9: if(*str++==ETX)estado++;else{estado=99;}break;
+	  case 10:procesar_Paquete(cmd,&c[0],n-2);break;
+	  case 11:printf("\033[0m");
+              fflush(stdout);//salida inmediata de buffer printf
+              printf("\n");
+			  break;
+	  case 99:estado=2;putchar('$');break;
+	  default:break;}}        
 }//transmisor de datos a VFD+++++++++++++++++++++++++++++++++++++++++
+ 				
+/** esta funcion manda los paquetes del 
+ *  buffer c en base al comando indicado,*/
+unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,
+                      unsigned char size){
+unsigned char ret=0,estado,ret2,i;     
+const unsigned char CMD_STR=10;
+const unsigned char CMD_CHR=20,CMD_POS=30,CMD_BOX=40;
+const unsigned char CMD_LIN=50,CMD_DOT=60,CMD_CLR=70;
+const unsigned char CMD_INI=80,CMD_BXF=90,CMD_BLD=100;
+const unsigned char CMD_ERR=110,CMD_OK=120;
+    while(!ret){
+       switch(estado){
+           case 1:i=0;
+		          switch(cmd){
+                     case COMANDO_STRING:estado=CMD_STR;break;
+		             case COMANDO_CHAR: estado=CMD_CHR;break;
+					 case COMANDO_POS:  estado=CMD_POS;break;
+					 case COMANDO_BOX:  estado=CMD_BOX;break;
+					 case COMANDO_BOXF: estado=CMD_BXF;break;
+					 case COMANDO_LINE: estado=CMD_LIN;break;
+					 case COMANDO_DOT:  estado=CMD_DOT;break;
+					 case COMANDO_CLEAR:estado=CMD_CLR;break;
+					 case COMANDO_INIT: estado=CMD_INI;break;
+					 case COMANDO_BOLD: estado=CMD_BLD:break;
+					 default:estado=CMD_ERR;break;}
+				   break;	
+		   case   CMD_STR:writePort(*(c+i));
+		                  usleep(50);
+		                  if(i==size)estado++;
+	 					  else{i++;}break;
+		   case CMD_STR+1:usleep(200);estado=CMD_OK;break;
+           case CMD_CHR:  writePort(*c);
+		                  usleep(50);estado=CMD_OK;break;
+		   case CMD_POS:  writePort(0x1F);  usleep(50);
+		                  writePort(0x24);  usleep(50);
+						  writePort(*c);    usleep(50);
+						  writePort(0x00);  usleep(50);
+						  writePort(*(c+1));usleep(50);
+						  writePort(0x00);  usleep(50);
+						  estado=CMD_OK;break;
+	       case CMD_BXF:
+		   case CMD_LIN:					  
+           case CMD_BOX:  writePort(0x1F);  usleep(50);
+						  writePort(0x28);  usleep(50);
+						  writePort(0x64);  usleep(50);
+						  writePort(0x11);  usleep(50);
+						  if(*c>0x02)writePort(0x02);
+						  else{writePort(*c);}     usleep(50);//mode:00Line,01Box,02BoxFill
+						  if(*(c+1)>1)writePort(0x01);
+						  else{writePort(*(c+1));} usleep(50);//1|0:pen
+						  writePort(*(c+2));  usleep(50);//x1L						  writePort(0x00);    usleep(50);
+						  writePort(0x00);    usleep(50);//x1H
+						  writePort(*(c+3));  usleep(50);//y1L
+						  writePort(0x00);    usleep(50);//y1H
+						  writePort(*(c+4));  usleep(50);//x2L
+						  writePort(0x00);    usleep(50);//x2H
+  					      writePort(*(c+5));  usleep(50);//y2L
+						  writePort(0x00);    usleep(50);//y2H
+						  estado=CMD_OK;break;
+
+		   case CMD_DOT:  writePort(0x1F);  usleep(50);
+						  writePort(0x28);  usleep(50);
+						  writePort(0x64);  usleep(50);
+						  writePort(0x10);  usleep(50);
+						  writePort(0x01);  usleep(50);
+						  writePort(*c);    usleep(50);
+						  writePort(0x00);  usleep(50);
+						  writePort(*(c+1));usleep(50);
+						  writePort(0x00);  usleep(50);
+						  estado=CMD_OK;break;
+		   case CMD_INI:  writePort(0x1B);  usleep(50);
+		                  writePort(0x40);  usleep(50);
+						  estado=CMD_OK;break;
+           case CMD_BLD:  writePort(0x1F);  usleep(50);
+		                  writePort(0x28);  usleep(50);
+						  writePort(0x67);  usleep(50);
+						  writePort(0x41);  usleep(50);
+						  if(*c==1) writePort(0x01); 
+						  else{writePort(0x00);}usleep(50);
+						  estado=CMD_OK;break;
+		   case CMD_OK:ret=TRUE;ret2=TRUE;estado=0;break;		   
+		   case CMD_ERR:ret=TRUE;ret2=FALSE;estado=0;break;			
+           default:estado=1;break;}//fin switch+++++++++++++
+	}//fin of while ++++++++++++++++++++++++++++++++++++++++++
+}//fin de procesar paquetes+++++++++++++++++++++++++++++++++++
+
 
 
 //Proceso  unico de padre unico  y sin instancias

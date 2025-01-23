@@ -25,6 +25,10 @@
 #define _TIPO_DE_MAQUINA_ PHARMACEUTICO //TRIPLE_FRECUENCIA
 #endif
 
+/* MAXIMOS */
+#define MAX_NUM_CHAR_VFD 30 //maximo numero de char a desplegar por comando a VFD
+
+
 #define ON   1
 #define YES  1
 
@@ -230,6 +234,19 @@
 
 #define STX 0x03
 #define ETX 0x02
+#define COMANDO_CLRSCR     'c'
+#define COMANDO_DELAY_MS   'm'
+#define COMANDO_DELAY_US   'u'
+#define COMANDO_STRING     's'
+#define COMANDO_CHAR       'X'
+#define COMANDO_POS        'p'
+#define COMANDO_BOX        'b'
+#define COMANDO_LINE       'L'
+#define COMANDO_DOT        'd'
+#define COMANDO_CLEAR      'r'
+#define COMANDO_INIT       'i'
+#define COMANDO_BOLD       'B'
+#define COMANDO_BOXF       'F'
 
 
 //SIZES-------------------------------------------------------
