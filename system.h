@@ -107,8 +107,8 @@
 #define VERDE         'V'//verde ya usado no cambiar
 #define libre_1       '1'// lugar libre para usar
 #define CMD_POS_CHAR  '2'//COMANDO_FASE  lugar libre para usar  comando display fase de 5 chars
-#define COMANDO_POS   '3'//comando solo posicion se manda la posicion
-#define COMANDO_CHAR  '4'//comando solo un char asi nomas 
+//#define COMANDO_POS   '3'//comando solo posicion se manda la posicion
+//#define COMANDO_CHAR  '4'//comando solo un char asi nomas 
 #define CMD_POS5CHARS '5'//COMANDO ENVIAR POSICION Y luego 5 chars
 #define _DELAY_US     'u'
 #define _DELAY_MS     'm'
@@ -236,6 +236,7 @@
 #define ETX 0x02
 #define COMANDO_CLRSCR     'c'
 #define CMD_DELAY_MS       'm'
+#define CMD_DELAY_US       'e'
 #define COMANDO_DELAY_US   'u'
 #define COMANDO_STRING     's'
 #define COMANDO_CHAR       'X'
