@@ -186,12 +186,22 @@ union{
   unsigned char n[2];
 }union_usi;
 unsigned char ret=0,estado,ret2,i;     
-const unsigned char CMD_STR=10;
-const unsigned char CMD_CHR=20,CMD_POS=30,CMD_BOX=40;
-const unsigned char CMD_LIN=50,CMD_DOT=60,CMD_CLR=70;
-const unsigned char CMD_INI=80,CMD_BXF=90,CMD_BLD=100;
-const unsigned char CMD_DMS=110,CMD_DUS=120;
-const unsigned char CMD_ERR=130,CMD_OK=140;
+enum {
+    CMD_STR = 10,
+    CMD_CHR = 20,
+    CMD_POS = 30,
+    CMD_BOX = 40,
+    CMD_LIN = 50,
+    CMD_DOT = 60,
+    CMD_CLR = 70,
+    CMD_INI = 80,
+    CMD_BXF = 90,
+    CMD_BLD = 100,
+    CMD_DMS = 110,
+    CMD_DUS = 120,
+    CMD_ERR = 130,
+    CMD_OK = 140   };
+
     while(!ret){
        switch(estado){
            case 1:i=0;
@@ -211,11 +221,11 @@ const unsigned char CMD_ERR=130,CMD_OK=140;
 					 default:estado=CMD_ERR;break;}
 				   break;
 		   case   CMD_DMS:union_usi.n[0]=*c;
-                          union_usi.n[0]=*(c+1);
+                          union_usi.n[1]=*(c+1);
 		                  usleep((union_usi.t)*1000); //delay milisegundos
 		   				  estado=CMD_OK;break;
 		   case   CMD_DUS:union_usi.n[0]=*c;
-                          union_usi.n[0]=*(c+1);
+                          union_usi.n[1]=*(c+1);
 		                  usleep(union_usi.t); //delay milisegundos
 		   				  estado=CMD_OK;break;	  		  
 		   case   CMD_CLR:usleep(1000);//1mseg
@@ -276,7 +286,7 @@ const unsigned char CMD_ERR=130,CMD_OK=140;
 						  if(*c==1) writePort(0x01); 
 						  else{writePort(0x00);}usleep(50);
 						  estado=CMD_OK;break;
-		   case CMD_OK:ret=TRUE;ret2=TRUE;estado=0;break;		   
+		   case CMD_OK: ret=TRUE;ret2=TRUE; estado=0;break;		   
 		   case CMD_ERR:ret=TRUE;ret2=FALSE;estado=0;break;			
            default:estado=1;break;}//fin switch+++++++++++++
 	}//fin of while ++++++++++++++++++++++++++++++++++++++++++

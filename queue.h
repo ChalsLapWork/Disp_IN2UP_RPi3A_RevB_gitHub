@@ -344,4 +344,6 @@ void *Subproceso_sendBlockBytes_Tx_VFD(void *arg);
 void init_menu(void);
 void *Run_Menu(void *arg);
 void xControl_Principal_de_Menus_Operativo();
+unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char size);
+
 #endif 
