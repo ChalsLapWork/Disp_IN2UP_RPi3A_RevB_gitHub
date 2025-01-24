@@ -68,7 +68,7 @@ union W16{
   word_16bits.c[0]=*(mem+4);
   word_16bits.c[1]=*(mem+5);
           aux1_usi=word_16bits.usi;
-        mem_15bytes=mem+6;//6,7
+        mem_15bytes=mem+6;//6,7 15 bytes
         aux0_uchar=mem+22;
 
 		
@@ -78,8 +78,8 @@ union W16{
               //keypad.b.enable=FALSE;
               (*estado)++;break;
        case 3:NoErrorOK();(*estado)++;break;			  
-       case 4:if(VFDclrscr1(mem_2bytes))(*estado)++;break;
-       case 5:delay_ms_VFD(500);(*estado)++;break;
+       case 4:if(VFDclrscr1(mem_15bytes))(*estado)++;break;
+	   case 5:delay_ms_VFD(500);(*estado)++;break;
        case 6:if(VFDposicion(65,0))(*estado)++; break;    //2bytes
        case 7:if(VFDserial_SendBlock1(&s[0],sizeof(s)))(*estado)++;break;//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
        case 8:*aux3_char=producto.name[1];aux1_usi=length(&producto.name[0],sizeof(producto.name));  	 

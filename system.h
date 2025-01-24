@@ -235,7 +235,7 @@
 #define STX 0x03
 #define ETX 0x02
 #define COMANDO_CLRSCR     'c'
-#define COMANDO_DELAY_MS   'm'
+#define CMD_DELAY_MS       'm'
 #define COMANDO_DELAY_US   'u'
 #define COMANDO_STRING     's'
 #define COMANDO_CHAR       'X'

@@ -181,12 +181,17 @@ unsigned char c[MAX_NUM_CHAR_VFD],i;
  *  buffer c en base al comando indicado,*/
 unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,
                       unsigned char size){
+union{
+  unsigned short int t;
+  unsigned char n[2];
+}union_usi;
 unsigned char ret=0,estado,ret2,i;     
 const unsigned char CMD_STR=10;
 const unsigned char CMD_CHR=20,CMD_POS=30,CMD_BOX=40;
 const unsigned char CMD_LIN=50,CMD_DOT=60,CMD_CLR=70;
 const unsigned char CMD_INI=80,CMD_BXF=90,CMD_BLD=100;
-const unsigned char CMD_ERR=110,CMD_OK=120;
+const unsigned char CMD_DMS=110;
+const unsigned char CMD_ERR=120,CMD_OK=130;
     while(!ret){
        switch(estado){
            case 1:i=0;
@@ -201,8 +206,17 @@ const unsigned char CMD_ERR=110,CMD_OK=120;
 					 case COMANDO_CLEAR:estado=CMD_CLR;break;
 					 case COMANDO_INIT: estado=CMD_INI;break;
 					 case COMANDO_BOLD: estado=CMD_BLD:break;
+					 case CMD_DELAY_MS: estado=CMD_DMS:break;
 					 default:estado=CMD_ERR;break;}
-				   break;	
+				   break;
+		   case   CMD_DMS:union_usi.n[0]=*c;
+                          union_usi.n[0]=*(c+1);
+		                  usleep((union_usi.t)*1000); //delay milisegundos
+		   				  estado=CMD_OK;break;
+		   case   CMD_CLR:usleep(1000);//1mseg
+		    			  writePort(0x0CU);//Clean screen
+						  usleep(15000);//15mseg	
+						  estado=CMD_OK;break;
 		   case   CMD_STR:writePort(*(c+i));
 		                  usleep(50);
 		                  if(i==size)estado++;

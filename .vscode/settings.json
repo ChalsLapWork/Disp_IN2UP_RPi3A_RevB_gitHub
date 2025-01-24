@@ -2,6 +2,7 @@
     "files.associations": {
         "vfd.h": "c",
         "system.h": "c",
-        "queue.h": "c"
+        "queue.h": "c",
+        "delay.h": "c"
     }
 }
