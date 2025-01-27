@@ -174,7 +174,7 @@ unsigned char c[MAX_NUM_CHAR_VFD],i;
               printf("\n");
 			  break;
 	  case 99:estado=2;putchar('$');break;
-	  default:break;}}        
+	  default:estado=1;break;}}        
 }//transmisor de datos a VFD+++++++++++++++++++++++++++++++++++++++++
  				
 /** esta funcion manda los paquetes del 
