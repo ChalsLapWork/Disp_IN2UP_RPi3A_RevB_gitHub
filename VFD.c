@@ -235,7 +235,8 @@ unsigned char *array = (unsigned char *)malloc((size1 + 5) * sizeof(unsigned cha
     array[2] = COMANDO_STRING; // CMD (ejemplo de comando)
     array[size1 + 3] = getCRC_v2(array+1,size1+2);
     array[size1 + 4] = ETX; // Ejemplo de CRC (ajustar según tu implementación)
-   	VFD_sendBlockChars(&POS_CMD[0],sizeof(POS_CMD));//
+    VFD_sendBlockChars(array, size1 + 5);
+    free(array); // Liberar la memoria reservada con malloc
 return 1;// fin de enviar mensaje++++++++++++++++++++++
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
 
