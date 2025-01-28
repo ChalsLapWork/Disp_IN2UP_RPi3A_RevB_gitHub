@@ -41,7 +41,7 @@ pthread_t SubProc_SendBlock_chars_TX_VFD;//send bytes 	stream to VFD
 pthread_t SubProc_Run_Menu;//proceso que gestiona el cambio de menu
 
 void init_queues(void){
-const unsigned char init_VFD[]={0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2};
+//const unsigned char init_VFD[]={0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2};
 unsigned char debug;
 	init_FIFO_General_1byte(&vfd.x,&buffer6[0],SIZE_BUFFER6);
     init_FIFO_General_1byte(&vfd.y,&buffer7[0],SIZE_BUFFER6);
@@ -58,11 +58,11 @@ unsigned char debug;
 	init_mutex_VFD();//inizialisa los mutex que manejan el VFD, transmision
 	NoErrorOK();
 	printf("\n       Creando Proceso Init VFD");
-	if((debug=pthread_create(&SubProc_SendBlock_chars_TX_VFD,NULL,Subproceso_sendBlockBytes_Tx_VFD,NULL))!=0){
-	    errorCritico2("Error creacion Hilo:",67);}else{NoErrorOK();}
+	//if((debug=pthread_create(&SubProc_SendBlock_chars_TX_VFD,NULL,Subproceso_sendBlockBytes_Tx_VFD,NULL))!=0){
+	   // errorCritico2("Error creacion Hilo:",67);}else{NoErrorOK();}
 	if((debug=pthread_create(&SubProc_SendBlock_TX_VFD,NULL,SubProceso_SendBlock_Tx_VFD,NULL))!=0){	
 	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}
-	inicializar_VFD(init_VFD,sizeof(init_VFD));// VFD_sendBlockChars(init_VFD,sizeof(init_VFD));//Init VFD
+	inicializar_VFD();// VFD_sendBlockChars(init_VFD,sizeof(init_VFD));//Init VFD
 	printf("\n       Fin de Init Queues");
 	vfd.config.bits.recurso_VFD_Ocupado=FALSE;
 	NoErrorOK();
@@ -134,7 +134,7 @@ return NULL;}//+++++++++++++++++++++++++++++++++++++
 //fin del subproceso de envio de datos al display+++++++++++++
 
 // SubProceso hilo que envía un bloque de datos bytes al VFD 
-void* Subproceso_sendBlockBytes_Tx_VFD(void* arg) {
+/*void* Subproceso_sendBlockBytes_Tx_VFD(void* arg) {
     while (1) {
         pthread_mutex_lock(&buffer2.mutex);
         while (buffer2.head == buffer2.tail) {
@@ -144,37 +144,50 @@ void* Subproceso_sendBlockBytes_Tx_VFD(void* arg) {
         pthread_mutex_unlock(&buffer2.mutex);
         for (size_t i = 0; i < bloque.longitud; i++) {
             VFD_sendChar(bloque.datos[i]);}
-    }//fin while++++++++++++++++++++++++++++++++++++++++++++
-return NULL;
-}//fin de subproceso de send Block Bytes TX VFD++++++++++++
+    }*/
+	//fin while++++++++++++++++++++++++++++++++++++++++++++
+//return NULL;
+//}//fin de subproceso de send Block Bytes TX VFD++++++++++++
 
 
 unsigned char Transmissor_SendBlock_VFD(const char *str){
 unsigned char estado,estado2,sum,len,cmd,n;
-unsigned char c[MAX_NUM_CHAR_VFD],i;	
-   while(*str){		
-	switch(estado){
+unsigned char c[MAX_NUM_CHAR_VFD],i;
+unsigned char *crc=NULL;
+unsigned char str_len = 0,ret=0;        // Longitud del string de entrada
+const char *temp = str;
+    while (*temp++ != '\0') { // Calcular la longitud de la cadena de entrada (si no está predefinida)
+        str_len++;  }
+	crc=(unsigned char *)malloc(str_len *sizeof(unsigned char));    // Asignar memoria dinámica para el array crc basado en la longitud de *str
+    if (crc == NULL) {// Error al asignar memoria
+        printf("Error: No se pudo asignar memoria para crc.\n");
+        return 0;}
+   while(ret!=true){
+	switch(estado){// Continuar mientras no lleguemos al final de la cadena
       case 1:printf("\033[35m");estado++;break;
-	  case 2:putchar(*str);sum=0;estado++;break;
+	  case 2:putchar(*str);estado++;break;
 	  case 3:estado++;break;
 	  case 4:if(*str++==STX)estado++;else{estado=99;}break;
-	  case 5: sum=len=*str++;n=1;estado++;break;
-	  case 6:sum+=cmd=*str++;n++;i=0;estado++;break;
-	  case 7:if(len==1)estado++;
-	         else{if(len==0)estado=99;
-			      else{c[i++]=*str++;n++;
-				       if((len-1)==i){estado++;c[i]=0;}}}  
-	         break;
-	  case 8:if(*str++==getCRC(sum,n))estado++;
+	  case 5:*crc=len=*str++;n=1;estado++;break;
+	  case 6:*(crc+n++)=cmd=*str++;i=0;estado++;break;
+	  case 7:switch(len){
+		         case 0:mensOK(" error 174, PROTOCOLO mal bytes ",CROJO);break;
+				 case 1:mensOK(" eror 175 protocolo par hecho",CAMARILLO);break;
+				 case 2:estado=9;break;
+                 default:estado=8;i=0;break;}
+	  case 8:if(len==n){n--;c[i]=0;estado++;}
+	         *(crc+n++)=c[i++]=*str++;
+             break;
+	  case 9:if(*str++==getCRC_v2(crc,n))estado++;
 	         else{estado=99;}break;
-	  case 9: if(*str++==ETX)estado++;else{estado=99;}break;
-	  case 10:procesar_Paquete(cmd,&c[0],n-2);break;
-	  case 11:printf("\033[0m");
+	  case 10: if(*str++==ETX)estado++;else{estado=99;}break;
+	  case 11:procesar_Paquete(cmd,&c[0],n-2);break;
+	  case 12:printf("\033[0m");
               fflush(stdout);//salida inmediata de buffer printf
               printf("\n");
 			  break;
-	  case 99:estado=2;putchar('$');break;
-	  default:estado=1;break;}}        
+	  case 99:estado=2;ret=TRUE;mens_Warnning_Debug(" error 99 ");break;
+	  default:estado=1;break;}} 
 }//transmisor de datos a VFD+++++++++++++++++++++++++++++++++++++++++
  				
 /** esta funcion manda los paquetes del 

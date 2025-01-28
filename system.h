@@ -248,7 +248,8 @@
 #define COMANDO_INIT       'i'
 #define COMANDO_BOLD       'B'
 #define COMANDO_BOXF       'F'
-
+#define COMANDO_INIT       'x'
+#define CMD_INI             COMANDO_INIT
 
 //SIZES-------------------------------------------------------
 #define BUFF_X_CONTEXTO_SIZE  MAXIMO_NUMERO_PROD+1 //RELE
@@ -339,3 +340,4 @@
 //#endif //***************************************************************
 //**********************************************************************
 
+  

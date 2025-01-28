@@ -154,56 +154,46 @@ return ret;
 
 /*limpia el VFD de caracteres y todo   */
 unsigned char VFDclrscr1(unsigned char *mem){//AUTORIZADO 5:BYTES DE memoria
-unsigned char ret=0; 
-unsigned char *estado4,*c;//comando limpiar pantalla stx,04,CMD,0CU,CRC,ETX
-unsigned short int suma;//comando delay  stx,04,CMD,xx,CRC,ETX
-const unsigned char DELAY_DESPUES_DE_COMANDO_ms=10;//milisegundos
-  estado4=mem;
-        c=mem+1;
+//unsigned char ret=0; 
+//unsigned char *estado4,*c;//comando limpiar pantalla stx,04,CMD,0CU,CRC,ETX
+//unsigned short int suma;//comando delay  stx,04,CMD,xx,CRC,ETX
+//const unsigned char DELAY_DESPUES_DE_COMANDO_ms=10;//milisegundos
+unsigned char LEN=0x02; //bytes a calcular por CRC
+unsigned char buf[]={STX,LEN,COMANDO_CLRSCR,0x00,ETX};
 
-  switch(*estado4){
-	 case 1:suma=0;*(mem+2)=STX;    //if(VFDserial_SendChar1(0x0CU))//(Display Clear)   Display screen is cleared and cursor moves to home position.
-		    suma+=*(mem+3)=0x02;//numero de bytes
-            suma+=*(mem+4)=COMANDO_CLRSCR;
-            *(mem+6)=getCRC(suma,2);
-            *(mem+7)=ETX;      
-	        break;
-	 case 3:VFD_sendBlockChars(mem+2,5);
-            ret=TRUE;
-            *estado4=0;break;
-	 default:*estado4=1;break;}
-return ret;    
+  buf[LEN+1]=getCRC_v2(&buf[1],LEN);
+  VFD_sendBlockChars(&buf[0],sizeof(buf));
+            
+return 1;    
 }//fin clear screen VFD-----------------------------------------------------------------------------
 
 
-unsigned char getCRC(short int byteSum, int numBytes) {
-    unsigned char crc = 0x5A; // Valor inicial no trivial (e.g., 0x5A)
-    unsigned char data;
 
-    for (int i = 0; i < numBytes; i++) {
-        data = (byteSum >> (i * 8)) & 0xFF; // Extraer cada byte de la suma
-        // Mezcla: aplicar XOR y luego XNOR (complemento bit a bit)
-        crc ^= data;         // Primero XOR del CRC con el byte
-        crc = ~(crc);        // Después XNOR (complemento)
-        crc ^= 0xA3;}         // Agregar entropía fija para evitar patrones triviales
-    // Asegurarse de que el CRC nunca sea todo 0x00 ni todo 0xFF
-    if (crc == 0x00 || crc == 0xFF) { crc ^= 0x5A;} // Introducir un valor fijo para romper el patrón
+
+
+unsigned char getCRC_v2(unsigned char *data, unsigned char len) {
+unsigned char crc = 0xFF; // Valor inicial de CRC (puede ajustarse según el algoritmo CRC específico)
+    for (int i = 0; i < len; i++) {
+        crc ^= data[i];  // XOR entre el CRC actual y el byte de datos
+        for (unsigned char bit = 8; bit > 0; bit--) {
+            if (crc & 0x80) { // Si el bit más significativo es 1
+                crc = (crc << 1) ^ 0x07;} // Desplazamiento y XOR con polinomio 0x07 (puedes ajustarlo si usas otro polinomio)
+            else {crc <<= 1;}}} // Solo desplazamiento
+    // Asegurarse de que el CRC no sea 0x00 o 0xFF
+    if (crc == 0x00) {crc = 0x01;} // Cambiar a 0x01 si el CRC es 0x00
+    else if (crc == 0xFF) {crc = 0xFE;} // Cambiar a 0xFE si el CRC es 0xFF
     return crc;
-}//**************************************************************************************************
+}//********************************************************************************************
+
+
+
 
 
 /** Len= */
 unsigned char VFDposicion(unsigned char x,unsigned char y){ //MANDA DEL COMANDO DE POSICION AL vfd
-	//return vfd.f1.append((unsigned char)x,(unsigned char)y,_POS_);//FIFO_Display_DDS_Char_push((unsigned char)x,(unsigned char)y);          
-unsigned char POS_CMD[7],sum=0;
-          POS_CMD[0]=ETX;
-     sum+=POS_CMD[1]=4;//4 Bytes a ser procesados por CRC
-     sum+=POS_CMD[2]=COMANDO_POS;
-     sum+=POS_CMD[3]=x;
-     sum+=POS_CMD[4]=y;
-          POS_CMD[5]=getCRC(sum,4);
-          POS_CMD[6]=ETX;
-    
+unsigned char LEN=4;          
+unsigned char POS_CMD[]={STX,LEN,COMANDO_POS,x,y,0x00,ETX};
+     POS_CMD[LEN+1]=getCRC_v2(&POS_CMD[1],LEN);   
    	 VFD_sendBlockChars(&POS_CMD[0],sizeof(POS_CMD));//
 }// fin posicionVFD-------------------------------------------------------------
 
@@ -215,6 +205,7 @@ unsigned char VFDserial_SendChar1(unsigned char c){
 //struct VFD_DATA dato;
     //dato.p=_CHAR_;dato.x=c;dato.y=0;
 	//return vfd.f1.append(&qVFDtx,dato);
+
 return VFD_sendBlockChars(&c,1);//Init VFD
 }//------------------------------------------------------------------
 
@@ -233,39 +224,28 @@ return ret;
 
 /* Metodo Multi-Padre pero solo una Estancia ala Vez      */
 unsigned char VFDserial_SendBlock1(const char *Ptr,unsigned char size1){
-unsigned char ret=0,size2,n=0;//STX,LEN,CMD,char0,..charn,crc,etx 
-unsigned short int suma;
-   int next_head = (buffer.head + 1) % BUFFER_SIZE;
-   char temp_buffer[MAX_MESSAGE_LEN+5];
-   unsigned int len=strlen(Ptr)+5;
-   pthread_mutex_lock(&buffer.mutex);
-   if(size1>MAX_MESSAGE_LEN-5) size2=MAX_MESSAGE_LEN-5; else size2=size1;
-    suma=0,n=0;
-          temp_buffer[0] = STX;// Prepara el mensaje con los caracteres adicionales
-    suma+=temp_buffer[1] = len;n++;
-    suma+=temp_buffer[2] = COMANDO_STRING;n++;
-     for (unsigned char i = 0; i < size2; i++,n++) {
-        temp_buffer[3 + i] = Ptr[i]; // Copia cada carácter al buffer temporal
-        suma += Ptr[i];             // Suma el valor ASCII del carácter al CRC
-      }//strncpy(&temp_buffer[3], Ptr, size2); // Copia el mensaje original después de los primeros caracteres
-    temp_buffer[3 + size2] = getCRC(suma,n);
-    temp_buffer[4 + size2] = ETX;
-    temp_buffer[5 + size2] = '\0'; // Asegura que el string esté terminado correctamente
-   
-   if (next_head != buffer.tail) {  // Solo escribe si hay espacio en el buffer
-        strncpy(buffer.buffer[buffer.head], Ptr, size2); //MAX_MESSAGE_LEN);
-        buffer.head = next_head;
-        pthread_cond_signal(&buffer.cond);  // Despierta al hijo
-        ret=TRUE;}
-     pthread_mutex_unlock(&buffer.mutex);
-return ret;// fin de enviar mensaje++++++++++++++++++++++
+//unsigned char LEN;//STX,LEN,CMD,char0,..charn,crc,etx 
+unsigned char *array = (unsigned char *)malloc((size1 + 5) * sizeof(unsigned char));
+     if (array == NULL) {return 0;}// Verificamos si malloc falló     
+   // Inserta los datos del array *Ptr en el índice 3
+    for (unsigned char i = 0; i < size1; i++) {
+        array[3 + i] = Ptr[i];} // Copiar cada elemento desde Ptr
+    array[0] = STX;
+    array[1] = size1 + 5; // LEN (longitud total del mensaje)
+    array[2] = COMANDO_STRING; // CMD (ejemplo de comando)
+    array[size1 + 3] = getCRC_v2(array[1],size1+2);
+    array[size1 + 4] = ETX; // Ejemplo de CRC (ajustar según tu implementación)
+   	VFD_sendBlockChars(&POS_CMD[0],sizeof(POS_CMD));//
+return 1;// fin de enviar mensaje++++++++++++++++++++++
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
 
 //init el VFD+++++++++++++++++++++++++++++++++++++++++++++++ 
-unsigned char inicializar_VFD(const uchar *datos, size_t longitud){	
-    pthread_mutex_lock(&vfd.mutex.VDF_busy);  
-	VFD_sendBlockChars(datos,longitud);//Init VFD
-    pthread_mutex_unlock(&vfd.mutex.VDF_busy);
+unsigned char inicializar_VFD(void){
+const unsigned char LEN=9;//cantidad de bytes a calcular porf CRC    	
+unsigned char init_VFD[]={STX,LEN,CMD_INI,0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2,0x00,ETX};
+unsigned short int sum=0;     
+    init_VFD[10]=getCRC_v2(&init_VFD[1],LEN)
+	VFD_sendBlockChars(&init_VFD[0],sizeof(init_VFD));//Init VFD 
 }//fin de inizializacion de VFD++++++++++++++++++++++++++++++
 
 
@@ -357,28 +337,28 @@ unsigned char estado;
 unsigned char VFDboxLine1(unsigned char pen,unsigned char mode,
                        unsigned char x1,unsigned char y1,
                        unsigned char x2,unsigned char y2){
-coordn16 coordenadas; //                   mode  pen x1LO x1Hi y1Lo y1Hi x2Lo x2Hi y2Lo y2Hi
-//unsigned char datos[]={0x1F,0x28,0x64,0x11,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-     //                 0    1    2    3    4    5    6     7   8    9    10    11  12   13  
-unsigned char datos[11],sum=0;	
+coordn16 coordenadas; //             mode  pen   X1   Y1   X2   Y2      //x1LO x1Hi y1Lo y1Hi x2Lo x2Hi y2Lo y2Hi
+//unsigned char datos[]={STX,LEN,CMD,0x00,0x00,0x00,0x00,0x00,0x00,CRC,ETX};
+     //                   0    1   2   3    4    5    6    7    8    9 10     
+unsigned char datos[11],LEN=8;	
     if((mode!=BOX_VACIA)||(mode!=BOX_LLENA)){
               mode=BOX_VACIA;}
     datos[0]=STX;
-    sum+=datos[1]=8;//LEN=longitud, num de bytes
+    datos[1]=LEN;//=longitud, num de bytes
     if(mode==BOX_VACIA){
          sum+=datos[2]= COMANDO_BOX;}
     else{sum+=datos[2]=COMANDO_BOXF;}
     if(mode==BOX_VACIA)
         {sum+=datos[3]= 0x01;}
-    else{sum+=datos[3]=0x02;}
+    else{sum+=datos[3]= 0x02;}
     if(pen>0x01){pen=0;}
-    sum+=datos[4]=pen;
-    sum+=datos[5]=x1;         
-    sum+=datos[6]=y1;
-    sum+=datos[7]=x2;
-    sum+=datos[8]=y2;
-         datos[9]=getCRC(sum,8);
-         datos[10]=ETX;
+    datos[4]=pen;
+    datos[5] =x1;         
+    datos[6]=y1;
+    datos[7]=x2;
+    datos[8]=y2;
+    datos[9]=getCRC_v2(&datos[1],LEN);
+    datos[10]=ETX;
     VFD_sendBlockChars(&datos[0],sizeof(datos));
 return 1;
 }// fin draw line -----------------------------------------------------------------------------------------

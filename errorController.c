@@ -20,6 +20,11 @@ void errorCritico2(char *c,unsigned char n){
     exit(-1);
 }//fin error critico+++++++++++++++++++++++++++++++++++
 
+void mens_Warnning_Debug(char *c){
+      printf("\n \033[1;033m%s \033[0m\n",c);
+      usleep(10000);
+}//*****************************************************
+
 
 void NoErrorOK(void){
      printf("\r\033[0;32m[ ok ]\033[0m");usleep(10000);
