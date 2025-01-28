@@ -241,8 +241,9 @@ return 1;// fin de enviar mensaje++++++++++++++++++++++
 
 //init el VFD+++++++++++++++++++++++++++++++++++++++++++++++ 
 unsigned char inicializar_VFD(void){
-const unsigned char LEN=9;//cantidad de bytes a calcular porf CRC    	
-unsigned char init_VFD[]={STX,LEN,CMD_INI,0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2,0x00,ETX};
+const unsigned char LEN=2;//cantidad de bytes a calcular porf CRC    	
+//unsigned char init_VFD[]={STX,LEN,CMD_INI,0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2,0x00,ETX};
+unsigned char init_VFD[]={STX,LEN,COMANDO_INIT,0x00,ETX};
 unsigned short int sum=0;     
     init_VFD[10]=getCRC_v2(&init_VFD[1],LEN)
 	VFD_sendBlockChars(&init_VFD[0],sizeof(init_VFD));//Init VFD 
