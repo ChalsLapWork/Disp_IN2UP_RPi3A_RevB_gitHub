@@ -246,7 +246,7 @@ const unsigned char LEN=2;//cantidad de bytes a calcular porf CRC
 //unsigned char init_VFD[]={STX,LEN,CMD_INI,0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2,0x00,ETX};
 unsigned char init_VFD[]={STX,LEN,COMANDO_INIT,0x00,ETX};
 unsigned short int sum=0;     
-    init_VFD[10]=getCRC_v2(&init_VFD[1],LEN)
+    init_VFD[10]=getCRC_v2(&init_VFD[1],LEN);
 	VFD_sendBlockChars(&init_VFD[0],sizeof(init_VFD));//Init VFD 
 }//fin de inizializacion de VFD++++++++++++++++++++++++++++++
 
@@ -348,11 +348,11 @@ unsigned char datos[11],LEN=8;
     datos[0]=STX;
     datos[1]=LEN;//=longitud, num de bytes
     if(mode==BOX_VACIA){
-         sum+=datos[2]= COMANDO_BOX;}
-    else{sum+=datos[2]=COMANDO_BOXF;}
+         datos[2]= COMANDO_BOX;}
+    else{datos[2]=COMANDO_BOXF;}
     if(mode==BOX_VACIA)
-        {sum+=datos[3]= 0x01;}
-    else{sum+=datos[3]= 0x02;}
+        {datos[3]= 0x01;}
+    else{datos[3]= 0x02;}
     if(pen>0x01){pen=0;}
     datos[4]=pen;
     datos[5] =x1;         
