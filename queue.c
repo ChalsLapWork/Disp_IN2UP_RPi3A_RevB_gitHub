@@ -162,7 +162,7 @@ const char *temp = str;
     if (crc == NULL) {// Error al asignar memoria
         printf("Error: No se pudo asignar memoria para crc.\n");
         return 0;}
-   while(ret!=true){
+   while(ret!=TRUE){
 	switch(estado){// Continuar mientras no lleguemos al final de la cadena
       case 1:printf("\033[35m");estado++;break;
 	  case 2:putchar(*str);estado++;break;

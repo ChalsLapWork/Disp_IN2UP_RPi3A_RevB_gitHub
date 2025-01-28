@@ -34,7 +34,7 @@ unsigned char buffer[7],LEN=4;
       buffer[1]=LEN;//len
       buffer[2]=CMD_DELAY_US;//comando
       buffer[3]=union_usi.n[0];
-      Buffer[4]=union_usi.n[1];
+      buffer[4]=union_usi.n[1];
       buffer[5]=getCRC_v2(&buffer[1],LEN);
       buffer[6]=ETX;
       VFD_sendBlockChars(&buffer[0],sizeof(buffer));
