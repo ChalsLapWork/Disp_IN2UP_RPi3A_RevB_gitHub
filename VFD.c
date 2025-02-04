@@ -43,12 +43,12 @@ typedef struct {
 } ParallelPort;
 
 
-void init_mutex_VFD(void){
-     pthread_mutex_init( &buffer.mutex,NULL);
-     pthread_mutex_init(&buffer2.mutex,NULL);
-     pthread_cond_init(  &buffer.cond ,NULL);
-     pthread_cond_init( &buffer2.cond ,NULL); 
-}// fin de init mutex VFD++++++++++++++++++++++++++
+//void init_mutex_VFD(void){
+//     pthread_mutex_init( &buffer.mutex,NULL);
+//     pthread_mutex_init(&buffer2.mutex,NULL);
+//     pthread_cond_init(  &buffer.cond ,NULL);
+//     pthread_cond_init( &buffer2.cond ,NULL); 
+//}// fin de init mutex VFD++++++++++++++++++++++++++
 
 ParallelPort port = { .pins = {0, 1, 2, 3, 4, 5, 6, 7} };
 void initParallelPort(ParallelPort *port);

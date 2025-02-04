@@ -62,7 +62,7 @@ typedef struct {
 
 
 //extern circular_buffer_t buffer;
-extern circular_buffer_t_byteBlock buffer2;
+//extern circular_buffer_t_byteBlock buffer2;
 
 void VFDkeypad_ISR(unsigned char c);
 void init_VFD_BIOS(void);
@@ -123,7 +123,7 @@ void* Mon_VFD(void* arg);  //Proceso Productor<---Proceso/hilo/THread
 void *Clean_VFD(void *arg);
 void VFD_sendChar(uchar c);
 unsigned char inicializar_VFD(void);
-void init_mutex_VFD(void);
+//void init_mutex_VFD(void);
 unsigned char getCRC_v2(unsigned char *data, unsigned char len);
 //unsigned char VFD_sendBlockChars(const void *datos, size_t longitud);
 #endif
