@@ -52,16 +52,16 @@ typedef struct {
 //    pthread_cond_t cond;
 //} circular_buffer_t;
 
-typedef struct {
-    bloque_t buffer[BUFFER_SIZE];
-    _Atomic int head;  // Índice de escritura (hilo principal)
-    _Atomic int tail;  // Índice de lectura (hilo hijo)
-    pthread_mutex_t mutex;
-    pthread_cond_t cond;
-} circular_buffer_t_byteBlock;
+//typedef struct {
+//    bloque_t buffer[BUFFER_SIZE];
+//    _Atomic int head;  // Índice de escritura (hilo principal)
+//    _Atomic int tail;  // Índice de lectura (hilo hijo)
+//    pthread_mutex_t mutex;
+//    pthread_cond_t cond;
+//} circular_buffer_t_byteBlock;
 
 
-extern circular_buffer_t buffer;
+//extern circular_buffer_t buffer;
 extern circular_buffer_t_byteBlock buffer2;
 
 void VFDkeypad_ISR(unsigned char c);
