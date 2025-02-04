@@ -88,7 +88,7 @@ unsigned char debug;
 	vfd.f1.resetFIFOS=vfd_FIFOs_RESET; 
 	sync1=0xAA;//mutexs ocupados
 	pthread_mutex_init(&vfd.mutex.VDF_busy,NULL);
-	init_Queue_with_Thread(&qVFDtx);//fifos Transmisor data al Display
+	//init_Queue_with_Thread(&qVFDtx);//fifos Transmisor data al Display
 	vfd.config.bits.recurso_VFD_Ocupado=TRUE;//recurso ocupado, VFD nadie lo puede usar
 	//init_mutex_VFD();//inizialisa los mutex que manejan el VFD, transmision
 	NoErrorOK();

@@ -17,8 +17,10 @@
 
 #define DEPURANDO_SIN_DISPLAY_ENCENDIDO 1//1=CIERTO 0=DISPLAY ESTA ENCENDIDO Y FUNCIONANDO
 
-extern pthread_t SubProc_SendBlock_TX_VFD;
-extern pthread_t SubProc_SendBlock_chars_TX_VFD;
+//extern pthread_t SubProc_SendBlock_TX_VFD;
+//extern pthread_t SubProc_SendBlock_chars_TX_VFD;
+extern pthread_t SubPrcoc_SendBlock_TX_VFD;//TRAnsmisor de los datos al VFD
+
 
 void signal_handler(int signalnum){
     #if(debug_level1==1)
@@ -30,10 +32,10 @@ void signal_handler(int signalnum){
 //Si el programa termina debido a una señal como SIGKILL o SIGSEGV, las funciones registradas con atexit no se ejecutarán.
 void cleanup1(void) {
   printf("Limpieza 1 ejecutada.\n");
-  pthread_cancel(SubProc_SendBlock_TX_VFD);
-  pthread_join(SubProc_SendBlock_TX_VFD, NULL);
-  pthread_cancel(SubProc_SendBlock_chars_TX_VFD);
-  pthread_join(SubProc_SendBlock_chars_TX_VFD,NULL);
+  pthread_cancel(SubPrcoc_SendBlock_TX_VFD);
+  pthread_join(SubPrcoc_SendBlock_TX_VFD, NULL);
+  //pthread_cancel(SubProc_SendBlock_chars_TX_VFD);
+  //pthread_join(SubProc_SendBlock_chars_TX_VFD,NULL);
   pthread_exit(NULL);
 }//*****************************************************
 
