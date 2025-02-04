@@ -121,9 +121,9 @@ void writePort(unsigned char value);
 void test_display(void);
 void* Mon_VFD(void* arg);  //Proceso Productor<---Proceso/hilo/THread
 void *Clean_VFD(void *arg);
-unsigned char VFD_sendBlockChars(const uchar *datos, size_t longitud);
 void VFD_sendChar(uchar c);
 unsigned char inicializar_VFD(void);
 void init_mutex_VFD(void);
 unsigned char getCRC_v2(unsigned char *data, unsigned char len);
+//unsigned char VFD_sendBlockChars(const void *datos, size_t longitud);
 #endif

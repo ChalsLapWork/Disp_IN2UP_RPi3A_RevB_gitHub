@@ -43,22 +43,6 @@ typedef struct {
 } ParallelPort;
 
 
-circular_buffer_t buffer = {
-    .head = 0,
-    .tail = 0,
-    .mutex = PTHREAD_MUTEX_INITIALIZER,
-    .cond  = PTHREAD_COND_INITIALIZER
-};
-
-
-circular_buffer_t_byteBlock buffer2 = {
-    .head = 0,
-    .tail = 0,
-    .mutex = PTHREAD_MUTEX_INITIALIZER,
-    .cond  = PTHREAD_COND_INITIALIZER
-};
-
-
 void init_mutex_VFD(void){
      pthread_mutex_init( &buffer.mutex,NULL);
      pthread_mutex_init(&buffer2.mutex,NULL);
@@ -251,22 +235,6 @@ unsigned short int sum=0;
 }//fin de inizializacion de VFD++++++++++++++++++++++++++++++
 
 
-// Función que el hilo principal llama para enviar un bloque de caracteres
-unsigned char VFD_sendBlockChars(const uchar *datos, size_t longitud) {
-unsigned char ret = 0;
-int next_head = (buffer.head + 1) % BUFFER_SIZE;
-
-    pthread_mutex_lock(&buffer.mutex);
-    if (next_head != buffer.tail && longitud <= MAX_BLOCK_CHAR_VDF_SIZE) {
-        bloque_t *bloque = &buffer.buffer[buffer.head];
-        bloque->longitud = longitud;
-        memcpy(bloque->datos, datos, longitud);
-        buffer.head = next_head;
-        pthread_cond_signal(&buffer.cond);
-        ret = 1;}
-    pthread_mutex_unlock(&buffer.mutex);
-return ret;
-}//VFD_sendBlockChars+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 //Proceso  unico de Padre unico, PROCESO
