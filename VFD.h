@@ -22,7 +22,7 @@
 #define FONTSIZE4   0x04U  //16x32
 
 
-#define BUFFER_SIZE 10  // Tamaño del buffer circular
+//#define BUFFER_SIZE 10  // Tamaño del buffer circular
 #define MAX_MESSAGE_LEN 40
 #define MAX_BLOCK_CHAR_VDF_SIZE 40 
 

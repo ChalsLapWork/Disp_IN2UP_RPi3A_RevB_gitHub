@@ -46,7 +46,7 @@ void enqueue(struct Queue  *q,struct VFD_DATA dato1);
 
 
 // Buffer compartido
-unsigned char buffer[BUFFER_SIZE];
+//unsigned char buffer[BUFFER_SIZE];
 size_t buffer_length = 0;
 int in = 0;
 int out = 0;
