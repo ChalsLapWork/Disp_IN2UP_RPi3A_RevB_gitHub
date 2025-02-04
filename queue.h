@@ -339,7 +339,7 @@ void *Proceso_Limpiador(void *arg);
 //void* SubProceso_Tx_VFD(void* arg);
 //void *SubProceso_SendBlock_Tx_VFD(void* arg);
 void init_Queue_with_Thread(struct Queue  *q);
-unsigned char Transmissor_SendBlock_VFD(const char *str);
+//unsigned char Transmissor_SendBlock_VFD(const char *str);
 //void *Subproceso_sendBlockBytes_Tx_VFD(void *arg);
 void init_menu(void);
 void *Run_Menu(void *arg);

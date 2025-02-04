@@ -18,6 +18,8 @@
 #include <string.h>
 #include "VFDmenu.h"
 #include "SistOp.h"
+#include <semaphore.h>
+
 
 
 
@@ -159,7 +161,7 @@ unsigned char ret = 0;
 
       if (len > BUFFER_SIZE) {
         fprintf(stderr, "Error: El tamaño de los datos excede el BUFFER_SIZE\n");
-        return;}
+        return 0;}
 
     sem_wait(&sem_vacios);
     pthread_mutex_lock(&mutex_buffer);
