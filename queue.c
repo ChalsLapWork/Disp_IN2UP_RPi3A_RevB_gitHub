@@ -90,7 +90,7 @@ unsigned char debug;
 	pthread_mutex_init(&vfd.mutex.VDF_busy,NULL);
 	init_Queue_with_Thread(&qVFDtx);//fifos Transmisor data al Display
 	vfd.config.bits.recurso_VFD_Ocupado=TRUE;//recurso ocupado, VFD nadie lo puede usar
-	init_mutex_VFD();//inizialisa los mutex que manejan el VFD, transmision
+	//init_mutex_VFD();//inizialisa los mutex que manejan el VFD, transmision
 	NoErrorOK();
 	printf("\n       Creando Proceso Init VFD");
 	//if((debug=pthread_create(&SubProc_SendBlock_chars_TX_VFD,NULL,Subproceso_sendBlockBytes_Tx_VFD,NULL))!=0){
