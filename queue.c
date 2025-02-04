@@ -23,7 +23,7 @@
 
 
 
-#define BUFFER_SIZE 256  // Tamaño máximo de cada array
+#define BUFFER_SIZE 250  // Tamaño máximo de cada array
 #define NUM_ENTRADAS 8   // Número máximo de arrays en el buffer circular
 
 typedef struct {// Estructura para datos transmitidos
@@ -106,7 +106,7 @@ unsigned char debug;
 
 
 
-void init_Queue_with_Thread(struct Queue *q){    
+/* //void init_Queue_with_Thread(struct Queue *q){    
 	  q->head=q->tail=NULL;
 	  q->size=0;
 	  q->nLibres=SIZE_MAX_FIFO;
@@ -116,7 +116,7 @@ void init_Queue_with_Thread(struct Queue *q){
 	  q->s.cond_Tx=&cond_Tx_SendBlock;
 	  pthread_mutex_init(q->s.m_Tx,NULL);
 	  pthread_cond_init(q->s.cond_Tx,NULL);
-}//fin de init FIFO transmit VFD+++++++++++++++++++++++++
+}*///fin de init FIFO transmit VFD+++++++++++++++++++++++++
   
 
 
@@ -206,7 +206,7 @@ return NULL;}//+++++++++++++++++++++++++++++++++++++
 void *Transmissor_SendBlock_VFD(void *arg){
 DatosTransmision *datos=(DatosTransmision *)arg;
 unsigned char estado,estado2,sum,len,cmd,n;
-unsigned char c[MAX_NUM_CHAR_VFD],i;
+unsigned char c[MAX_NUM_CHAR_VFD];
 unsigned char *crc=NULL;
 unsigned char str_len = 0,ret=0;        // Longitud del string de entrada
 char *str;
