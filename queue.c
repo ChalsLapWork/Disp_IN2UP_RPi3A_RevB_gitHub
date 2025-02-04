@@ -95,7 +95,7 @@ unsigned char debug;
 	printf("\n       Creando Proceso Init VFD");
 	//if((debug=pthread_create(&SubProc_SendBlock_chars_TX_VFD,NULL,Subproceso_sendBlockBytes_Tx_VFD,NULL))!=0){
 	   // errorCritico2("Error creacion Hilo:",67);}else{NoErrorOK();}
-	if((debug=pthread_create(&SubPrcoc_VFD_tX,NULL,SubProceso_SendBlock_Tx_VFD,NULL))!=0){	
+	if((debug=pthread_create(&SubPrcoc_SendBlock_TX_VFD,NULL,SubProceso_SendBlock_Tx_VFD,NULL))!=0){	
 	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}
 	inicializar_VFD();//Init VFD
 	printf("\n       Fin de Init Queues");
@@ -190,12 +190,12 @@ void *SubProceso_SendBlock_Tx_VFD(void* arg) {//consumidor
         out = (out + 1) % NUM_ENTRADAS;
         pthread_mutex_unlock(&mutex_buffer);
         pthread_t transmisor;
-        if (pthread_create(&transmisor, NULL, hilo_transmisor, datos) != 0) {
+        if (pthread_create(&SubProc_Tx_VFD, NULL, Transmissor_SendBlock_VFD, datos) != 0) {
             perror("Error al crear el hilo transmisor");
             free(datos);
             continue;}
 
-        pthread_detach(transmisor);
+        pthread_detach(SubProc_Tx_VFD);
         sem_post(&sem_vacios);
     }//fin while+++++++++++++++++++++++++
 return NULL;}//+++++++++++++++++++++++++++++++++++++
