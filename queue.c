@@ -36,7 +36,7 @@ typedef struct {// Buffer circular para almacenar múltiples arrays
     size_t len;
 } EntradaBuffer;
 
-EntradaBuffer buffer_circular[NUM_ENTRADAS];
+EntradaBuffer buffer_circular[NUM_ENTRADAS];//buFFER  del TX del VFD
 
 struct _DISPLAY_VFD_ vfd;
 struct Queue qVFDtx;//queue de transmision vfd 
@@ -48,8 +48,8 @@ void enqueue(struct Queue  *q,struct VFD_DATA dato1);
 // Buffer compartido
 //unsigned char buffer[BUFFER_SIZE];
 size_t buffer_length = 0;
-int in = 0;
-int out = 0;
+int in = 0;//control de la FIFO de TX de la VFD
+int out = 0;//control dela FIFO de Tx VFD
 
 unsigned char  buffer6[SIZE_BUFFER6];//FIFO graficos con S.O, aqui guarda el dato
 unsigned char  buffer7[SIZE_BUFFER6];//FIFO graficos con SO. aqui guarda el parametro=char|box|pos|
@@ -69,8 +69,8 @@ pthread_t SubProc_Tx_VFD;
 //pthread_cond_t buffer_not_empty = PTHREAD_COND_INITIALIZER;
 
 
-sem_t sem_llenos;
-sem_t sem_vacios;
+sem_t sem_llenos;//semaforos de TX VFD
+sem_t sem_vacios;//semaforos de TX de VFD
 pthread_mutex_t mutex_buffer = PTHREAD_MUTEX_INITIALIZER;
 
 
@@ -87,14 +87,14 @@ unsigned char debug;
 	vfd.f1.pop=vfd_FIFO_pop;                                                                                                                                                                                                                                                                                                                                                                                                                      
 	vfd.f1.resetFIFOS=vfd_FIFOs_RESET; 
 	sync1=0xAA;//mutexs ocupados
-	pthread_mutex_init(&vfd.mutex.VDF_busy,NULL);
+	//pthread_mutex_init(&vfd.mutex.VDF_busy,NULL);
 	//init_Queue_with_Thread(&qVFDtx);//fifos Transmisor data al Display
 	vfd.config.bits.recurso_VFD_Ocupado=TRUE;//recurso ocupado, VFD nadie lo puede usar
 	//init_mutex_VFD();//inizialisa los mutex que manejan el VFD, transmision
 	NoErrorOK();
 	printf("\n       Creando Proceso Init VFD");
-	//if((debug=pthread_create(&SubProc_SendBlock_chars_TX_VFD,NULL,Subproceso_sendBlockBytes_Tx_VFD,NULL))!=0){
-	   // errorCritico2("Error creacion Hilo:",67);}else{NoErrorOK();}
+	sem_init(&sem_llenos, 0, 0);
+    sem_init(&sem_vacios, 0, NUM_ENTRADAS);
 	if((debug=pthread_create(&SubPrcoc_SendBlock_TX_VFD,NULL,SubProceso_SendBlock_Tx_VFD,NULL))!=0){	
 	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}
 	inicializar_VFD();//Init VFD
@@ -191,7 +191,7 @@ void *SubProceso_SendBlock_Tx_VFD(void* arg) {//consumidor
         pthread_mutex_unlock(&mutex_buffer);
         pthread_t transmisor;
         if (pthread_create(&SubProc_Tx_VFD, NULL, Transmissor_SendBlock_VFD, datos) != 0) {
-            perror("Error al crear el hilo transmisor");
+            perror168("Error al crear el hilo transmisor");
             free(datos);
             continue;}
 
