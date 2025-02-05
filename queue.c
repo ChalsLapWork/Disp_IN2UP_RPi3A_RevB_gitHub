@@ -191,7 +191,7 @@ void *SubProceso_SendBlock_Tx_VFD(void* arg) {//consumidor
         pthread_mutex_unlock(&mutex_buffer);
         pthread_t transmisor;
         if (pthread_create(&SubProc_Tx_VFD, NULL, Transmissor_SendBlock_VFD, datos) != 0) {
-            perror168("Error al crear el hilo transmisor");
+            perror("Error al crear el hilo transmisor");
             free(datos);
             continue;}
 
