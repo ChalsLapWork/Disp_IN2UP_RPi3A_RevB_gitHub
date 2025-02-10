@@ -80,7 +80,7 @@ unsigned char array1[] = {0x41, 0x42, 0x43, 0x44};
 char string1[] = "Hola, soy un string 1";
 unsigned char array2[] = {0x01, 0x02, 0x03, 0x04, 0x05};
 char string2[] = "Este es otro string más largo";
-
+int iteracion = 0;
 unsigned char debug;
 	init_FIFO_General_1byte(&vfd.x,&buffer6[0],SIZE_BUFFER6);
     init_FIFO_General_1byte(&vfd.y,&buffer7[0],SIZE_BUFFER6);
@@ -101,8 +101,8 @@ unsigned char debug;
     sem_init(&sem_vacios, 0, NUM_ENTRADAS);
 	if((debug=pthread_create(&SubPrcoc_SendBlock_TX_VFD,NULL,SubProceso_SendBlock_Tx_VFD,NULL))!=0){	
 	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}
+    usleep(1);//solo para debug
 
-int iteracion = 0;
 while (1) {
         if (iteracion % 4 == 0) {
             SubProceso_SendBlock_Tx_VFD(array1, sizeof(array1));
