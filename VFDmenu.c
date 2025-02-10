@@ -53,7 +53,7 @@ const unsigned char x[4]={80,24,24,24};
 const unsigned char y[4]={ 2,10,12,14};
 unsigned char ret=0;
 //unsigned char *inst1,*inst2;//instancias subHilos a ejecutar que se pueden ejecutar en otros lados
-unsigned char *estado,*control,*mem_15bytes,*aux3_char,*aux0_uchar;
+unsigned char *estado,/* *control,*/*mem_15bytes,*aux3_char,*aux0_uchar;
 unsigned short int aux1_usi;
 const unsigned char DEBUG=0x11,MEMO=0x12;
 unsigned char Status_Prod=DEBUG;
@@ -63,7 +63,7 @@ union W16{
 }word_16bits;
 
             estado=mem;
-           control=mem+1;
+           //control=mem+1;
          aux3_char=mem+2;
   word_16bits.c[0]=*(mem+4);
   word_16bits.c[1]=*(mem+5);

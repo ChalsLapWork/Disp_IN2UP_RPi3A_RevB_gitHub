@@ -231,7 +231,7 @@ DatosTransmision *datos=(DatosTransmision *)arg;
 unsigned char estado,len,cmd,n;
 unsigned char c[MAX_NUM_CHAR_VFD];
 unsigned char *crc=NULL;
-unsigned char str_len = 0,ret=0;        // Longitud del string de entrada
+unsigned char str_len = 0;        // Longitud del string de entrada
 char *str;
 size_t i;
 
@@ -240,7 +240,7 @@ size_t i;
         printf("Error: No se pudo asignar memoria para crc.\n");
         return 0;}
    while(i<datos->len){
-	str=&datos->data[i];
+	str=(char *)&datos->data[i];
 	switch(estado){// Continuar mientras no lleguemos al final de la cadena
       case 1:printf("\033[35m");estado++;break;
 	  case 2:putchar(*str);estado++;break;
@@ -264,9 +264,10 @@ size_t i;
               fflush(stdout);//salida inmediata de buffer printf
               printf("\n");
 			  break;
-	  case 99:estado=2;ret=TRUE;mens_Warnning_Debug(" error 99 ");break;
+	  case 99:estado=2;mens_Warnning_Debug(" error 99 ");break;
 	  default:estado=1;break;}
 	  }//fin while 
+return 0;
 }//transmisor de datos a VFD+++++++++++++++++++++++++++++++++++++++++
  				
 /** esta funcion manda los paquetes del 
@@ -387,6 +388,7 @@ enum {
 		   case CMD_ERR:ret=TRUE;ret2=FALSE;estado=0;break;			
            default:estado=1;break;}//fin switch+++++++++++++
 	}//fin of while ++++++++++++++++++++++++++++++++++++++++++
+return ret;
 }//fin de procesar paquetes+++++++++++++++++++++++++++++++++++
 
 

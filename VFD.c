@@ -245,6 +245,7 @@ unsigned char init_VFD[]={STX,LEN,COMANDO_INIT,0x00,ETX};
 //unsigned short int sum=0;     
     init_VFD[10]=getCRC_v2(&init_VFD[1],LEN);
 	VFD_sendBlockChars(&init_VFD[0],sizeof(init_VFD));//Init VFD 
+return 1;
 }//fin de inizializacion de VFD++++++++++++++++++++++++++++++
 
 
