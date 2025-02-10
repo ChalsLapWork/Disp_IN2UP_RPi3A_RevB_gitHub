@@ -53,7 +53,7 @@ const unsigned char x[4]={80,24,24,24};
 const unsigned char y[4]={ 2,10,12,14};
 unsigned char ret=0;
 //unsigned char *inst1,*inst2;//instancias subHilos a ejecutar que se pueden ejecutar en otros lados
-unsigned char *estado,*control,*mem_15bytes,*aux3_char,*aux0_uchar;
+unsigned char *estado,*mem_15bytes,*aux3_char,*aux0_uchar;
 unsigned short int aux1_usi;
 const unsigned char DEBUG=0x11,MEMO=0x12;
 unsigned char Status_Prod=DEBUG;
@@ -119,7 +119,7 @@ union W16{
 return ret;   
 }// FIN DESPLIEGUE DEL PORTAL INICIO-------------------------------------------------------------------
 
-	
+
 
 
 

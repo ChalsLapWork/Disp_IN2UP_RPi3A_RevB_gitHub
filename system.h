@@ -17,12 +17,12 @@
 //**************************************************
 // debug Nivel del debugeo numero-1
 //#define debug_level1 1 //1:esta activado el debugeo
-#define debug_level1 2 //2:simular sin Rpi a linux normal
+//#define debug_level1 2 //2:simular sin Rpi a linux normal
 
 #define PHARMACEUTICO 0xAB
 
 #ifndef _TIPO_DE_MAQUINA_
-#define _TIPO_DE_MAQUINA_ PHARMACEUTICO //TRIPLE_FRECUENCIA
+  #define _TIPO_DE_MAQUINA_ PHARMACEUTICO //TRIPLE_FRECUENCIA
 #endif
 
 /* MAXIMOS */
