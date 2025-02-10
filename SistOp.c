@@ -12,7 +12,7 @@ extern struct _DISPLAY_VFD_ vfd;
 /* Methodo sin sistema operativo
  *  Regresamos     Tamaño de memoria: 1 */	
 unsigned char find_contexto_Siguiente(void){
-//unsigned char ret;     
+unsigned char ret;     
   
 if(!vfd.config.bits.init_Menu){
          ret=PORTAL_INICIO;}
@@ -26,5 +26,5 @@ else{
 	   case MENU_INSIGHT:break;
 	   default:break;}//Debug EN CONSTRUCCION 
      }//---------------------------------------------------------  
-return 1;	 
+return ret;	 
 }//FIN FIND CONTEXTO siguiente+++++++++++++++++++++++++++++++++++++++++++
