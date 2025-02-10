@@ -76,6 +76,11 @@ pthread_mutex_t mutex_buffer = PTHREAD_MUTEX_INITIALIZER;
 
 void init_queues(void){
 //const unsigned char init_VFD[]={0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2};
+unsigned char array1[] = {0x41, 0x42, 0x43, 0x44};
+char string1[] = "Hola, soy un string 1";
+unsigned char array2[] = {0x01, 0x02, 0x03, 0x04, 0x05};
+char string2[] = "Este es otro string más largo";
+
 unsigned char debug;
 	init_FIFO_General_1byte(&vfd.x,&buffer6[0],SIZE_BUFFER6);
     init_FIFO_General_1byte(&vfd.y,&buffer7[0],SIZE_BUFFER6);
@@ -96,6 +101,24 @@ unsigned char debug;
     sem_init(&sem_vacios, 0, NUM_ENTRADAS);
 	if((debug=pthread_create(&SubPrcoc_SendBlock_TX_VFD,NULL,SubProceso_SendBlock_Tx_VFD,NULL))!=0){	
 	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}
+
+int iteracion = 0;
+while (1) {
+        if (iteracion % 4 == 0) {
+            SubProceso_SendBlock_Tx_VFD(array1, sizeof(array1));
+        } else if (iteracion % 4 == 1) {
+            SubProceso_SendBlock_Tx_VFD(string1, strlen(string1) + 1);
+        } else if (iteracion % 4 == 2) {
+            SubProceso_SendBlock_Tx_VFD(array2, sizeof(array2));
+        } else {
+            SubProceso_SendBlock_Tx_VFD(string2, strlen(string2) + 1);
+        }
+        iteracion++;
+    }
+
+
+
+
 	inicializar_VFD();//Init VFD
 	printf("\n       Fin de Init Queues");
 	vfd.config.bits.recurso_VFD_Ocupado=FALSE;
