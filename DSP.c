@@ -206,7 +206,7 @@ unsigned short int maxx,maxy,ymax,ymin;
 void generarPixelsAnalogos(void){//signed short int Min,signed short int miny){
 
 unsigned short int pixelSize;//tamaño del pixel de analogo versus DDS por zoom selected
-unsigned short int i,j;
+unsigned short int i,j,jj;
 //unsigned char k=0;
        pixelSize=zoom.Maxx/DDS_X_4d8;//DDS_X_4d8=96;  //95..192  ->0..Max
        if(pixelSize==0)//menor al 96,tamaño del pixel es portanto 1

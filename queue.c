@@ -125,7 +125,7 @@ while (1) {
 	NoErrorOK();
 }//fin init queue+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-sa
+
 
 
 /* //void init_Queue_with_Thread(struct Queue *q){    
@@ -220,21 +220,21 @@ void *SubProceso_SendBlock_Tx_VFD(void* arg) {//consumidor
         pthread_detach(SubProc_Tx_VFD);
         sem_post(&sem_vacios);
     }//fin while+++++++++++++++++++++++++
-return NULL;}//+++++++++++++++++++++++++++++++++++++
+return NULL;
+}//+++++++++++++++++++++++++++++++++++++
 //fin del subproceso de envio de datos al display+++++++++++++
 
 
 
 void *Transmissor_SendBlock_VFD(void *arg){
 DatosTransmision *datos=(DatosTransmision *)arg;
-unsigned char estado,estado2,sum,len,cmd,n;
+unsigned char estado,len,cmd,n;
 unsigned char c[MAX_NUM_CHAR_VFD];
 unsigned char *crc=NULL;
-unsigned char str_len = 0,ret=0;        // Longitud del string de entrada
+unsigned char str_len = 0;        // Longitud del string de entrada
 char *str;
 size_t i;
 
-    
 	crc=(unsigned char *)malloc(str_len *sizeof(unsigned char));    // Asignar memoria dinámica para el array crc basado en la longitud de *str
     if (crc == NULL) {// Error al asignar memoria
         printf("Error: No se pudo asignar memoria para crc.\n");
@@ -266,7 +266,7 @@ size_t i;
 			  break;
 	  case 99:estado=2;ret=TRUE;mens_Warnning_Debug(" error 99 ");break;
 	  default:estado=1;break;}
-	  } 
+	  }//fin while 
 }//transmisor de datos a VFD+++++++++++++++++++++++++++++++++++++++++
  				
 /** esta funcion manda los paquetes del 
