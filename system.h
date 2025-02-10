@@ -16,8 +16,8 @@
 #define R_BUSY_PIN 22 //Ready/Busy
 //**************************************************
 // debug Nivel del debugeo numero-1
-#define debug_level1 1 //1:esta activado el debugeo
-
+//#define debug_level1 1 //1:esta activado el debugeo
+#define debug_level1 2 //2:simular sin Rpi a linux normal
 
 #define PHARMACEUTICO 0xAB
 

@@ -74,9 +74,13 @@ void writeParallelPort(ParallelPort *port, unsigned char value) {
 
 
 void writePort(unsigned char value){
+#if ( debug_level1 == 2 ) 
+   usleep(1);
+#else     
    digitalWrite(WR_PIN,LOW);//comando de escritura 
    writeParallelPort(&port,value);
    digitalWrite(WR_PIN,HIGH);//comando de escritura OFF
+#endif   
 }//fin write port++++++++++++++++++++++++++++++++++++++++++
 
 
