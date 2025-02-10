@@ -187,7 +187,7 @@ void *SubProceso_SendBlock_Tx_VFD(void* arg) {//consumidor
         memcpy(datos->data, buffer_circular[out].data, datos->len);
         printf("Consumidor: Copió del buffer_circular al buffer2 (len: %zu)\n", datos->len);
         out = (out + 1) % NUM_ENTRADAS;
-        pthread_mutex_unlock(&mute220x_buffer);
+        pthread_mutex_unlock(&mutex_buffer);
         pthread_t transmisor;
         if (pthread_create(&SubProc_Tx_VFD, NULL, Transmissor_SendBlock_VFD, datos) != 0) {
             perror("Error al crear el hilo transmisor");
