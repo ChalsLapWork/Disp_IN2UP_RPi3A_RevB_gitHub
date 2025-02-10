@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <wiringPi.h>
 #include "system.h"
 #include "init.h"
 #include "queue.h"
@@ -14,6 +13,9 @@
 #include "VFD.h"
 #include "stdlib.h"
 #include <signal.h>
+#ifndef  debug_level1 
+  #include <wiringPi.h>
+#endif
 
 #define DEPURANDO_SIN_DISPLAY_ENCENDIDO 1//1=CIERTO 0=DISPLAY ESTA ENCENDIDO Y FUNCIONANDO
 
@@ -43,7 +45,9 @@ void cleanup1(void) {
 
 int main(void){
   printf("\nInsight v3");
+#ifndef  debug_level1 
   wiringPiSetup();  
+#endif 
   signal(SIGINT,signal_handler);//asocia el manejador de salida del programa
   configPuertos();
   init_queues();

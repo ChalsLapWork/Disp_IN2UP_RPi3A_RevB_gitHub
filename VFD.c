@@ -1,7 +1,7 @@
 #include "VFD.h"
 #include "system.h"
 #include "queue.h"
-#include <wiringPi.h>
+
 #include <stdio.h>
 #include "errorController.h"
 #include <stdio.h>
@@ -11,7 +11,9 @@
 #include <stdatomic.h>
 #include <stdbool.h>
 #include "delay.h"
-
+#ifndef  debug_level1 
+    #include <wiringPi.h>
+#endif
 
 
 
@@ -56,9 +58,13 @@ void writeParallelPort(ParallelPort *port, unsigned char value);
 
 // Configurar pines como salidas
 void initParallelPort(ParallelPort *port) {
+#if ( debug_level1 == 2 )
+       usleep(1);
+#else        
     for (int i = 0; i < 8; i++) {
         pinMode(port->pins[i], OUTPUT);
         digitalWrite(port->pins[i], LOW); }
+#endif
 }//fin de init parallel port++++++++++++++++++++++++++++++
 
 void initParallelPort_Global(void){
@@ -67,9 +73,13 @@ void initParallelPort_Global(void){
 
 // Escribir un byte en el puerto paralelo +++++++++++++++++++++++
 void writeParallelPort(ParallelPort *port, unsigned char value) {
+#if ( debug_level1 == 2 )
+       usleep(1);
+#else       
     for (int i = 0; i < 8; i++) {
         int bit = (value >> i) & 1;       // Extraer el i-ésimo bit
         digitalWrite(port->pins[i], bit); }// Establecer el valor en el pin correspondiente
+#endif
 }//fin de write parallelport ++++++++++++++++++++++++++++++++++++
 
 
