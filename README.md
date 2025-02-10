@@ -1,26 +1,33 @@
-# Proyecto Increíble 🚀
+# Proyecto Display Insight 🚀
 
-Bienvenido al repositorio de mi proyecto increíble. Este proyecto es realmente **genial** y tiene muchas características interesantes.
+No son Bienvenidos al repositorio de mi proyecto secreto. Favor de retirarse.
+Proyecto Para visualizar con hilos el VFD 256X128 grafico usando **Rpi ** y la
+libreria wiring en la branch **RevD4_tx_VFD_v3**; vamos a deplegar el menu principal
+el menu Portal Inicion usando  las funciones sendBlock_VFD esta funcion
+escribe en un buffer fifo el array el cual lo va processar otro hilo secundario
+y ese hilo secundario saca el cotenido del bufer lo copea en otro fifo y ese ultimo 
+fifo descarga y tranmite los datos. para poder manejar varias cadenas vamos a 
+manejarlo como un protocolo de comunicacion,
 
 ## Características ✨
-- **Fácil de usar** ✅
-- **Documentación completa** 📚
+- **RevD4_tx_VFD_v3** desplegar Menu Portal Usando Hilo especialista ✅
+- ** En espera  ** 📚
 - **Código limpio** 🧑‍💻
 
 ## Instalación 🔧
 
-1. Clona el repositorio:
+1. Comandos utiles:
     ```bash
-    git clone https://github.com/usuario/proyecto.git
+    git pull
+    git fetch
     ```
-2. Instala las dependencias:
+2. Compilacion:
     ```bash
-    npm install
+    gcc -g *.c display_RevD.4 -o  -lwiringPi -v
     ```
 
 ## Uso 🔥
-Puedes usar este proyecto para lograr grandes cosas. ¡Aquí tienes un ejemplo de código!
+Display Insight !¡¡
 
 ```python
-def hola_mundo():
-    print("¡Hola, mundo!")
+gdb -/disp_Revxx
