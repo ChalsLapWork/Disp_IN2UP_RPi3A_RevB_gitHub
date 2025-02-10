@@ -193,6 +193,7 @@ unsigned char LEN=4;
 unsigned char POS_CMD[]={STX,LEN,COMANDO_POS,x,y,0x00,ETX};
      POS_CMD[LEN+1]=getCRC_v2(&POS_CMD[1],LEN);   
    	 VFD_sendBlockChars(&POS_CMD[0],sizeof(POS_CMD));//
+return 1;     
 }// fin posicionVFD-------------------------------------------------------------
 
 
@@ -321,7 +322,7 @@ unsigned char estado;
 unsigned char VFDboxLine1(unsigned char pen,unsigned char mode,
                        unsigned char x1,unsigned char y1,
                        unsigned char x2,unsigned char y2){
-coordn16 coordenadas; //             mode  pen   X1   Y1   X2   Y2      //x1LO x1Hi y1Lo y1Hi x2Lo x2Hi y2Lo y2Hi
+//coordn16 coordenadas; //             mode  pen   X1   Y1   X2   Y2      //x1LO x1Hi y1Lo y1Hi x2Lo x2Hi y2Lo y2Hi
 //unsigned char datos[]={STX,LEN,CMD,0x00,0x00,0x00,0x00,0x00,0x00,CRC,ETX};
      //                   0    1   2   3    4    5    6    7    8    9 10     
 unsigned char datos[11],LEN=8;	

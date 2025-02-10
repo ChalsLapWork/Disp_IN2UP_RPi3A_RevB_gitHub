@@ -278,7 +278,7 @@ union{
   unsigned short int t;
   unsigned char n[2];
 }union_usi;
-unsigned char ret=0,estado,ret2,i;     
+unsigned char ret=0,estado,/*ret2,*/i;     
 enum {
     CMD_STR = 10,
     CMD_CHR = 20,
@@ -384,8 +384,8 @@ enum {
 						  if(*c==1) writePort(0x01); 
 						  else{writePort(0x00);}usleep(50);
 						  estado=CMD_OK;break;
-		   case CMD_OK: ret=TRUE;ret2=TRUE; estado=0;break;		   
-		   case CMD_ERR:ret=TRUE;ret2=FALSE;estado=0;break;			
+		   case CMD_OK: ret=TRUE;/*ret2=TRUE;*/ estado=0;break;		   
+		   case CMD_ERR:ret=TRUE;/*ret2=FALSE;*/estado=0;break;			
            default:estado=1;break;}//fin switch+++++++++++++
 	}//fin of while ++++++++++++++++++++++++++++++++++++++++++
 return ret;
@@ -415,6 +415,7 @@ unsigned char debug;
 //Proceso de control de Menus
 void *Run_Menu(void *arg){
    xControl_Principal_de_Menus_Operativo();
+return NULL;   
 }//fin de run menu++++++++++++++++++++++++++++++++++++++++++++
 
 
