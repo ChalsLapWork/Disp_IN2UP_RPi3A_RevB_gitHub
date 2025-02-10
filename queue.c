@@ -105,13 +105,13 @@ unsigned char debug;
 
 while (1) {
         if (iteracion % 4 == 0) {
-            SubProceso_SendBlock_Tx_VFD(array1, sizeof(array1));
+            SubProceso_SendBlock_Tx_VFD(array1);
         } else if (iteracion % 4 == 1) {
-            SubProceso_SendBlock_Tx_VFD(string1, strlen(string1) + 1);
+            SubProceso_SendBlock_Tx_VFD(string1);
         } else if (iteracion % 4 == 2) {
-            SubProceso_SendBlock_Tx_VFD(array2, sizeof(array2));
+            SubProceso_SendBlock_Tx_VFD(array2);
         } else {
-            SubProceso_SendBlock_Tx_VFD(string2, strlen(string2) + 1);
+            SubProceso_SendBlock_Tx_VFD(string2);
         }
         iteracion++;
     }
@@ -125,7 +125,7 @@ while (1) {
 	NoErrorOK();
 }//fin init queue+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
+sa
 
 
 /* //void init_Queue_with_Thread(struct Queue *q){    
@@ -179,7 +179,7 @@ return data;
 // Función que el hilo principal llama para enviar un bloque de caracteres
 //*********PRODUCTOR-1****************************+
 unsigned char VFD_sendBlockChars(void *datos, size_t len){
-unsigned char ret = 0;
+//unsigned char ret = 0;
 
       if (len > BUFFER_SIZE) {
         fprintf(stderr, "Error: El tamaño de los datos excede el BUFFER_SIZE\n");
@@ -211,7 +211,7 @@ void *SubProceso_SendBlock_Tx_VFD(void* arg) {//consumidor
         printf("Consumidor: Copió del buffer_circular al buffer2 (len: %zu)\n", datos->len);
         out = (out + 1) % NUM_ENTRADAS;
         pthread_mutex_unlock(&mutex_buffer);
-        pthread_t transmisor;
+        pthread_t SubProc_Tx_VFD;
         if (pthread_create(&SubProc_Tx_VFD, NULL, Transmissor_SendBlock_VFD, datos) != 0) {
             perror("Error al crear el hilo transmisor");
             free(datos);
