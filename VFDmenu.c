@@ -119,7 +119,7 @@ union W16{
 return ret;   
 }// FIN DESPLIEGUE DEL PORTAL INICIO-------------------------------------------------------------------
 
-
+	
 
 
 

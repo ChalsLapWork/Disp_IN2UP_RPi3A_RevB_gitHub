@@ -612,7 +612,7 @@ Undefined : "contextoActual" Referenced from "AnguloVibracionProcesadorCentral" 
 #define SMART_DELAY_DURATION       5600
 
 #define PRODUCTO_TITULO            0x40U//concepto que indica lo evidente
-#define TAMA�O_ARR_POS              6   //tama�o del array de posicion de label del display
+#define TAMANO_ARR_POS              6   //tama�o del array de posicion de label del display
 
 //#define SUMAR                       7  //ACcion de sumer en una funcion una variable, es un comando en una funcion 
 //#define RESTAR                      8 // ES UN comando en la funcion setUINT_varxDigito
@@ -865,7 +865,7 @@ void DisplayI2CeepromData(void);
 unsigned char getunidadHex(unsigned char n);
 unsigned char getdecenaHex(unsigned char n);
 void DisplayEEPROMdata(void);
-void DisplayContrase�aVars(unsigned char psw);
+void DisplayContrasenaVars(unsigned char psw);
 void rotateAjusteGuardiavar(void);
 void displayControldeUsuariovar(void);
 void rotateControldeUsuariovar(void);
