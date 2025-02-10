@@ -3,9 +3,7 @@
 #include "string.h"
 #include "errorController.h"
 #include "VFD.h"
-#if(debug_level1==1)
-  #include <stdio.h>
-#endif
+#include <stdio.h>
 #ifndef _PTHREAD_H_
   #define _PTHREAD_H_
   #include <pthread.h>
@@ -18,6 +16,7 @@
 #include "VFDmenu.h"
 #include "SistOp.h"
 #include <semaphore.h>
+
 
 #ifndef debug_level1
   #include <wiringPi.h>
