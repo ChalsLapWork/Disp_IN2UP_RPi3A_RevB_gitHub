@@ -11,7 +11,7 @@ extern struct _PRODUCTO1_ producto;
 
 void configPuertos(void){
   printf("\n       Started Configuracion de Puertos");
-#if ( debug_level1 == 2 )
+#ifndef debug_level1 
   for(int i=0;i<8;i++)
       pinMode(i,OUTPUT);
   pinMode(WR_PIN  ,OUTPUT);

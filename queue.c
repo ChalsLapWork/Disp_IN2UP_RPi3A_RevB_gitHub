@@ -13,15 +13,15 @@
 #include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <wiringPi.h>
 #include "VFDisplay.h"
 #include <string.h>
 #include "VFDmenu.h"
 #include "SistOp.h"
 #include <semaphore.h>
 
-
-
+#ifndef debug_level1
+  #include <wiringPi.h>
+#endif
 
 #define BUFFER_SIZE 250  // Tamaño máximo de cada array
 #define NUM_ENTRADAS 8   // Número máximo de arrays en el buffer circular
