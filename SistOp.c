@@ -25,5 +25,6 @@ else{
 	                     break;       
 	   case MENU_INSIGHT:break;
 	   default:break;}//Debug EN CONSTRUCCION 
-}//---------------------------------------------------------  
+     }//---------------------------------------------------------  
+return 1;	 
 }//FIN FIND CONTEXTO siguiente+++++++++++++++++++++++++++++++++++++++++++

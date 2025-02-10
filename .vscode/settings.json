@@ -3,6 +3,7 @@
         "vfd.h": "c",
         "system.h": "c",
         "queue.h": "c",
-        "delay.h": "c"
+        "delay.h": "c",
+        "sistop.h": "c"
     }
 }

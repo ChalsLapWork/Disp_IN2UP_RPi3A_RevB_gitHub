@@ -231,7 +231,7 @@ DatosTransmision *datos=(DatosTransmision *)arg;
 unsigned char estado,len,cmd,n;
 unsigned char c[MAX_NUM_CHAR_VFD];
 unsigned char *crc=NULL;
-unsigned char str_len = 0;        // Longitud del string de entrada
+unsigned char str_len = 0,ret=0;        // Longitud del string de entrada
 char *str;
 size_t i;
 
