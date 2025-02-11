@@ -37,13 +37,7 @@ typedef struct {
     size_t len;
 } DatosTransmision;
 
-typedef struct {// Buffer circular para almacenar múltiples arrays
-    unsigned char data[BUFFER_SIZE];
-    size_t len;
-} EntradaBuffer;
 
-
-EntradaBuffer buffer_circular[NUM_ENTRADAS];//buFFER  del TX del VFD
 DatosTransmision buffer_circular[NUM_ENTRADAS];  // Buffer circular
 int in = 0, out = 0;
 
@@ -250,7 +244,7 @@ void *VFDserial_SendBlockConsumidor(void *arg) {
 }//fin de hilo consumidor++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len) {
-DatosTransmision *datos=(DatosTransmision *)arg;
+//DatosTransmision *datos=(DatosTransmision *)arg;
 unsigned char estado,len,cmd,n;
 unsigned char c[MAX_NUM_CHAR_VFD];
 unsigned char *crc=NULL;
@@ -259,11 +253,18 @@ char *str;
 size_t i;
 
     printf("Consumidor-Tx: Procesando buffer3 completo (len: %zu)\n", len);
+    for (size_t i = 0; i < len; i++) {
+        printf("%02X ", buffer[i]);
+    }
+    printf("\n");
+    return;	
+
+    printf("Consumidor-Tx: Procesando buffer3 completo (len: %zu)\n", len);
 	crc=(unsigned char *)malloc(str_len *sizeof(unsigned char));    // Asignar memoria dinámica para el array crc basado en la longitud de *str
     if (crc == NULL) {// Error al asignar memoria
         printf("Error: No se pudo asignar memoria para crc.\n");
         return 0;}
-   while(i<len){
+   while(i<len){ 
 	str=(char *)&datos->data[i];
 	switch(estado){// Continuar mientras no lleguemos al final de la cadena
       case 1:printf("\033[35m");estado++;break;
@@ -291,7 +292,7 @@ size_t i;
 	  case 99:estado=2;mens_Warnning_Debug(" error 99 ");break;
 	  default:estado=1;break;}
 	  i++;}//fin while 
-return 0;
+return;
 }//transmisor de datos a VFD+++++++++++++++++++++++++++++++++++++++++
  				
 /** esta funcion manda los paquetes del 
