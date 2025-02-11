@@ -337,11 +337,16 @@ void* Init_VFD(void* arg);
 unsigned char Transmissor_a_VFD(struct VFD_DATA v,unsigned char *mem);
 void *Proceso_Limpiador(void *arg);
 //void* SubProceso_Tx_VFD(void* arg);
-void *SubProceso_SendBlock_Tx_VFD(void* arg);
+//void *SubProceso_SendBlock_Tx_VFD(void* arg);
 void init_Queue_with_Thread(struct Queue  *q);
-unsigned char Transmissor_SendBlock_VFD(const char *str);
-void *Subproceso_sendBlockBytes_Tx_VFD(void *arg);
+//unsigned char Transmissor_SendBlock_VFD(const char *str);
+//void *Subproceso_sendBlockBytes_Tx_VFD(void *arg);
 void init_menu(void);
 void *Run_Menu(void *arg);
 void xControl_Principal_de_Menus_Operativo();
+unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char size);
+void *Transmissor_SendBlock_VFD(void *arg);
+void *SubProceso_SendBlock_Tx_VFD(void* arg);
+unsigned char VFD_sendBlockChars(void *datos, size_t len);
+
 #endif 

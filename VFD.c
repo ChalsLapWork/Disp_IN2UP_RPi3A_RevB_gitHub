@@ -1,7 +1,7 @@
 #include "VFD.h"
 #include "system.h"
 #include "queue.h"
-#include <wiringPi.h>
+
 #include <stdio.h>
 #include "errorController.h"
 #include <stdio.h>
@@ -11,7 +11,9 @@
 #include <stdatomic.h>
 #include <stdbool.h>
 #include "delay.h"
-
+#ifndef  debug_level1 
+    #include <wiringPi.h>
+#endif
 
 
 
@@ -43,28 +45,12 @@ typedef struct {
 } ParallelPort;
 
 
-circular_buffer_t buffer = {
-    .head = 0,
-    .tail = 0,
-    .mutex = PTHREAD_MUTEX_INITIALIZER,
-    .cond  = PTHREAD_COND_INITIALIZER
-};
-
-
-circular_buffer_t_byteBlock buffer2 = {
-    .head = 0,
-    .tail = 0,
-    .mutex = PTHREAD_MUTEX_INITIALIZER,
-    .cond  = PTHREAD_COND_INITIALIZER
-};
-
-
-void init_mutex_VFD(void){
-     pthread_mutex_init( &buffer.mutex,NULL);
-     pthread_mutex_init(&buffer2.mutex,NULL);
-     pthread_cond_init(  &buffer.cond ,NULL);
-     pthread_cond_init( &buffer2.cond ,NULL); 
-}// fin de init mutex VFD++++++++++++++++++++++++++
+//void init_mutex_VFD(void){
+//     pthread_mutex_init( &buffer.mutex,NULL);
+//     pthread_mutex_init(&buffer2.mutex,NULL);
+//     pthread_cond_init(  &buffer.cond ,NULL);
+//     pthread_cond_init( &buffer2.cond ,NULL); 
+//}// fin de init mutex VFD++++++++++++++++++++++++++
 
 ParallelPort port = { .pins = {0, 1, 2, 3, 4, 5, 6, 7} };
 void initParallelPort(ParallelPort *port);
@@ -72,9 +58,13 @@ void writeParallelPort(ParallelPort *port, unsigned char value);
 
 // Configurar pines como salidas
 void initParallelPort(ParallelPort *port) {
+#if ( debug_level1 == 2 )
+       usleep(1);
+#else        
     for (int i = 0; i < 8; i++) {
         pinMode(port->pins[i], OUTPUT);
         digitalWrite(port->pins[i], LOW); }
+#endif
 }//fin de init parallel port++++++++++++++++++++++++++++++
 
 void initParallelPort_Global(void){
@@ -83,16 +73,24 @@ void initParallelPort_Global(void){
 
 // Escribir un byte en el puerto paralelo +++++++++++++++++++++++
 void writeParallelPort(ParallelPort *port, unsigned char value) {
+#if ( debug_level1 == 2 )
+       usleep(1);
+#else       
     for (int i = 0; i < 8; i++) {
         int bit = (value >> i) & 1;       // Extraer el i-ésimo bit
         digitalWrite(port->pins[i], bit); }// Establecer el valor en el pin correspondiente
+#endif
 }//fin de write parallelport ++++++++++++++++++++++++++++++++++++
 
 
 void writePort(unsigned char value){
+#if ( debug_level1 == 2 ) 
+   usleep(1);
+#else     
    digitalWrite(WR_PIN,LOW);//comando de escritura 
    writeParallelPort(&port,value);
    digitalWrite(WR_PIN,HIGH);//comando de escritura OFF
+#endif   
 }//fin write port++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -153,26 +151,49 @@ return ret;
 
 
 /*limpia el VFD de caracteres y todo   */
-unsigned char VFDclrscr1(unsigned char *mem){//AUTORIZADO 2:BYTES DE memoria
-unsigned char ret=0;
-//	monitorDDS_Halt();//debug, quitar un dia que la version este super probada 
-unsigned char *estado4,*c;
-  estado4=mem;
-        c=mem+1;
-  switch(*estado4){
-	 case 1:if(VFDserial_SendChar1(0x0CU))//(Display Clear)   Display screen is cleared and cursor moves to home position.
-		         (*estado4)++;
-	        break;
-	 case 2:usleep(1000);ret=TRUE;*estado4=0;break;
-	 default:*estado4=1;break;}
-return ret;    
-}//fin clear screen VFD-------------------------------------------------------------
+unsigned char VFDclrscr1(unsigned char *mem){//AUTORIZADO 5:BYTES DE memoria
+//unsigned char ret=0; 
+//unsigned char *estado4,*c;//comando limpiar pantalla stx,04,CMD,0CU,CRC,ETX
+//unsigned short int suma;//comando delay  stx,04,CMD,xx,CRC,ETX
+//const unsigned char DELAY_DESPUES_DE_COMANDO_ms=10;//milisegundos
+unsigned char LEN=0x02; //bytes a calcular por CRC
+unsigned char buf[]={STX,LEN,COMANDO_CLRSCR,0x00,ETX};
 
+  buf[LEN+1]=getCRC_v2(&buf[1],LEN);
+  VFD_sendBlockChars(&buf[0],sizeof(buf));
+            
+return 1;    
+}//fin clear screen VFD-----------------------------------------------------------------------------
+
+
+
+
+
+unsigned char getCRC_v2(unsigned char *data, unsigned char len) {
+unsigned char crc = 0xFF; // Valor inicial de CRC (puede ajustarse según el algoritmo CRC específico)
+    for (int i = 0; i < len; i++) {
+        crc ^= data[i];  // XOR entre el CRC actual y el byte de datos
+        for (unsigned char bit = 8; bit > 0; bit--) {
+            if (crc & 0x80) { // Si el bit más significativo es 1
+                crc = (crc << 1) ^ 0x07;} // Desplazamiento y XOR con polinomio 0x07 (puedes ajustarlo si usas otro polinomio)
+            else {crc <<= 1;}}} // Solo desplazamiento
+    // Asegurarse de que el CRC no sea 0x00 o 0xFF
+    if (crc == 0x00) {crc = 0x01;} // Cambiar a 0x01 si el CRC es 0x00
+    else if (crc == 0xFF) {crc = 0xFE;} // Cambiar a 0xFE si el CRC es 0xFF
+    return crc;
+}//********************************************************************************************
+
+
+
+
+
+/** Len= */
 unsigned char VFDposicion(unsigned char x,unsigned char y){ //MANDA DEL COMANDO DE POSICION AL vfd
-	//return vfd.f1.append((unsigned char)x,(unsigned char)y,_POS_);//FIFO_Display_DDS_Char_push((unsigned char)x,(unsigned char)y);          
-unsigned char POS_CMD[]={0x1FU,0x24U,0xFFU,0x00U,0x11U,0x00U};
-     POS_CMD[2]=x;POS_CMD[4]=y;
-   	 VFD_sendBlockChars(&POS_CMD[0],6);//
+unsigned char LEN=4;          
+unsigned char POS_CMD[]={STX,LEN,COMANDO_POS,x,y,0x00,ETX};
+     POS_CMD[LEN+1]=getCRC_v2(&POS_CMD[1],LEN);   
+   	 VFD_sendBlockChars(&POS_CMD[0],sizeof(POS_CMD));//
+return 1;     
 }// fin posicionVFD-------------------------------------------------------------
 
 
@@ -183,6 +204,7 @@ unsigned char VFDserial_SendChar1(unsigned char c){
 //struct VFD_DATA dato;
     //dato.p=_CHAR_;dato.x=c;dato.y=0;
 	//return vfd.f1.append(&qVFDtx,dato);
+
 return VFD_sendBlockChars(&c,1);//Init VFD
 }//------------------------------------------------------------------
 
@@ -200,44 +222,34 @@ return ret;
 }//fin vfd command----------------------------------------------------
 
 /* Metodo Multi-Padre pero solo una Estancia ala Vez      */
-unsigned char VFDserial_SendBlock1(const char *Ptr,unsigned char size1){
-unsigned char ret=0,size2; 
-   int next_head = (buffer.head + 1) % BUFFER_SIZE;
-   pthread_mutex_lock(&buffer.mutex);
-   if(size1>MAX_MESSAGE_LEN) size2=MAX_MESSAGE_LEN; else size2=size1;
-   if (next_head != buffer.tail) {  // Solo escribe si hay espacio en el buffer
-        strncpy(buffer.buffer[buffer.head], Ptr, size2); //MAX_MESSAGE_LEN);
-        buffer.head = next_head;
-        pthread_cond_signal(&buffer.cond);  // Despierta al hijo
-        ret=TRUE;}
-     pthread_mutex_unlock(&buffer.mutex);
-return ret;// fin de enviar mensaje++++++++++++++++++++++
+unsigned char VFDserial_SendBlock1(const void *Ptr,unsigned char size1){
+//unsigned char LEN;//STX,LEN,CMD,char0,..charn,crc,etx 
+unsigned char *array = (unsigned char *)malloc((size1 + 5) * sizeof(unsigned char));
+     if (array == NULL) {return 0;}// Verificamos si malloc falló     
+    const unsigned char *data = (const unsigned char *)Ptr;// Convertir los datos a unsigned char y copiarlos al índice 3 del array
+    memcpy(&array[3], data, size1);
+    array[0] = STX;
+    array[1] = size1 + 5; // LEN (longitud total del mensaje)
+    array[2] = COMANDO_STRING; // CMD (ejemplo de comando)
+    array[size1 + 3] = getCRC_v2(array+1,size1+2);
+    array[size1 + 4] = ETX; // Ejemplo de CRC (ajustar según tu implementación)
+    VFD_sendBlockChars(array, size1 + 5);
+    free(array); // Liberar la memoria reservada con malloc
+return 1;// fin de enviar mensaje++++++++++++++++++++++
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
 
 //init el VFD+++++++++++++++++++++++++++++++++++++++++++++++ 
-unsigned char inicializar_VFD(const uchar *datos, size_t longitud){	
-    pthread_mutex_lock(&vfd.mutex.VDF_busy);  
-	VFD_sendBlockChars(datos,longitud);//Init VFD
-    pthread_mutex_unlock(&vfd.mutex.VDF_busy);
+unsigned char inicializar_VFD(void){
+const unsigned char LEN=2;//cantidad de bytes a calcular porf CRC    	
+//unsigned char init_VFD[]={STX,LEN,CMD_INI,0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2,0x00,ETX};
+unsigned char init_VFD[]={STX,LEN,COMANDO_INIT,0x00,ETX};
+//unsigned short int sum=0;     
+    init_VFD[10]=getCRC_v2(&init_VFD[1],LEN);
+	VFD_sendBlockChars(&init_VFD[0],sizeof(init_VFD));//Init VFD 
+return 1;
 }//fin de inizializacion de VFD++++++++++++++++++++++++++++++
 
 
-// Función que el hilo principal llama para enviar un bloque de caracteres
-unsigned char VFD_sendBlockChars(const uchar *datos, size_t longitud) {
-unsigned char ret = 0;
-int next_head = (buffer2.head + 1) % BUFFER_SIZE;
-
-    pthread_mutex_lock(&buffer2.mutex);
-    if (next_head != buffer2.tail && longitud <= MAX_BLOCK_CHAR_VDF_SIZE) {
-        bloque_t *bloque = &buffer2.buffer[buffer2.head];
-        bloque->longitud = longitud;
-        memcpy(bloque->datos, datos, longitud);
-        buffer2.head = next_head;
-        pthread_cond_signal(&buffer2.cond);
-        ret = 1;}
-    pthread_mutex_unlock(&buffer2.mutex);
-return ret;
-}//VFD_sendBlockChars+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 //Proceso  unico de Padre unico, PROCESO
@@ -247,7 +259,7 @@ void* Mon_VFD(void* arg){  //Proceso Productor<---Proceso/hilo/THread
 unsigned char ret=0,estado;
 unsigned char i=0,debug,count;
 pthread_attr_t attr;
-size_t stacksize=2*1024*1024;// memoria para el hilo
+size_t stacksize=2*1024*1024;// memoria parga el hilo
 
  pthread_attr_init(&attr);
  mensOK("Asignando Recursos a Tx",CRESET);
@@ -310,18 +322,28 @@ unsigned char estado;
 unsigned char VFDboxLine1(unsigned char pen,unsigned char mode,
                        unsigned char x1,unsigned char y1,
                        unsigned char x2,unsigned char y2){
-coordn16 coordenadas; //                   mode  pen x1LO x1Hi y1Lo y1Hi x2Lo x2Hi y2Lo y2Hi
-unsigned char datos[]={0x1F,0x28,0x64,0x11,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-     //                 0    1    2    3    4    5    6     7   8    9    10    11  12   13  
-	
-    if((mode!=BOX_VACIA)||(mode!=BOX_LLENA)){mode=BOX_VACIA;}
-    datos[4]=mode;
+//coordn16 coordenadas; //             mode  pen   X1   Y1   X2   Y2      //x1LO x1Hi y1Lo y1Hi x2Lo x2Hi y2Lo y2Hi
+//unsigned char datos[]={STX,LEN,CMD,0x00,0x00,0x00,0x00,0x00,0x00,CRC,ETX};
+     //                   0    1   2   3    4    5    6    7    8    9 10     
+unsigned char datos[11],LEN=8;	
+    if((mode!=BOX_VACIA)||(mode!=BOX_LLENA)){
+              mode=BOX_VACIA;}
+    datos[0]=STX;
+    datos[1]=LEN;//=longitud, num de bytes
+    if(mode==BOX_VACIA){
+         datos[2]= COMANDO_BOX;}
+    else{datos[2]=COMANDO_BOXF;}
+    if(mode==BOX_VACIA)
+        {datos[3]= 0x01;}
+    else{datos[3]= 0x02;}
     if(pen>0x01){pen=0;}
-    datos[5]=pen;
-    datos[6]=x1;         
-    datos[8]=y1;
-    datos[10]=x2;
-    datos[12]=y2; 
+    datos[4]=pen;
+    datos[5] =x1;         
+    datos[6]=y1;
+    datos[7]=x2;
+    datos[8]=y2;
+    datos[9]=getCRC_v2(&datos[1],LEN);
+    datos[10]=ETX;
     VFD_sendBlockChars(&datos[0],sizeof(datos));
 return 1;
 }// fin draw line -----------------------------------------------------------------------------------------

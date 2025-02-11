@@ -16,14 +16,18 @@
 #define R_BUSY_PIN 22 //Ready/Busy
 //**************************************************
 // debug Nivel del debugeo numero-1
-#define debug_level1 1 //1:esta activado el debugeo
-
+//#define debug_level1 1 //1:esta activado el debugeo
+//#define debug_level1 2 //2:simular sin Rpi a linux normal
 
 #define PHARMACEUTICO 0xAB
 
 #ifndef _TIPO_DE_MAQUINA_
-#define _TIPO_DE_MAQUINA_ PHARMACEUTICO //TRIPLE_FRECUENCIA
+  #define _TIPO_DE_MAQUINA_ PHARMACEUTICO //TRIPLE_FRECUENCIA
 #endif
+
+/* MAXIMOS */
+#define MAX_NUM_CHAR_VFD 30 //maximo numero de char a desplegar por comando a VFD
+
 
 #define ON   1
 #define YES  1
@@ -103,8 +107,8 @@
 #define VERDE         'V'//verde ya usado no cambiar
 #define libre_1       '1'// lugar libre para usar
 #define CMD_POS_CHAR  '2'//COMANDO_FASE  lugar libre para usar  comando display fase de 5 chars
-#define COMANDO_POS   '3'//comando solo posicion se manda la posicion
-#define COMANDO_CHAR  '4'//comando solo un char asi nomas 
+//#define COMANDO_POS   '3'//comando solo posicion se manda la posicion
+//#define COMANDO_CHAR  '4'//comando solo un char asi nomas 
 #define CMD_POS5CHARS '5'//COMANDO ENVIAR POSICION Y luego 5 chars
 #define _DELAY_US     'u'
 #define _DELAY_MS     'm'
@@ -230,7 +234,20 @@
 
 #define STX 0x03
 #define ETX 0x02
-
+#define COMANDO_CLRSCR     'c'
+#define CMD_DELAY_MS       'm'
+#define CMD_DELAY_US       'e'
+#define COMANDO_DELAY_US   'u'
+#define COMANDO_STRING     's'
+#define COMANDO_CHAR       'X'
+#define COMANDO_POS        'p'
+#define COMANDO_BOX        'b'
+#define COMANDO_LINE       'L'
+#define COMANDO_DOT        'd'
+#define COMANDO_CLEAR      'r'
+#define COMANDO_INIT       'i'
+#define COMANDO_BOLD       'B'
+#define COMANDO_BOXF       'F'
 
 //SIZES-------------------------------------------------------
 #define BUFF_X_CONTEXTO_SIZE  MAXIMO_NUMERO_PROD+1 //RELE
