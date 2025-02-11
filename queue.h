@@ -344,7 +344,6 @@ void init_Queue_with_Thread(struct Queue  *q);
 void init_menu(void);
 void *Run_Menu(void *arg);
 void xControl_Principal_de_Menus_Operativo();
-<<<<<<< HEAD
 // Prototipos
 void *VFDserial_SendBlockProductor(void *arg);
 void *VFDserial_SendBlockConsumidor(void *arg);
@@ -353,11 +352,5 @@ unsigned char VFDserial_SendBlock(void *ptr, size_t size);
 void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len);
 
 
-=======
-unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char size);
-void *Transmissor_SendBlock_VFD(void *arg);
-void *SubProceso_SendBlock_Tx_VFD(void* arg);
-unsigned char VFD_sendBlockChars(void *datos, size_t len);
->>>>>>> 394ae37effb5d114af00cf5e955e69edfc7b0313
 
 #endif 
