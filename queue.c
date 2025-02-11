@@ -21,7 +21,6 @@
 #ifndef debug_level1
   #include <wiringPi.h>
 #endif
-<<<<<<< HEAD
 
 #define BUFFER_SIZE 250  // Tamaño máximo de cada array
 
@@ -49,8 +48,6 @@ size_t buffer3_len = 0;
 pthread_mutex_t mutex_buffer = PTHREAD_MUTEX_INITIALIZER;
 sem_t sem_llenos, sem_vacios;
 pthread_mutex_t mutex_buffer2 = PTHREAD_MUTEX_INITIALIZER;
-=======
->>>>>>> 394ae37effb5d114af00cf5e955e69edfc7b0313
 
 #define BUFFER_SIZE 250  // Tamaño máximo de cada array
 #define NUM_ENTRADAS 8   // Número máximo de arrays en el buffer circular
@@ -77,13 +74,8 @@ void enqueue(struct Queue  *q,struct VFD_DATA dato1);
 // Buffer compartido
 //unsigned char buffer[BUFFER_SIZE];
 size_t buffer_length = 0;
-<<<<<<< HEAD
 //int in = 0;//control de la FIFO de TX de la VFD
 //int out = 0;//control dela FIFO de Tx VFD
-=======
-int in = 0;//control de la FIFO de TX de la VFD
-int out = 0;//control dela FIFO de Tx VFD
->>>>>>> 394ae37effb5d114af00cf5e955e69edfc7b0313
 
 unsigned char  buffer6[SIZE_BUFFER6];//FIFO graficos con S.O, aqui guarda el dato
 unsigned char  buffer7[SIZE_BUFFER6];//FIFO graficos con SO. aqui guarda el parametro=char|box|pos|
@@ -96,30 +88,18 @@ extern struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pant
 //pthread_t SubProc_SendBlock_TX_VFD;//send strings to VFD 
 //pthread_t SubProc_SendBlock_chars_TX_VFD;//send bytes 	stream to VFD
 pthread_t SubProc_Run_Menu;//proceso que gestiona el cambio de menu
-<<<<<<< HEAD
 pthread_t hilo_productor, hilo_consumidor;
 
 //pthread_t SubPrcoc_SendBlock_TX_VFD;//TRAnsmisor de los datos al VFD
 //pthread_t SubProc_Tx_VFD;
-=======
-pthread_t SubPrcoc_SendBlock_TX_VFD;//TRAnsmisor de los datos al VFD
-pthread_t SubProc_Tx_VFD;
->>>>>>> 394ae37effb5d114af00cf5e955e69edfc7b0313
 // Mutex y condición
 //pthread_mutex_t buffer_mutex = PTHREAD_MUTEX_INITIALIZER;
 //pthread_cond_t buffer_not_empty = PTHREAD_COND_INITIALIZER;
 
-<<<<<<< HEAD
 //pthread_mutex_t mutex_buffer = PTHREAD_MUTEX_INITIALIZER;
 //sem_t sem_llenos, sem_vacios;
 
 
-=======
-
-sem_t sem_llenos;//semaforos de TX VFD
-sem_t sem_vacios;//semaforos de TX de VFD
-pthread_mutex_t mutex_buffer = PTHREAD_MUTEX_INITIALIZER;
->>>>>>> 394ae37effb5d114af00cf5e955e69edfc7b0313
 
 
 
@@ -148,7 +128,6 @@ unsigned char debug;
 	printf("\n       Creando Proceso Init VFD");
 	sem_init(&sem_llenos, 0, 0);
     sem_init(&sem_vacios, 0, NUM_ENTRADAS);
-<<<<<<< HEAD
 	if((debug=pthread_create(&hilo_productor,NULL,VFDserial_SendBlockProductor,NULL))!=0){	
 	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}
 	if((debug=pthread_create(&hilo_consumidor,NULL,VFDserial_SendBlockConsumidor,NULL))!=0){	
@@ -168,23 +147,6 @@ unsigned char debug;
         }
         iteracion++;
         usleep(500000);  // Espera para simular nuevos datos
-=======
-	if((debug=pthread_create(&SubPrcoc_SendBlock_TX_VFD,NULL,SubProceso_SendBlock_Tx_VFD,NULL))!=0){	
-	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}
-    usleep(1);//solo para debug
-
-while (1) {
-        if (iteracion % 4 == 0) {
-            SubProceso_SendBlock_Tx_VFD(array1);
-        } else if (iteracion % 4 == 1) {
-            SubProceso_SendBlock_Tx_VFD(string1);
-        } else if (iteracion % 4 == 2) {
-            SubProceso_SendBlock_Tx_VFD(array2);
-        } else {
-            SubProceso_SendBlock_Tx_VFD(string2);
-        }
-        iteracion++;
->>>>>>> 394ae37effb5d114af00cf5e955e69edfc7b0313
     }
 
 
@@ -199,21 +161,6 @@ while (1) {
 
 
 
-<<<<<<< HEAD
-=======
-/* //void init_Queue_with_Thread(struct Queue *q){    
-	  q->head=q->tail=NULL;
-	  q->size=0;
-	  q->nLibres=SIZE_MAX_FIFO;
-	  q->Tamano=SIZE_MAX_FIFO;
-	  q->nOcupados=0;
-	  q->s.m_Tx=&mutex_Tx_SendBlock;
-	  q->s.cond_Tx=&cond_Tx_SendBlock;
-	  pthread_mutex_init(q->s.m_Tx,NULL);
-	  pthread_cond_init(q->s.cond_Tx,NULL);
-}*///fin de init FIFO transmit VFD+++++++++++++++++++++++++
-  
->>>>>>> 394ae37effb5d114af00cf5e955e69edfc7b0313
 
 
 //encola regresa TRUE: si esta llena , FALSE: si esta vacia
@@ -249,7 +196,6 @@ struct VFD_DATA dequeue(struct Queue  *q) {
 return data;
 }//fin de queue+++++++++++++++++++++++++++++++++
 
-<<<<<<< HEAD
 
 // Función principal para agregar datos al buffer circular
 unsigned char VFDserial_SendBlock(void *ptr, size_t size) {
@@ -309,60 +255,6 @@ void *VFDserial_SendBlockConsumidor(void *arg) {
 }//fin de hilo consumidor++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len) {
-=======
-
-// Función que el hilo principal llama para enviar un bloque de caracteres
-//*********PRODUCTOR-1****************************+
-unsigned char VFD_sendBlockChars(void *datos, size_t len){
-//unsigned char ret = 0;
-
-      if (len > BUFFER_SIZE) {
-        fprintf(stderr, "Error: El tamaño de los datos excede el BUFFER_SIZE\n");
-        return 0;}
-
-    sem_wait(&sem_vacios);
-    pthread_mutex_lock(&mutex_buffer);
-    buffer_circular[in].len = len;
-    memcpy(buffer_circular[in].data, datos, len);
-    printf("Productor: Escribió datos en el buffer (len: %zu)\n", len);
-    in = (in + 1) % NUM_ENTRADAS;
-    pthread_mutex_unlock(&mutex_buffer);
-    sem_post(&sem_llenos);
-return 1;
-}//VFD_sendBlockChars+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-/*  Control de Display de VFD de despliegue por thread 
-++++++++++ CONSUMIDOR-1******---------------------------- */
-void *SubProceso_SendBlock_Tx_VFD(void* arg) {//consumidor
-    while (1) {
-        sem_wait(&sem_llenos);
-        pthread_mutex_lock(&mutex_buffer);
-
-        DatosTransmision *datos = malloc(sizeof(DatosTransmision));
-        datos->len = buffer_circular[out].len;
-        memcpy(datos->data, buffer_circular[out].data, datos->len);
-        printf("Consumidor: Copió del buffer_circular al buffer2 (len: %zu)\n", datos->len);
-        out = (out + 1) % NUM_ENTRADAS;
-        pthread_mutex_unlock(&mutex_buffer);
-        pthread_t SubProc_Tx_VFD;
-        if (pthread_create(&SubProc_Tx_VFD, NULL, Transmissor_SendBlock_VFD, datos) != 0) {
-            perror("Error al crear el hilo transmisor");
-            free(datos);
-            continue;}
-
-        pthread_detach(SubProc_Tx_VFD);
-        sem_post(&sem_vacios);
-    }//fin while+++++++++++++++++++++++++
-return NULL;
-}//+++++++++++++++++++++++++++++++++++++
-//fin del subproceso de envio de datos al display+++++++++++++
-
-
-
-void *Transmissor_SendBlock_VFD(void *arg){
->>>>>>> 394ae37effb5d114af00cf5e955e69edfc7b0313
 DatosTransmision *datos=(DatosTransmision *)arg;
 unsigned char estado,len,cmd,n;
 unsigned char c[MAX_NUM_CHAR_VFD];
@@ -371,19 +263,12 @@ unsigned char str_len = 0;        // Longitud del string de entrada
 char *str;
 size_t i;
 
-<<<<<<< HEAD
     printf("Consumidor-Tx: Procesando buffer3 completo (len: %zu)\n", len);
-=======
->>>>>>> 394ae37effb5d114af00cf5e955e69edfc7b0313
 	crc=(unsigned char *)malloc(str_len *sizeof(unsigned char));    // Asignar memoria dinámica para el array crc basado en la longitud de *str
     if (crc == NULL) {// Error al asignar memoria
         printf("Error: No se pudo asignar memoria para crc.\n");
         return 0;}
-<<<<<<< HEAD
    while(i<len){
-=======
-   while(i<datos->len){
->>>>>>> 394ae37effb5d114af00cf5e955e69edfc7b0313
 	str=(char *)&datos->data[i];
 	switch(estado){// Continuar mientras no lleguemos al final de la cadena
       case 1:printf("\033[35m");estado++;break;
@@ -410,11 +295,7 @@ size_t i;
 			  break;
 	  case 99:estado=2;mens_Warnning_Debug(" error 99 ");break;
 	  default:estado=1;break;}
-<<<<<<< HEAD
 	  i++;}//fin while 
-=======
-	  }//fin while 
->>>>>>> 394ae37effb5d114af00cf5e955e69edfc7b0313
 return 0;
 }//transmisor de datos a VFD+++++++++++++++++++++++++++++++++++++++++
  				
