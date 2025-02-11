@@ -245,7 +245,7 @@ void *VFDserial_SendBlockConsumidor(void *arg) {
 
 void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len) {
 //DatosTransmision *datos=(DatosTransmision *)arg;
-unsigned char estado,len,cmd,n;
+unsigned char estado,cmd,n;
 unsigned char c[MAX_NUM_CHAR_VFD];
 unsigned char *crc=NULL;
 unsigned char str_len = 0;        // Longitud del string de entrada
@@ -258,14 +258,14 @@ size_t i;
     }
     printf("\n");
     return;	
-
+/*
     printf("Consumidor-Tx: Procesando buffer3 completo (len: %zu)\n", len);
 	crc=(unsigned char *)malloc(str_len *sizeof(unsigned char));    // Asignar memoria dinámica para el array crc basado en la longitud de *str
     if (crc == NULL) {// Error al asignar memoria
         printf("Error: No se pudo asignar memoria para crc.\n");
-        return 0;}
+        return;}
    while(i<len){ 
-	str=(char *)&datos->data[i];
+	//str=(char *)&datos->data[i];
 	switch(estado){// Continuar mientras no lleguemos al final de la cadena
       case 1:printf("\033[35m");estado++;break;
 	  case 2:putchar(*str);estado++;break;
@@ -292,6 +292,7 @@ size_t i;
 	  case 99:estado=2;mens_Warnning_Debug(" error 99 ");break;
 	  default:estado=1;break;}
 	  i++;}//fin while 
+	  */
 return;
 }//transmisor de datos a VFD+++++++++++++++++++++++++++++++++++++++++
  				
