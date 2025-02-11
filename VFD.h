@@ -22,7 +22,7 @@
 #define FONTSIZE4   0x04U  //16x32
 
 
-#define BUFFER_SIZE 10  // Tamaño del buffer circular
+//#define BUFFER_SIZE 10  // Tamaño del buffer circular
 #define MAX_MESSAGE_LEN 40
 #define MAX_BLOCK_CHAR_VDF_SIZE 40 
 
@@ -44,25 +44,25 @@ typedef struct {
     size_t longitud;
 } bloque_t;
 
-typedef struct {
-    char buffer[BUFFER_SIZE][MAX_MESSAGE_LEN];
-    _Atomic int head;  // Índice de escritura (hilo padre)
-    _Atomic int tail;  // Índice de lectura (hilo hijo)
-    pthread_mutex_t mutex;
-    pthread_cond_t cond;
-} circular_buffer_t;
+//typedef struct {
+//    char buffer[BUFFER_SIZE][MAX_MESSAGE_LEN];
+//    _Atomic int head;  // Índice de escritura (hilo padre)
+//    _Atomic int tail;  // Índice de lectura (hilo hijo)
+//    pthread_mutex_t mutex;
+//    pthread_cond_t cond;
+//} circular_buffer_t;
 
-typedef struct {
-    bloque_t buffer[BUFFER_SIZE];
-    _Atomic int head;  // Índice de escritura (hilo principal)
-    _Atomic int tail;  // Índice de lectura (hilo hijo)
-    pthread_mutex_t mutex;
-    pthread_cond_t cond;
-} circular_buffer_t_byteBlock;
+//typedef struct {
+//    bloque_t buffer[BUFFER_SIZE];
+//    _Atomic int head;  // Índice de escritura (hilo principal)
+//    _Atomic int tail;  // Índice de lectura (hilo hijo)
+//    pthread_mutex_t mutex;
+//    pthread_cond_t cond;
+//} circular_buffer_t_byteBlock;
 
 
-extern circular_buffer_t buffer;
-extern circular_buffer_t_byteBlock buffer2;
+//extern circular_buffer_t buffer;
+//extern circular_buffer_t_byteBlock buffer2;
 
 void VFDkeypad_ISR(unsigned char c);
 void init_VFD_BIOS(void);
@@ -101,7 +101,8 @@ unsigned char VFDboxLine1(unsigned char pen,unsigned char mode,unsigned char x1,
 //unsigned char VFDserial_SendBlock2(const unsigned char *Ptr,unsigned short Size,unsigned char *inst);
 //unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned char Size,unsigned char *Snd,unsigned char *mem);
 //unsigned char VFDserial_SendBlock1(const char *c);
-unsigned char VFDserial_SendBlock1(const char *Ptr,unsigned char size1);
+//unsigned char VFDserial_SendBlock1(const char *Ptr,unsigned char size1);
+unsigned char VFDserial_SendBlock1(const void *Ptr,unsigned char size1);
 //unsigned char FontSizeVFD(unsigned char m,unsigned char *s1,unsigned char *s2);
 //unsigned char VFDcommand(unsigned char cmd,unsigned char *inst1,unsigned char *inst2);
 void VFDclrscr(void);
@@ -121,9 +122,9 @@ void writePort(unsigned char value);
 void test_display(void);
 void* Mon_VFD(void* arg);  //Proceso Productor<---Proceso/hilo/THread
 void *Clean_VFD(void *arg);
-unsigned char VFD_sendBlockChars(const uchar *datos, size_t longitud);
 void VFD_sendChar(uchar c);
-unsigned char inicializar_VFD(const uchar *datos, size_t longitud);
-void init_mutex_VFD(void);
-
+unsigned char inicializar_VFD(void);
+//void init_mutex_VFD(void);
+unsigned char getCRC_v2(unsigned char *data, unsigned char len);
+//unsigned char VFD_sendBlockChars(const void *datos, size_t longitud);
 #endif

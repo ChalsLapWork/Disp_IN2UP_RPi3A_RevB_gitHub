@@ -6,7 +6,7 @@
 
 //* Logitud de la cadena si es numero o letra*/
 unsigned short int length(unsigned char *c,unsigned char size){
-unsigned short int count=0;                            
+//unsigned short int count=0;                            
 unsigned char i=1,estado=0;
 
   for(i=0;i<size;i++)

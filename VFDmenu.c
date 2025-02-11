@@ -53,7 +53,7 @@ const unsigned char x[4]={80,24,24,24};
 const unsigned char y[4]={ 2,10,12,14};
 unsigned char ret=0;
 //unsigned char *inst1,*inst2;//instancias subHilos a ejecutar que se pueden ejecutar en otros lados
-unsigned char *estado,*control,*mem_2bytes,*aux3_char,*aux0_uchar;
+unsigned char *estado,/* *control,*/*mem_15bytes,*aux3_char,*aux0_uchar;
 unsigned short int aux1_usi;
 const unsigned char DEBUG=0x11,MEMO=0x12;
 unsigned char Status_Prod=DEBUG;
@@ -63,13 +63,13 @@ union W16{
 }word_16bits;
 
             estado=mem;
-           control=mem+1;
+           //control=mem+1;
          aux3_char=mem+2;
   word_16bits.c[0]=*(mem+4);
   word_16bits.c[1]=*(mem+5);
           aux1_usi=word_16bits.usi;
-        mem_2bytes=mem+6;//6,7
-        aux0_uchar=mem+8;
+        mem_15bytes=mem+6;//6,7 15 bytes
+        aux0_uchar=mem+22;
 
 		
     switch(*estado){ 
@@ -78,8 +78,8 @@ union W16{
               //keypad.b.enable=FALSE;
               (*estado)++;break;
        case 3:NoErrorOK();(*estado)++;break;			  
-       case 4:if(VFDclrscr1(mem_2bytes))(*estado)++;break;
-       case 5:delay_ms_VFD(500);(*estado)++;break;
+       case 4:if(VFDclrscr1(mem_15bytes))(*estado)++;break;
+	   case 5:delay_ms_VFD(500);(*estado)++;break;
        case 6:if(VFDposicion(65,0))(*estado)++; break;    //2bytes
        case 7:if(VFDserial_SendBlock1(&s[0],sizeof(s)))(*estado)++;break;//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
        case 8:*aux3_char=producto.name[1];aux1_usi=length(&producto.name[0],sizeof(producto.name));  	 

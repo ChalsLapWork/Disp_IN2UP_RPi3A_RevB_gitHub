@@ -580,7 +580,7 @@ unsigned char getCoord_pixel(unsigned char insignea,signed short int xy);
 void Procesador_Central_de_Cetrado_de_Datos(signed short int datainX,signed short int datainY,signed short int *Xout,signed short int *Yout);
 unsigned char evaluar_ssint(signed short int dato, unsigned short int max);
 unsigned char zoomXY(unsigned char eje,signed short int xy,float div);
-void Generador_de_Señal_Debug_Tool(signed short int *x11,signed short int  *y11);
+void Generador_de_Senal_Debug_Tool(signed short int *x11,signed short int  *y11);
 unsigned char is_drawable_Sensibility_DDS(void);
 unsigned char is_Phase_0(void);
 unsigned char Validar_detectionAnalisis(signed short int  y);
