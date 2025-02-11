@@ -22,11 +22,12 @@
   #include <wiringPi.h>
 #endif
 
+
 #define BUFFER_SIZE 250  // Tamaño máximo de cada array
+#define NUM_ENTRADAS 8   // Número máximo de arrays en el buffer circular
 
 
 
-#define NUM_ENTRADAS 10
 #define MAX_LEN 256  // Tamaño máximo del array en cada entrada del buffer
 #define MAX_BUFFER_LEN (NUM_ENTRADAS * MAX_LEN)  // Tamaño máximo para buffer2 y buffer3
 
@@ -36,6 +37,13 @@ typedef struct {
     size_t len;
 } DatosTransmision;
 
+typedef struct {// Buffer circular para almacenar múltiples arrays
+    unsigned char data[BUFFER_SIZE];
+    size_t len;
+} EntradaBuffer;
+
+
+EntradaBuffer buffer_circular[NUM_ENTRADAS];//buFFER  del TX del VFD
 DatosTransmision buffer_circular[NUM_ENTRADAS];  // Buffer circular
 int in = 0, out = 0;
 
@@ -49,20 +57,7 @@ pthread_mutex_t mutex_buffer = PTHREAD_MUTEX_INITIALIZER;
 sem_t sem_llenos, sem_vacios;
 pthread_mutex_t mutex_buffer2 = PTHREAD_MUTEX_INITIALIZER;
 
-#define BUFFER_SIZE 250  // Tamaño máximo de cada array
-#define NUM_ENTRADAS 8   // Número máximo de arrays en el buffer circular
 
-typedef struct {// Estructura para datos transmitidos
-    unsigned char data[BUFFER_SIZE];
-    size_t len;
-} DatosTransmision;
-
-typedef struct {// Buffer circular para almacenar múltiples arrays
-    unsigned char data[BUFFER_SIZE];
-    size_t len;
-} EntradaBuffer;
-
-EntradaBuffer buffer_circular[NUM_ENTRADAS];//buFFER  del TX del VFD
 
 struct _DISPLAY_VFD_ vfd;
 struct Queue qVFDtx;//queue de transmision vfd 
@@ -137,13 +132,13 @@ unsigned char debug;
 
  while (1) {
         if (iteracion % 4 == 0) {
-            VFDserial_SendBlock(array1, sizeof(array1));
+            VFDserial_SendBlock_data(array1, sizeof(array1));
         } else if (iteracion % 4 == 1) {
-            VFDserial_SendBlock(string1, strlen(string1) + 1);
+            VFDserial_SendBlock_data(string1, strlen(string1) + 1);
         } else if (iteracion % 4 == 2) {
-            VFDserial_SendBlock(array2, sizeof(array2));
+            VFDserial_SendBlock_data(array2, sizeof(array2));
         } else {
-            VFDserial_SendBlock(string2, strlen(string2) + 1);
+            VFDserial_SendBlock_data(string2, strlen(string2) + 1);
         }
         iteracion++;
         usleep(500000);  // Espera para simular nuevos datos
@@ -198,7 +193,7 @@ return data;
 
 
 // Función principal para agregar datos al buffer circular
-unsigned char VFDserial_SendBlock(void *ptr, size_t size) {
+unsigned char VFDserial_SendBlock_data(void *ptr, size_t size) {
     if (size > MAX_LEN) {
         fprintf(stderr, "Error: El tamaño de los datos excede el máximo permitido.\n");
         return 0;}

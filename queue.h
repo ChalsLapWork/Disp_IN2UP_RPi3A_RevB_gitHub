@@ -348,8 +348,8 @@ void xControl_Principal_de_Menus_Operativo();
 void *VFDserial_SendBlockProductor(void *arg);
 void *VFDserial_SendBlockConsumidor(void *arg);
 //void VFDserial_SendBlock_Tx(DatosTransmision *datos);
-unsigned char VFDserial_SendBlock(void *ptr, size_t size);
 void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len);
+unsigned char VFDserial_SendBlock_data(void *ptr, size_t size); 
 
 
 
