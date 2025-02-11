@@ -344,4 +344,13 @@ void *Subproceso_sendBlockBytes_Tx_VFD(void *arg);
 void init_menu(void);
 void *Run_Menu(void *arg);
 void xControl_Principal_de_Menus_Operativo();
+// Prototipos
+void *VFDserial_SendBlockProductor(void *arg);
+void *VFDserial_SendBlockConsumidor(void *arg);
+//void VFDserial_SendBlock_Tx(DatosTransmision *datos);
+unsigned char VFDserial_SendBlock(void *ptr, size_t size);
+void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len);
+
+
+
 #endif 
