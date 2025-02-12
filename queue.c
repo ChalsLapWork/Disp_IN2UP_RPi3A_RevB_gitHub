@@ -120,27 +120,8 @@ unsigned char debug;
 	if((debug=pthread_create(&hilo_productor,NULL,VFDserial_SendBlockProductor,NULL))!=0){	
 	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}
 	if((debug=pthread_create(&hilo_consumidor,NULL,VFDserial_SendBlockConsumidor,NULL))!=0){	
-	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}
-		
+	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}	
     usleep(1);//solo para debug
-
- while (1) {
-        if (iteracion % 4 == 0) {
-            VFDserial_SendBlock_data(array1, sizeof(array1));
-        } else if (iteracion % 4 == 1) {
-            VFDserial_SendBlock_data(string1, strlen(string1) + 1);
-        } else if (iteracion % 4 == 2) {
-            VFDserial_SendBlock_data(array2, sizeof(array2));
-        } else {
-            VFDserial_SendBlock_data(string2, strlen(string2) + 1);
-        }
-        iteracion++;
-        usleep(500000);  // Espera para simular nuevos datos
-    }
-
-
-
-
 	inicializar_VFD();//Init VFD
 	printf("\n       Fin de Init Queues");
 	vfd.config.bits.recurso_VFD_Ocupado=FALSE;
@@ -246,20 +227,12 @@ void *VFDserial_SendBlockConsumidor(void *arg) {
 
 void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len) {
 //DatosTransmision *datos=(DatosTransmision *)arg;
-/*unsigned char estado,cmd,n;
+unsigned char estado,cmd,n;
 unsigned char c[MAX_NUM_CHAR_VFD];
 unsigned char *crc=NULL;
 unsigned char str_len = 0;        // Longitud del string de entrada
-char *str;*/
-//size_t i;
+char *str;	
 
-    printf("Consumidor-Tx: Procesando buffer3 completo (len: %zu)\n", len);
-    for (size_t i = 0; i < len; i++) {
-        printf("%02X ", buffer[i]);
-    }
-    printf("\n");
-    return;	
-/*
     printf("Consumidor-Tx: Procesando buffer3 completo (len: %zu)\n", len);
 	crc=(unsigned char *)malloc(str_len *sizeof(unsigned char));    // Asignar memoria dinámica para el array crc basado en la longitud de *str
     if (crc == NULL) {// Error al asignar memoria
@@ -293,7 +266,7 @@ char *str;*/
 	  case 99:estado=2;mens_Warnning_Debug(" error 99 ");break;
 	  default:estado=1;break;}
 	  i++;}//fin while 
-	  */
+	  
 return;
 }//transmisor de datos a VFD+++++++++++++++++++++++++++++++++++++++++
  				
