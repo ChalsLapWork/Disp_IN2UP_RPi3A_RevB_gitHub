@@ -89,7 +89,7 @@ void BarraDet_VFDposicion(unsigned short int x,unsigned short int y);
 void menuKey(unsigned char key,unsigned short int Et,unsigned char c);
 void teclado_Control(unsigned char c,unsigned short int EnTime,unsigned short int Keytime);
 unsigned char Basura(unsigned char c);
-unsigned char VFDserial_SendChar1(unsigned char c);
+unsigned char VFDserial_SendChar(unsigned char c);
 //unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned short Size,unsigned short *Snd,unsigned char inst);
 //unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned short Size,unsigned char *inst);
 //unsigned char xInit_VFD(struct DPM m);

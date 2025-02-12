@@ -120,7 +120,7 @@ unsigned char VFDcommand(unsigned char cmd){ //unsigned char *p){
 	//con 500us se le quito el error de FontSize
 	//con 250us se le quito el error de FontSize
 	//Se le quito el error con 125us lo dejamos en 125us
-return VFDserial_SendChar1(cmd);	    	   
+return VFDserial_SendChar(cmd);	    	   
 }//fin vfd command----------------------------------------------------
 
 
@@ -200,12 +200,14 @@ return 1;
 //void VFDserial_SendChar1(unsigned char c){
 //	vfd.f1.append(c,0,_CHAR_);// FIFO_Display_DDS_Char_push(c,0xFE);//0xFE means that is just a char display          
 //}//fin VFDserial_SendChar_DDS---------------------------------
-unsigned char VFDserial_SendChar1(unsigned char c){
+unsigned char VFDserial_SendChar(unsigned char c){
 //struct VFD_DATA dato;
     //dato.p=_CHAR_;dato.x=c;dato.y=0;
 	//return vfd.f1.append(&qVFDtx,dato);
-
-return VFD_sendBlockChars(&c,1);//Init VFD
+unsigned char LEN=3;    
+unsigned char a[LEN+3]={STX,LEN,COMANDO_CHAR,c,0,ETX};
+       a[LEN+1]=getCRC_v2(&a[1],LEN);
+return VFDserial_SendBlock_data(&a,sizeof(a));//Init VFD
 }//------------------------------------------------------------------
 
 
@@ -215,7 +217,7 @@ unsigned char VFDcommand_init(unsigned char cmd){
 unsigned char ret=FALSE;
   
     ret+=delay_us_VFD(225);
-    ret+=VFDserial_SendChar1(cmd);
+    ret+=VFDserial_SendChar(cmd);
     ret+=delay_us_VFD(225);
     if(ret==3)ret=TRUE;else ret=FALSE;		    
 return ret;	
@@ -233,7 +235,7 @@ unsigned char *array = (unsigned char *)malloc((size1 + 5) * sizeof(unsigned cha
     array[2] = COMANDO_STRING; // CMD (ejemplo de comando)
     array[size1 + 3] = getCRC_v2(array+1,size1+2);
     array[size1 + 4] = ETX; // Ejemplo de CRC (ajustar según tu implementación)
-    VFD_sendBlockChars(array, size1 + 5);
+    VFDserial_SendBlock_data(array, size1 + 5);
     free(array); // Liberar la memoria reservada con malloc
 return 1;// fin de enviar mensaje++++++++++++++++++++++
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
@@ -245,7 +247,7 @@ const unsigned char LEN=2;//cantidad de bytes a calcular porf CRC
 unsigned char init_VFD[]={STX,LEN,COMANDO_INIT,0x00,ETX};
 //unsigned short int sum=0;     
     init_VFD[10]=getCRC_v2(&init_VFD[1],LEN);
-	VFD_sendBlockChars(&init_VFD[0],sizeof(init_VFD));//Init VFD 
+	VFDserial_SendBlock_data(&init_VFD[0],sizeof(init_VFD));//Init VFD 
 return 1;
 }//fin de inizializacion de VFD++++++++++++++++++++++++++++++
 
@@ -344,7 +346,7 @@ unsigned char datos[11],LEN=8;
     datos[8]=y2;
     datos[9]=getCRC_v2(&datos[1],LEN);
     datos[10]=ETX;
-    VFD_sendBlockChars(&datos[0],sizeof(datos));
+    VFDserial_SendBlock_data(&datos[0],sizeof(datos));
 return 1;
 }// fin draw line -----------------------------------------------------------------------------------------
 
