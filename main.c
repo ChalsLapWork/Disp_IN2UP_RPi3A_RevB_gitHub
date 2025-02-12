@@ -21,7 +21,7 @@
 
 //extern pthread_t SubProc_SendBlock_TX_VFD;
 //extern pthread_t SubProc_SendBlock_chars_TX_VFD;
-extern pthread_t SubPrcoc_SendBlock_TX_VFD;//TRAnsmisor de los datos al VFD
+extern pthread_t hilo_productor, hilo_consumidor;
 
 
 void signal_handler(int signalnum){
@@ -34,8 +34,10 @@ void signal_handler(int signalnum){
 //Si el programa termina debido a una señal como SIGKILL o SIGSEGV, las funciones registradas con atexit no se ejecutarán.
 void cleanup1(void) {
   printf("Limpieza 1 ejecutada.\n");
-  pthread_cancel(SubPrcoc_SendBlock_TX_VFD);
-  pthread_join(SubPrcoc_SendBlock_TX_VFD, NULL);
+  pthread_cancel(hilo_productor);
+  pthread_cancel(hilo_consumidor);
+  pthread_join(hilo_consumidor, NULL);
+  pthread_join(hilo_productor, NULL);
   //pthread_cancel(SubProc_SendBlock_chars_TX_VFD);
   //pthread_join(SubProc_SendBlock_chars_TX_VFD,NULL);
   pthread_exit(NULL);
