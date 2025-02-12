@@ -192,7 +192,7 @@ unsigned char VFDposicion(unsigned char x,unsigned char y){ //MANDA DEL COMANDO 
 unsigned char LEN=4;          
 unsigned char POS_CMD[]={STX,LEN,COMANDO_POS,x,y,0x00,ETX};
      POS_CMD[LEN+1]=getCRC_v2(&POS_CMD[1],LEN);   
-   	 VFD_sendBlockChars(&POS_CMD[0],sizeof(POS_CMD));//
+   	 VFDserial_SendBlock_data(&POS_CMD[0],sizeof(POS_CMD));//
 return 1;     
 }// fin posicionVFD-------------------------------------------------------------
 

@@ -186,7 +186,8 @@ return data;
 }//fin de queue+++++++++++++++++++++++++++++++++
 
 
-// Función principal para agregar datos al buffer circular
+// Función para enviar un protocolo completo
+// ETX,LEN,CMD,dato0...daton,CRC,ETX
 unsigned char VFDserial_SendBlock_data(void *ptr, size_t size) {
     if (size > MAX_LEN) {
         fprintf(stderr, "Error: El tamaño de los datos excede el máximo permitido.\n");
