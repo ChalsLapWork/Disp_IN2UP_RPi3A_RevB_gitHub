@@ -245,11 +245,11 @@ void *VFDserial_SendBlockConsumidor(void *arg) {
 
 void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len) {
 //DatosTransmision *datos=(DatosTransmision *)arg;
-unsigned char estado,cmd,n;
+/*unsigned char estado,cmd,n;
 unsigned char c[MAX_NUM_CHAR_VFD];
 unsigned char *crc=NULL;
 unsigned char str_len = 0;        // Longitud del string de entrada
-char *str;
+char *str;*/
 size_t i;
 
     printf("Consumidor-Tx: Procesando buffer3 completo (len: %zu)\n", len);
