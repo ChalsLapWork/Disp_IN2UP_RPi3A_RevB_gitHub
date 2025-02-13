@@ -95,10 +95,10 @@ pthread_t hilo_productor, hilo_consumidor;
 void init_queues(void){
 //const unsigned char init_VFD[]={0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2};
 unsigned char array1[] = {0x41, 0x42, 0x43, 0x44};
-char string1[] = "Hola, soy un string 1";
-unsigned char array2[] = {0x01, 0x02, 0x03, 0x04, 0x05};
-char string2[] = "Este es otro string más largo";
-int iteracion = 0;
+//char string1[] = "Hola, soy un string 1";
+//unsigned char array2[] = {0x01, 0x02, 0x03, 0x04, 0x05};
+//char string2[] = "Este es otro string más largo";
+//int iteracion = 0;
 unsigned char debug;
 	init_FIFO_General_1byte(&vfd.x,&buffer6[0],SIZE_BUFFER6);
     init_FIFO_General_1byte(&vfd.y,&buffer7[0],SIZE_BUFFER6);
@@ -232,6 +232,7 @@ unsigned char c[MAX_NUM_CHAR_VFD];
 unsigned char *crc=NULL;
 unsigned char str_len = 0;        // Longitud del string de entrada
 char *str;	
+size_t i;
 
     printf("Consumidor-Tx: Procesando buffer3 completo (len: %zu)\n", len);
 	crc=(unsigned char *)malloc(str_len *sizeof(unsigned char));    // Asignar memoria dinámica para el array crc basado en la longitud de *str
