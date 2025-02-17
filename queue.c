@@ -243,7 +243,7 @@ size_t i;
 	//str=(char *)&datos->data[i];
 	switch(estado){// Continuar mientras no lleguemos al final de la cadena
       case 1:printf("\033[35m");estado++;break;
-	  case 2:putchar(*str);estado++;break;}
+	  case 2:putchar(*str);estado++;break;
 	  case 3:estado++;break;
 	  case 4:if(*str++==STX)estado++;else{estado=99;}break;
 	  case 5:*crc=len=*str++;n=1;estado++;break;
