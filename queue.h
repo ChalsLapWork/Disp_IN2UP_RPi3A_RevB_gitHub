@@ -345,11 +345,11 @@ void init_menu(void);
 void *Run_Menu(void *arg);
 void xControl_Principal_de_Menus_Operativo();
 // Prototipos
-void *VFDserial_SendBlockProductor(void *arg);
-void *VFDserial_SendBlockConsumidor(void *arg);
+//void *VFDserial_SendBlockProductor(void *arg);
+//void *VFDserial_SendBlockConsumidor(void *arg);
 //void VFDserial_SendBlock_Tx(DatosTransmision *datos);
-void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len);
-unsigned char VFDserial_SendBlock_data(void *ptr, size_t size); 
+void VFDserial_SendBlock_Tx1(unsigned char *buffer, size_t len);
+//unsigned char VFDserial_SendBlock_data(void *ptr, size_t size); 
 unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char size);
 
 

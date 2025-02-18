@@ -23,41 +23,11 @@
 #endif
 
 
-#define BUFFER_SIZE 250  // Tamaño máximo de cada array
-#define NUM_ENTRADAS 8   // Número máximo de arrays en el buffer circular
 
 
-
-#define MAX_LEN 256  // Tamaño máximo del array en cada entrada del buffer
-#define MAX_BUFFER_LEN (NUM_ENTRADAS * MAX_LEN)  // Tamaño máximo para buffer2 y buffer3
-
-// Estructura para almacenar datos en el buffer circular
-typedef struct {
-    unsigned char data[MAX_LEN];
-    size_t len;
-} DatosTransmision;
-
-
-DatosTransmision buffer_circular[NUM_ENTRADAS];  // Buffer circular
-int in = 0, out = 0;
-
-unsigned char buffer2[MAX_BUFFER_LEN];  // Buffer lineal para concatenar datos del buffer circular
-size_t buffer2_len = 0;
-
-unsigned char buffer3[MAX_BUFFER_LEN];  // Buffer final para enviar a VFDserial_SendBlock_Tx
-size_t buffer3_len = 0;
-
-pthread_mutex_t mutex_buffer = PTHREAD_MUTEX_INITIALIZER;
-sem_t sem_llenos, sem_vacios;
-pthread_mutex_t mutex_buffer2 = PTHREAD_MUTEX_INITIALIZER;
-
-
-
-struct _DISPLAY_VFD_ vfd;
-struct Queue qVFDtx;//queue de transmision vfd 
+//struct _DISPLAY_VFD_ vfd;
+//struct Queue qVFDtx;//queue de transmision vfd 
 //struct _Sync2 s1;//sincronia 	
-struct VFD_DATA dequeue(struct Queue   *q);
-void enqueue(struct Queue  *q,struct VFD_DATA dato1);
 
 
 // Buffer compartido
@@ -77,16 +47,6 @@ extern struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pant
 //pthread_t SubProc_SendBlock_TX_VFD;//send strings to VFD 
 //pthread_t SubProc_SendBlock_chars_TX_VFD;//send bytes 	stream to VFD
 pthread_t SubProc_Run_Menu;//proceso que gestiona el cambio de menu
-pthread_t hilo_productor, hilo_consumidor;
-
-//pthread_t SubPrcoc_SendBlock_TX_VFD;//TRAnsmisor de los datos al VFD
-//pthread_t SubProc_Tx_VFD;
-// Mutex y condición
-//pthread_mutex_t buffer_mutex = PTHREAD_MUTEX_INITIALIZER;
-//pthread_cond_t buffer_not_empty = PTHREAD_COND_INITIALIZER;
-
-//pthread_mutex_t mutex_buffer = PTHREAD_MUTEX_INITIALIZER;
-//sem_t sem_llenos, sem_vacios;
 
 
 
@@ -95,36 +55,17 @@ pthread_t hilo_productor, hilo_consumidor;
 void init_queues(void){
 //const unsigned char init_VFD[]={0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2};
 unsigned char array1[] = {0x41, 0x42, 0x43, 0x44};
-//char string1[] = "Hola, soy un string 1";
-//unsigned char array2[] = {0x01, 0x02, 0x03, 0x04, 0x05};
-//char string2[] = "Este es otro string más largo";
-//int iteracion = 0;
 unsigned char debug;
 	init_FIFO_General_1byte(&vfd.x,&buffer6[0],SIZE_BUFFER6);
     init_FIFO_General_1byte(&vfd.y,&buffer7[0],SIZE_BUFFER6);
     init_FIFO_General_1byte(&vfd.p,&buffer8[0],SIZE_BUFFER6);
     printf("\n       Iniciando queueus");	  
-    vfd.config.bytes1=0;//init all parameter into zero
-    vfd.f1.append=vfd_FIFO_push;
-	vfd.f1.pop=vfd_FIFO_pop;                                                                                                                                                                                                                                                                                                                                                                                                                      
-	vfd.f1.resetFIFOS=vfd_FIFOs_RESET; 
 	sync1=0xAA;//mutexs ocupados
-	//pthread_mutex_init(&vfd.mutex.VDF_busy,NULL);
-	//init_Queue_with_Thread(&qVFDtx);//fifos Transmisor data al Display
-	vfd.config.bits.recurso_VFD_Ocupado=TRUE;//recurso ocupado, VFD nadie lo puede usar
-	//init_mutex_VFD();//inizialisa los mutex que manejan el VFD, transmision
 	NoErrorOK();
 	printf("\n       Creando Proceso Init VFD");
-	sem_init(&sem_llenos, 0, 0);
-    sem_init(&sem_vacios, 0, NUM_ENTRADAS);
-	if((debug=pthread_create(&hilo_productor,NULL,VFDserial_SendBlockProductor,NULL))!=0){	
-	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}
-	if((debug=pthread_create(&hilo_consumidor,NULL,VFDserial_SendBlockConsumidor,NULL))!=0){	
-	    errorCritico2("Error creacion Hilo:",75);}else{NoErrorOK();}	
-    usleep(1);//solo para debug
+	init_VFD_Threads();
 	inicializar_VFD();//Init VFD
 	printf("\n       Fin de Init Queues");
-	vfd.config.bits.recurso_VFD_Ocupado=FALSE;
 	NoErrorOK();
 }//fin init queue+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -133,100 +74,9 @@ unsigned char debug;
 
 
 
-//encola regresa TRUE: si esta llena , FALSE: si esta vacia
-void enqueue(struct Queue 	*q,struct VFD_DATA dato1){
-	struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
-	new_node->dato=dato1;
-	new_node->next=NULL;
-    pthread_mutex_lock(q->s.m_Tx); //&vfd.sync.mutex_init_VFD);
-	if(q->tail==NULL){
-		  q->head=new_node;
-		  q->tail=new_node;}
-	else{q->tail->next=new_node;
-	     q->tail=new_node;}
-	q->size++;	 
-	q->nLibres--;q->nOcupados++;
-    pthread_cond_signal(q->s.cond_Tx);//vfd.sync.cond_init_TX_VFD); // Notifica que la cola no está vacía
-    pthread_mutex_unlock(q->s.m_Tx);//vfd.sync.mutex_init_VFD);
-}//fin enqueue++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-struct VFD_DATA dequeue(struct Queue  *q) {
-	pthread_mutex_lock(q->s.m_Tx);//vfd.sync.mutex_init_VFD);
-	while(q->size==0)//aqui sabemos que esta vacia la queue
-	    pthread_cond_wait(q->s.cond_Tx,q->s.m_Tx);//vfd.sync.cond_init_TX_VFD,&vfd.sync.mutex_init_VFD);	//espera si la cola esta vacia
-    struct Node *temp=q->head;
-	struct VFD_DATA data=temp->dato;
-	q->head=q->head->next;
-    if(q->head==NULL)
-	     q->tail=NULL;
-    q->size--;q->nLibres++;q->nOcupados--;
-	free(temp);		 
-    pthread_mutex_unlock(q->s.m_Tx);//vfd.sync.mutex_init_VFD);
-
-return data;
-}//fin de queue+++++++++++++++++++++++++++++++++
-
-
-// Función para enviar un protocolo completo
-// ETX,LEN,CMD,dato0...daton,CRC,ETX
-unsigned char VFDserial_SendBlock_data(void *ptr, size_t size) {
-    if (size > MAX_LEN) {
-        fprintf(stderr, "Error: El tamaño de los datos excede el máximo permitido.\n");
-        return 0;}
-    sem_wait(&sem_vacios);
-    pthread_mutex_lock(&mutex_buffer);
-    buffer_circular[in].len = size;
-    memcpy(buffer_circular[in].data, ptr, size);  // Corregido "data" en lugar de "dat"
-    printf("Hilo Principal: Datos agregados al buffer (len: %zu)\n", size);
-    in = (in + 1) % NUM_ENTRADAS;
-    pthread_mutex_unlock(&mutex_buffer);
-    sem_post(&sem_llenos);
-    return 1;
-}//fin de VFD serial SEnd Block++++++++++++++++++++++++++++++++++++++++++++++++++
-
-// Hilo Productor: vacía todo el buffer circular a buffer2
-void *VFDserial_SendBlockProductor(void *arg) {
-    while (1) {
-        sem_wait(&sem_llenos);
-        pthread_mutex_lock(&mutex_buffer);// Vaciado de todo el buffer circular a buffer2
-        pthread_mutex_lock(&mutex_buffer2); // Bloqueamos buffer2 para evitar acceso simultáneo
-        for (int i = 0; i < NUM_ENTRADAS; i++) {
-            size_t len = buffer_circular[out].len;
-            if (len > 0) {
-                memcpy(buffer2 + buffer2_len, buffer_circular[out].data, len);
-                buffer2_len += len;
-                printf("Productor: Copió datos al buffer2 (len: %zu, total en buffer2: %zu)\n", len, buffer2_len);}
-            out = (out + 1) % NUM_ENTRADAS;}
-        in = out;// Vaciamos el buffer circular
-        pthread_mutex_unlock(&mutex_buffer2); // Liberamos buffer2
-        pthread_mutex_unlock(&mutex_buffer);
-        sem_post(&sem_vacios);
-        usleep(100000); // Simulamos un pequeño retraso antes de verificar si buffer2 tiene datos
-    }//fin while++++++++++++++++++++++++
-    return NULL;
-}//fin de VFD serial send Block Productor++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-// Hilo Consumidor: transfiere los datos de buffer2 a buffer3 y procesa
-void *VFDserial_SendBlockConsumidor(void *arg) {
-      while (1) {
-        pthread_mutex_lock(&mutex_buffer2);
-        if (buffer2_len > 0) {
-            size_t len = buffer2_len;
-            memcpy(buffer3, buffer2, len);
-            buffer3_len = len;
-            buffer2_len = 0;
-            printf("Consumidor: Transferencia de datos de buffer2 a buffer3 (len: %zu)\n", len);
-            pthread_mutex_unlock(&mutex_buffer2);// Llamar a VFDserial_SendBlock_Tx para procesar buffer3 completo
-            VFDserial_SendBlock_Tx(buffer3, buffer3_len);}
-        else {pthread_mutex_unlock(&mutex_buffer2);}
-        usleep(100000);  // 100 ms para simular procesamiento continuo
-    }//fin while+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    return NULL;
-}//fin de hilo consumidor++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len) {
-//DatosTransmision *datos=(DatosTransmision *)arg;
 unsigned char estado,cmd,n;
 unsigned char c[MAX_NUM_CHAR_VFD];
 unsigned char *crc=NULL;

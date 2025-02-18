@@ -1,0 +1,13 @@
+
+
+
+#define NUM_ENTRADAS 10
+#define MAX_LEN 256  // Tamaño máximo del array en cada entrada del buffer
+#define MAX_BUFFER_LEN (NUM_ENTRADAS * MAX_LEN)  // Tamaño máximo para buffer2 y buffer3
+
+
+// Prototipos
+void *VFDserial_SendBlockProductor(void *arg);
+void *VFDserial_SendBlockConsumidor(void *arg);
+void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len);
+unsigned char VFDserial_SendBlock(void *ptr, size_t size);
