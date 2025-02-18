@@ -113,7 +113,7 @@ static int count;
 	  case 9:if(*str++==getCRC_v2(crc,n))estado++;
 	         else{estado=99;}break;
 	  case 10: if(*str++==ETX)estado++;else{estado=99;}break;
-	  case 11:procesar_Paquete(cmd,&c[0],n-2);break;
+	  case 11://procesar_Paquete(cmd,&c[0],n-2);break;
 	  case 12:printf("\033[0m");
               fflush(stdout);//salida inmediata de buffer printf
               printf("\n");

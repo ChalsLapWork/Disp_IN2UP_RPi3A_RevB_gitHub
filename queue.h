@@ -348,9 +348,9 @@ void xControl_Principal_de_Menus_Operativo();
 //void *VFDserial_SendBlockProductor(void *arg);
 //void *VFDserial_SendBlockConsumidor(void *arg);
 //void VFDserial_SendBlock_Tx(DatosTransmision *datos);
+unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char size);
 void VFDserial_SendBlock_Tx1(unsigned char *buffer, size_t len);
 //unsigned char VFDserial_SendBlock_data(void *ptr, size_t size); 
-unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char size);
 
 
 #endif 
