@@ -76,7 +76,7 @@ unsigned char debug;
 
 
 
-void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len) {
+void VFDserial_SendBlock_Tx1(unsigned char *buffer, size_t len) {
 unsigned char estado,cmd,n;
 unsigned char c[MAX_NUM_CHAR_VFD];
 unsigned char *crc=NULL;
