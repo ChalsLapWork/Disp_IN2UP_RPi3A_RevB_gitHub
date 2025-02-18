@@ -194,7 +194,7 @@ unsigned char VFDposicion(unsigned char x,unsigned char y){ //MANDA DEL COMANDO 
 unsigned char LEN=4;          
 unsigned char POS_CMD[]={STX,LEN,COMANDO_POS,x,y,0x00,ETX};
      POS_CMD[LEN+1]=getCRC_v2(&POS_CMD[1],LEN);   
-   	 VFDserial_SendBlock_data(&POS_CMD[0],sizeof(POS_CMD));//
+   	 VFDserial_SendBlock_buf(&POS_CMD[0],sizeof(POS_CMD));//
 return 1;     
 }// fin posicionVFD-------------------------------------------------------------
 
@@ -207,7 +207,7 @@ unsigned char VFDserial_SendChar(unsigned char c){
 unsigned char LEN=3;    
 unsigned char a[6]={STX,LEN,COMANDO_CHAR,c,0,ETX};
        a[LEN+1]=getCRC_v2(&a[1],LEN);
-return VFDserial_SendBlock_data(&a,sizeof(a));//Init VFD
+return VFDserial_SendBlock_buf(&a,sizeof(a));//Init VFD
 }//------------------------------------------------------------------
 
 
@@ -235,7 +235,7 @@ unsigned char *array = (unsigned char *)malloc((size1 + 5) * sizeof(unsigned cha
     array[2] = COMANDO_STRING; // CMD (ejemplo de comando)
     array[size1 + 3] = getCRC_v2(array+1,size1+2);
     array[size1 + 4] = ETX; // Ejemplo de CRC (ajustar según tu implementación)
-    VFDserial_SendBlock_data(array, size1 + 5);
+    VFDserial_SendBlock_buf(array, size1 + 5);
     free(array); // Liberar la memoria reservada con malloc
 return 1;// fin de enviar mensaje++++++++++++++++++++++
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
@@ -247,7 +247,7 @@ const unsigned char LEN=2;//cantidad de bytes a calcular porf CRC
 unsigned char init_VFD[]={STX,LEN,COMANDO_INIT,0x00,ETX};
 //unsigned short int sum=0;     
     init_VFD[10]=getCRC_v2(&init_VFD[1],LEN);
-	VFDserial_SendBlock_data(&init_VFD[0],sizeof(init_VFD));//Init VFD 
+	VFDserial_SendBlock_buf(&init_VFD[0],sizeof(init_VFD));//Init VFD 
 return 1;
 }//fin de inizializacion de VFD++++++++++++++++++++++++++++++
 
@@ -346,7 +346,7 @@ unsigned char datos[11],LEN=8;
     datos[8]=y2;
     datos[9]=getCRC_v2(&datos[1],LEN);
     datos[10]=ETX;
-    VFDserial_SendBlock_data(&datos[0],sizeof(datos));
+    VFDserial_SendBlock_buf(&datos[0],sizeof(datos));
 return 1;
 }// fin draw line -----------------------------------------------------------------------------------------
 
