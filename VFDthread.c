@@ -8,6 +8,7 @@
 #include "VFDthread.h"
 #include "errorController.h"
 #include "VFD.h"
+#include "queue.h"
 
 
 #ifndef debug_level1
