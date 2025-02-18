@@ -16,7 +16,7 @@
 #include "VFDmenu.h"
 #include "SistOp.h"
 #include <semaphore.h>
-
+#include "VFDthread.h"
 
 #ifndef debug_level1
   #include <wiringPi.h>

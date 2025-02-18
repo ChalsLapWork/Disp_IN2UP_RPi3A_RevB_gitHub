@@ -2,7 +2,7 @@
 #include "system.h"
 #include "VFD.h"
 #include "queue.h"
-
+#include "VFDthread.h"
 
 
 unsigned char delay_ms_VFD(unsigned short int t){

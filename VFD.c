@@ -11,6 +11,8 @@
 #include <stdatomic.h>
 #include <stdbool.h>
 #include "delay.h"
+#include "VFDthread.h"
+
 #ifndef  debug_level1 
     #include <wiringPi.h>
 #endif
