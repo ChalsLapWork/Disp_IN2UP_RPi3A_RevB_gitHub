@@ -162,7 +162,7 @@ unsigned char LEN=0x02; //bytes a calcular por CRC
 unsigned char buf[]={STX,LEN,COMANDO_CLRSCR,0x00,ETX};
 
      buf[LEN+1]=getCRC_v2(&buf[1],LEN);
-     VFDserial_SendBlock_data(&buf[0],sizeof(buf));
+     VFDserial_SendBlock_buf(&buf[0],sizeof(buf));
             
 return 1;    
 }//fin clear screen VFD-----------------------------------------------------------------------------

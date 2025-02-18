@@ -55,13 +55,13 @@ void init_VFD_Threads(void){//
     int iteracion = 0;
     while (1) {
         if (iteracion % 4 == 0) {
-            VFDserial_SendBlock(array1, sizeof(array1));
+            VFDserial_SendBlock_buf(array1, sizeof(array1));
         } else if (iteracion % 4 == 1) {
-            VFDserial_SendBlock(string1, strlen(string1) + 1);
+            VFDserial_SendBlock_buf(string1, strlen(string1) + 1);
         } else if (iteracion % 4 == 2) {
-            VFDserial_SendBlock(array2, sizeof(array2));
+            VFDserial_SendBlock_buf(array2, sizeof(array2));
         } else {
-            VFDserial_SendBlock(string2, strlen(string2) + 1);
+            VFDserial_SendBlock_buf(string2, strlen(string2) + 1);
         }
         iteracion++;
         usleep(500000);  // Espera para simular nuevos datos
