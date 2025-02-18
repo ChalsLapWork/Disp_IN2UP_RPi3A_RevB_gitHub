@@ -70,7 +70,7 @@ void init_VFD_Threads(void){//
 
 
 // Función principal para agregar datos al buffer circular
-unsigned char VFDserial_SendBlock(void *ptr, size_t size) {
+unsigned char VFDserial_SendBlock_buf(void *ptr, size_t size) {
     if (size > MAX_LEN) {
         fprintf(stderr, "Error: El tamaño de los datos excede el máximo permitido.\n");
         return 0;

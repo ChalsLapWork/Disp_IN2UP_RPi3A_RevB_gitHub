@@ -10,4 +10,4 @@
 void *VFDserial_SendBlockProductor(void *arg);
 void *VFDserial_SendBlockConsumidor(void *arg);
 void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len);
-unsigned char VFDserial_SendBlock(void *ptr, size_t size);
+unsigned char VFDserial_SendBlock_buf(void *ptr, size_t size);

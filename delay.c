@@ -20,7 +20,7 @@ unsigned char buffer[7],LEN=4;//STX,LEN,CMD,lo, Hi,CRC,ETX
       buffer[4]=union_usi.n[1];
       buffer[5]=getCRC_v2(&buffer[1],LEN);
       buffer[6]=ETX;
-      VFDserial_SendBlock_data(&buffer[0],sizeof(buffer));
+      VFDserial_SendBlock_buf(&buffer[0],sizeof(buffer));
 return 1;        
 }//fin de delay miliseconds VFD+++++++++++++++++++++++++++++++
 
@@ -38,6 +38,6 @@ unsigned char buffer[7],LEN=4;
       buffer[4]=union_usi.n[1];
       buffer[5]=getCRC_v2(&buffer[1],LEN);
       buffer[6]=ETX;
-      VFDserial_SendBlock_data(&buffer[0],sizeof(buffer));
+      VFDserial_SendBlock_buf(&buffer[0],sizeof(buffer));
 return 1;          
 }//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
