@@ -6,7 +6,8 @@
 #include <unistd.h>
 #include "system.h"
 #include "VFDthread.h"
-
+#include "errorController.h"
+#include "VFD.h"
 
 
 #ifndef debug_level1
