@@ -25,7 +25,7 @@
 
 
 
-//struct _DISPLAY_VFD_ vfd;
+struct _DISPLAY_VFD_ vfd;
 //struct Queue qVFDtx;//queue de transmision vfd 
 //struct _Sync2 s1;//sincronia 	
 
@@ -56,9 +56,9 @@ void init_queues(void){
 //const unsigned char init_VFD[]={0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2};
 unsigned char array1[] = {0x41, 0x42, 0x43, 0x44};
 unsigned char debug;
-	init_FIFO_General_1byte(&vfd.x,&buffer6[0],SIZE_BUFFER6);
-    init_FIFO_General_1byte(&vfd.y,&buffer7[0],SIZE_BUFFER6);
-    init_FIFO_General_1byte(&vfd.p,&buffer8[0],SIZE_BUFFER6);
+	//init_FIFO_General_1byte(&vfd.x,&buffer6[0],SIZE_BUFFER6);
+    //init_FIFO_General_1byte(&vfd.y,&buffer7[0],SIZE_BUFFER6);
+    //init_FIFO_General_1byte(&vfd.p,&buffer8[0],SIZE_BUFFER6);
     printf("\n       Iniciando queueus");	  
 	sync1=0xAA;//mutexs ocupados
 	NoErrorOK();
