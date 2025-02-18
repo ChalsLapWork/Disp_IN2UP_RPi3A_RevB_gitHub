@@ -349,7 +349,7 @@ void Terminar_subProcesos(void){
  * 4: size of fifo 
  * version 300322-1205
  * version 310322-1637 add reset as general */
-void init_FIFO_General_1byte(struct _FIFO_1byte_ *s,
+/*void init_FIFO_General_1byte(struct _FIFO_1byte_ *s,
      unsigned char *h,unsigned char size){//FIFO_SER_KEYPAD[SIZE_SER_KEYPAD];
 	s->head=h;
 	s->tail=h+size-1;
@@ -360,12 +360,12 @@ void init_FIFO_General_1byte(struct _FIFO_1byte_ *s,
 	s->appendByte=FIFO_general_1byte_push;
 	s->size=size;
 	s->resetFIFO=reset_FIFO_general_UChar;
-}//fin init_FIFO_RX_serial_Keypad------------------------------------------
+}*/ //fin init_FIFO_RX_serial_Keypad------------------------------------------
 
 
 //return FALSE if is empty
 /* version 300322-1156*/
-unsigned char FIFO_general_1byte_pop(unsigned char *dato,
+/*unsigned char FIFO_general_1byte_pop(unsigned char *dato,
                    struct _FIFO_1byte_ *s){	
 	if(s->ncount==0){
         #if(debug_level1==1)
@@ -385,7 +385,7 @@ unsigned char FIFO_general_1byte_pop(unsigned char *dato,
 			    s->pop=s->tail;
 		 else s->pop--;}
 return TRUE;
-}//FIFO_general_1byte_push------------------------------------------
+}*/ //FIFO_general_1byte_push------------------------------------------
 
 //regresa TRUE  si TODO bien  vfd.f1.append(14,0,_BOX_);
 /* El buffer de la FIFO se satura son mas los que entran que los que salen
@@ -394,7 +394,7 @@ return TRUE;
  * RegrESA  FALSE si esta llena
  *   version 39.22.5.0
  * */
-unsigned char FIFO_general_1byte_push(unsigned char dato,
+/*unsigned char FIFO_general_1byte_push(unsigned char dato,
                                   struct _FIFO_1byte_ *s){
 auto unsigned char ret=0;
 	  if(s->nLibres==0) 
@@ -422,7 +422,7 @@ auto unsigned char ret=0;
                           s->nLibres--;s->nOcupados++;
 	                    s->ncount++;ret=TRUE;}}}
 return ret;
-}//FIFO_general_1byte_push---------------------------------------------
+}*/ //FIFO_general_1byte_push---------------------------------------------
 
 
 
@@ -439,7 +439,7 @@ void reset_FIFO_general_UChar(struct _FIFO_1byte_ *s,
 
 //FIFO para ingresar un dato a desplegar vfd.f1.append(14,0,_BOX_);
 //Return false|true   TRUE: si se agrego sin problemas
-unsigned char vfd_FIFO_push(struct Queue *q,struct VFD_DATA dato){
+/*unsigned char vfd_FIFO_push(struct Queue *q,struct VFD_DATA dato){
 const unsigned char BYTES_BOX=250; //numero de ciclos, mas que bytes por comando de una box cdraw 
 unsigned char x,y,p;
 const unsigned char DELAY_TIME=1; 
@@ -467,11 +467,11 @@ const unsigned char DELAY_TIME=1;
     	default:break;}
      enqueue(q,dato);
 return TRUE;//ret;
-}//fin vfd_FIFO_push-------------------------------------------
+}*/ //fin vfd_FIFO_push-------------------------------------------
 
 
 /*   */
-unsigned char vfd_FIFO_pop(unsigned char *x,unsigned char *y,unsigned char *p){
+/*unsigned char vfd_FIFO_pop(unsigned char *x,unsigned char *y,unsigned char *p){
 unsigned char  r;	 
 	   if(vfd.x.ncount==0){
 		   if((vfd.y.ncount!=0)&&(vfd.p.ncount!=0)){
@@ -483,14 +483,14 @@ unsigned char  r;
        vfd.y.popf(y,&vfd.y);
        vfd.p.popf(p,&vfd.p);
 return r;	   
-}//fin vfd_FIFO_pop------------------------------------------------------------
+}*///fin vfd_FIFO_pop------------------------------------------------------------
 
 /* para el cambio de contexto todas los registros y FIFOs e
  * resetean*/
-unsigned char vfd_FIFOs_RESET(void){
+/*unsigned char vfd_FIFOs_RESET(void){
 	vfd.config.bits.FIFOonReset=1;//se activa el reset, indica que estan en reseteo
 	vfd.x.resetFIFO(&vfd.x,&buffer6[0],SIZE_BUFFER6);
 	vfd.y.resetFIFO(&vfd.y,&buffer7[0],SIZE_BUFFER6);
 	vfd.p.resetFIFO(&vfd.p,&buffer8[0],SIZE_BUFFER6);
  return TRUE;	
-}//fin --------------------------------------------------------
+}*/ //fin --------------------------------------------------------
