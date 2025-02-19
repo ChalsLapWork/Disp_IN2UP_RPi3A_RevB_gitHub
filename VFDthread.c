@@ -140,13 +140,12 @@ static int count;
     if(count++==19)
 	        printf(" Stop here ");
     str=buffer;
-    str_len=strlen(buffer);
+    str_len = strlen((char *)buffer);
 	crc=(unsigned char *)malloc(str_len *sizeof(unsigned char));    // Asignar memoria dinámica para el array crc basado en la longitud de *str
     if (crc == NULL) {// Error al asignar memoria
         printf("Error: No se pudo asignar memoria para crc.\n");
         return;}
    while(i<str_len){ 
-	//str=(char *)&datos->data[i];
 	switch(estado){// Continuar mientras no lleguemos al final de la cadena
       case 1:printf("\033[35m");estado++;break;
 	  case 2:printf(" %i ",estado);
@@ -184,7 +183,7 @@ static int count;
 	  case 99:estado=2;mens_Warnning_Debug(" error 99 ");break;
 	  default:estado=1;break;}
 	  i++;}//fin while 
-	  
+free(crc);  // Liberar memoria asignada
 return;
 }//fin VFDserial_SendBlock_Tx+++++++++++++++++++++++++++++++++++++++++++++++++++
 
