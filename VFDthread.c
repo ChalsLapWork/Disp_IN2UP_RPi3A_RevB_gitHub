@@ -145,7 +145,7 @@ static int count;
     if (crc == NULL) {// Error al asignar memoria
         printf("Error: No se pudo asignar memoria para crc.\n");
         return;}
-   while(i<len){ 
+   while(i<str_len){ 
 	//str=(char *)&datos->data[i];
 	switch(estado){// Continuar mientras no lleguemos al final de la cadena
       case 1:printf("\033[35m");estado++;break;
