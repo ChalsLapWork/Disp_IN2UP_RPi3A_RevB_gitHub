@@ -128,62 +128,55 @@ return NULL;
 
 // Función que procesa buffer3 completo (como un gran array de datos)
 void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len) {
-unsigned char estado,cmd,n;
+unsigned char estado = 0, cmd, crc_calculado, crc_recibido;
 unsigned char c[MAX_NUM_CHAR_VFD];
-unsigned char *crc=NULL;
-unsigned char str_len = 0;        // Longitud del string de entrada
-char *str;	
-size_t i=0;
-static int count;
+unsigned char *str = buffer;
+size_t i = 0, datos_len = 0;
+static int count = 0;
 
-  printf("Consumidor-Tx: Procesando buffer3 completo (len: %zu), cont=%i\n", len,count);
-    if(count++==19)
-	        printf(" Stop here ");
-    str=buffer;
-    str_len = strlen((char *)buffer);
-	crc=(unsigned char *)malloc(str_len *sizeof(unsigned char));    // Asignar memoria dinámica para el array crc basado en la longitud de *str
-    if (crc == NULL) {// Error al asignar memoria
-        printf("Error: No se pudo asignar memoria para crc.\n");
-        return;}
-   while(i<str_len){ 
-	switch(estado){// Continuar mientras no lleguemos al final de la cadena
-      case 1:printf("\033[35m");estado++;break;
-	  case 2:printf(" %i ",estado);
-             putchar(*str);estado++;break;
-	  case 3:printf(" %i ",estado);
-             estado++;break;
-	  case 4:printf(" %i ",estado);
-             if(*str++==STX)estado++;else{estado=99;}break;
-	  case 5:printf(" %i ",estado);
-             *crc=len=*str++;n=1;estado++;break;
-	  case 6:printf(" %i ",estado);
-             *(crc+n++)=cmd=*str++;i=0;estado++;break;
-	  case 7:printf(" %i ",estado);
-             switch(len){
-		         case 0:mensOK(" error 174, PROTOCOLO mal bytes ",CROJO);break;
-				 case 1:mensOK(" eror 175 protocolo par hecho",CAMARILLO);break;
-				 case 2:estado=9;break;
-                 default:estado=8;i=0;break;}
-	  case 8:printf(" %i ",estado);
-             if(len==n){n--;c[i]=0;estado++;}
-	         *(crc+n++)=c[i++]=*str++;
-             break;
-	  case 9:printf(" %i ",estado);
-             if(*str++==getCRC_v2(crc,n))estado++;
-	         else{estado=99;}break;
-	  case 10:printf(" %i ",estado);
-              if(*str++==ETX)estado++;else{estado=99;}break;
-	  case 11:printf(" %i ",estado);
-              procesar_Paquete(cmd,&c[0],n-2);break;
-	  case 12:printf(" %i ",estado);
-              printf("\033[0m");
-              fflush(stdout);//salida inmediata de buffer printf
-              printf("\n");
-			  break;
-	  case 99:estado=2;mens_Warnning_Debug(" error 99 ");break;
-	  default:estado=1;break;}
-	  i++;}//fin while 
-free(crc);  // Liberar memoria asignada
+    printf("Consumidor-Tx: Procesando buffer completo (len: %zu), cont=%i\n", len, count);
+    if (count++ == 19) { printf("Stop here\n");}
+
+    while (i < len) {
+        switch (estado) {
+            case 0:printf("Estado 0: Buscando STX...\n");// Buscar STX
+                   if(*str==STX){printf("Encontrado STX en la posición %zu\n", i);estado++;}  // Avanzamos al siguiente estad
+                   str++;break;
+            case 1:printf("Estado 1: Leyendo el byte de longitud (LEN)...\n");  // Leer el byte de longitud (LEN)
+                   if (*str+3>len-i){// Verificamos que haya suficiente espacio
+                       mens_Warnning_Debug("Error: La longitud de los datos no coincide con el tamaño del buffer.");
+                       return;}
+                   datos_len = *str - 1;  // Descontamos el byte de `len` y el byte `cmd`
+                   printf("Longitud de datos: %d\n", datos_len);
+                   str++;estado++;break;
+            case 2:printf("Estado 2: Leyendo el byte de comando (CMD)...\n");  // Leer el byte de comando (CMD)
+                   cmd=*str++;printf("Comando (CMD): %d\n", cmd);
+                   estado++;break;
+            case 3:printf("Estado 3: Leyendo los datos...\n");// Leer los datos  
+                   for(size_t j=0;j<datos_len;j++) {
+                           c[j] = *str++;  // Almacenamos los datos en el array `c`
+                           printf("Dato %zu: %02X\n", j, c[j]);}
+                   estado++;break;
+            case 4:printf("Estado 4: Calculando y verificando CRC...\n");  // Calcular y verificar CRC
+                   crc_calculado = getCRC_v2(buffer + 1, datos_len + 2);  // Sumar 2 para incluir `len` y `cmd`
+                   crc_recibido = *str++;  // Leemos el CRC recibido
+                   printf("CRC calculado: %02X, CRC recibido: %02X\n", crc_calculado, crc_recibido);
+                   if (crc_calculado != crc_recibido) {mens_Warnning_Debug("Error: El CRC recibido no coincide con el calculado.");
+                                                       estado=7;}  // Reiniciar el ciclo para buscar el siguiente STX
+                   else {estado++;}break;
+            case 5:printf("Estado 5: Verificando si el paquete termina con ETX...\n");  // Verificar ETX
+                   if (*str == ETX) {printf("Encontrado ETX\n");estado = 6;}  // Avanzamos al siguiente estado si encontramos ETX
+                   else {mens_Warnning_Debug("Error: No se encontró ETX al final del paquete.");
+                        estado = 7;}  // Reiniciar el ciclo para buscar el siguiente STX
+                   str++;break;
+            case 6:printf("Estado 6: Procesando el paquete...\n");// Procesar el paquete  
+                   procesar_Paquete(cmd, c, datos_len);estado++;break;  // Reiniciar el ciclo para buscar el siguiente STX
+            case 7:printf("Estado 7: Reiniciando búsqueda para el siguiente paquete...\n");  // Reiniciar y buscar el siguiente paquete
+                   estado=0;break; // Volver al estado inicial para buscar el siguiente STX
+            default:printf("Estado desconocido. Reiniciando...\n");
+                    estado = 0;  // En caso de un estado inesperado, reiniciamos
+                    break;}//fin sitch+++++++++++++++++++++++++++++
+           i++;}//fin while  Avanzamos al siguiente byte en el buffer
 return;
 }//fin VFDserial_SendBlock_Tx+++++++++++++++++++++++++++++++++++++++++++++++++++
 
