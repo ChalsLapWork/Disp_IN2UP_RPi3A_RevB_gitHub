@@ -149,24 +149,35 @@ static int count;
 	//str=(char *)&datos->data[i];
 	switch(estado){// Continuar mientras no lleguemos al final de la cadena
       case 1:printf("\033[35m");estado++;break;
-	  case 2:putchar(*str);estado++;break;
-	  case 3:estado++;break;
-	  case 4:if(*str++==STX)estado++;else{estado=99;}break;
-	  case 5:*crc=len=*str++;n=1;estado++;break;
-	  case 6:*(crc+n++)=cmd=*str++;i=0;estado++;break;
-	  case 7:switch(len){
+	  case 2:printf(" %i ",estado);
+             putchar(*str);estado++;break;
+	  case 3:printf(" %i ",estado);
+             estado++;break;
+	  case 4:printf(" %i ",estado);
+             if(*str++==STX)estado++;else{estado=99;}break;
+	  case 5:printf(" %i ",estado);
+             *crc=len=*str++;n=1;estado++;break;
+	  case 6:printf(" %i ",estado);
+             *(crc+n++)=cmd=*str++;i=0;estado++;break;
+	  case 7:printf(" %i ",estado);
+             switch(len){
 		         case 0:mensOK(" error 174, PROTOCOLO mal bytes ",CROJO);break;
 				 case 1:mensOK(" eror 175 protocolo par hecho",CAMARILLO);break;
 				 case 2:estado=9;break;
                  default:estado=8;i=0;break;}
-	  case 8:if(len==n){n--;c[i]=0;estado++;}
+	  case 8:printf(" %i ",estado);
+             if(len==n){n--;c[i]=0;estado++;}
 	         *(crc+n++)=c[i++]=*str++;
              break;
-	  case 9:if(*str++==getCRC_v2(crc,n))estado++;
+	  case 9:printf(" %i ",estado);
+             if(*str++==getCRC_v2(crc,n))estado++;
 	         else{estado=99;}break;
-	  case 10: if(*str++==ETX)estado++;else{estado=99;}break;
-	  case 11:procesar_Paquete(cmd,&c[0],n-2);break;
-	  case 12:printf("\033[0m");
+	  case 10:printf(" %i ",estado);
+              if(*str++==ETX)estado++;else{estado=99;}break;
+	  case 11:printf(" %i ",estado);
+              procesar_Paquete(cmd,&c[0],n-2);break;
+	  case 12:printf(" %i ",estado);
+              printf("\033[0m");
               fflush(stdout);//salida inmediata de buffer printf
               printf("\n");
 			  break;
