@@ -51,10 +51,10 @@ void init_VFD_Threads(void){//
     pthread_create(&hilo_consumidor, NULL, VFDserial_SendBlockConsumidor, NULL);
 
     // Hilo principal envía datos continuamente
-    unsigned char array1[] = {0x41, 0x42, 0x43, 0x44};  // "ABCD"
-    char string1[] = "Hola, soy un string 1";
-    unsigned char array2[] = {0x01, 0x02, 0x03, 0x04, 0x05};
-    char string2[] = "Este es otro string más largo";
+    unsigned char array1[] = {STX,0x05,COMANDO_STRING,0x41, 0x42, 0x43, 0x44,ETX,'\0'};  // "ABCD"
+    char string1[] = "Hola, soy un string 1\0";
+    unsigned char array2[] = {STX, 0x06, COMANDO_STRING,'h','o','l','a',0x34, ETX,'\0'};
+    char string2[] = "Este es otro string más largo\0";
 
     int iteracion = 0;
     while (1) {
