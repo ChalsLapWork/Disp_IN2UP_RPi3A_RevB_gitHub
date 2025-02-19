@@ -158,9 +158,9 @@ static int count = 0;
                            printf("Dato %zu: %02X\n", j, c[j]);}
                    estado++;break;
             case 4:printf("Estado 4: Calculando y verificando CRC...\n");  // Calcular y verificar CRC
-                   crc_calculado = getCRC_v2(buffer + 1, datos_len + 2);  // Sumar 2 para incluir `len` y `cmd`
+                   crc_calculado = getCRC_v2(buffer + 1, datos_len + 1);  // Sumar 2 para incluir `len` y `cmd`
                    crc_recibido = *str++;  // Leemos el CRC recibido
-                   printf("CRC calculado: %02X, CRC recibido: %02X\n", crc_calculado, crc_recibido);
+                   printf("CRC: %02X, CRC recibido: %02X\n", crc_calculado, crc_recibido);
                    if (crc_calculado != crc_recibido) {mens_Warnning_Debug("Error: El CRC recibido no coincide con el calculado.");
                                                        estado=7;}  // Reiniciar el ciclo para buscar el siguiente STX
                    else {estado++;}break;
