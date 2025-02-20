@@ -51,18 +51,18 @@ void init_VFD_Threads(void){//
     pthread_create(&hilo_consumidor, NULL, VFDserial_SendBlockConsumidor, NULL);
 
     // Hilo principal envía datos continuamente
-    unsigned char array1[] = {STX,0x05,COMANDO_STRING,0x41, 0x42, 0x43, 79,ETX,'\0'};  // "ABCD"
-    char string1[] = "Hola, soy un string 1\0";
-    unsigned char array2[] = {STX, 0x06, COMANDO_STRING,'h','o','l','a',0x34, ETX,'\0'};
-    char string2[] = "Este es otro string más largo\0";
+    unsigned char array1[]={STX,0x05,COMANDO_STRING,0x41, 0x42, 0x43, 0x63,ETX};  // "ABC"
+    unsigned char array2[]={STX,0x0E,COMANDO_STRING,0x20,0x48,0x6F,0x6C,0x61,0x20,0x6D,0x75,0x6E,0x64,0x6F,0x20,0x8B,ETX};
+    unsigned char array3[]={STX,0x10,COMANDO_STRING,0x20,0x50,0x6F,0x72,0x74,0x61,0x6C,0x20,0x49,0x6E,0x69,0x63,0x69,0x6F,0xB6,ETX};//" Portal Inicio"
+    unsigned char array4[]={STX,0x08,COMANDO_STRING,0x20,0x31,0x32,0x33,0x34,0x20,0xD6,ETX};
 
     int iteracion = 0;
     while (1) {
         if (iteracion % 4 == 0) {
             VFDserial_SendBlock_buf(array1, sizeof(array1));}
-        else if (iteracion % 4 == 1) {VFDserial_SendBlock_buf(string1, strlen(string1) + 1);} 
-             else if (iteracion % 4 == 2) {VFDserial_SendBlock_buf(array2, sizeof(array2));} 
-                  else {VFDserial_SendBlock_buf(string2, strlen(string2) + 1);}
+        else if (iteracion % 4 == 1) {VFDserial_SendBlock_buf(array2, sizeof(array2));} 
+             else if (iteracion % 4 == 2) {VFDserial_SendBlock_buf(array3, sizeof(array3));} 
+                  else {VFDserial_SendBlock_buf(array4,sizeof(array4));}
         iteracion++;
         usleep(500000);  // Espera para simular nuevos datos
     }//fin which+++++++++++++++++++++++++++++++++++++++++++++++++++++++
