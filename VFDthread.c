@@ -133,6 +133,7 @@ unsigned char c[MAX_NUM_CHAR_VFD];
 unsigned char *str = buffer;
 size_t i = 0, datos_len = 0;
 static int count = 0;
+unsigned char *array_crc,index,new_len;
 
     printf("Consumidor-Tx: Procesando buffer completo (len: %zu), cont=%i\n", len, count);
     if (count++ == 19) { printf("Stop here\n");}
@@ -151,14 +152,19 @@ static int count = 0;
                    str++;estado++;break;
             case 2:printf("Estado 2: Leyendo el byte de comando (CMD)...\n");  // Leer el byte de comando (CMD)
                    cmd=*str++;printf("Comando (CMD): %d\n", cmd);
+                   new_len=datos_len+1;
+                   array_crc=(unsigned char *)malloc(new_len * sizeof(unsigned char));
+                   if(array_crc==NULL){mens_Warnning_Debug("Error al asignar memoria");estado=0;}
+                   else{array_crc[0]=new_len;array_crc[1]=cmd;index=2;}
                    estado++;break;
             case 3:printf("Estado 3: Leyendo los datos...\n");// Leer los datos  
                    for(size_t j=0;j<datos_len-1;j++) {
                            c[j] = *str++;  // Almacenamos los datos en el array `c`
+                           array_crc[index++;]=c[j];//Array que se va ha usar para calcular el crc
                            printf("Dato %zu: %02X %i  %c\n", j, c[j],c[j],c[j]);}
                    estado++;break;
             case 4:printf("Estado 4: Calculando y verificando CRC...\n");  // Calcular y verificar CRC
-                   crc_calculado = getCRC_v2(buffer + 1, datos_len + 1);  // Sumar 2 para incluir `len` y `cmd`
+                   crc_calculado = getCRC_v2(array_crc,new_len);  // Sumar 2 para incluir `len` y `cmd`
                    crc_recibido = *str++;  // Leemos el CRC recibido
                    printf("CRC: %02X, CRC recibido: %02X\n", crc_calculado, crc_recibido);
                    if (crc_calculado != crc_recibido) {mens_Warnning_Debug("Error: El CRC recibido no coincide con el calculado.");
