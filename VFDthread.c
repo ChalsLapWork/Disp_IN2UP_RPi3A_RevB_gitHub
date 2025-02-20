@@ -153,9 +153,9 @@ static int count = 0;
                    cmd=*str++;printf("Comando (CMD): %d\n", cmd);
                    estado++;break;
             case 3:printf("Estado 3: Leyendo los datos...\n");// Leer los datos  
-                   for(size_t j=0;j<datos_len;j++) {
+                   for(size_t j=0;j<datos_len-1;j++) {
                            c[j] = *str++;  // Almacenamos los datos en el array `c`
-                           printf("Dato %zu: %02X\n", j, c[j]);}
+                           printf("Dato %zu: %02X %i  %c\n", j, c[j],c[j],c[j]);}
                    estado++;break;
             case 4:printf("Estado 4: Calculando y verificando CRC...\n");  // Calcular y verificar CRC
                    crc_calculado = getCRC_v2(buffer + 1, datos_len + 1);  // Sumar 2 para incluir `len` y `cmd`
