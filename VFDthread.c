@@ -137,14 +137,14 @@ unsigned char *array_crc,index,new_len;
 
     printf("Consumidor-Tx: Procesando buffer completo (len: %zu), cont=%i\n", len, count);
     if (count++ == 19) { printf("Stop here\n");}
-
+    
     while (i < len) {
         switch (estado) {
             case 0:printf("Estado 0: Buscando STX...\n");// Buscar STX
                    if(*str==STX){printf("Encontrado STX en la posición %zu\n", i);estado++;}  // Avanzamos al siguiente estad
                    str++;break;
             case 1:printf("Estado 1: Leyendo el byte de longitud (LEN)...\n");  // Leer el byte de longitud (LEN)
-                   if (*str+3>len-i){// Verificamos que haya suficiente espacio
+                   if (*str+3>=len-i){// Verificamos que haya suficiente espacio
                        mens_Warnning_Debug("Error: La longitud de los datos no coincide con el tamaño del buffer.");
                        return;}
                    datos_len = *str - 1;  // Descontamos el byte de `len` y el byte `cmd`
