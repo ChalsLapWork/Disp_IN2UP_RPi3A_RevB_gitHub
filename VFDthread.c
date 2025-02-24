@@ -181,7 +181,7 @@ unsigned char *array_crc,index,new_len;
                    if (*str == ETX) {printf("Encontrado ETX\n");estado = 6;}  // Avanzamos al siguiente estado si encontramos ETX
                    else {mens_Warnning_Debug("Error: No se encontró ETX al final del paquete.");
                         estado = 7;}  // Reiniciar el ciclo para buscar el siguiente STX
-                   str++;i++;break;
+                   break;
             case 6:printf("Estado 6: Procesando el paquete...\n");// Procesar el paquete  
                    procesar_Paquete(cmd, c, datos_len);estado++;break;  // Reiniciar el ciclo para buscar el siguiente STX
             case 7:printf("Estado 7: Reiniciando búsqueda para el siguiente paquete...\n");  // Reiniciar y buscar el siguiente paquete
