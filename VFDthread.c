@@ -154,18 +154,18 @@ unsigned char *array_crc,index,new_len;
                    //if (*str+3>=len-i){// Verificamos que haya suficiente espacio
                      //  mens_Warnning_Debug("Error: La longitud de los datos no coincide con el tamaño del buffer.");
                        //return;}
-                   datos_len = *str - 1;  // Descontamos el byte de `len` y el byte `cmd`
+                   datos_len = *str;  // Descontamos el byte de `len` y el byte `cmd`
                    printf("Longitud de datos: %d\n", datos_len);
                    str++;i++;estado++;break;
             case 2:printf("Estado 2: Leyendo el byte de comando (CMD)...\n");  // Leer el byte de comando (CMD)
                    cmd=*str++;i++;printf("Comando (CMD): %d\n", cmd);
-                   new_len=datos_len+1;
+                   new_len=datos_len;
                    array_crc=(unsigned char *)malloc(new_len * sizeof(unsigned char));
                    if(array_crc==NULL){mens_Warnning_Debug("Error al asignar memoria");estado=0;}
                    else{array_crc[0]=new_len;array_crc[1]=cmd;index=2;}
-                   estado++;break;
+                   if(datos_len==2)  estado=4;else estado++;break;
             case 3:printf("Estado 3: Leyendo los datos...\n");// Leer los datos  
-                   for(size_t j=0;j<datos_len-1;j++) {
+                   for(size_t j=0;j<datos_len-2;j++) {
                            c[j] = *str++;i++;  // Almacenamos los datos en el array `c`
                            array_crc[index++]=c[j];//Array que se va ha usar para calcular el crc
                            printf("Dato %zu: %02X %i  %c\n", j, c[j],c[j],c[j]);}
