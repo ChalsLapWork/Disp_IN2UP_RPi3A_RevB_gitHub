@@ -290,7 +290,7 @@ unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despl
 					break;
 	  default:estado3=1;break;}
    }//fin de WHILE bandera de Menu Pendiente--------------------   
-return;
+//return;
 }//fin de prueba de despliegue de datos en el VFD+++++++++++++++++++++++++++++
 //fin del control operativo del menu de escape-----------------------------------------
  

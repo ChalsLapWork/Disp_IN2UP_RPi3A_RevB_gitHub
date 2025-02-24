@@ -71,7 +71,11 @@ union W16{
         mem_15bytes=mem+6;//6,7 15 bytes
         aux0_uchar=mem+22;
 
-		
+ while(1){		
+    VFDserial_SendBlock1(&c[0],sizeof(c));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
+    }
+
+
     switch(*estado){ 
 	   case 1:mensOK("Estoy en portal Inicio",CAMARILLO);(*estado)++;break;	
        case 2:Deteccion.CuadroMadreReady=FALSE;
