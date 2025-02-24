@@ -144,9 +144,9 @@ unsigned char *array_crc,index,new_len;
                    if(*str==STX){printf("Encontrado STX en la posición %zu\n", i);estado++;}  // Avanzamos al siguiente estad
                    str++;break;
             case 1:printf("Estado 1: Leyendo el byte de longitud (LEN)...\n");  // Leer el byte de longitud (LEN)
-                   if (*str+3>=len-i){// Verificamos que haya suficiente espacio
-                       mens_Warnning_Debug("Error: La longitud de los datos no coincide con el tamaño del buffer.");
-                       return;}
+                   //if (*str+3>=len-i){// Verificamos que haya suficiente espacio
+                     //  mens_Warnning_Debug("Error: La longitud de los datos no coincide con el tamaño del buffer.");
+                       //return;}
                    datos_len = *str - 1;  // Descontamos el byte de `len` y el byte `cmd`
                    printf("Longitud de datos: %d\n", datos_len);
                    str++;estado++;break;
