@@ -7,6 +7,7 @@
         "sistop.h": "c",
         "vfdthread.h": "c",
         "string.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "errorcontroller.h": "c"
     }
 }
