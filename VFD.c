@@ -240,7 +240,7 @@ unsigned char *array = (unsigned char *)malloc((size1 + 5) * sizeof(unsigned cha
 return 1;// fin de enviar mensaje++++++++++++++++++++++
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
 
-//init el VFD+++++++++++++++++++++++++++++++++++++++++++++++ 
+//init el VFD++++++++++++++++++++++++++++++++++++++++++++++ 
 unsigned char inicializar_VFD(void){
 const unsigned char LEN=2;//cantidad de bytes a calcular porf CRC    	
 //unsigned char init_VFD[]={STX,LEN,CMD_INI,0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2,0x00,ETX};
