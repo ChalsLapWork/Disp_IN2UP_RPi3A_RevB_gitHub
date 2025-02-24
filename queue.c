@@ -59,13 +59,13 @@ unsigned char debug;
 	//init_FIFO_General_1byte(&vfd.x,&buffer6[0],SIZE_BUFFER6);
     //init_FIFO_General_1byte(&vfd.y,&buffer7[0],SIZE_BUFFER6);
     //init_FIFO_General_1byte(&vfd.p,&buffer8[0],SIZE_BUFFER6);
-    printf("\n       Iniciando queueus");	  
+    mensOK("Iniciando queueus",CCIAN);	  
 	sync1=0xAA;//mutexs ocupados
 	NoErrorOK();
-	printf("\n       Creando Proceso Init VFD");
+	mensOK("Creando Proceso Init VFD",CAZUL);
 	init_VFD_Threads();
 	inicializar_VFD();//Init VFD
-	printf("\n       Fin de Init Queues");
+	mensOK("Fin de Init Queues",CMAGNETA);
 	NoErrorOK();
 }//fin init queue+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -269,16 +269,6 @@ unsigned char debug;
 
 //Proceso de control de Menus
 void *Run_Menu(void *arg){
-   xControl_Principal_de_Menus_Operativo();
-return NULL;   
-}//fin de run menu++++++++++++++++++++++++++++++++++++++++++++
-
-
-//Proceso Thread de control de menus
-/*Controla la salida segura de los menu de modo Operativo para que termine de hacer la tarea el
- * menu actual y luego se pase al siguiente menu cuando acabe y se presione el escape "x"
- *   se mete el contexto Actual  */
-void xControl_Principal_de_Menus_Operativo(void){
 unsigned char contexto;
 unsigned char estado3;
 enum{NORMAL=30,INIT_M=1,TERMINAR=90};
@@ -288,7 +278,7 @@ unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despl
 	switch(estado3){//Maquina de Estados
 	  case INIT_M:  if(!vfd.config.bits.init_Menu)estado3++;else{estado3=30;}break;
 	  case INIT_M+1:vfd.config.bits.MenuPendiente=TRUE;estado3++;break;
-	  case INIT_M+2:pthread_mutex_lock(&vfd.mutex.VDF_busy);estado3++;break;//Mejora de la funcion: recurso.solicitar
+	  case INIT_M+2:estado3++;break;//Mejora de la funcion: recurso.solicitar
 	  case INIT_M+3:contexto=find_contexto_Siguiente();estado3++;break;
 	  case INIT_M+4:InitArbolMenu(contexto);estado3++;break;
 	  case INIT_M+5:vfd.config.bits.Menu_Ready=0;estado3++;break;//menu no esta terminado aun
@@ -297,38 +287,10 @@ unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despl
 	  case TERMINAR:vfd.config.bits.init_Menu=TRUE;//no esta init el VFD
                     vfd.config.bits.MenuPendiente=FALSE;//hay pendiente un menu por desplegar
                     vfd.menu.contexto.Actual=contexto;
-					pthread_mutex_unlock(&vfd.mutex.VDF_busy);//liberar recurso
+					break;
 	  default:estado3=1;break;}
    }//fin de WHILE bandera de Menu Pendiente--------------------   
-	return;
-
-
-
-/*
-const char *mens[]={" hola mundo ",
-                        "  mensaje No.2 ",
-                        "  Tercera line del mensaje",
-                        "  cuarta line del mensaje",
-                        "  quinta line del mensaje",
-                        "  sexta line del mensaje",
-                        "   777 line del mensaje",
-                        "  888888 line del mensaje",
-                        "  999999a line del mensaje",
-                        "  1010101 line del mensaje",
-                        "  11111111 line del mensaje",
-                        "  112121212 line del mensaje"
-                        };
-unsigned char n;
-int j=0;
-    mensOK("Iniciando prueba de Puertos Fisicos.",CCIAN);
-    NoErrorOK();printf("\n");
-    while(1){
-        for(int i=0;i<12;i++){  
-            VFDserial_SendBlock1(mens[i]);   
-        }}//fin while++++++++++++++++++++++++++++++++
-    printf(" \n j=%d",j);
-*/
-
+return;
 }//fin de prueba de despliegue de datos en el VFD+++++++++++++++++++++++++++++
 //fin del control operativo del menu de escape-----------------------------------------
  
