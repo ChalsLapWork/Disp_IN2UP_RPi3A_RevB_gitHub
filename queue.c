@@ -226,11 +226,11 @@ enum {
 						  estado=CMD_OK;break;
 		   case CMD_INI:  writePort(0x1B);  usleep(50);
 		                  writePort(0x40);  usleep(50);
-						  writePort(0x1F);
-						  writePort(0x28);
-						  writePort(0x67);
-						  writePort(0x01);
-					 	  writePort(0x02);
+						  writePort(0x1F);  usleep(50);
+						  writePort(0x28);  usleep(50);
+						  writePort(0x67);  usleep(50);
+						  writePort(0x01);  usleep(50);
+					 	  writePort(0x02);  usleep(50);
 						  estado=CMD_OK;break;
            case CMD_BLD:  writePort(0x1F);  usleep(50);
 		                  writePort(0x28);  usleep(50);

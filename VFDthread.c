@@ -11,9 +11,14 @@
 #include "queue.h"
 
 
+
 #ifndef debug_level1
   #include <wiringPi.h>
 #endif
+
+
+#define PROBAR_HILOS_CONS_PROD_VFD 0 //1:probar hilos productor consumidor VFD
+
 
 // Estructura para almacenar datos en el buffer circular
 typedef struct {
@@ -40,16 +45,13 @@ pthread_t hilo_productor, hilo_consumidor;
 
 /*  init los threads de manera mas facil   * */
 void init_VFD_Threads(void){//
-    // Inicialización de semáforos
-    sem_init(&sem_llenos, 0, 0);
+    sem_init(&sem_llenos, 0, 0);// Inicialización de semáforos
     sem_init(&sem_vacios, 0, NUM_ENTRADAS);
 
-    // Crear el hilo productor
-    pthread_create(&hilo_productor, NULL, VFDserial_SendBlockProductor, NULL);
+    pthread_create(&hilo_productor, NULL, VFDserial_SendBlockProductor, NULL);  // Crear el hilo productor
+    pthread_create(&hilo_consumidor, NULL, VFDserial_SendBlockConsumidor, NULL);// Crear el hilo consumidor
 
-    // Crear el hilo consumidor
-    pthread_create(&hilo_consumidor, NULL, VFDserial_SendBlockConsumidor, NULL);
-
+  #if ( PROBAR_HILOS_CONS_PROD_VFD == 1 )
     // Hilo principal envía datos continuamente
     unsigned char array1[]={STX,0x05,COMANDO_STRING,0x41, 0x42, 0x43, 0x8E,ETX};  // "ABC"
     unsigned char array2[]={STX,0x0E,COMANDO_STRING,0x20,0x48,0x6F,0x6C,0x61,0x20,0x4D,0x75,0x6E,0x64,0x6F,0x20,0xC8,ETX};//" Hola Mundo "
@@ -66,6 +68,11 @@ void init_VFD_Threads(void){//
         iteracion++;
         usleep(500000);  // Espera para simular nuevos datos
     }//fin which+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#endif
+    
+    
+
+
 }//fin de initialized VFD threads++++++++++++++++++++++++++++++++++++++
 
 
