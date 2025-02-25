@@ -108,7 +108,9 @@ union W16{
        case 16:if(VFDserial_SendBlock1(&c[0],sizeof(c)))(*estado)++;break;
        case 17:if(delay_us_VFD(100))(*estado)++;break;
        case 18:if(VFDposicion(x[3],y[3]))(*estado)++;break;
-       case 19:if(VFDserial_SendBlock1(&d[0],sizeof(d)))(*estado)++;break;
+       case 19:if(VFDserial_SendBlock1(&d[0],sizeof(d)))(*estado)++;
+	            ret=TRUE;
+	           break;
 	   case 20:if(displayCuadroMadre_VFD())(*estado)++;break;
        case 21:delay_ms_VFD(2);(*estado)++;break;
 	   case 22:Deteccion.CuadroMadreReady=TRUE;
