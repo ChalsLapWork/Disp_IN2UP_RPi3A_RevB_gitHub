@@ -73,6 +73,7 @@ union W16{
 
  while(1){		
     VFDserial_SendBlock1(&c[0],sizeof(c));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
+	
     }
 
 
