@@ -172,7 +172,7 @@ unsigned char *array_crc,index,new_len;
                                     c[j] = *str++;i++;  // Almacenamos los datos en el array `c`
                                     array_crc[index++]=c[j];}//Array que se va ha usar para calcular el crc
                                 break;
-                       default:for(j=0;j<datos_len-2;j++,i++){
+                       default:for(j=0;j<datos_len-2;j++){
                                      c[j]=*str++;i++;  
                                      array_crc[index++]=c[j];}
                                break;}             
