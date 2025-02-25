@@ -225,18 +225,17 @@ return ret;
 
 /* Metodo Multi-Padre pero solo una Estancia ala Vez      */
 unsigned char VFDserial_SendBlock1(const void *Ptr,unsigned char size1){
-//unsigned char LEN;//STX,LEN,CMD,char0,..charn,crc,etx 
-unsigned char *array = (unsigned char *)malloc((size1 + 5) * sizeof(unsigned char));
-     if (array == NULL) {return 0;}// Verificamos si malloc falló     
+unsigned char array[40];
+    
     const unsigned char *data = (const unsigned char *)Ptr;// Convertir los datos a unsigned char y copiarlos al índice 3 del array
     memcpy(&array[3], data, size1);
     array[0] = STX;
-    array[1] = size1 + 5; // LEN (longitud total del mensaje)
+    array[1] = size1 + 2; // LEN (longitud total del mensaje)
     array[2] = COMANDO_STRING; // CMD (ejemplo de comando)
     array[size1 + 3] = getCRC_v2(array+1,size1+2);
-    array[size1 + 4] = ETX; // Ejemplo de CRC (ajustar según tu implementación)
+    array[size1 + 4] = ETX; // Ejemplo de CRC (ajustar según tu implementación)    
     VFDserial_SendBlock_buf(array, size1 + 5);
-    free(array); // Liberar la memoria reservada con malloc
+    
 return 1;// fin de enviar mensaje++++++++++++++++++++++
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
 
