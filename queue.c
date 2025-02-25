@@ -193,6 +193,7 @@ enum {
 						  writePort(0x00);  usleep(50);
 						  writePort(*(c+1));usleep(50);
 						  writePort(0x00);  usleep(50);
+						  usleep(150);
 						  estado=CMD_OK;break;
 	       case CMD_BXF:
 		   case CMD_LIN:					  
