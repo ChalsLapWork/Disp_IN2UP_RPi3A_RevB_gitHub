@@ -56,7 +56,7 @@ unsigned char ret=0;
 unsigned char *estado,/* *control,*/*mem_15bytes,*aux3_char,*aux0_uchar;
 unsigned short int aux1_usi;
 const unsigned char DEBUG=0x11,MEMO=0x12;
-unsigned char Status_Prod=DEBUG;
+unsigned char Status_Prod=DEBUG,x,y;
 union W16{
    unsigned short int usi;
    unsigned char c[2];
@@ -76,7 +76,9 @@ union W16{
 	VFDserial_SendBlock1(&b[0],sizeof(b));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
 	VFDserial_SendBlock1(&c[0],sizeof(c));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
 	VFDserial_SendBlock1(&d[0],sizeof(d));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
-	
+	VFDposicion(x,y);
+	if(x++>40) x=1;
+	if(y>14) y=0;else{y+=2}
     }
 
 
