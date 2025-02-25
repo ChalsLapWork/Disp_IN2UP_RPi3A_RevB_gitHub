@@ -104,10 +104,15 @@ union W16{
 	   case 12:(*estado)++;break; //Tiempo en pruebas,
 	   case 13:if(VFDposicion(x[1],y[1]))(*estado)++;break;
 	   case 14:if(VFDserial_SendBlock1(&b[0],sizeof(b)))(*estado)++;
-	           ret=TRUE;
+
+
+
+	           
 			   break;
 	   case 15:if(VFDposicion(x[2],y[2]))(*estado)++;break;
-       case 16:if(VFDserial_SendBlock1(&c[0],sizeof(c)))(*estado)++;break;
+       case 16:if(VFDserial_SendBlock1(&c[0],sizeof(c)))(*estado)++;
+	           ret=TRUE;
+	           break;
        case 17:if(delay_us_VFD(100))(*estado)++;break;
        case 18:if(VFDposicion(x[3],y[3]))(*estado)++;break;
        case 19:if(VFDserial_SendBlock1(&d[0],sizeof(d)))(*estado)++;
