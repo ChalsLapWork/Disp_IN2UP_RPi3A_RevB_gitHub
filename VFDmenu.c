@@ -91,7 +91,6 @@ union W16{
 	   case 5:delay_ms_VFD(500);(*estado)++;break;
        case 6:if(VFDposicion(65,0))(*estado)++; break;    //2bytes
        case 7:if(VFDserial_SendBlock1(&s[0],sizeof(s)))(*estado)++;
-	           ret=TRUE; 
 	           break;//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
        case 8:*aux3_char=producto.name[1];aux1_usi=length(&producto.name[0],sizeof(producto.name));  	 
     	      *aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);(*estado)++;break;
