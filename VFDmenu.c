@@ -96,7 +96,9 @@ union W16{
     	      *aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);(*estado)++;break;
        case 9:if(Status_Prod==MEMO){if(VFDposicion(*aux0_uchar,2))(*estado)++;}
      	 	  else{if(VFDposicion(x[0],y[0])) (*estado)++;}break;
- 	   case 10:if(delay_ms_VFD(2))(*estado)++;break; //Tiempo en pruebas
+ 	   case 10:if(delay_ms_VFD(2))(*estado)++;
+	            ret=TRUE;
+			   break; //Tiempo en pruebas
 	   case 11:if(Status_Prod==MEMO){ss=aux3_char;
 		            if(VFDserial_SendBlock1(ss,(unsigned char)aux1_usi))(*estado)++;}
 	 	 	   else{if(VFDserial_SendBlock1(&a[0],sizeof(a)))(*estado)++;} 
@@ -109,7 +111,7 @@ union W16{
        case 17:if(delay_us_VFD(100))(*estado)++;break;
        case 18:if(VFDposicion(x[3],y[3]))(*estado)++;break;
        case 19:if(VFDserial_SendBlock1(&d[0],sizeof(d)))(*estado)++;
-	            ret=TRUE;
+	            
 	           break;
 	   case 20:if(displayCuadroMadre_VFD())(*estado)++;break;
        case 21:delay_ms_VFD(2);(*estado)++;break;
