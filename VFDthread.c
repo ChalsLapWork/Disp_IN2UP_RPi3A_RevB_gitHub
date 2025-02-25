@@ -165,7 +165,7 @@ unsigned char *array_crc,index,new_len;
                    else{array_crc[0]=new_len;array_crc[1]=cmd;index=2;}
                    if(datos_len==2)  estado=4;else estado++;break;
             case 3:printf("Estado 3: Leyendo los datos...\n");// Leer los datos  
-                   for(size_t j=0;j<datos_len-2;j++) {
+                   for(size_t j=0;j<datos_len-1;j++) {
                            c[j] = *str++;i++;  // Almacenamos los datos en el array `c`
                            array_crc[index++]=c[j];//Array que se va ha usar para calcular el crc
                            printf("Dato %zu: %02X %i  %c\n", j, c[j],c[j],c[j]);}
