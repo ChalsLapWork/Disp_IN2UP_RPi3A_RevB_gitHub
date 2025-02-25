@@ -71,15 +71,14 @@ union W16{
         mem_15bytes=mem+6;//6,7 15 bytes
         aux0_uchar=mem+22;
 
- while(1){		
+ /*while(1){		
     VFDserial_SendBlock1(&a[0],sizeof(a));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
 	VFDserial_SendBlock1(&b[0],sizeof(b));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
 	VFDserial_SendBlock1(&c[0],sizeof(c));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
 	VFDserial_SendBlock1(&d[0],sizeof(d));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
 	VFDposicion(x1,y1);
 	if(x1++>40) x1=1;
-	if(y1>14) y1=0;else{y1+=2;}
-    }
+	if(y1>14) y1=0;else{y1+=2;}}*/
 
 
     switch(*estado){ 
