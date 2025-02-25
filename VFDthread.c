@@ -165,10 +165,16 @@ unsigned char *array_crc,index,new_len;
                    else{array_crc[0]=new_len;array_crc[1]=cmd;index=2;}
                    if(datos_len==2)  estado=4;else estado++;break;
             case 3:printf("Estado 3: Leyendo los datos...\n");// Leer los datos  
-                   for(size_t j=0;j<datos_len-3;j++) {
-                           c[j] = *str++;i++;  // Almacenamos los datos en el array `c`
-                           array_crc[index++]=c[j];//Array que se va ha usar para calcular el crc
-                           printf("Dato %zu: %02X %i  %c\n", j, c[j],c[j],c[j]);}
+                   switch(cmd){
+                       case 's'://STRING
+                                for(size_t j=0;j<datos_len-3;j++) {
+                                    c[j] = *str++;i++;  // Almacenamos los datos en el array `c`
+                                    array_crc[index++]=c[j];}//Array que se va ha usar para calcular el crc
+                                break;
+                       default:for(unsigned char j=0;j<datos_len-2;j++,i++){
+                                       array_crc[index++]=*str++;}
+                               break;}             
+                   printf("Dato %zu: %02X %i  %c\n", j, c[j],c[j],c[j]);                
                    estado++;break;
             case 4:printf("Estado 4: Calculando y verificando CRC...\n");  // Calcular y verificar CRC
                    crc_calculado = getCRC_v2(array_crc,new_len);  // Sumar 2 para incluir `len` y `cmd`
