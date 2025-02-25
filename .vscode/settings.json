@@ -4,6 +4,10 @@
         "system.h": "c",
         "queue.h": "c",
         "delay.h": "c",
-        "sistop.h": "c"
+        "sistop.h": "c",
+        "vfdthread.h": "c",
+        "string.h": "c",
+        "stdio.h": "c",
+        "errorcontroller.h": "c"
     }
 }
