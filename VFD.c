@@ -232,8 +232,8 @@ unsigned char array[40];
     array[0] = STX;
     array[1] = size1 + 2; // LEN (longitud total del mensaje)
     array[2] = COMANDO_STRING; // CMD (ejemplo de comando)
-    array[size1 + 3] = getCRC_v2(array+1,size1+2);
-    array[size1 + 4] = ETX; // Ejemplo de CRC (ajustar según tu implementación)    
+    array[size1 + 3-1] = getCRC_v2(array+1,size1+2);
+    array[size1 + 4-1] = ETX; // Ejemplo de CRC (ajustar según tu implementación)    
     VFDserial_SendBlock_buf(array, size1 + 5);
     
 return 1;// fin de enviar mensaje++++++++++++++++++++++

@@ -47,7 +47,7 @@ const unsigned char s[]=VERSION2;
 unsigned char *ss;
 const unsigned char  a[]="Test Set-up";
 const unsigned char  b[]="S                P";
-const unsigned char  c[]="Cuenta rechazos ";
+const unsigned char  c[]="Cuenta rechazos_";
 const unsigned char  d[]="Cuenta producto ";
 const unsigned char x[4]={80,24,24,24};
 const unsigned char y[4]={ 2,10,12,14};
