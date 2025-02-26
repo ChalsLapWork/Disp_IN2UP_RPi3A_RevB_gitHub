@@ -94,24 +94,27 @@ return 1;
 
 // Hilo Productor: vacía todo el buffer circular a buffer2
 void *VFDserial_SendBlockProductor(void *arg) {
+int sval;
     while (1) {
-        if(sem_getvalue(&sem_llenos,NULL)>0){//si hay recurso avanza
-            pthread_mutex_lock(&mutex_buffer);
-            pthread_mutex_lock(&mutex_buffer2);
-            for (int i = 0; i < NUM_ENTRADAS; i++) {
-                size_t len = buffer_circular[out].len;
-                if (len > 0 && buffer2_len + len <= MAX_BUFFER_LEN) {
-                    memcpy(buffer2 + buffer2_len, buffer_circular[out].data, len);
-                    buffer2_len += len;
-                    printf("Productor: Copió datos al buffer2 (len: %zu, total en buffer2: %zu)\n", len, buffer2_len);}
-                else{mens_Warnning_Debug(" Cadena muy grande, no cabe en buffer");}    
-                out = (out + 1) % NUM_ENTRADAS;
-                sem_trywait(&sem_llenos);
-                sem_post(&sem_vacios);}
-            pthread_mutex_unlock(&mutex_buffer2);
-            pthread_mutex_unlock(&mutex_buffer);
-            usleep(100000);//100miliseconds
-    }} //fi nwhile+++++++++++++++++++
+        if(!sem_getvalue(&sem_llenos,&sval)){//si hay recurso avanza
+          if(sval>0){
+                pthread_mutex_lock(&mutex_buffer);
+                pthread_mutex_lock(&mutex_buffer2);
+                for (int i = 0; i < NUM_ENTRADAS; i++) {
+                    size_t len = buffer_circular[out].len;
+                    if (len > 0 && buffer2_len + len <= MAX_BUFFER_LEN) {
+                        memcpy(buffer2 + buffer2_len, buffer_circular[out].data, len);
+                        buffer2_len += len;
+                        printf("Productor: Copió datos al buffer2 (len: %zu, total en buffer2: %zu)\n", len, buffer2_len);}
+                    else{mens_Warnning_Debug(" Cadena muy grande, no cabe en buffer");}    
+                    out = (out + 1) % NUM_ENTRADAS;
+                    sem_trywait(&sem_llenos);
+                    sem_post(&sem_vacios);}
+                pthread_mutex_unlock(&mutex_buffer2);
+                pthread_mutex_unlock(&mutex_buffer);
+                usleep(100000);}}//100miliseconds
+        else{perror(" Error al obtener semaforo");}        
+    } //fi nwhile+++++++++++++++++++
 return NULL;
 }//fin VFDserial_SendBlockProductor+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
