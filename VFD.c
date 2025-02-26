@@ -153,18 +153,13 @@ return ret;
 
 
 /*limpia el VFD de caracteres y todo   */
-unsigned char VFDclrscr(void){//AUTORIZADO 5:BYTES DE memoria
-//unsigned char ret=0; 
-//unsigned char *estado4,*c;//comando limpiar pantalla stx,04,CMD,0CU,CRC,ETX
-//unsigned short int suma;//comando delay  stx,04,CMD,xx,CRC,ETX
-//const unsigned char DELAY_DESPUES_DE_COMANDO_ms=10;//milisegundos
+void VFDclrscr(void){//AUTORIZADO 5:BYTES DE memoria
 unsigned char LEN=0x02; //bytes a calcular por CRC
 unsigned char buf[]={STX,LEN,COMANDO_CLRSCR,0x00,ETX};
 
      buf[LEN+1]=getCRC_v2(&buf[1],LEN);
      VFDserial_SendBlock_buf(&buf[0],sizeof(buf));
-            
-return 1;    
+               
 }//fin clear screen VFD-----------------------------------------------------------------------------
 
 
