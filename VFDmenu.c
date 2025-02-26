@@ -97,15 +97,15 @@ union W16{
 	   else{VFDserial_SendBlock1(&a[0],sizeof(a));} 
 	   VFDposicion(x[1],y[1]);
 	   VFDserial_SendBlock1(&b[0],sizeof(b));
-       ret=TRUE;
+       VFDposicion(x[2],y[2]);
+       VFDserial_SendBlock1(&c[0],sizeof(c));
 
 
 	           
+	           
+	  ret=TRUE;         
 	/*		   
-	   case 15:if(VFDposicion(x[2],y[2]))(*estado)++;break;
-       case 16:if(VFDserial_SendBlock1(&c[0],sizeof(c)))(*estado)++;
-	           ret=TRUE;
-	           break;
+	   
        case 17:if(delay_us_VFD(100))(*estado)++;break;
        case 18:if(VFDposicion(x[3],y[3]))(*estado)++;break;
        case 19:if(VFDserial_SendBlock1(&d[0],sizeof(d)))(*estado)++;
