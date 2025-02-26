@@ -106,7 +106,7 @@ int sval;
                         memcpy(buffer2 + buffer2_len, buffer_circular[out].data, len);
                         buffer2_len += len;
                         printf("Productor: Copió datos al buffer2 (len: %zu, total en buffer2: %zu)\n", len, buffer2_len);}
-                    else{mens_Warnning_Debug(" Cadena muy grande, no cabe en buffer");}    
+                    else{(len>0)?mens_Warnning_Debug(" Cadena muy grande, no cabe en buffer");}    
                     out = (out + 1) % NUM_ENTRADAS;
                     sem_trywait(&sem_llenos);
                     sem_post(&sem_vacios);}
@@ -176,6 +176,7 @@ unsigned char *array_crc,index,new_len;
                                 for(j=0;j<datos_len-3;j++) {
                                     c[j] = *str++;i++;  // Almacenamos los datos en el array `c`
                                     array_crc[index++]=c[j];}//Array que se va ha usar para calcular el crc
+                                datos_len-=3;//para el procesamiento    
                                 break;
                        default:for(j=0;j<datos_len-2;j++){
                                      c[j]=*str++;i++;  
