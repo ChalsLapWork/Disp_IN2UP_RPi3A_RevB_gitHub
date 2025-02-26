@@ -108,7 +108,7 @@ void *VFDserial_SendBlockProductor(void *arg) {
                 out = (out + 1) % NUM_ENTRADAS;
                 sem_trywait(&sem_llenos);
                 sem_post(&sem_vacios);}
-            pthread_mutex_unlock(&mutex_buffer2)c1;
+            pthread_mutex_unlock(&mutex_buffer2);
             pthread_mutex_unlock(&mutex_buffer);
             usleep(100000);//100miliseconds
     }} //fi nwhile+++++++++++++++++++
