@@ -99,7 +99,7 @@ union W16{
 	   else{VFDserial_SendBlock1(&a[0],sizeof(a));} 
 	   VFDposicion(x[1],y[1]);
 	   VFDserial_SendBlock1(&b[0],sizeof(b));
-
+       ret=TRUE;
 
 
 	           
