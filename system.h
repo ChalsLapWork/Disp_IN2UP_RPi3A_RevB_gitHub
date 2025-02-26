@@ -240,12 +240,12 @@
 #define COMANDO_DELAY_US   'u'
 #define COMANDO_STRING     's'
 #define COMANDO_CHAR       'X'
-#define COMANDO_POS        'p'
+#define COMANDO_POS        'p' //70h
 #define COMANDO_BOX        'b'
 #define COMANDO_LINE       'L'
 #define COMANDO_DOT        'd'
-#define COMANDO_CLEAR      'r'
-#define COMANDO_INIT       'i'
+#define COMANDO_CLEAR      'c'
+#define COMANDO_INIT       'i'//69h
 #define COMANDO_BOLD       'B'
 #define COMANDO_BOXF       'F'
 

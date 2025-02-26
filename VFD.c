@@ -153,7 +153,7 @@ return ret;
 
 
 /*limpia el VFD de caracteres y todo   */
-unsigned char VFDclrscr1(unsigned char *mem){//AUTORIZADO 5:BYTES DE memoria
+unsigned char VFDclrscr1(void){//AUTORIZADO 5:BYTES DE memoria
 //unsigned char ret=0; 
 //unsigned char *estado4,*c;//comando limpiar pantalla stx,04,CMD,0CU,CRC,ETX
 //unsigned short int suma;//comando delay  stx,04,CMD,xx,CRC,ETX
