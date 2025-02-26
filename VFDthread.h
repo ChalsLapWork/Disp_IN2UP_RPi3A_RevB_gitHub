@@ -1,7 +1,7 @@
 
 
 
-#define NUM_ENTRADAS 10
+#define NUM_ENTRADAS 10 //num de strings antes de procesadas
 #define MAX_LEN 256  // Tamaño máximo del array en cada entrada del buffer
 #define MAX_BUFFER_LEN (NUM_ENTRADAS * MAX_LEN)  // Tamaño máximo para buffer2 y buffer3
 

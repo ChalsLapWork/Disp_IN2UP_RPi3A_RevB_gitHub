@@ -90,9 +90,7 @@ union W16{
 	  *aux3_char=producto.name[1];
 	   aux1_usi=length(&producto.name[0],sizeof(producto.name));  	 
       *aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);
-       if(Status_Prod==MEMO){
-		    VFDposicion(*aux0_uchar,2);}
-       else{VFDposicion(x[0],y[0]);}
+       (Status_Prod == MEMO) ? VFDposicion(*aux0_uchar, 2) : VFDposicion(x[0], y[0]);
  	   if(Status_Prod==MEMO){
 		  ss=aux3_char;
 		  VFDserial_SendBlock1(ss,(unsigned char)aux1_usi);}

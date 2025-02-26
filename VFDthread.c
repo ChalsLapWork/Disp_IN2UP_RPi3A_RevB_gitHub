@@ -80,36 +80,38 @@ void init_VFD_Threads(void){//
 unsigned char VFDserial_SendBlock_buf(void *ptr, size_t size) {
     if (size > MAX_LEN) {
         fprintf(stderr, "Error: El tamaño de los datos excede el máximo permitido.\n");
-        return 0;}
-    sem_wait(&sem_vacios);
+        mens_Warnning_Debug("VFD fifo no hay");        return 0;}
+    sem_wait(&sem_vacios);//si es cero detiene hilo, si no decrementa y continua
     pthread_mutex_lock(&mutex_buffer);
     buffer_circular[in].len = size;
     memcpy(buffer_circular[in].data, ptr, size);
-    printf("Hilo Principal: Datos agregados al buffer (len: %zu)\n", size);
+    printf("\033[32m Hilo Principal: Datos agregados al buffer (len: %zu)\033[0m\n", size);
     in = (in + 1) % NUM_ENTRADAS;
     pthread_mutex_unlock(&mutex_buffer);
-    sem_post(&sem_llenos);
+    sem_post(&sem_llenos);//incrementa valor lugares llenos
 return 1;
 }//fin VFDserial_SendBlock++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // Hilo Productor: vacía todo el buffer circular a buffer2
 void *VFDserial_SendBlockProductor(void *arg) {
     while (1) {
-        sem_wait(&sem_llenos);
-        pthread_mutex_lock(&mutex_buffer);
-        pthread_mutex_lock(&mutex_buffer2);
-        for (int i = 0; i < NUM_ENTRADAS; i++) {
-            size_t len = buffer_circular[out].len;
-            if (len > 0 && buffer2_len + len <= MAX_BUFFER_LEN) {
-                memcpy(buffer2 + buffer2_len, buffer_circular[out].data, len);
-                buffer2_len += len;
-                printf("Productor: Copió datos al buffer2 (len: %zu, total en buffer2: %zu)\n", len, buffer2_len);}
-            out = (out + 1) % NUM_ENTRADAS;}
-        pthread_mutex_unlock(&mutex_buffer2);
-        pthread_mutex_unlock(&mutex_buffer);
-        sem_post(&sem_vacios);
-        usleep(100000);
-    } //fi nwhile+++++++++++++++++++
+        if(sem_getvalue(&sem_llenos,NULL)>0){//si hay recurso avanza
+            pthread_mutex_lock(&mutex_buffer);
+            pthread_mutex_lock(&mutex_buffer2);
+            for (int i = 0; i < NUM_ENTRADAS; i++) {
+                size_t len = buffer_circular[out].len;
+                if (len > 0 && buffer2_len + len <= MAX_BUFFER_LEN) {
+                    memcpy(buffer2 + buffer2_len, buffer_circular[out].data, len);
+                    buffer2_len += len;
+                    printf("Productor: Copió datos al buffer2 (len: %zu, total en buffer2: %zu)\n", len, buffer2_len);}
+                else{mens_Warnning_Debug(" Cadena muy grande, no cabe en buffer");}    
+                out = (out + 1) % NUM_ENTRADAS;
+                sem_trywait(&sem_llenos);
+                sem_post(&sem_vacios);}
+            pthread_mutex_unlock(&mutex_buffer2)c1;
+            pthread_mutex_unlock(&mutex_buffer);
+            usleep(100000);//100miliseconds
+    }} //fi nwhile+++++++++++++++++++
 return NULL;
 }//fin VFDserial_SendBlockProductor+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
