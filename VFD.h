@@ -95,7 +95,6 @@ unsigned char VFDserial_SendChar(unsigned char c);
 //unsigned char xInit_VFD(struct DPM m);
 //unsigned char VFDcommand(unsigned char cmd,unsigned char s);
 //unsigned char FontSizeVFD(unsigned char m);
-unsigned char VFDclrscr(void);
 //unsigned char VFDclrscr1(unsigned char *mem);
 unsigned char VFDboxLine1(unsigned char pen,unsigned char mode,unsigned char x1,unsigned char y1,unsigned char x2,unsigned char y2);
 //unsigned char VFDserial_SendBlock2(const unsigned char *Ptr,unsigned short Size,unsigned char *inst);
