@@ -105,8 +105,8 @@ int sval;
                     if (len > 0 && buffer2_len + len <= MAX_BUFFER_LEN) {
                         memcpy(buffer2 + buffer2_len, buffer_circular[out].data, len);
                         buffer2_len += len;
-                        sem_trywait(&sem_llenos);//decrementa llenos
-                        sem_post(&sem_vacios);//incrementa vacios
+                        sem_trywait(&sem_llenos);//decrementa llenos,
+                        sem_post(&sem_vacios);//incrementa vacios,
                         printf("Productor: Copió datos al buffer2 (len: %zu, total en buffer2: %zu)\n", len, buffer2_len);}
                     else{if(len>0) mens_Warnning_Debug(" Cadena muy grande, no cabe en buffer");}    
                     out = (out + 1) % NUM_ENTRADAS;}
