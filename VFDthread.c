@@ -96,8 +96,7 @@ return 1;
 void *VFDserial_SendBlockProductor(void *arg) {
 int sval;
     while (1) {
-        if(!sem_getvalue(&sem_llenos,&sval)){//si hay recurso avanza
-          if(sval>0){
+                sem_wait(&sem_llenos);//si hay recurso avanza
                 pthread_mutex_lock(&mutex_buffer);
                 pthread_mutex_lock(&mutex_buffer2);
                 for (int i = 0; i < NUM_ENTRADAS; i++) {
@@ -105,15 +104,13 @@ int sval;
                     if (len > 0 && buffer2_len + len <= MAX_BUFFER_LEN) {
                         memcpy(buffer2 + buffer2_len, buffer_circular[out].data, len);
                         buffer2_len += len;
-                        sem_trywait(&sem_llenos);//decrementa llenos,
                         sem_post(&sem_vacios);//incrementa vacios,
                         printf("Productor: Copió datos al buffer2 (len: %zu, total en buffer2: %zu)\n", len, buffer2_len);}
                     else{if(len>0) mens_Warnning_Debug(" Cadena muy grande, no cabe en buffer");}    
                     out = (out + 1) % NUM_ENTRADAS;}
                 pthread_mutex_unlock(&mutex_buffer2);
                 pthread_mutex_unlock(&mutex_buffer);
-                usleep(100000);}}//100miliseconds
-        else{perror(" Error al obtener semaforo");}        
+                usleep(100000);//100milisecond        
     } //fi nwhile+++++++++++++++++++
 return NULL;
 }//fin VFDserial_SendBlockProductor+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
