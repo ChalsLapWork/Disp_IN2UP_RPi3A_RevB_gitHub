@@ -95,7 +95,7 @@ return 1;
 // Hilo Productor: vacía todo el buffer circular a buffer2
 void *VFDserial_SendBlockProductor(void *arg) {
 unsigned char estado,i,len;
-sem_t semaforo;
+int semaforo;
 //const unsigned char 
     while (1) {
         switch(estado){
