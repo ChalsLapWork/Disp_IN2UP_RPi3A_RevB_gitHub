@@ -176,7 +176,7 @@ unsigned char *array_crc,index,new_len;
                                 for(j=0;j<datos_len-3;j++) {
                                     c[j] = *str++;i++;  // Almacenamos los datos en el array `c`
                                     array_crc[index++]=c[j];}//Array que se va ha usar para calcular el crc
-                                datos_len-=3;//para el procesamiento    
+                                datos_len-=4;//para el procesamiento    
                                 break;
                        default:for(j=0;j<datos_len-2;j++){
                                      c[j]=*str++;i++;  
