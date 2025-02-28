@@ -262,6 +262,7 @@ unsigned char debug;
    vfd.config.bits.MenuPendiente=TRUE;//hay pendiente un menu por desplegar
    vfd.config.bits.Menu_Ready=FALSE;//no se a desplegado menu solicitado
    pthread_mutex_init(&vfd.mutex.VDF_busy,NULL);//init recurso VFD
+   vfd.menu.contexto.Actual=PORTAL_INICIO;
    if((debug=pthread_create(&SubProc_Run_Menu,NULL,Run_Menu,NULL))!=0)
        errorCritico2("errorCreacion hilo",175);
    else{pthread_detach(SubProc_Run_Menu);}//hilo independiente	   

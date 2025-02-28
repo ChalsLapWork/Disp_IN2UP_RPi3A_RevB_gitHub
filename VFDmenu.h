@@ -42,7 +42,7 @@
 */	
 
 #define VERSION_FIRMWARE   "Version F.W 33.11.0" //add frecq CONTROL from menu, Driver to control ADC's 
-#define VERSION2 "v39.24.1.71"   //branch:feature6_OS_&_Pantalla
+#define VERSION2 "v40.0.1.40"   //branch:RevE2
 
 
 
@@ -292,7 +292,11 @@ los ADC se perdio la sincronia de los pulsos deSCLK cada 1mseg
 *   "v39.22.12.38"     12-Ene-24  mejoramos el manejo de recursos y el menu DDS en zoom con enter  y grafica se�al en DDS y hace cambio de zoom
 *   "v39.22.13.115"    14-feb-24 systema operativo funcionando con 2 procesos, pero vamos a implementar 
 *                                  el system-call en la version 14 
-*   
+     "v39.24.1.71"   //branch:feature6_OS_&_Pantalla
+*   "v40.0.1.40"       28-Feb-25  estamos trabanado con RaspBerry, pasamos todo, debido alo gigantesco
+                                  de construir un S.O para manejo de memoria.
+								  estamos deplegando el PORTALinicio con hilos independientes de despleiegue VFD
+
 *   
 *                    
 *                                  
