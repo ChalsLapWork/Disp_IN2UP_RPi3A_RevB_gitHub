@@ -101,17 +101,13 @@ union W16{
        VFDserial_SendBlock1(&c[0],sizeof(c));
        VFDposicion(x[3],y[3]);
        VFDserial_SendBlock1(&d[0],sizeof(d));
-	   
-
+	   displayCuadroMadre_VFD();
+       
 	           
 	           
 	  ret=TRUE;         
 	/*		   
-	   
-                
-	           break;
-	   case 20:if(displayCuadroMadre_VFD())(*estado)++;break;
-       case 21:delay_ms_VFD(2);(*estado)++;break;
+	   case 21:delay_ms_VFD(2);(*estado)++;break;
 	   case 22:Deteccion.CuadroMadreReady=TRUE;
 	           vfd.box.box0=0;//se inicia desde el primer cuadro a graficar.         	    
 	           init_Sensibilidad();
