@@ -19,9 +19,12 @@ unsigned char ret=0;
 		                         x1b=POS_X1_BOX1_AV;y1b=POS_Y1_BOX1_AV;x2b=POS_X2_BOX1_AV;y2b=POS_Y2_BOX1_AV;
 		                         x1c=POS_X1_BOX2_AV;y1c=POS_Y1_BOX2_AV;x2c=POS_X2_BOX2_AV;y2c=POS_Y2_BOX2_AV;
 		                         break;
-		case PORTAL_INICIO:x1a=POS_X1_BOX_PI; y1a=POS_Y1_BOX_PI; x2a=POS_X2_BOX_PI; y2a=POS_Y2_BOX_PI;//CUADRO MADRE
-			    	       x1b=POS_X1_BOX1_PI;y1b=POS_Y1_BOX1_PI;x2b=POS_X2_BOX1_PI;y2b=POS_Y2_BOX1_PI;//CUADRO-1  HIJO VACIO	    
-			    	       x1c=POS_X1_BOX2_PI;y1c=POS_Y1_BOX2_PI;x2c=POS_X2_BOX2_PI;y2c=POS_Y2_BOX2_PI;
+		case PORTAL_INICIO:x1a=POS_X1_BOX_PI; y1a=POS_Y1_BOX_PI; 
+		                   x2a=POS_X2_BOX_PI; y2a=POS_Y2_BOX_PI;//CUADRO MADRE
+			    	       x1b=POS_X1_BOX1_PI;y1b=POS_Y1_BOX1_PI;
+						   x2b=POS_X2_BOX1_PI;y2b=POS_Y2_BOX1_PI;//CUADRO-1  HIJO VACIO	    
+			    	       x1c=POS_X1_BOX2_PI;y1c=POS_Y1_BOX2_PI;
+						   x2c=POS_X2_BOX2_PI;y2c=POS_Y2_BOX2_PI;
 			    	       break;
 		case AJUSTE_PARAMETRICO_DE_PRODUCTO:
               x1a=POS_X1_BOX_AP; y1a=POS_Y1_BOX_AP; x2a=POS_X2_BOX_AP; y2a=POS_Y2_BOX_AP;//CUADRO MADRE
@@ -34,9 +37,10 @@ unsigned char ret=0;
 		      x1c=POS_X1_BOX2_PD;y1c=POS_Y1_BOX2_PD;y2c=POS_X2_BOX2_PD;y2c=POS_Y2_BOX2_PD;//CUADRO-1  HIJO VACIO  	  
 		      break;  	
 		default:break;}
-	VFDboxLine1(ON,BOX_VACIA,x1a,y1a,x2a,y2a);
-	VFDboxLine1(ON,BOX_VACIA,x1b,y1b,x2b,y2b);
-    VFDboxLine1(ON,BOX_VACIA,x1c,y1c,x2c,y2c);
+	VFDboxLine1(ON,BOX_VACIA,x1a,y1a,x2a,y2a);	
+	//VFDboxLine1(ON,BOX_VACIA,x1a,y1a,x2a,y2a);
+	//VFDboxLine1(ON,BOX_VACIA,x1b,y1b,x2b,y2b);
+    //VFDboxLine1(ON,BOX_VACIA,x1c,y1c,x2c,y2c);
     ret=TRUE;
 return ret;
 }//fin del despliegue del cuadro Madre y los dos hijos en funcion del contexto----------------------------
