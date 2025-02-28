@@ -36,11 +36,10 @@ unsigned char ret=0;
 		      x1b=POS_X1_BOX1_PD;y1b=POS_Y1_BOX1_PD;x2b=POS_X2_BOX1_PD;y2b=POS_Y2_BOX1_PD;//CUADRO-1  HIJO VACIO	    
 		      x1c=POS_X1_BOX2_PD;y1c=POS_Y1_BOX2_PD;y2c=POS_X2_BOX2_PD;y2c=POS_Y2_BOX2_PD;//CUADRO-1  HIJO VACIO  	  
 		      break;  	
-		default:break;}
-	VFDboxLine1(ON,BOX_VACIA,x1a,y1a,x2a,y2a);	
-	//VFDboxLine1(ON,BOX_VACIA,x1a,y1a,x2a,y2a);
-	//VFDboxLine1(ON,BOX_VACIA,x1b,y1b,x2b,y2b);
-    //VFDboxLine1(ON,BOX_VACIA,x1c,y1c,x2c,y2c);
+		default:break;}	
+	VFDboxLine1(ON,BOX_VACIA,x1a,y1a,x2a,y2a);//cuadro madre
+	VFDboxLine1(ON,BOX_VACIA,x1b,y1b,x2b,y2b);//cuadrito vacio No.1
+    VFDboxLine1(ON,BOX_VACIA,x1c,y1c,x2c,y2c);//cuadrito vacio No.2
     ret=TRUE;
 return ret;
 }//fin del despliegue del cuadro Madre y los dos hijos en funcion del contexto----------------------------
