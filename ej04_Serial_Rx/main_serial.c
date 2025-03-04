@@ -4,7 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <wiringPi.h>
-#include <wiringPiSerial.h>
+#include <wiringSerial.h>
 
 #define BUF_SIZE 1024
 #define FIFO_SIZE 10
