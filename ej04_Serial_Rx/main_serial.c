@@ -53,16 +53,20 @@ void *serial_reader(void *arg) {
     while (1) {
         char byte = serialGetchar(data->serial_fd);  // Leer un byte del puerto serial
         if (byte != -1) {  // Si se recibió un byte válido
-            if (byte == 0x02) {  // STX
+            printf("[SERIAL] Byte recibido: 0x%02X\n", byte);
+            if (byte == 0x03) {  // STX
+                printf("[SERIAL] Inicio de mensaje (STX detectado)\n");
                 in_stx = 1;
                 idx = 0;  // Reiniciar el índice para la nueva cadena
-            } else if (byte == 0x03 && in_stx) {  // ETX
+            } else if (byte == 0x02 && in_stx) {  // ETX
                 buffer[idx + 1] = '\0';  // Terminar la cadena
+                printf("[SERIAL] Fin de mensaje (ETX detectado), recibido: %s\n", buffer);
                 fifo_push(data->fifo, buffer);  // Enviar a la FIFO
                 in_stx = 0;
             } else if (in_stx) {
                 buffer[idx++] = byte;
                 if (idx >= BUF_SIZE - 1) {
+                    printf("[SERIAL] Advertencia: Mensaje demasiado largo, truncado\n");
                     idx = BUF_SIZE - 2;  // Evitar desbordamiento de búfer
                 }
             }
@@ -82,6 +86,8 @@ void *fifo_processor(void *arg) {
             printf("Procesando: %s\n", fifo->buffer[fifo->front]);
             free(fifo->buffer[fifo->front]);
             fifo->front = (fifo->front + 1) % FIFO_SIZE;
+        }else {
+            printf("[FIFO] No hay mensajes en la FIFO\n");
         }
         pthread_mutex_unlock(&fifo->lock);
         usleep(100000);  // Esperar un poco antes de comprobar de nuevo
