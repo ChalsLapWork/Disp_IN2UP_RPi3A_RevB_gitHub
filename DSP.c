@@ -191,7 +191,7 @@ unsigned short int maxx,maxy,ymax,ymin;
       zoom.Maxy=maxy; 
       zoom.Ymax=ymax;
       zoom.Ymin=ymin;
-	  generarPixelsAnalogos();//(0,0);//genera una lista de valores analogos que corresponden en una lista a un pixel digital en un zoom dado
+	  //generarPixelsAnalogos();//(0,0);//genera una lista de valores analogos que corresponden en una lista a un pixel digital en un zoom dado
       
       
 }//fin zoom init -----------------------------------------------------------------------------------------

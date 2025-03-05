@@ -102,26 +102,14 @@ union W16{
        VFDposicion(x[3],y[3]);
        VFDserial_SendBlock1(&d[0],sizeof(d));
 	   displayCuadroMadre_VFD();
-       
-	           
-	           
-	  ret=TRUE;         
-	/*		   
-	   case 21:delay_ms_VFD(2);(*estado)++;break;
-	   case 22:Deteccion.CuadroMadreReady=TRUE;
-	           vfd.box.box0=0;//se inicia desde el primer cuadro a graficar.         	    
-	           init_Sensibilidad();
-      	       //keypad.b.enable=1;//Habilitado el teclado
-	           vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
-	           *estado=0;
-	           ret=TRUE;
-	           break;
-		default:*estado=1;break;}//fin de estructura de +++++++++++++++++++++++
-	
- word_16bits.usi=aux1_usi;
-        *(mem+4)=word_16bits.c[0];
-        *(mem+5)=word_16bits.c[1];
-      */    
+       Deteccion.CuadroMadreReady=TRUE;
+	   vfd.box.box0=0;//se inicia desde el primer cuadro a graficar. 
+
+	   //init_Sensibilidad();
+       vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
+	   
+       ret=TRUE;
+	    
  
 return ret;   
 }// FIN DESPLIEGUE DEL PORTAL INICIO-------------------------------------------------------------------

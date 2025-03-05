@@ -5,11 +5,11 @@
 #include <unistd.h>
 #include <string.h>
 
-#define SERIAL_PORT "/dev/serial0"
+#define SERIAL_PORT "/dev/serial0" // Cambiar si es necesario
 #define BAUD_RATE 9600
 #define BUF_SIZE 1024
 
-// Función para mostrar mensajes con colores (verde, amarillo, rojo)
+// Función para mostrar mensajes con colores
 void print_green(const char* message) {
     printf("\033[0;32m%s\033[0m\n", message);  // Verde
 }
@@ -18,46 +18,41 @@ void print_yellow(const char* message) {
     printf("\033[0;33m%s\033[0m\n", message);  // Amarillo
 }
 
-void print_red(const char* message) {
-    printf("\033[0;31m%s\033[0m\n", message);  // Rojo
-}
-
 // Función para enviar datos al puerto serial
 void send_data(int serial_fd, const char* data) {
-    serialPuts(serial_fd, data);
-    printf("Enviado: %s\n", data);
+    serialPuts(serial_fd, data);  // Enviar datos al puerto serial
+    serialFlush(serial_fd);       // Asegura que los datos sean enviados
+    print_green("Enviado:");
+    printf("%s\n", data);
 }
 
 // Función para recibir datos del puerto serial
 void receive_data(int serial_fd) {
     char buffer[BUF_SIZE];
     int i = 0;
+
     while (1) {
-        // Leer byte del puerto serial
-        char byte = serialGetchar(serial_fd);
+        char byte = serialGetchar(serial_fd); // Leer byte del puerto serial
         
-        // Si no hay datos, salir del bucle
+        // Si no hay datos disponibles, salir
         if (byte == -1) {
             break;
         }
 
         if (byte == '\n' || byte == '\r') {
-            // Terminar la cadena de texto
-            buffer[i] = '\0';
+            buffer[i] = '\0'; // Terminar la cadena cuando recibe un salto de línea
             if (i > 0) {
                 print_yellow("Recibido: ");
                 printf("%s\n", buffer);
             } else {
                 print_green("Recibiendo datos...");
             }
-            i = 0;  // Reiniciar el índice para el siguiente mensaje
+            i = 0; // Reiniciar el índice
         } else {
-            // Almacenar byte recibido en el buffer
             if (i < BUF_SIZE - 1) {
-                buffer[i++] = byte;
+                buffer[i++] = byte; // Almacenar byte en el buffer
             } else {
-                // Evitar desbordamiento de búfer
-                buffer[i] = '\0';
+                buffer[i] = '\0';  // Evitar desbordamiento
                 i = 0;
             }
         }
@@ -66,7 +61,7 @@ void receive_data(int serial_fd) {
 
 int main() {
     int serial_fd;
-    
+
     // Inicializar wiringPi
     if (wiringPiSetup() == -1) {
         printf("Error al inicializar wiringPi\n");
@@ -80,16 +75,20 @@ int main() {
         return -1;
     }
 
+    // Asegurarse de que el puerto está configurado correctamente
+    serialFlush(serial_fd);
+    serialPuts(serial_fd, "Hola");
+    usleep(1000000);  // Esperar 1 segundo para que los datos se transmitan
+
     // Bucle para enviar y recibir datos continuamente
     while (1) {
         send_data(serial_fd, "Hola");
         usleep(1000000);  // Espera 1 segundo
-        receive_data(serial_fd);
+        receive_data(serial_fd);  // Leer datos recibidos
         usleep(1000000);  // Espera 1 segundo
     }
 
     // Cerrar el puerto serial
     serialClose(serial_fd);
-
     return 0;
 }
