@@ -28,33 +28,15 @@ void send_data(int serial_fd, const char* data) {
 
 // Función para recibir datos del puerto serial
 void receive_data(int serial_fd) {
-    char buffer[BUF_SIZE];
-    int i = 0;
-
-    while (1) {
-        char byte = serialGetchar(serial_fd); // Leer byte del puerto serial
+    char byte;
+    
+    // Mientras haya datos en el buffer serial
+    while (serialDataAvail(serial_fd)) {
+        byte = serialGetchar(serial_fd); // Leer byte del puerto serial
         
-        // Si no hay datos disponibles, salir
-        if (byte == -1) {
-            break;
-        }
-
-        if (byte == '\n' || byte == '\r') {
-            buffer[i] = '\0'; // Terminar la cadena cuando recibe un salto de línea
-            if (i > 0) {
-                print_yellow("Recibido: ");
-                printf("%s\n", buffer);
-            } else {
-                print_green("Recibiendo datos...");
-            }
-            i = 0; // Reiniciar el índice
-        } else {
-            if (i < BUF_SIZE - 1) {
-                buffer[i++] = byte; // Almacenar byte en el buffer
-            } else {
-                buffer[i] = '\0';  // Evitar desbordamiento
-                i = 0;
-            }
+        if (byte != -1) {
+            print_yellow("Recibido: ");
+            printf("%c\n", byte);  // Imprimir byte recibido
         }
     }
 }
@@ -77,13 +59,12 @@ int main() {
 
     // Asegurarse de que el puerto está configurado correctamente
     serialFlush(serial_fd);
-    serialPuts(serial_fd, "Hola");
-    usleep(1000000);  // Esperar 1 segundo para que los datos se transmitan
 
     // Bucle para enviar y recibir datos continuamente
     while (1) {
         send_data(serial_fd, "Hola");
-        usleep(1000000);  // Espera 1 segundo
+        usleep(1000000);  // Esperar 1 segundo
+
         receive_data(serial_fd);  // Leer datos recibidos
         usleep(1000000);  // Espera 1 segundo
     }
