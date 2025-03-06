@@ -106,7 +106,7 @@ int main() {
     }
 
     // Crea el hilo procesador
-    if (pthread_create(&processor_thread, NULL, data_processor, &data) != 0) {
+    if (pthread_create(&processor_thread, NULL, cons_serial_processor, &data) != 0) {
         printf("Error al crear el hilo procesador.\n");
         return 1;
     }
