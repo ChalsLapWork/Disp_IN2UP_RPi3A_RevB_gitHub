@@ -1,4 +1,4 @@
-# Programa en C para recibir y procesar datos seriales con FIFO
+// Programa en C para recibir y procesar datos seriales con FIFO
 /*
    ESTE PROGRAMA ESPARA RECONOCER EL PROTOCOLO
          STX,LEN,BYTE1,BYTEn,CRC,ETX
