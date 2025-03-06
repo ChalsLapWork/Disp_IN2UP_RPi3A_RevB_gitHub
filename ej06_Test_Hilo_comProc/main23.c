@@ -1,133 +1,139 @@
-# Programa en C para recibir y procesar datos seriales con FIFO
-/*
-   ESTE PROGRAMA ESPARA RECONOCER EL PROTOCOLO
-         STX,LEN,BYTE1,BYTEn,CRC,ETX
-           donde LEN=LOngitud, que cuenta el byte len como 1 y el siguiente byte como 2 hasta antes de _CRC|
-           e.g. STX,2,byte1,CRC,ETX
-                                        
-    cadena de recepcion  basura,etx,len,datos,crc,etx, basura,etx,len,datos,basura<--cadena no valida
-                                                              ^----------------------cadena no valida falta ETX u CRC
-*/
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
-#include <string.h>
-#include <unistd.h>
 #include <wiringPi.h>
 #include <wiringSerial.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <string.h>
+#include <sys/select.h>
 
+#define BUF_SIZE 256
 
-#define BUF_SIZE 1024
-#define FIFO_SIZE 10
-
-// Estructura para la FIFO circular
+// Estructura para compartir datos entre hilos
 typedef struct {
-    char *buffer[FIFO_SIZE];
-    int front;
-    int rear;
-    pthread_mutex_t lock;
-} fifo_t;
-
-// Estructura para pasar datos entre hilos
-typedef struct {
-    int serial_fd;
-    fifo_t *fifo;
+    int serial_fd;           // Descriptor de archivo del puerto serial
+    char buffer[BUF_SIZE];   // Buffer compartido
+    int data_ready;          // Bandera para indicar que hay datos nuevos
+    pthread_mutex_t mutex;   // Mutex para proteger el buffer
 } thread_data_t;
 
-// Inicializar FIFO circular
-void fifo_init(fifo_t *fifo) {
-    fifo->front = 0;
-    fifo->rear = 0;
-    pthread_mutex_init(&fifo->lock, NULL);
-}
-
-// Añadir a FIFO
-void fifo_push(fifo_t *fifo, const char *data) {
-    pthread_mutex_lock(&fifo->lock);
-    if ((fifo->rear + 1) % FIFO_SIZE == fifo->front) {
-        free(fifo->buffer[fifo->front]);
-        fifo->front = (fifo->front + 1) % FIFO_SIZE;
-    }
-    fifo->buffer[fifo->rear] = strdup(data);
-    fifo->rear = (fifo->rear + 1) % FIFO_SIZE;
-    pthread_mutex_unlock(&fifo->lock);
-}
-
-// Hilo que lee el puerto serial
+// Hilo lector: Lee datos del puerto serial usando select
 void *serial_reader(void *arg) {
     thread_data_t *data = (thread_data_t *)arg;
-    char buffer[BUF_SIZE];
-    int idx = 0;
-    int in_stx = 0;
-    int expected_len = -1;
-    
+    char temp_buffer[BUF_SIZE];
+    ssize_t bytes_read;
+    fd_set read_fds;
+    struct timeval timeout;
+
     while (1) {
-        char byte = serialGetchar(data->serial_fd);
-        if (byte != -1) {
-            printf("[SERIAL] Byte recibido: 0x%02X\n", byte);
-            if (byte == STX) {  // STX
-                in_stx = 1;
-                idx = 0;
-                expected_len = -1;
-            } else if (byte == ETX && in_stx && expected_len != -1 && idx == expected_len + 1) {  // ETX
-                buffer[idx] = '\0';
-                printf("[SERIAL] Cadena válida recibida: %s\n", buffer);
-                fifo_push(data->fifo, buffer);
-                in_stx = 0;
-            } else if (in_stx) {
-                if (idx == 0) {
-                    expected_len = byte;
-                } else if (idx >= BUF_SIZE - 1) {
-                    in_stx = 0;
-                }
-                buffer[idx++] = byte;
+        // Configura el conjunto de descriptores de archivo
+        FD_ZERO(&read_fds);
+        FD_SET(data->serial_fd, &read_fds);
+
+        // Configura el tiempo de espera (1 segundo)
+        timeout.tv_sec = 1;
+        timeout.tv_usec = 0;
+
+        // Espera a que haya datos disponibles en el puerto serial
+        int ret = select(data->serial_fd + 1, &read_fds, NULL, NULL, &timeout);
+        if (ret > 0 && FD_ISSET(data->serial_fd, &read_fds)) {
+            // Lee un bloque de bytes
+            bytes_read = read(data->serial_fd, temp_buffer, BUF_SIZE - 1);
+            if (bytes_read > 0) {
+                temp_buffer[bytes_read] = '\0';  // Asegura que el buffer esté terminado con un carácter nulo
+
+                // Bloquea el mutex para proteger el buffer compartido
+                pthread_mutex_lock(&data->mutex);
+
+                // Copia los datos al buffer compartido
+                strncpy(data->buffer, temp_buffer, BUF_SIZE);
+                data->data_ready = 1;  // Indica que hay datos nuevos
+
+                // Desbloquea el mutex
+                pthread_mutex_unlock(&data->mutex);
+
+                printf("[LECTOR] Datos leídos: %s\n", temp_buffer);  // Depuración
+            } else if (bytes_read == -1) {
+                printf("[LECTOR] Error al leer del puerto serial.\n");
             }
+        } else if (ret == -1) {
+            printf("[LECTOR] Error en select.\n");
         }
     }
+
     return NULL;
 }
 
-// Hilo que procesa las cadenas en la FIFO
-void *fifo_processor(void *arg) {
-    fifo_t *fifo = (fifo_t *)arg;
+// Hilo procesador: Procesa los datos del buffer compartido
+void *data_processor(void *arg) {
+    thread_data_t *data = (thread_data_t *)arg;
+    char local_buffer[BUF_SIZE];
+
     while (1) {
-        pthread_mutex_lock(&fifo->lock);
-        if (fifo->front != fifo->rear) {
-            printf("Procesando: %s\n", fifo->buffer[fifo->front]);
-            free(fifo->buffer[fifo->front]);
-            fifo->front = (fifo->front + 1) % FIFO_SIZE;
+        // Bloquea el mutex para acceder al buffer compartido
+        pthread_mutex_lock(&data->mutex);
+
+        // Si hay datos nuevos, los copia y los procesa
+        if (data->data_ready) {
+            strncpy(local_buffer, data->buffer, BUF_SIZE);
+            data->data_ready = 0;  // Reinicia la bandera
+
+            // Desbloquea el mutex
+            pthread_mutex_unlock(&data->mutex);
+
+            // Procesa los datos (en este caso, simplemente los imprime)
+            printf("[PROCESADOR] Datos procesados: %s\n", local_buffer);
+        } else {
+            // Desbloquea el mutex si no hay datos nuevos
+            pthread_mutex_unlock(&data->mutex);
         }
-        pthread_mutex_unlock(&fifo->lock);
-        usleep(100000);
+
+        // Espera un poco antes de verificar nuevamente
+        usleep(1000);  // Espera 1 ms
     }
+
+    return NULL;
 }
 
 int main() {
-    const char *serial_device = "/dev/serial0";
-    
-    if (wiringPiSetup() == -1) {
-        fprintf(stderr, "Error al inicializar wiringPi\n");
-        return -1;
-    }
-
-    fifo_t fifo;
-    fifo_init(&fifo);
-
-    int serial_fd = serialOpen(serial_device, 9600);
-    if (serial_fd == -1) {
-        fprintf(stderr, "Error al abrir puerto serial\n");
-        return -1;
-    }
-
     pthread_t reader_thread, processor_thread;
-    thread_data_t data = {serial_fd, &fifo};
+    thread_data_t data;
 
-    pthread_create(&reader_thread, NULL, serial_reader, (void *)&data);
-    pthread_create(&processor_thread, NULL, fifo_processor, (void *)&fifo);
+    // Inicializa WiringPi
+    if (wiringPiSetup() == -1) {
+        printf("Error al inicializar WiringPi.\n");
+        return 1;
+    }
 
+    // Abre el puerto serial
+    data.serial_fd = serialOpen("/dev/ttyAMA0", 9600);  // Cambia "/dev/ttyAMA0" y 9600 según tu configuración
+    if (data.serial_fd == -1) {
+        printf("Error al abrir el puerto serial.\n");
+        return 1;
+    }
+
+    // Inicializa el mutex
+    pthread_mutex_init(&data.mutex, NULL);
+    data.data_ready = 0;  // Inicializa la bandera
+
+    // Crea el hilo lector
+    if (pthread_create(&reader_thread, NULL, serial_reader, &data) != 0) {
+        printf("Error al crear el hilo lector.\n");
+        return 1;
+    }
+
+    // Crea el hilo procesador
+    if (pthread_create(&processor_thread, NULL, data_processor, &data) != 0) {
+        printf("Error al crear el hilo procesador.\n");
+        return 1;
+    }
+
+    // Espera a que los hilos terminen (en este caso, nunca terminarán)
     pthread_join(reader_thread, NULL);
     pthread_join(processor_thread, NULL);
 
-    serialClose(serial_fd);
+    // Cierra el puerto serial (esto no se ejecutará debido al bucle infinito en los hilos)
+    serialClose(data.serial_fd);
+
     return 0;
 }
