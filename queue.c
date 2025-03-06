@@ -62,7 +62,7 @@ unsigned char debug;
     mensOK("Iniciando queueus",CCIAN);	  
 	sync1=0xAA;//mutexs ocupados
 	NoErrorOK();
-	mensOK("Creando Proceso Init VFD",CAZUL);
+	mensOK("Creando Proceso Init VFD",CAZUL1);
 	init_VFD_Threads();
 	inicializar_VFD();//Init VFD
 	mensOK("Fin de Init Queues",CMAGNETA);
@@ -103,7 +103,7 @@ static int count;
 	  case 5:*crc=len=*str++;n=1;estado++;break;
 	  case 6:*(crc+n++)=cmd=*str++;i=0;estado++;break;
 	  case 7:switch(len){
-		         case 0:mensOK(" error 174, PROTOCOLO mal bytes ",CROJO);break;
+		         case 0:mensOK(" error 174, PROTOCOLO mal bytes ",CROJO1);break;
 				 case 1:mensOK(" eror 175 protocolo par hecho",CAMARILLO);break;
 				 case 2:estado=9;break;
                  default:estado=8;i=0;break;}

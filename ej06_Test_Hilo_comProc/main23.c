@@ -6,13 +6,16 @@
 #include <pthread.h>
 #include <string.h>
 #include <sys/select.h>
+#include "../errorController.h"
 
 #define BUF_SIZE 256
+#define BUFFER6_SIZE 1024  // Tamaño del nuevo buffer6
 
 // Estructura para compartir datos entre hilos
 typedef struct {
     int serial_fd;           // Descriptor de archivo del puerto serial
     char buffer[BUF_SIZE];   // Buffer compartido
+    char buffer6[BUFFER6_SIZE]; // Nuevo buffer para concatenar datos
     int data_ready;          // Bandera para indicar que hay datos nuevos
     pthread_mutex_t mutex;   // Mutex para proteger el buffer
 } thread_data_t;
@@ -29,7 +32,6 @@ void *serial_reader(void *arg) {
         // Configura el conjunto de descriptores de archivo
         FD_ZERO(&read_fds);
         FD_SET(data->serial_fd, &read_fds);
-
         // Configura el tiempo de espera (1 segundo)
         timeout.tv_sec = 1;
         timeout.tv_usec = 0;
@@ -37,63 +39,44 @@ void *serial_reader(void *arg) {
         // Espera a que haya datos disponibles en el puerto serial
         int ret = select(data->serial_fd + 1, &read_fds, NULL, NULL, &timeout);
         if (ret > 0 && FD_ISSET(data->serial_fd, &read_fds)) {
-            // Lee un bloque de bytes
-            bytes_read = read(data->serial_fd, temp_buffer, BUF_SIZE - 1);
+            bytes_read = read(data->serial_fd, temp_buffer, BUF_SIZE - 1);// Lee un bloque de bytes
             if (bytes_read > 0) {
                 temp_buffer[bytes_read] = '\0';  // Asegura que el buffer esté terminado con un carácter nulo
-
-                // Bloquea el mutex para proteger el buffer compartido
-                pthread_mutex_lock(&data->mutex);
-
-                // Copia los datos al buffer compartido
-                strncpy(data->buffer, temp_buffer, BUF_SIZE);
+                pthread_mutex_lock(&data->mutex);// Bloquea el mutex para proteger el buffer compartido
+                //strncpy(data->buffer, temp_buffer, BUF_SIZE);// Copia los datos al buffer compartido
+                strncat(data->buffer6, temp_buffer, BUFFER6_SIZE - strlen(data->buffer6) - 1);
                 data->data_ready = 1;  // Indica que hay datos nuevos
-
-                // Desbloquea el mutex
-                pthread_mutex_unlock(&data->mutex);
-
-                printf("[LECTOR] Datos leídos: %s\n", temp_buffer);  // Depuración
+                pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
+                printf("%s[LECTOR] Datos leídos:%s %s %s\n",CAZUL,CAMAR, temp_buffer,CRESET);  // Depuración
             } else if (bytes_read == -1) {
-                printf("[LECTOR] Error al leer del puerto serial.\n");
+                printf("%s[LECTOR] Error al leer del puerto serial.%s\n",CROJO1,CRESET);
             }
         } else if (ret == -1) {
-            printf("[LECTOR] Error en select.\n");
-        }
-    }
-
-    return NULL;
-}
+            printf("[LECTOR] Error en select.\n");}
+    }//fin while++++++++++++++++++++++
+return NULL;
+}//fin de serial reader+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // Hilo procesador: Procesa los datos del buffer compartido
-void *data_processor(void *arg) {
+void *cons_serial_processor(void *arg) {
     thread_data_t *data = (thread_data_t *)arg;
-    char local_buffer[BUF_SIZE];
+    char local_buffer[BUFFER6_SIZE];
 
     while (1) {
-        // Bloquea el mutex para acceder al buffer compartido
-        pthread_mutex_lock(&data->mutex);
-
-        // Si hay datos nuevos, los copia y los procesa
-        if (data->data_ready) {
-            strncpy(local_buffer, data->buffer, BUF_SIZE);
+        pthread_mutex_lock(&data->mutex);// Bloquea el mutex para acceder al buffer compartido
+        if (data->data_ready) {// Si hay datos nuevos, los copia y los procesa
+            strncpy(local_buffer, data->buffer, BUFFER6_SIZE);
             data->data_ready = 0;  // Reinicia la bandera
+            data->buffer6[0] = '\0';// Limpia buffer6 después de copiar los datos
+            pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
+            printf("%s[PROCESADOR] Datos procesados:%s %s %s\n",CAQUA,CAMAR, local_buffer,CRESET);}// Procesa los datos (en este caso, simplemente los imprime)
+        else {
+            pthread_mutex_unlock(&data->mutex);}// Desbloquea el mutex si no hay datos nuevos
+        usleep(1000);  // Espera 1 ms,// Espera un poco antes de verificar nuevamente
+    }//fin while-----------------------------------------------------------
 
-            // Desbloquea el mutex
-            pthread_mutex_unlock(&data->mutex);
-
-            // Procesa los datos (en este caso, simplemente los imprime)
-            printf("[PROCESADOR] Datos procesados: %s\n", local_buffer);
-        } else {
-            // Desbloquea el mutex si no hay datos nuevos
-            pthread_mutex_unlock(&data->mutex);
-        }
-
-        // Espera un poco antes de verificar nuevamente
-        usleep(1000);  // Espera 1 ms
-    }
-
-    return NULL;
-}
+return NULL;
+}//fin de consumidor serial protocolo procesador del prootocolo++++++++++++++++++++++++++++++++++++
 
 int main() {
     pthread_t reader_thread, processor_thread;
