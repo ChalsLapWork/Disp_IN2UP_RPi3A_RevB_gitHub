@@ -6,7 +6,7 @@
 #include <string.h>
 
 #define SERIAL_PORT "/dev/serial0" // Cambiar si es necesario
-#define BAUD_RATE 9600
+#define BAUD_RATE   9600
 #define BUF_SIZE 1024
 
 // Función para mostrar mensajes con colores
@@ -23,7 +23,7 @@ void send_data(int serial_fd, const char* data) {
     serialPuts(serial_fd, data);  // Enviar datos al puerto serial
     serialFlush(serial_fd);       // Asegura que los datos sean enviados
     print_green("Enviado:");
-    printf("%s\n", data);
+    printf("\033[0;32m  %s\n \033[0m ", data);
 }
 
 // Función para recibir datos del puerto serial
@@ -35,8 +35,8 @@ void receive_data(int serial_fd) {
         byte = serialGetchar(serial_fd); // Leer byte del puerto serial
         
         if (byte != -1) {
-            print_yellow("Recibido: ");
-            printf("%c\n", byte);  // Imprimir byte recibido
+            //print_yellow("Recibido: ");
+            printf("\033[0;33m %x \033[0m", byte);  // Imprimir byte recibido
         }
     }
 }
@@ -63,10 +63,10 @@ int main() {
     // Bucle para enviar y recibir datos continuamente
     while (1) {
         send_data(serial_fd, "Hola");
-        usleep(1000000);  // Esperar 1 segundo
+        usleep(400000);  // Esperar 1 segundo
 
         receive_data(serial_fd);  // Leer datos recibidos
-        usleep(1000000);  // Espera 1 segundo
+        usleep(400000);  // Espera 1 segundo
     }
 
     // Cerrar el puerto serial
