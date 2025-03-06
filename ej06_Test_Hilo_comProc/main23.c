@@ -65,7 +65,7 @@ void *cons_serial_processor(void *arg) {
     while (1) {
         pthread_mutex_lock(&data->mutex);// Bloquea el mutex para acceder al buffer compartido
         if (data->data_ready) {// Si hay datos nuevos, los copia y los procesa
-            strncpy(local_buffer, data->buffer, BUFFER6_SIZE);
+            strncpy(local_buffer, data->buffer6, BUFFER6_SIZE);
             data->data_ready = 0;  // Reinicia la bandera
             data->buffer6[0] = '\0';// Limpia buffer6 después de copiar los datos
             pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
