@@ -19,6 +19,8 @@
 
 #define BUF_SIZE 1024
 #define FIFO_SIZE 10
+#define STX 03
+#define ETX 02
 
 // Estructura para la FIFO circular
 typedef struct {
