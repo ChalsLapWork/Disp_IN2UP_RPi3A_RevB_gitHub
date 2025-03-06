@@ -7,6 +7,7 @@
 #include <string.h>
 #include <sys/select.h>
 #include "../errorController.h"
+#include "../system.h"
 
 #define BUF_SIZE 256
 #define BUFFER6_SIZE 1024  // Tamaño del nuevo buffer6
@@ -69,14 +70,51 @@ void *cons_serial_processor(void *arg) {
             data->data_ready = 0;  // Reinicia la bandera
             data->buffer6[0] = '\0';// Limpia buffer6 después de copiar los datos
             pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
-            printf("%s[PROCESADOR] Datos procesados:%s %s %s\n",CAQUA,CAMAR, local_buffer,CRESET);}// Procesa los datos (en este caso, simplemente los imprime)
+            printf("%s[PROCESADOR] Datos procesados:%s %s %s\n",CAQUA,CAMAR, local_buffer,CRESET);
+            Procesamiento_de_cadena_serProc(&localbuffer[0]);}// Procesa los datos (en este caso, simplemente los imprime)
         else {
             pthread_mutex_unlock(&data->mutex);}// Desbloquea el mutex si no hay datos nuevos
         usleep(1000);  // Espera 1 ms,// Espera un poco antes de verificar nuevamente
     }//fin while-----------------------------------------------------------
-
 return NULL;
 }//fin de consumidor serial protocolo procesador del prootocolo++++++++++++++++++++++++++++++++++++
+
+/* ¨Prpcesamiento de cadena de datos que llega del puerto serial|
+ procesa la cadena completa y si se queda el protocolo a medias y se termina la 
+   cadena se sale quedando en el estado que estaba para recargar la cadena*/
+void Procesamiento_de_cadena_serProc(char *c){
+static unsigned char estado,estado2;
+unsigned char cadena,indice,len,cmd,crc;//estado de la cadena
+   switch(estado2){//estado de configuracion de 
+     case 1:cadena=1;indice=0;
+            estado=1;break;//cadena inica procesamiento
+     case 2:
+     default:estado2=1;break}
+
+ while(*(c+indice)!='\0'){
+   unsigned char dato=*(c+indice++);
+   switch(estado){
+      case 1:if(dato==STX)estado++;break;
+      case 2:len=dato;
+             if(len<2){estado=98;break;}
+             estado++;break;
+      case 3:cmd=dato;
+             if(len==2)estado++;//comandos sin parametros
+             else{estado=10;}break;//comandos con parametros
+      case 4:crc=dato;estado++;   //comandos sin parametros
+      case 5:if(dato==ETX){procesarComando()}    
+      case 98:estado=1;cmd=0;len=0;break;//cadena corrupta
+      }
+
+
+   }
+
+
+
+}//fn de procesamiento de cadena que llega del erial de la procesadora
+
+
+
 
 int main() {
     pthread_t reader_thread, processor_thread;
