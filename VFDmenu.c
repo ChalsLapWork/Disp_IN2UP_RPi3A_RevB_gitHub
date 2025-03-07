@@ -53,7 +53,7 @@ const unsigned char x[4]={80,24,24,24};
 const unsigned char y[4]={ 2,10,12,14};
 unsigned char ret=0;
 //unsigned char *inst1,*inst2;//instancias subHilos a ejecutar que se pueden ejecutar en otros lados
-unsigned char *estado,*aux3_char,*aux0_uchar;
+unsigned char aux3_char,aux0_uchar;
 unsigned short int aux1_usi;
 const unsigned char DEBUG=0x11,MEMO=0x12;
 unsigned char Status_Prod=DEBUG,x1,y1;
@@ -87,10 +87,10 @@ union W16{
 	  delay_ms_VFD(500);
       VFDposicion(65,0);
       VFDserial_SendBlock1(&s[0],sizeof(s));//version
-	  *aux3_char=producto.name[1];
+	  aux3_char=producto.name[1];
 	   aux1_usi=length(&producto.name[0],sizeof(producto.name));  	 
-      *aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);
-       (Status_Prod == MEMO) ? VFDposicion(*aux0_uchar, 2) : VFDposicion(x[0], y[0]);
+      aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);
+       (Status_Prod == MEMO) ? VFDposicion(aux0_uchar, 2) : VFDposicion(x[0], y[0]);
  	   if(Status_Prod==MEMO){
 		  ss=aux3_char;
 		  VFDserial_SendBlock1(ss,(unsigned char)aux1_usi);}
