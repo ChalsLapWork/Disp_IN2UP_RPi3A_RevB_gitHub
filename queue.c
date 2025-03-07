@@ -1,6 +1,6 @@
 #include "system.h"
 #include "queue.h"
-#include "string.h"
+#include "strings.h"
 #include "errorController.h"
 #include "VFD.h"
 #include <stdio.h>

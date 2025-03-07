@@ -62,14 +62,6 @@ union W16{
    unsigned char c[2];
 }word_16bits;
 
-/*            estado=mem;
-           //control=mem+1;
-         aux3_char=mem+2;
-  word_16bits.c[0]=*(mem+4);
-  word_16bits.c[1]=*(mem+5);
-          aux1_usi=word_16bits.usi;
-        mem_15bytes=mem+6;//6,7 15 bytes
-        aux0_uchar=mem+22;*/
 
  /*while(1){		
     VFDserial_SendBlock1(&a[0],sizeof(a));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version

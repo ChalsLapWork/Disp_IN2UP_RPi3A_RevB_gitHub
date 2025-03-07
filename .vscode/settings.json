@@ -8,6 +8,7 @@
         "vfdthread.h": "c",
         "string.h": "c",
         "stdio.h": "c",
-        "errorcontroller.h": "c"
+        "errorcontroller.h": "c",
+        "strings.h": "c"
     }
 }
