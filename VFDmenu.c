@@ -92,7 +92,7 @@ union W16{
       aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);
       (Status_Prod == MEMO) ? VFDposicion(aux0_uchar, 2) : VFDposicion(x[0], y[0]);
 
-	   VFDserial_SendBlock1(&a[0],sizeof(a));} 
+	   VFDserial_SendBlock1(&a[0],sizeof(a)); 
 	   VFDposicion(x[1],y[1]);
 	   VFDserial_SendBlock1(&b[0],sizeof(b));
        VFDposicion(x[2],y[2]);
