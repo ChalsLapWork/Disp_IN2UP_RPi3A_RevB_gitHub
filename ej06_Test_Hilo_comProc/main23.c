@@ -8,6 +8,7 @@
 #include <sys/select.h>
 #include "../errorController.h"
 #include "../system.h"
+#include "../VFD.h"
 
 #define BUF_SIZE 256
 #define BUFFER6_SIZE 1024  // Tamaño del nuevo buffer6
@@ -86,12 +87,8 @@ void Procesamiento_de_cadena_serProc(char *c){
 static unsigned char estado;
 static unsigned char cadena,indice,len,cmd,crc,len1;//estado de la cadena
 static unsigned char param[PARAM_SIZE_COMANDOS],index;
-   switch(estado2){//estado de configuracion de 
-     case 1:cadena=1;indice=0;
-            estado=1;break;//cadena inica procesamiento
-     case 2:
-     default:estado2=1;break}
-
+    
+     indice=0;
  while(*(c+indice)!='\0'){
    unsigned char dato=*(c+indice++);
    switch(estado){
@@ -105,7 +102,7 @@ static unsigned char param[PARAM_SIZE_COMANDOS],index;
       case 4:crc=dato;estado++;break;    //comandos sin parametros
       case 5:if(dato==ETX){procesarComando(len,cmd,crc);}
              estado=98;break;
-      case 10:if((len1-1)==0){param[index++]=datos;}
+      case 10:if((len1-1)==0){param[index++]=dato;}
               else{estado++;}break;
       case 11:crc=datos;estado++;break;
       case 12:if(dato==ETX){procesarCmd(len,cmd,&param[0],crc);}
