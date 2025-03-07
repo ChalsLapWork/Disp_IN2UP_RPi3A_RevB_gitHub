@@ -338,3 +338,7 @@
 //#endif //***************************************************************
 //**********************************************************************
 
+//CONSTANTES DE COMUNICACION
+#define PARAM_SIZE_COMANDOS 10 //numero de parametros por comando 
+//COMANDOS DE COMUNICACION SERIAL PROCESADORA
+#define CMD_DET_ON 0x10 //Param:N/A Deteccion Activada/detectada

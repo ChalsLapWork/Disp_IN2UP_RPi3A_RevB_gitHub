@@ -83,8 +83,9 @@ return NULL;
  procesa la cadena completa y si se queda el protocolo a medias y se termina la 
    cadena se sale quedando en el estado que estaba para recargar la cadena*/
 void Procesamiento_de_cadena_serProc(char *c){
-static unsigned char estado,estado2;
-unsigned char cadena,indice,len,cmd,crc;//estado de la cadena
+static unsigned char estado;
+static unsigned char cadena,indice,len,cmd,crc,len1;//estado de la cadena
+static unsigned char param[PARAM_SIZE_COMANDOS],index;
    switch(estado2){//estado de configuracion de 
      case 1:cadena=1;indice=0;
             estado=1;break;//cadena inica procesamiento
@@ -100,20 +101,35 @@ unsigned char cadena,indice,len,cmd,crc;//estado de la cadena
              estado++;break;
       case 3:cmd=dato;
              if(len==2)estado++;//comandos sin parametros
-             else{estado=10;}break;//comandos con parametros
-      case 4:crc=dato;estado++;   //comandos sin parametros
-      case 5:if(dato==ETX){procesarComando()}    
+             else{estado=10;len1=len;index=0;}break;//comandos con parametros
+      case 4:crc=dato;estado++;break;    //comandos sin parametros
+      case 5:if(dato==ETX){procesarComando(len,cmd,crc);}
+             estado=98;break;
+      case 10:if((len1-1)==0){param[index++]=datos;}
+              else{estado++;}break;
+      case 11:crc=datos;estado++;break;
+      case 12:if(dato==ETX){procesarCmd(len,cmd,&param[0],crc);}
+              estado=98;break;
       case 98:estado=1;cmd=0;len=0;break;//cadena corrupta
-      }
-
-
-   }
-
-
-
+      default:break;}//fin switch-++++++++++++++++++++++++
+   }//fin while ++++++++++++++++++++++++++++++++++++++++++
 }//fn de procesamiento de cadena que llega del erial de la procesadora
 
-
+/* procesamiento de comando sin parametros */
+void procesarComando(unsigned char len,unsigned char cmd,unsigned char crc){
+unsigned char crc1;
+unsigned char buffer[2];
+      if(len==2){
+         buffer[0]=len;buffer[1]=cmd;
+         crc1=getCRC_v2(&buffer[0],len);
+         if(crc==crc1){
+               switch(cmd){
+                  case CMD_DET_ON:mens_Warnning_Debug("Comando En construccion");
+                                  break;
+                  default:break;}}
+         else{mens_Warnning_Debug(" Error -Len- Procesar Cmd Serial Comms");}}
+      else{mens_Warnning_Debug(" Error -Len- Procesar Cmd Serial Comms");}
+}//fin procesar comando+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 int main() {
