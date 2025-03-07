@@ -15,7 +15,7 @@
 
 void Procesamiento_de_cadena_serProc(char *c);
 void procesarComando(unsigned char len,unsigned char cmd,unsigned char crc);
-
+void procesarCmd(unsigned char len,unsigned char cmd,unsigned char *param,unsigned char crc);
 
 
 // Estructura para compartir datos entre hilos
@@ -77,7 +77,7 @@ void *cons_serial_processor(void *arg) {
             data->buffer6[0] = '\0';// Limpia buffer6 después de copiar los datos
             pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
             printf("%s[PROCESADOR] Datos procesados:%s %s %s\n",CAQUA,CAMAR, local_buffer,CRESET);
-            Procesamiento_de_cadena_serProc(&localbuffer[0]);}// Procesa los datos (en este caso, simplemente los imprime)
+            Procesamiento_de_cadena_serProc(&local_buffer[0]);}// Procesa los datos (en este caso, simplemente los imprime)
         else {
             pthread_mutex_unlock(&data->mutex);}// Desbloquea el mutex si no hay datos nuevos
         usleep(1000);  // Espera 1 ms,// Espera un poco antes de verificar nuevamente
@@ -116,6 +116,14 @@ static unsigned char param[PARAM_SIZE_COMANDOS],index;
       default:break;}//fin switch-++++++++++++++++++++++++
    }//fin while ++++++++++++++++++++++++++++++++++++++++++
 }//fn de procesamiento de cadena que llega del erial de la procesadora
+
+
+void procesarCmd(unsigned char len,unsigned char cmd,
+                 unsigned char *param,unsigned char crc){
+    
+    
+}//fin de procesar cmd+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 /* procesamiento de comando sin parametros */
 void procesarComando(unsigned char len,unsigned char cmd,unsigned char crc){
