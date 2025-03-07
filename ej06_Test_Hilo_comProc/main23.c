@@ -92,7 +92,6 @@ void Procesamiento_de_cadena_serProc(char *c){
 static unsigned char estado;
 static unsigned char indice,len,cmd,crc,len1;//estado de la cadena
 static unsigned char param[PARAM_SIZE_COMANDOS],index;
-int j;    
 unsigned char crc_array[PARAM_SIZE_COMANDOS];
      indice=0;
  while(*(c+indice)!='\0'){
@@ -129,9 +128,9 @@ unsigned char x;
     x=*param;    
     printf(" %d %c",x,x);
     switch(cmd){
-        case CMD_DET_ON:printf("%s COMANDO DET ON ACEPTADO %s",CVERD,CRESET); //aumenta el conteo de Rechazo
+        case CMD_DET_ON:printf("%s COMANDO DET ON ACEPTADO %s",CVERD,CRESET);break; //aumenta el conteo de Rechazo
         case CMD_BARRA:printf("%s COMANDO BARRA ACEPTADO %i %s",CAMAR,cmd,CRESET);break;  //mueve la barra de deteccion
-        case CMD_DET_PM:printf("%s COMANDO DET PARAM ACEPTADO %s",CMORA,CRESET); //hace display de los parametros de Portal Inicio
+        case CMD_DET_PM:printf("%s COMANDO DET PARAM ACEPTADO %s",CMORA,CRESET);break; //hace display de los parametros de Portal Inicio
         default:break;
     }//fin witch
 

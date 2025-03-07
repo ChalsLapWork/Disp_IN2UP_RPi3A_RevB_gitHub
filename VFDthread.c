@@ -94,7 +94,7 @@ return 1;
 
 // Hilo Productor: vacía todo el buffer circular a buffer2
 void *VFDserial_SendBlockProductor(void *arg) {
-unsigned char estado,i,len;
+unsigned char estado=0,i=0,len=0;
 int semaforo;
 //const unsigned char 
     while (1) {
@@ -153,12 +153,12 @@ return NULL;
 
 // Función que procesa buffer3 completo (como un gran array de datos)
 void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len) {
-unsigned char estado = 0, cmd, crc_calculado, crc_recibido;
+unsigned char estado = 0, cmd=0, crc_calculado, crc_recibido;
 unsigned char c[MAX_NUM_CHAR_VFD];
 unsigned char *str = buffer;
 size_t i = 0, datos_len = 0;
 static int count = 0;
-unsigned char *array_crc,index,new_len;
+unsigned char *array_crc,index=0,new_len;
 
     printf("Consumidor-Tx: Procesando buffer completo (len: %zu), cont=%i\n", len, count);
     if (count++ == 19) { printf("Stop here\n");}
