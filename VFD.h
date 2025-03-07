@@ -116,8 +116,8 @@ unsigned char FontSizeVFD(unsigned char m,unsigned char *mem);
 void initParallelPort_Global(void);
 void writePort(unsigned char value);
 void test_display(void);
-void* Mon_VFD(void* arg);  //Proceso Productor<---Proceso/hilo/THread
-void *Clean_VFD(void *arg);
+//void* Mon_VFD(void* arg);  //Proceso Productor<---Proceso/hilo/THread
+//void *Clean_VFD(void *arg);
 void VFD_sendChar(uchar c);
 unsigned char inicializar_VFD(void);
 //void init_mutex_VFD(void);

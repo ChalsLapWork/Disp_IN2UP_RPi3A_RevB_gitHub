@@ -15,7 +15,7 @@
 
 void Procesamiento_de_cadena_serProc(char *c);
 void procesarComando(unsigned char len,unsigned char cmd,unsigned char crc);
-void procesarCmd(unsigned char len,unsigned char cmd,unsigned char *param,unsigned char crc);
+void procesarCmd(unsigned char cmd,unsigned char *param);
 
 
 // Estructura para compartir datos entre hilos
@@ -92,7 +92,8 @@ void Procesamiento_de_cadena_serProc(char *c){
 static unsigned char estado;
 static unsigned char indice,len,cmd,crc,len1;//estado de la cadena
 static unsigned char param[PARAM_SIZE_COMANDOS],index;
-    
+int j;    
+unsigned char crc_array[PARAM_SIZE_COMANDOS];
      indice=0;
  while(*(c+indice)!='\0'){
    unsigned char dato=*(c+indice++);
@@ -111,7 +112,7 @@ static unsigned char param[PARAM_SIZE_COMANDOS],index;
               else{estado++;}break;
       case 11:crc=dato;estado++;break;
       case 12:if(dato==ETX){crc_array[0]=len;crc_array[1]=cmd;
-                            for(int i=0,int j=2;i<len-2;i++,j++)
+                            for(int i=0, j=2;i<len-2;i++,j++)
                                    crc_array[j]=param[i];
                             int crc1=getCRC_v2(&crc_array[0],len);
                             if(crc1==crc)       
@@ -126,7 +127,7 @@ static unsigned char param[PARAM_SIZE_COMANDOS],index;
 void procesarCmd(unsigned char cmd,unsigned char *param){
 unsigned char x;
     x=*param;    
-    printf(" %d %c",x,x)
+    printf(" %d %c",x,x);
     switch(cmd){
         case CMD_DET_ON:printf("%s COMANDO DET ON ACEPTADO %s",CVERD,CRESET); //aumenta el conteo de Rechazo
         case CMD_BARRA:printf("%s COMANDO BARRA ACEPTADO %i %s",CAMAR,cmd,CRESET);break;  //mueve la barra de deteccion
