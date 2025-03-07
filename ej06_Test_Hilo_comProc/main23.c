@@ -97,7 +97,9 @@ unsigned char crc_array[PARAM_SIZE_COMANDOS];
  while(*(c+indice)!='\0'){
    unsigned char dato=*(c+indice++);
    switch(estado){
-      case 1:if(dato==STX)estado++;break;
+      case 1:if(dato==STX)
+                    estado++;
+              break;
       case 2:len=dato;
              if(len<2){estado=98;break;}
              estado++;break;
