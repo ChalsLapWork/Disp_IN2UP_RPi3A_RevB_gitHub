@@ -118,7 +118,7 @@ unsigned char crc_array[PARAM_SIZE_COMANDOS];
                                  procesarCmd(cmd,&param[0]);}
               estado=98;break;
       case 98:estado=1;cmd=0;len=0;break;//cadena corrupta
-      default:break;}//fin switch-++++++++++++++++++++++++
+      default:estado=1;break;}//fin switch-++++++++++++++++++++++++
    }//fin while ++++++++++++++++++++++++++++++++++++++++++
 }//fn de procesamiento de cadena que llega del erial de la procesadora
 
