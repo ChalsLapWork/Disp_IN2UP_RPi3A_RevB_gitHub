@@ -56,7 +56,7 @@ void *serial_reader(void *arg) {
                 pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
                 printf("%s[LECTOR] Datos leídos:%s %s %s\n",CAZUL,CAMAR, temp_buffer,CRESET);  // Depuración
             } else if (bytes_read == -1) {
-                printf("%s[LECTOR] Error al leer del puerto serial.%s\n",CROJO1,CRESET);
+                printf("%s[LECTOR] Error al leer del puerto serial.%s\n",CROJO,CRESET);
             }
         } else if (ret == -1) {
             printf("[LECTOR] Error en select.\n");}
@@ -90,7 +90,7 @@ return NULL;
    cadena se sale quedando en el estado que estaba para recargar la cadena*/
 void Procesamiento_de_cadena_serProc(char *c){
 static unsigned char estado;
-static unsigned char cadena,indice,len,cmd,crc,len1;//estado de la cadena
+static unsigned char indice,len,cmd,crc,len1;//estado de la cadena
 static unsigned char param[PARAM_SIZE_COMANDOS],index;
     
      indice=0;
@@ -110,7 +110,12 @@ static unsigned char param[PARAM_SIZE_COMANDOS],index;
       case 10:if((len1-1)==0){param[index++]=dato;}
               else{estado++;}break;
       case 11:crc=dato;estado++;break;
-      case 12:if(dato==ETX){procesarCmd(len,cmd,&param[0],crc);}
+      case 12:if(dato==ETX){crc_array[0]=len;crc_array[1]=cmd;
+                            for(int i=0,int j=2;i<len-2;i++,j++)
+                                   crc_array[j]=param[i];
+                            int crc1=getCRC_v2(&crc_array[0],len);
+                            if(crc1==crc)       
+                                 procesarCmd(cmd,&param[0]);}
               estado=98;break;
       case 98:estado=1;cmd=0;len=0;break;//cadena corrupta
       default:break;}//fin switch-++++++++++++++++++++++++
@@ -118,9 +123,17 @@ static unsigned char param[PARAM_SIZE_COMANDOS],index;
 }//fn de procesamiento de cadena que llega del erial de la procesadora
 
 
-void procesarCmd(unsigned char len,unsigned char cmd,
-                 unsigned char *param,unsigned char crc){
-    
+void procesarCmd(unsigned char cmd,unsigned char *param){
+unsigned char x;
+    x=*param;    
+    printf(" %d %c",x,x)
+    switch(cmd){
+        case CMD_DET_ON:printf("%s COMANDO DET ON ACEPTADO %s",CVERD,CRESET); //aumenta el conteo de Rechazo
+        case CMD_BARRA:printf("%s COMANDO BARRA ACEPTADO %i %s",CAMAR,cmd,CRESET);break;  //mueve la barra de deteccion
+        case CMD_DET_PM:printf("%s COMANDO DET PARAM ACEPTADO %s",CMORA,CRESET); //hace display de los parametros de Portal Inicio
+        default:break;
+    }//fin witch
+
     
 }//fin de procesar cmd+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
