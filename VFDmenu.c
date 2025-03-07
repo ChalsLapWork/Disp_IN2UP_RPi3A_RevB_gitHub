@@ -53,7 +53,7 @@ const unsigned char x[4]={80,24,24,24};
 const unsigned char y[4]={ 2,10,12,14};
 unsigned char ret=0;
 //unsigned char *inst1,*inst2;//instancias subHilos a ejecutar que se pueden ejecutar en otros lados
-unsigned char *estado,/* *control,*/*mem_15bytes,*aux3_char,*aux0_uchar;
+unsigned char *estado,*aux3_char,*aux0_uchar;
 unsigned short int aux1_usi;
 const unsigned char DEBUG=0x11,MEMO=0x12;
 unsigned char Status_Prod=DEBUG,x1,y1;
@@ -62,14 +62,14 @@ union W16{
    unsigned char c[2];
 }word_16bits;
 
-            estado=mem;
+/*            estado=mem;
            //control=mem+1;
          aux3_char=mem+2;
   word_16bits.c[0]=*(mem+4);
   word_16bits.c[1]=*(mem+5);
           aux1_usi=word_16bits.usi;
         mem_15bytes=mem+6;//6,7 15 bytes
-        aux0_uchar=mem+22;
+        aux0_uchar=mem+22;*/
 
  /*while(1){		
     VFDserial_SendBlock1(&a[0],sizeof(a));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version

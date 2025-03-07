@@ -107,6 +107,7 @@ static int count;
 				 case 1:mensOK(" eror 175 protocolo par hecho",CAMARILLO);break;
 				 case 2:estado=9;break;
                  default:estado=8;i=0;break;}
+		      break;		 
 	  case 8:if(len==n){n--;c[i]=0;estado++;}
 	         *(crc+n++)=c[i++]=*str++;
              break;
@@ -292,7 +293,7 @@ unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despl
 					break;
 	  default:estado3=1;break;}
    }//fin de WHILE bandera de Menu Pendiente--------------------   
-//return;
+return NULL; 
 }//fin de prueba de despliegue de datos en el VFD+++++++++++++++++++++++++++++
 //fin del control operativo del menu de escape-----------------------------------------
  

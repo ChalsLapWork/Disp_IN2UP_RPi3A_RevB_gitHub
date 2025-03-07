@@ -205,33 +205,6 @@ unsigned short int maxx,maxy,ymax,ymin;
  * la conversion mas facil y rapida corespondiente al zoom seleccionado */
 void generarPixelsAnalogos(void){//signed short int Min,signed short int miny){
 
-unsigned short int pixelSize;//tamaño del pixel de analogo versus DDS por zoom selected
-unsigned short int i,j;//,jj;
-//unsigned char k=0;
-       pixelSize=zoom.Maxx/DDS_X_4d8;//DDS_X_4d8=96;  //95..192  ->0..Max
-       if(pixelSize==0)//menor al 96,tamaño del pixel es portanto 1
-    	   pixelSize=1;
-      for(i=DDS_X_4d8,j=0;i<DDS_X_8d8;i++,j+=pixelSize)//parte poitiva de 95 a 192 en x
-    		   pixelConversionX[i]=j;
-    	   /* genera la parte negativa de las ordenadas  x*/
-       //jj=zoom.Maxx;//Rellenar  Y  0..95 con->-Max..0
-       for(i=DDS_X_4d8-1,j=pixelSize;i>=0;i--,j+=pixelSize){
-    	   if(i>DDS_X_4d8)
-    		   break;
-    	   pixelConversionX[i]=j;}
-       zoom.pixelSizeX=pixelSize;
-       /* genera la parte positiva de las absisas Y  con calculo inteligente*/
-       pixelSize=(unsigned char)(zoom.Maxy/DDS_Y_4d8);
-       if(pixelSize==0)
-    	   pixelSize=1;//seguro anti fallos.
-       for(i=DDS_Y_4d8-1,j=1;i>=0;i--,j+=pixelSize){ // 0..64  +Max..0
-           if(i>DDS_Y_4d8)
-        	   break;
-    	   pixelConversionY[i]=j;}
-      /* gener las ordenadas negativas*/   //  64..127 0..-Max      
-        for(i=DDS_Y_4d8,j=0;i<=DDS_Y_8d8;i++,j+=pixelSize)    
-        	pixelConversionY[i]=j;
-       zoom.pixelSizeY=pixelSize;
        
 }//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   	   
            
