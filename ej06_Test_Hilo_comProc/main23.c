@@ -13,6 +13,11 @@
 #define BUF_SIZE 256
 #define BUFFER6_SIZE 1024  // Tamaño del nuevo buffer6
 
+void Procesamiento_de_cadena_serProc(char *c);
+void procesarComando(unsigned char len,unsigned char cmd,unsigned char crc);
+
+
+
 // Estructura para compartir datos entre hilos
 typedef struct {
     int serial_fd;           // Descriptor de archivo del puerto serial
@@ -104,7 +109,7 @@ static unsigned char param[PARAM_SIZE_COMANDOS],index;
              estado=98;break;
       case 10:if((len1-1)==0){param[index++]=dato;}
               else{estado++;}break;
-      case 11:crc=datos;estado++;break;
+      case 11:crc=dato;estado++;break;
       case 12:if(dato==ETX){procesarCmd(len,cmd,&param[0],crc);}
               estado=98;break;
       case 98:estado=1;cmd=0;len=0;break;//cadena corrupta
