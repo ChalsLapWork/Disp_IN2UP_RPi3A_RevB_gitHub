@@ -44,7 +44,7 @@ return ret;
 //Este metodo Solo se ejecuta una vez sin instancias
 unsigned char  PortalinicioDisplay(unsigned char *mem){//Funcion Suprema de Despliegue de la Pantalla0
 const unsigned char s[]=VERSION2;
-unsigned char *ss;
+unsigned char ss;
 const unsigned char  a[]="Test Set-up";
 const unsigned char  b[]="S                P";
 const unsigned char  c[]="Cuenta rechazos_!";
@@ -88,13 +88,11 @@ union W16{
       VFDposicion(65,0);
       VFDserial_SendBlock1(&s[0],sizeof(s));//version
 	  aux3_char=producto.name[1];
-	   aux1_usi=length(&producto.name[0],sizeof(producto.name));  	 
+	  aux1_usi=length(&producto.name[0],sizeof(producto.name));  	 
       aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);
-       (Status_Prod == MEMO) ? VFDposicion(aux0_uchar, 2) : VFDposicion(x[0], y[0]);
- 	   if(Status_Prod==MEMO){
-		  ss=aux3_char;
-		  VFDserial_SendBlock1(ss,(unsigned char)aux1_usi);}
-	   else{VFDserial_SendBlock1(&a[0],sizeof(a));} 
+      (Status_Prod == MEMO) ? VFDposicion(aux0_uchar, 2) : VFDposicion(x[0], y[0]);
+
+	   VFDserial_SendBlock1(&a[0],sizeof(a));} 
 	   VFDposicion(x[1],y[1]);
 	   VFDserial_SendBlock1(&b[0],sizeof(b));
        VFDposicion(x[2],y[2]);
