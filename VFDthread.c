@@ -173,7 +173,7 @@ unsigned char *array_crc,index=0,new_len;
                      //  mens_Warnning_Debug("Error: La longitud de los datos no coincide con el tamaño del buffer.");
                        //return;}
                    datos_len = *str;  // Descontamos el byte de `len` y el byte `cmd`
-                   printf("Longitud de datos: %d\n", datos_len);
+                   printf("Longitud de datos: %d\n", (int)datos_len);
                    str++;i++;estado++;break;
             case 2:printf("Estado 2: Leyendo el byte de comando (CMD)...\n");  // Leer el byte de comando (CMD)
                    cmd=*str++;i++;printf("Comando (CMD): %d\n", cmd);
@@ -195,7 +195,7 @@ unsigned char *array_crc,index=0,new_len;
                                      c[j]=*str++;i++;  
                                      array_crc[index++]=c[j];}
                                break;}             
-                   printf("Dato %zu: %02X %i  %c\n", j, c[j],c[j],c[j]);}                
+                   printf("Dato %i: %02X %i  %c\n", j, c[j],c[j],c[j]);}                
                    estado++;break;
             case 4:printf("Estado 4: Calculando y verificando CRC...\n");  // Calcular y verificar CRC
                    crc_calculado = getCRC_v2(array_crc,new_len);  // Sumar 2 para incluir `len` y `cmd`
