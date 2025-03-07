@@ -112,7 +112,7 @@ int semaforo;
             case 6:memcpy(buffer2 + buffer2_len, buffer_circular[out].data, len);
                    buffer2_len+=len;
                    sem_post(&sem_vacios);//incrementa vacios,
-                   printf("Productor: Copió datos al buffer2 (len: %zu, total en buffer2: %zu)\n", len, buffer2_len);
+                   printf("Productor: Copió datos al buffer2 (len: %i, total en buffer2: %i)\n", len, buffer2_len);
                    out = (out + 1) % NUM_ENTRADAS;
                    estado++;break;
             case 7:sem_getvalue(&sem_llenos,&semaforo);
