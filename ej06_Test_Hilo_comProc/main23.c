@@ -109,7 +109,7 @@ static unsigned char numParam,numParam0;//numero de parametros
              if(len==2)estado++;//comandos sin parametros
              else{estado=10;len1=len;index=0;
                   numParam0=numParam=len-2;
-                  for(int i=0;i<PARAM_SIZE_COMANDOS;i++){
+                  for(int i=0;i<;i++){
                           param[i]=0;   }
                   }break;//comandos con parametros
       case 4:crc=dato;estado++;break;    //comandos sin parametros
@@ -117,16 +117,18 @@ static unsigned char numParam,numParam0;//numero de parametros
                 procesarComando(len,cmd,crc);}
              estado=98;break;
       case 10:if(numParam0==0){
-                   estado++;}
+                   crc=dato;
+                   crc_array[0]=len;crc_array[1]=cmd;
+                   for(int i=0, j=2;i<len-2;i++,j++)
+                                   crc_array[j]=param[i];
+                    int crc1=getCRC_v2(&crc_array[0],len);
+                    if(crc1==crc)
+                         estado++;
+                    else{ estado=98;}}
               else{param[numParam-numParam0--]=dato;}
               break;
-      case 11:crc=dato;estado++;break;
-      case 12:if(dato==ETX){crc_array[0]=len;crc_array[1]=cmd;
-                            for(int i=0, j=2;i<len-2;i++,j++)
-                                   crc_array[j]=param[i];
-                            int crc1=getCRC_v2(&crc_array[0],len);
-                            if(crc1==crc)       
-                                 procesarCmd(cmd,&param[0]);}
+      case 11:if(dato==ETX){
+                            procesarCmd(cmd,&param[0]);}
               estado=98;break;
       case 98:estado=1;cmd=0;len=0;break;//cadena corrupta
       default:estado=1;break;}//fin switch-++++++++++++++++++++++++
