@@ -93,7 +93,7 @@ static unsigned char estado;
 static unsigned char indice,len,cmd,crc,len1;//estado de la cadena
 static unsigned char param[PARAM_SIZE_COMANDOS],index;
 unsigned char crc_array[PARAM_SIZE_COMANDOS];
-static unsigned char numParam;//numero de parametros    
+static unsigned char numParam,numParam0;//numero de parametros    
 
      indice=0;
  while(*(c+indice)!='\0'){
@@ -108,14 +108,14 @@ static unsigned char numParam;//numero de parametros
       case 3:cmd=dato;
              if(len==2)estado++;//comandos sin parametros
              else{estado=10;len1=len;index=0;
-                  numParam=len-2;}break;//comandos con parametros
+                  numParam0=numParam=len-2;}break;//comandos con parametros
       case 4:crc=dato;estado++;break;    //comandos sin parametros
       case 5:if(dato==ETX){
                 procesarComando(len,cmd,crc);}
              estado=98;break;
-      case 10:if(numParam==0){
+      case 10:if(numParam0==0){
                    estado++;}
-              else{param[numParam++]=dato;}
+              else{param[numParam-numParam0--]=dato;}
               break;
       case 11:crc=dato;estado++;break;
       case 12:if(dato==ETX){crc_array[0]=len;crc_array[1]=cmd;
