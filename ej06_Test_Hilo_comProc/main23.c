@@ -108,7 +108,10 @@ static unsigned char numParam,numParam0;//numero de parametros
       case 3:cmd=dato;
              if(len==2)estado++;//comandos sin parametros
              else{estado=10;len1=len;index=0;
-                  numParam0=numParam=len-2;}break;//comandos con parametros
+                  numParam0=numParam=len-2;
+                  for(int i=0;i<PARAM_SIZE_COMANDOS;i++){
+                          param[i]=0;   }
+                  }break;//comandos con parametros
       case 4:crc=dato;estado++;break;    //comandos sin parametros
       case 5:if(dato==ETX){
                 procesarComando(len,cmd,crc);}
