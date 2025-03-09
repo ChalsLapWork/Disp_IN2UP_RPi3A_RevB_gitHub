@@ -115,17 +115,21 @@ static unsigned char numParam,numParam0;//numero de parametros
       case 4:crc=dato;estado++;break;    //comandos sin parametros
       case 5:if(dato==ETX){
                 procesarComando(len,cmd,crc);}
-             estado=98;break;
+             estado=98;
+             break;
       case 10:if(numParam0==0){
                    crc=dato;
-                   crc_array[0]=len;crc_array[1]=cmd;
+                   crc_array[0]=len;
+                   crc_array[1]=cmd;
                    for(int i=0, j=2;i<len-2;i++,j++)
-                                   crc_array[j]=param[i];
+                        crc_array[j]=param[i];
                     int crc1=getCRC_v2(&crc_array[0],len);
                     if(crc1==crc)
                          estado++;
-                    else{ estado=98;}}
-              else{param[numParam-numParam0--]=dato;}
+                    else{ 
+                        estado=98;}}
+              else{
+                param[numParam-numParam0--]=dato;}
               break;
       case 11:if(dato==ETX){
                             procesarCmd(cmd,&param[0]);}
