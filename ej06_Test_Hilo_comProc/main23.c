@@ -91,7 +91,8 @@ return NULL;
    cadena se sale quedando en el estado que estaba para recargar la cadena*/
 void Procesamiento_de_cadena_serProc(char *c){
 static unsigned char estado;
-static unsigned char indice,len,cmd,crc,len1;//estado de la cadena
+static unsigned char len,cmd,crc,len1;//estado de la cadena
+static unsigned short int indice; //el buffer6 es  de 1024 tamaño
 static unsigned char param[PARAM_SIZE_COMANDOS],index;
 unsigned char crc_array[PARAM_SIZE_COMANDOS];
 static unsigned char numParam,numParam0;//numero de parametros    
