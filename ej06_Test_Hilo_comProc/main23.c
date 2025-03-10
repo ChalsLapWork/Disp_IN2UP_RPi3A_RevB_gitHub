@@ -157,7 +157,7 @@ unsigned char x;
 
 
 /* procesamiento de comando sin parametros */
-void procesarComando(unsigned char len,unsigned char cmd,unsigned char -=){
+void procesarComando(unsigned char len,unsigned char cmd,unsigned char crc){
 unsigned char crc1;
 unsigned char buffer[2];
       if(len==2){
