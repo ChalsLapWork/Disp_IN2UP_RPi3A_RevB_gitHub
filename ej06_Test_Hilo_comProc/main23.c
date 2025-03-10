@@ -99,12 +99,11 @@ static unsigned char numParam,numParam0;//numero de parametros
 
      indice=0;
  while((*(c+indice)!='\0')&&(indice<BUFFER6_SIZE)){
-   unsigned char dato=*(c+indice++);
+   unsigned char dato=*(c+indice);
+   *(c+indice++)=0xFF;
    switch(estado){
-      case 1:if(dato==STX){
+      case 1:if(dato==STX)
                     estado++;
-                    for(int i=0;i<PARAM_SIZE_COMANDOS;i++)
-                            param[i]=0;}
               break;
       case 2:len=dato;
              if(len<2){estado=98;break;}
