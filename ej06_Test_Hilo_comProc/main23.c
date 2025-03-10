@@ -95,7 +95,7 @@ static unsigned char len,cmd,crc,len1;//estado de la cadena
 static unsigned short int indice; //el buffer6 es  de 1024 tamaño
 static unsigned char param[PARAM_SIZE_COMANDOS],index;
 unsigned char crc_array[PARAM_SIZE_COMANDOS];
-static unsigned char numParam,numParam0;//numero de parametros    
+static unsigned char numParam,numParam0;//numero de parametros    .
 
      indice=0;
  while((*(c+indice)!='\0')&&(indice<BUFFER6_SIZE)){
