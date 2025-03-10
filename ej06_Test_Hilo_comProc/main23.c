@@ -97,7 +97,7 @@ unsigned char crc_array[PARAM_SIZE_COMANDOS];
 static unsigned char numParam,numParam0;//numero de parametros    
 
      indice=0;
- while((*(c+indice)!='\0')||(indice<BUFFER6_SIZE)){
+ while((*(c+indice)!='\0')&&(indice<BUFFER6_SIZE)){
    unsigned char dato=*(c+indice++);
    switch(estado){
       case 1:if(dato==STX)
