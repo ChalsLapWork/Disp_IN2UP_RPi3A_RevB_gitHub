@@ -179,7 +179,7 @@ unsigned char mens[]={"COMANDO BARRA ACEPTADO"};
     switch(cmd){
         case CMD_DET_ON:printf("%s %s %s",CVERD,mens,CRESET);break; //aumenta el conteo de Rechazo
         case CMD_BARRA://2+8+9+1
-                       Serial_Command_Barra_Detection(param); 
+                       //Serial_Command_Barra_Detection(param); 
                        printf("%s %s  %i %s:%i",CAMAR,mens,cmd,CRESET,*param);
                        break;  //mueve la barra de deteccion
         case CMD_DET_PM:printf("%s %s %s",CMORA,mens,CRESET);break; //hace display de los parametros de Portal Inicio
