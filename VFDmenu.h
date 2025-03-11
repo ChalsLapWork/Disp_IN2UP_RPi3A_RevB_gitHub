@@ -915,7 +915,7 @@ void rotateVarParte11(void);
 void displayvarParte11(void);
 void DisplayParte11Menu(void);
 void DisplayAjusteVibracionMenu(void);
-void getBoxPattern(unsigned char box,unsigned char *mode,unsigned short int *x1,unsigned short int *y1,unsigned short int *x2,unsigned short int *y2);
+//void getBoxPattern(unsigned char box,unsigned char *mode,unsigned short int *x1,unsigned short int *y1,unsigned short int *x2,unsigned short int *y2);
 unsigned char displayBoxDestructor(unsigned char mode);
 void DisplayEstaSeguro2(void);
 void displayBox(unsigned char *MutexCV);
@@ -1009,5 +1009,8 @@ unsigned char enterCursorDDS_v2(unsigned char *inst);
 unsigned char menus_service(unsigned char *mem);
 unsigned char find_Next_Context(unsigned char *context);
 void cambio_contexto(unsigned char contexto);
+void display_Barra_Deteccion(unsigned char barra);
+
+
 
 #endif /* VFDMENU_H_ */

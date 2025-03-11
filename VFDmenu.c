@@ -94,13 +94,15 @@ union W16{
 	   displayCuadroMadre_VFD();
        Deteccion.CuadroMadreReady=TRUE;
 	   vfd.box.box0=0;//se inicia desde el primer cuadro a graficar. 
-
+	   vfd.box.box=0;//se inicializa la barra de deteccion.
+	   vfd.box.timer=0;
+	   for(int i=0;i<SIZE_BOXES;i++)
+	         vfd.box.boxs[i]=0;//init boxees variables 
+       vfd.config.bits.BOX_enable=TRUE;//se autoriza a dibujar cajas
 	   //init_Sensibilidad();
        vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
 	   
        ret=TRUE;
-	    
- 
 return ret;   
 }// FIN DESPLIEGUE DEL PORTAL INICIO-------------------------------------------------------------------
 
@@ -108,6 +110,34 @@ return ret;
 
 
 
+/**************HOJAS EJECUTIVAS ******************************************************/
+/*************************************************************************************/
+/*************************************************************************************/
+/*************************************************************************************/
+/*************************************************************************************/
+/*************************************************************************************/
+/*************************************************************************************/
+/*************************************************************************************/
+/*************************************************************************************/
+/*************************************************************************************/
+/*************************************************************************************/
+/*************************************************************************************/
+/*************************************************************************************/
+/*************************************************************************************/
+/*************************************************************************************/
+/*************************************************************************************/
+/********* HOJAS DE LOS MENUS *******************************************************/
+
+
+/*  Gestiona la ejecucion del despliegue de cambio de cuadritos de la barra de deteccion
+    los valores son de apartir de 15 de 5 en 5 */
+void display_Barra_Deteccion(unsigned char barra){
+ bool validos[256]={[0 ... 255]=false};//se ponen todos los valores en falso
+ validos[PORTAL_INICIO]=true; //poner aqui los menus que contienen la barra de deteccion    
+    if(vfd.menu.contexto.solicitaCambioA>0) return; //hay un cambio de menu
+	if(validos[vfd.menu.contexto.Actual]){
+		     VFDserial_SendBarraDet(barra);}     
+}//FIN DE display de barra de deteccion++++++++++++++++++++++++++++++++++++++++++++
 
 
 unsigned char display_centrarNombres(unsigned char nchars){

@@ -234,6 +234,23 @@ unsigned char array[40];
 return 1;// fin de enviar mensaje++++++++++++++++++++++
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
 
+//mandamos el valor al cual la barra de deteccion debe de aumentar
+//o disminur en un timepo que se vea por el ojo humano
+unsigned char VFDserial_SendBarraDet(unsigned char val){ 
+unsigned char array[6];
+unsigned char len=3 //longitud del calculo crc   
+     array[0]=STX;
+     array[1]=len;//longitud;
+     array[2]=CMD_BARRA;
+     array[3]=val;
+     array[4]=getCRC_v2(&array[1],len);
+     array[5]=ETX;
+   VFDserial_SendBlock_buf(array,6);
+}//fin de mandar comando de barra de deteccion+++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
 //init el VFD++++++++++++++++++++++++++++++++++++++++++++++ 
 unsigned char inicializar_VFD(void){
 const unsigned char LEN=2;//cantidad de bytes a calcular porf CRC    	

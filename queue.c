@@ -132,6 +132,16 @@ return;
  *  buffer c en base al comando indicado,*/
 unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,
                       unsigned char size){
+const unsigned char HI  0x00
+const unsigned char LO  0x01
+union u1{//access word: 
+unsigned  short int coord16;   //   	0xaabb   
+unsigned char byte[2];        //byte[0]=aa,byte[1]=bb
+}coordn16; //coordenadas de 2 bytes 
+const unsigned int TIEMPO_CAJAS=500000;//useg tiempo de espera para cambio de cajas
+const unsigned char MAX_BOXES =17;//nmero de boxes Dinamicas
+unsigned char *box0,*box1,mode,ibox0,pen;
+unsigned short int x1,y1,x2,y2;						
 union{
   unsigned short int t;
   unsigned char n[2];
@@ -151,7 +161,8 @@ enum {
     CMD_DMS = 110,
     CMD_DUS = 120,
     CMD_ERR = 130,
-    CMD_OK = 140   };
+    CMD_OK = 140,  
+	CMD_BAR= 150 };
 
     while(!ret){
        switch(estado){
@@ -169,6 +180,7 @@ enum {
 					 case COMANDO_BOLD: estado=CMD_BLD;break;
 					 case CMD_DELAY_MS: estado=CMD_DMS;break;
 					 case CMD_DELAY_US: estado=CMD_DUS;break;
+					 case CMD_BARRA:    estado=CMD_BAR;break;//BARRA DE DETECCION
 					 default:estado=CMD_ERR;break;}
 				   break;
 		   case   CMD_DMS:union_usi.n[0]=*c;
@@ -243,6 +255,53 @@ enum {
 						  if(*c==1) writePort(0x01); 
 						  else{writePort(0x00);}usleep(50);
 						  estado=CMD_OK;break;
+		   case CMD_BAR:  if(vfd.config.bits.BOX_enable){
+                               box0=&vfd.box.box0;     
+		                       box1=&vfd.box.box;
+                               
+							   *box1=*c;		 
+		                       estado++;}
+					      else{estado=CMD_ERR;}break;		  
+		   case CMD_BAR+1:if(*box0>MAX_BOXES)
+						                *box0=0;
+		                  if(*box0==*box1){
+							     estado=CMD_OK;break;}
+						  else{if(*box0>*box1){
+							      pen=0;ibox0=*box0;
+								  getBoxPattern(ibox0,&mode,&x1,&y1,&x2,&y2);//box0 se tiene que decrementar despues no antes
+                                  if(*box0>0)
+								      ibox0--;
+							      *box0=ibox0;}		  
+							   else{if(*box1>*box0){
+									    pen=1;ibox0=*box0;ibox0++;//increment value box0, to reach box1
+										getBoxPattern(ibox0,&mode,&x1,&y1,&x2,&y2);
+										*box0=ibox0;}}}
+						  estado++;break;
+		   case CMD_BAR+2: writePort(0x1F);  usleep(50);
+		                   writePort(0x28);  usleep(50);
+		                   writePort(0x64);  usleep(50);
+		                   writePort(0x11);  usleep(50);
+		                   writePort(mode);  usleep(50);
+		                   writePort(pen);   usleep(50);
+						   coordenadas.coord16=x1;		
+						   writePort(coordenadas.byte[LO]);usleep(50);		
+						   writePort(coordenadas.byte[HI]);usleep(50);
+						   coordenadas.coord16=y1;		
+						   writePort(coordenadas.byte[LO]);usleep(50);
+						   writePort(coordenadas.byte[HI]);usleep(50);
+						   coordenadas.coord16=x2;		
+						   writePort(coordenadas.byte[LO]);usleep(50);
+						   writePort(coordenadas.byte[HI]);usleep(50);
+						   coordenadas.coord16=y2;		
+						   writePort(coordenadas.byte[LO]);usleep(50);
+						   writePort(coordenadas.byte[HI]);usleep(50);
+						   usleep(TIEMPO_CAJAS);//tiempo que tarda la caja en cambiar
+						   estado--;break;//regresamos al estado anterior
+		                   
+								  
+
+
+
 		   case CMD_OK: ret=TRUE;/*ret2=TRUE;*/ estado=0;break;		   
 		   case CMD_ERR:ret=TRUE;/*ret2=FALSE;*/estado=0;break;			
            default:estado=1;break;}//fin switch+++++++++++++
@@ -264,6 +323,7 @@ unsigned char debug;
    vfd.config.bits.init_Menu=0;//no esta init el VFD
    vfd.config.bits.MenuPendiente=TRUE;//hay pendiente un menu por desplegar
    vfd.config.bits.Menu_Ready=FALSE;//no se a desplegado menu solicitado
+   vfd.config.bits.BOX_enable=FALSE;//NO SE pueden dibujar cajas
    pthread_mutex_init(&vfd.mutex.VDF_busy,NULL);//init recurso VFD
    vfd.menu.contexto.Actual=PORTAL_INICIO;
    if((debug=pthread_create(&SubProc_Run_Menu,NULL,Run_Menu,NULL))!=0)

@@ -232,7 +232,7 @@
 #define ZOOM_LIM_97 31
 
 
-#define STX 0x03
+#define STX 0x03    //comando para despliegue VFD
 #define ETX 0x02
 #define COMANDO_CLRSCR     'c'
 #define CMD_DELAY_MS       'm'
@@ -248,6 +248,15 @@
 #define COMANDO_INIT       'i'//69h
 #define COMANDO_BOLD       'B'
 #define COMANDO_BOXF       'F'
+
+
+//CONSTANTES DE COMUNICACION
+#define PARAM_SIZE_COMANDOS 10 //numero de parametros por comando 
+//COMANDOS DE COMUNICACION SERIAL PROCESADORA
+#define CMD_DET_ON 0x10 //Param:N/A Deteccion Activada/detectada
+#define CMD_BARRA  0x11 //Param:1byte Hasta donde llego la barra de deteccion.
+#define CMD_DET_PM 0x12 //PAram:4bytes parametro de SEnsibilidad y phase.
+
 
 //SIZES-------------------------------------------------------
 #define BUFF_X_CONTEXTO_SIZE  MAXIMO_NUMERO_PROD+1 //RELE
@@ -337,10 +346,3 @@
 
 //#endif //***************************************************************
 //**********************************************************************
-
-//CONSTANTES DE COMUNICACION
-#define PARAM_SIZE_COMANDOS 10 //numero de parametros por comando 
-//COMANDOS DE COMUNICACION SERIAL PROCESADORA
-#define CMD_DET_ON 0x10 //Param:N/A Deteccion Activada/detectada
-#define CMD_BARRA  0x11 //Param:1byte Hasta donde llego la barra de deteccion.
-#define CMD_DET_PM 0x12 //PAram:4bytes parametro de SEnsibilidad y phase.

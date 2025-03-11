@@ -10,7 +10,8 @@
 #include "system.h"
 #include "VFD.h"
 #include "serial.h"
-
+#include "VFDmenu.h"
+#include "math.h"
 
 #define BUF_SIZE 256
 #define BUFFER6_SIZE 1024  // Tamaño del nuevo buffer6
@@ -179,8 +180,8 @@ unsigned char mens[]={"COMANDO BARRA ACEPTADO"};
     printf(" %d %c",x,x);
     switch(cmd){
         case CMD_DET_ON:printf("%s %s %s",CVERD,mens,CRESET);break; //aumenta el conteo de Rechazo
-        case CMD_BARRA://2+8+9+1
-                       //Serial_Command_Barra_Detection(param); 
+        case CMD_BARRA://2+8+9+1 cuadritos
+                       Serial_Command_Barra_Detection(*param); 
                        printf("%s %s  %i %s:%i",CAMAR,mens,cmd,CRESET,*param);
                        break;  //mueve la barra de deteccion
         case CMD_DET_PM:printf("%s %s %s",CMORA,mens,CRESET);break; //hace display de los parametros de Portal Inicio
@@ -206,3 +207,41 @@ unsigned char buffer[2];
 }//fin procesar comando++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+/*****************************************************************************************+++*/
+/*****************************************************************************************+++*/
+/*****************************************************************************************+++*/
+/*****************************************************************************************+++*/
+/*****************************************************************************************+++*/
+/*****************************************************************************************+++*/
+/*****************************************************************************************+++*/
+/****COMANDOS SERIALES         ***********************************************************+++*/
+
+/* CUADRITOS:/2+8+9+1 cuadritos
+    2:VACIOS, 8:VACIOS No alcanza deteccion, 9: cuadros llenos Deteccion Alcanzada
+    1:Cuadro invisible, no se pinta 
+    valores aceptados 15,20,25,30,35...95 de 5 en cinco*/
+void Serial_Command_Barra_Detection(unsigned char parametro){
+unsigned char var;
+    var=parametro;    
+    switch(var){
+       case 15: 
+       case 20:
+       case 25:
+       case 30:
+       case 35:
+       case 40:
+       case 45:
+       case 50:
+       case 55:
+       case 60:
+       case 65:
+       case 70:
+       case 75:
+       case 80:
+       case 85:
+       case 90:
+       case 95: display_Barra_Deteccion(var);break;
+       default:if(var>15)
+                    display_Barra_Deteccion(recalcular_valor_Ser_Barr_det(var));
+               break;}
+}//fin serial comando  barra deteccion+++++++++++++++++++++++++++++++++++++++++++++++++++
