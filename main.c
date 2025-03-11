@@ -61,7 +61,7 @@ int main(void){
   init_queues();
   usleep(500);
   init_menu();
-  init_Serial();fl
+  init_Serial();
 
 
 
