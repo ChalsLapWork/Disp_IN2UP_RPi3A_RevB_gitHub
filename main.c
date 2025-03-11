@@ -23,6 +23,7 @@
 //extern pthread_t SubProc_SendBlock_TX_VFD;
 //extern pthread_t SubProc_SendBlock_chars_TX_VFD;
 extern pthread_t hilo_productor, hilo_consumidor;
+extern pthread_t reader_thread, processor_thread;
 
 
 void signal_handler(int signalnum){
@@ -41,6 +42,10 @@ void cleanup1(void) {
   pthread_join(hilo_productor, NULL);
   //pthread_cancel(SubProc_SendBlock_chars_TX_VFD);
   //pthread_join(SubProc_SendBlock_chars_TX_VFD,NULL);
+  // Espera a que los hilos terminen (en este caso, nunca terminarán)
+    pthread_join(reader_thread, NULL);
+    pthread_join(processor_thread, NULL);
+    cerrar_puerto_serial();
   pthread_exit(NULL);
 }//*****************************************************
 
@@ -55,8 +60,8 @@ int main(void){
   configPuertos();
   init_queues();
   usleep(500);
-  init_Serial();
   init_menu();
+  init_Serial();fl
 
 
 

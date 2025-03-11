@@ -28,7 +28,7 @@ typedef struct {
 pthread_t reader_thread, processor_thread;
 thread_data_t data;
 
-void init_Serial(void){
+int init_Serial(void){
 // Abre el puerto serial
   data.serial_fd = serialOpen("/dev/ttyAMA0", 9600);  // Cambia "/dev/ttyAMA0" y 9600 según tu configuración
   if (data.serial_fd == -1) {
@@ -45,12 +45,12 @@ void init_Serial(void){
     if (pthread_create(&processor_thread, NULL, cons_serial_processor, &data) != 0) {
         printf("%s Error al crear el hilo procesador.\n %s",CAMAR,CRESET);
         return 1;}
-// Espera a que los hilos terminen (en este caso, nunca terminarán)
-    pthread_join(reader_thread, NULL);
-    pthread_join(processor_thread, NULL);
-// Cierra el puerto serial (esto no se ejecutará debido al bucle infinito en los hilos)
-    serialClose(data.serial_fd);
+
 }//fin de init serial++++++++++++++++++++++++++++++++++++++++++++++++
+
+void cerrar_puerto_serial(void){
+      serialClose(data.serial_fd);// Cierra el puerto serial
+}//fin de cerrar puerto serial+++++++++++++++++++
 
 
 
