@@ -244,5 +244,5 @@ unsigned char var;
        default:if(var>15)
                     var=recalcular_valor_Ser_Barr_det(var);
                break;}
- display_Barra_Deteccion(var);break;
+ display_Barra_Deteccion(var);
 }//fin serial comando  barra deteccion+++++++++++++++++++++++++++++++++++++++++++++++++++

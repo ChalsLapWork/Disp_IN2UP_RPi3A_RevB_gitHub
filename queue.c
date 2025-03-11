@@ -132,14 +132,15 @@ return;
  *  buffer c en base al comando indicado,*/
 unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,
                       unsigned char size){
-const unsigned char HI  0x00
-const unsigned char LO  0x01
+//const unsigned char HI  0x00
+//const unsigned char LO  0x01
 union u1{//access word: 
 unsigned  short int coord16;   //   	0xaabb   
 unsigned char byte[2];        //byte[0]=aa,byte[1]=bb
 }coordn16; //coordenadas de 2 bytes 
+coordn16 coordenadas;
 const unsigned int TIEMPO_CAJAS=500000;//useg tiempo de espera para cambio de cajas
-const unsigned char MAX_BOXES =17;//nmero de boxes Dinamicas
+//const unsigned char MAX_BOXES =17;//nmero de boxes Dinamicas
 unsigned char *box0,*box1,mode,ibox0,pen;
 unsigned short int x1,y1,x2,y2;						
 union{

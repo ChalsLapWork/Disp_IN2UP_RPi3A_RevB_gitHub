@@ -238,7 +238,7 @@ return 1;// fin de enviar mensaje++++++++++++++++++++++
 //o disminur en un timepo que se vea por el ojo humano
 unsigned char VFDserial_SendBarraDet(unsigned char val){ 
 unsigned char array[6];
-unsigned char len=3 //longitud del calculo crc   
+unsigned char len=3; //longitud del calculo crc   
      array[0]=STX;
      array[1]=len;//longitud;
      array[2]=CMD_BARRA;

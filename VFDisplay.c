@@ -3,7 +3,8 @@
 #include "VFD.h"
 #include "errorController.h"
 #include <stdio.h>
-
+#include "VFDmenu.h"
+#include "BarraDisplay.h"
 
 
 
@@ -12,7 +13,7 @@
  *  la 8,  y la caja BOX_LLENA es de la box=9 hasta box=17; */ 
 void getBoxPattern(unsigned char box,unsigned char *mode,unsigned short int *x1,unsigned short int *y1,unsigned short int *x2,unsigned short int *y2){
 
- switch(menu.contexto.Actual){	
+ switch(vfd.menu.contexto.Actual){	
    case PORTAL_INICIO:
     	  switch(box){
 			 case 1 : *x1=POS_X1_BOX3_PI;*y1=POS_Y1_BOX3_PI;*x2=POS_X2_BOX3_PI;*y2=POS_Y2_BOX3_PI;break;  
