@@ -1,21 +1,18 @@
-#include <wiringPi.h>
-#include <wiringSerial.h>
+//#include <wiringPi.h>
+//#include <wiringSerial.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
 #include <string.h>
 #include <sys/select.h>
-#include "../errorController.h"
-#include "../system.h"
-#include "../VFD.h"
+#include "errorController.h"
+#include "system.h"
+#include "VFD.h"
+
 
 #define BUF_SIZE 256
 #define BUFFER6_SIZE 1024  // Tamaño del nuevo buffer6
-
-void Procesamiento_de_cadena_serProc(char *c);
-void procesarComando(unsigned char len,unsigned char cmd,unsigned char crc);
-void procesarCmd(unsigned char cmd,unsigned char *param);
 
 
 // Estructura para compartir datos entre hilos
@@ -25,7 +22,36 @@ typedef struct {
     char buffer6[BUFFER6_SIZE]; // Nuevo buffer para concatenar datos
     int data_ready;          // Bandera para indicar que hay datos nuevos
     pthread_mutex_t mutex;   // Mutex para proteger el buffer
-} thread_data_t;
+} thread_data_t;//*********************************************************
+
+pthread_t reader_thread, processor_thread;
+thread_data_t data;
+
+void init_Serial(void){
+// Abre el puerto serial
+  data.serial_fd = serialOpen("/dev/ttyAMA0", 9600);  // Cambia "/dev/ttyAMA0" y 9600 según tu configuración
+  if (data.serial_fd == -1) {
+        printf("%s Error al abrir el puerto serial.\n %s",CAMAR,CRESET);
+        return 1;}
+// Inicializa el mutex
+    pthread_mutex_init(&data.mutex, NULL);
+    data.data_ready = 0;  // Inicializa la bandera
+// Crea el hilo lector
+    if (pthread_create(&reader_thread, NULL, serial_reader, &data) != 0) {
+        printf("%s Error al crear el hilo lector.\n %s",CAMAR,CRESET);
+        return 1;}
+// Crea el hilo procesador
+    if (pthread_create(&processor_thread, NULL, cons_serial_processor, &data) != 0) {
+        printf("%s Error al crear el hilo procesador.\n %s",CAMAR,CRESET);
+        return 1;}
+// Espera a que los hilos terminen (en este caso, nunca terminarán)
+    pthread_join(reader_thread, NULL);
+    pthread_join(processor_thread, NULL);
+// Cierra el puerto serial (esto no se ejecutará debido al bucle infinito en los hilos)
+    serialClose(data.serial_fd);
+}//fin de init serial++++++++++++++++++++++++++++++++++++++++++++++++
+
+
 
 // Hilo lector: Lee datos del puerto serial usando select
 void *serial_reader(void *arg) {
@@ -64,7 +90,7 @@ void *serial_reader(void *arg) {
 return NULL;
 }//fin de serial reader+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// Hilo procesador: Procesa los datos del buffer compartido
+// Hilo procesador: Procesa los datos del buffer compartido ++++++++++++++++++++++++++++++++++++
 void *cons_serial_processor(void *arg) {
     thread_data_t *data = (thread_data_t *)arg;
     char local_buffer[BUFFER6_SIZE];
@@ -86,9 +112,11 @@ void *cons_serial_processor(void *arg) {
 return NULL;
 }//fin de consumidor serial protocolo procesador del prootocolo++++++++++++++++++++++++++++++++++++
 
+
+
 /* ¨Prpcesamiento de cadena de datos que llega del puerto serial|
  procesa la cadena completa y si se queda el protocolo a medias y se termina la 
-   cadena se sale quedando en el estado que estaba para recargar la cadena*/
+   cadena se sale quedando en el estado que estaba para recargar la cadena******************************/
 void Procesamiento_de_cadena_serProc(char *c){
 static unsigned char estado;
 static unsigned char len,cmd,crc,len1;//estado de la cadena
@@ -139,8 +167,8 @@ static unsigned char numParam,numParam0;//numero de parametros    .
               estado=98;break;
       case 98:estado=1;cmd=0;len=0;break;//cadena corrupta
       default:estado=1;break;}//fin switch-++++++++++++++++++++++++
-   }//fin while ++++++++++++++++++++++++++++++++++++++++++
-}//fn de procesamiento de cadena que llega del erial de la procesadora
+   }//fin while ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+}//fn de procesamiento de cadena que llega del erial de la procesadora -------------------------------
 
 
 void procesarCmd(unsigned char cmd,unsigned char *param){
@@ -156,9 +184,7 @@ unsigned char mens[]={"COMANDO BARRA ACEPTADO"};
                        break;  //mueve la barra de deteccion
         case CMD_DET_PM:printf("%s %s %s",CMORA,mens,CRESET);break; //hace display de los parametros de Portal Inicio
         default:break;
-    }//fin switch ----------------------------------
-
-    
+    }//fin switch ----------------------------------------------------------------------------
 }//fin de procesar cmd+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -176,48 +202,6 @@ unsigned char buffer[2];
                   default:break;}}
          else{mens_Warnning_Debug(" Error -Len- Procesar Cmd Serial Comms");}}
       else{mens_Warnning_Debug(" Error -Len- Procesar Cmd Serial Comms");}
-}//fin procesar comando+++++++++++++++++++++++++++++++++++++++++++++++++++++
+}//fin procesar comando++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-int main() {
-    pthread_t reader_thread, processor_thread;
-    thread_data_t data;
-
-    // Inicializa WiringPi
-    if (wiringPiSetup() == -1) {
-        printf("Error al inicializar WiringPi.\n");
-        return 1;
-    }
-
-    // Abre el puerto serial
-    data.serial_fd = serialOpen("/dev/ttyAMA0", 9600);  // Cambia "/dev/ttyAMA0" y 9600 según tu configuración
-    if (data.serial_fd == -1) {
-        printf("Error al abrir el puerto serial.\n");
-        return 1;
-    }
-
-    // Inicializa el mutex
-    pthread_mutex_init(&data.mutex, NULL);
-    data.data_ready = 0;  // Inicializa la bandera
-
-    // Crea el hilo lector
-    if (pthread_create(&reader_thread, NULL, serial_reader, &data) != 0) {
-        printf("Error al crear el hilo lector.\n");
-        return 1;
-    }
-
-    // Crea el hilo procesador
-    if (pthread_create(&processor_thread, NULL, cons_serial_processor, &data) != 0) {
-        printf("Error al crear el hilo procesador.\n");
-        return 1;
-    }
-
-    // Espera a que los hilos terminen (en este caso, nunca terminarán)
-    pthread_join(reader_thread, NULL);
-    pthread_join(processor_thread, NULL);
-
-    // Cierra el puerto serial (esto no se ejecutará debido al bucle infinito en los hilos)
-    serialClose(data.serial_fd);
-
-    return 0;
-}
