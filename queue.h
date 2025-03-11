@@ -349,7 +349,7 @@ void *Run_Menu(void *arg);
 //void *VFDserial_SendBlockConsumidor(void *arg);
 //void VFDserial_SendBlock_Tx(DatosTransmision *datos);
 unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char size);
-void VFDserial_SendBlock_Tx1(unsigned char *buffer, size_t len);
+//void VFDserial_SendBlock_Tx1(unsigned char *buffer, size_t len);
 //unsigned char VFDserial_SendBlock_data(void *ptr, size_t size); 
 
 

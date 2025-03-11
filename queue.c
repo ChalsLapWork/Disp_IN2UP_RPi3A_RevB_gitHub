@@ -75,7 +75,7 @@ unsigned char debug;
 
 
 
-
+/*
 void VFDserial_SendBlock_Tx1(unsigned char *buffer, size_t len) {
 unsigned char estado,cmd,n;
 unsigned char c[MAX_NUM_CHAR_VFD];
@@ -122,10 +122,12 @@ static int count;
 	  case 99:estado=2;mens_Warnning_Debug(" error 99 ");break;
 	  default:estado=1;break;}
 	  i++;}//fin while 
-	  
 return;
 }//transmisor de datos a VFD+++++++++++++++++++++++++++++++++++++++++
- 				
+ 	*/
+
+	
+				
 /** esta funcion manda los paquetes del 
  *  buffer c en base al comando indicado,*/
 unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,

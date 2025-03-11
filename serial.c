@@ -9,6 +9,7 @@
 #include "errorController.h"
 #include "system.h"
 #include "VFD.h"
+#include "serial.h"
 
 
 #define BUF_SIZE 256
