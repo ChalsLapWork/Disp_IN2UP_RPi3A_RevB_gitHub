@@ -224,24 +224,25 @@ void Serial_Command_Barra_Detection(unsigned char parametro){
 unsigned char var;
     var=parametro;    
     switch(var){
-       case 15: 
-       case 20:
-       case 25:
-       case 30:
-       case 35:
-       case 40:
-       case 45:
-       case 50:
-       case 55:
-       case 60:
-       case 65:
-       case 70:
-       case 75:
-       case 80:
-       case 85:
-       case 90:
-       case 95: display_Barra_Deteccion(var);break;
+       case 15:var=1;break; 
+       case 20:var=2;break;
+       case 25:var=3;break;
+       case 30:var=4;break;
+       case 35:var=5;break;
+       case 40:var=6;break;
+       case 45:var=7;break;
+       case 50:var=8;break;
+       case 55:var=9;break;
+       case 60:var=10;break;
+       case 65:var=11;break;
+       case 70:var=12;break;
+       case 75:var=13;break;
+       case 80:var=14;break;
+       case 85:var=15;break;
+       case 90:var=16;break;
+       case 95:var=17;break;
        default:if(var>15)
-                    display_Barra_Deteccion(recalcular_valor_Ser_Barr_det(var));
+                    var=recalcular_valor_Ser_Barr_det(var);
                break;}
+ display_Barra_Deteccion(var);break;
 }//fin serial comando  barra deteccion+++++++++++++++++++++++++++++++++++++++++++++++++++
