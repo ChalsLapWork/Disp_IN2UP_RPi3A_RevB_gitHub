@@ -46,7 +46,7 @@ int init_Serial(void){
     if (pthread_create(&processor_thread, NULL, cons_serial_processor, &data) != 0) {
         printf("%s Error al crear el hilo procesador.\n %s",CAMAR,CRESET);
         return 1;}
-
+return 1;
 }//fin de init serial++++++++++++++++++++++++++++++++++++++++++++++++
 
 void cerrar_puerto_serial(void){

@@ -131,7 +131,7 @@ return;
 /** esta funcion manda los paquetes del 
  *  buffer c en base al comando indicado,*/
 unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char size){
-const unsigned int TIEMPO_CAJAS=500000;//useg tiempo de espera para cambio de cajas
+const unsigned int TIEMPO_CAJAS=100000;//useg tiempo de espera para cambio de cajas
 //const unsigned char MAX_BOXES =17;//nmero de boxes Dinamicas
 unsigned char *box0,*box1,mode,ibox0,pen;
 unsigned char  x1,y1,x2,y2;						
@@ -269,12 +269,15 @@ enum {
 									    pen=1;ibox0=*box0;ibox0++;//increment value box0, to reach box1
 										getBoxPattern(ibox0,&mode,&x1,&y1,&x2,&y2);
 										*box0=ibox0;}}}
-						  estado++;break;
+						  estado++;
+						  break;
 		   case CMD_BAR+2: writePort(0x1F);  usleep(50);
 		                   writePort(0x28);  usleep(50);
 		                   writePort(0x64);  usleep(50);
 		                   writePort(0x11);  usleep(50);
-		                   writePort(0x02);  usleep(50);//modo=02=caja
+						   if((mode==BOX_VACIA)||(mode==BOX_LLENA)){
+						        writePort(mode); usleep(50);}
+						   else{writePort(BOX_VACIA);usleep(50);}  
 						   if((pen==0)||(pen==1))
 		                         writePort(pen);
 						   else  writePort(0x01);		 
