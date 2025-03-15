@@ -260,10 +260,10 @@ enum {
 		   case CMD_BAR:  if(vfd.config.bits.BOX_enable){
                                box0=&vfd.box.box0;     
 		                       box1=&vfd.box.box;
-                               
 							   *box1=*c;		 
 		                       estado++;}
-					      else{estado=CMD_ERR;}break;		  
+					      else{estado=CMD_ERR;}
+						  break;		  
 		   case CMD_BAR+1:if(*box0>MAX_BOXES)
 						                *box0=0;
 		                  if(*box0==*box1){
