@@ -131,7 +131,7 @@ return;
 /** esta funcion manda los paquetes del 
  *  buffer c en base al comando indicado,*/
 unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char size){
-const unsigned int TIEMPO_CAJAS=25000;//useg tiempo de espera para cambio de cajas
+const unsigned int TIEMPO_CAJAS=12000;//useg tiempo de espera para cambio de cajas
 //const unsigned char MAX_BOXES =17;//nmero de boxes Dinamicas
 unsigned char *box0,*box1,mode,ibox0,pen;
 unsigned char  x1,y1,x2,y2;						
