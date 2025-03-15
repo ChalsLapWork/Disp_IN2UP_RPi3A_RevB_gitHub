@@ -14,7 +14,7 @@ INCLUDE = #-I../
 LIBS = -lwiringPi
 
 # Opciones del compilador
-CFLAGS = -g -Wall -Wextra -O2 -Wno-unused-parameter -Wno-maybe-uninitialized -Wno-unused-variable -Wno-uninitialized -Wno-unused-but-set-variable -v
+CFLAGS = -g -Wall -Wextra -O0 -Wno-unused-parameter -Wno-maybe-uninitialized -Wno-unused-variable -Wno-uninitialized -Wno-unused-but-set-variable -v
 
 # Comando de compilación
 CC = gcc

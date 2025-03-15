@@ -130,20 +130,11 @@ return;
 				
 /** esta funcion manda los paquetes del 
  *  buffer c en base al comando indicado,*/
-unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,
-                      unsigned char size){
-//const unsigned char HI  0x00
-//const unsigned char LO  0x01
-typedef union{//access word: 
-unsigned  short int coord16;   //   	0xaabb   
-unsigned char byte[2];        //byte[0]=aa,byte[1]=bb
-}coordn16; //coordenadas de 2 bytes 
-
-coordn16 coordenadas;
+unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char size){
 const unsigned int TIEMPO_CAJAS=500000;//useg tiempo de espera para cambio de cajas
 //const unsigned char MAX_BOXES =17;//nmero de boxes Dinamicas
 unsigned char *box0,*box1,mode,ibox0,pen;
-unsigned short int x1,y1,x2,y2;						
+unsigned char  x1,y1,x2,y2;						
 union{
   unsigned short int t;
   unsigned char n[2];
@@ -283,27 +274,23 @@ enum {
 		                   writePort(0x28);  usleep(50);
 		                   writePort(0x64);  usleep(50);
 		                   writePort(0x11);  usleep(50);
-		                   writePort(mode);  usleep(50);
-		                   writePort(pen);   usleep(50);
-						   coordenadas.coord16=x1;		
-						   writePort(coordenadas.byte[LO]);usleep(50);		
-						   writePort(coordenadas.byte[HI]);usleep(50);
-						   coordenadas.coord16=y1;		
-						   writePort(coordenadas.byte[LO]);usleep(50);
-						   writePort(coordenadas.byte[HI]);usleep(50);
-						   coordenadas.coord16=x2;		
-						   writePort(coordenadas.byte[LO]);usleep(50);
-						   writePort(coordenadas.byte[HI]);usleep(50);
-						   coordenadas.coord16=y2;		
-						   writePort(coordenadas.byte[LO]);usleep(50);
-						   writePort(coordenadas.byte[HI]);usleep(50);
+		                   writePort(0x02);  usleep(50);//modo=02=caja
+						   if((pen==0)||(pen==1))
+		                         writePort(pen);
+						   else  writePort(0x01);		 
+						   writePort(x1);    usleep(50);		
+						   writePort(0x00);  usleep(50);
+						   writePort(y1);    usleep(50);
+						   writePort(0x00);  usleep(50);
+						   writePort(x2);	 usleep(50);
+						   writePort(0x00);  usleep(50);
+						   writePort(y2);	 usleep(50);
+						   writePort(0x00);  usleep(50);
 						   usleep(TIEMPO_CAJAS);//tiempo que tarda la caja en cambiar
-						   estado--;break;//regresamos al estado anterior
+						   estado--;
+						   break;//regresamos al estado anterior
 		                   
-								  
-
-
-
+						
 		   case CMD_OK: ret=TRUE;/*ret2=TRUE;*/ estado=0;break;		   
 		   case CMD_ERR:ret=TRUE;/*ret2=FALSE;*/estado=0;break;			
            default:estado=1;break;}//fin switch+++++++++++++
