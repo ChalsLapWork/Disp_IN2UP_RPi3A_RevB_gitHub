@@ -7,6 +7,7 @@
 #include "BarraDisplay.h"
 
 
+extern struct _DISPLAY_VFD_ vfd;
 
 
 /*funcion que nos da las coordenadas de las cajas en  y las cajas con pen=1 con, caja BOX_VACIA hasta 

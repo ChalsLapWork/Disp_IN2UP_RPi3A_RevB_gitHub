@@ -246,6 +246,7 @@ unsigned char len=3; //longitud del calculo crc
      array[4]=getCRC_v2(&array[1],len);
      array[5]=ETX;
    VFDserial_SendBlock_buf(array,6);
+return 0;   
 }//fin de mandar comando de barra de deteccion+++++++++++++++++++++++++++++++++++++++++++++
 
 
