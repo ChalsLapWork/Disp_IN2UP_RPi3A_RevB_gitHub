@@ -12,7 +12,7 @@ extern struct _DISPLAY_VFD_ vfd;
 
 /*funcion que nos da las coordenadas de las cajas en  y las cajas con pen=1 con, caja BOX_VACIA hasta 
  *  la 8,  y la caja BOX_LLENA es de la box=9 hasta box=17; */ 
-void getBoxPattern(unsigned char box,unsigned char *mode,unsigned short int *x1,unsigned short int *y1,unsigned short int *x2,unsigned short int *y2){
+void getBoxPattern(unsigned char box,unsigned char *mode,unsigned char *x1,unsigned char *y1,unsigned char *x2,unsigned char *y2){
 
  switch(vfd.menu.contexto.Actual){	
    case PORTAL_INICIO:
