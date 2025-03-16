@@ -251,14 +251,17 @@ enum {
 		   case CMD_BAR:  if(vfd.config.bits.BOX_enable){
                                box0=&vfd.box.box0;     
 		                       box1=&vfd.box.box;
-							   *box1=*c;*box0=0;
+							   printf("\n 1:box0=%i  box1=%i\n",*box0,*box1);
+							   *box1=*c;  //*box0=0;
+							   printf("\n 2:box0=%i  box1=%i\n",*box0,*box1);
 							   for(int i=0;i<20;i++){
 							              a[i]=0;}
 							   a[0]=0x1F;a[1]=0x28;a[2]=0x64;a[3]=0x11;
 		                       estado++;}
 					      else{estado=CMD_ERR;}
 						  break;		  
-		   case CMD_BAR+1:if(*box0>MAX_BOXES)
+		   case CMD_BAR+1:printf("\n 3:box0=%i  box1=%i\n",*box0,*box1);
+		                  if(*box0>MAX_BOXES)
 						                *box0=0;
 		                  if(*box0==*box1){
 							     estado=CMD_OK;break;}
@@ -279,8 +282,10 @@ enum {
                                                            estado++;}	 
 						   else{estado=CMD_ERR;}}
                                                 else{estado=CMD_ERR;}
+						  printf("\n 4:box0=%i  box1=%i\n",*box0,*box1);						
 						  break;
-		   case CMD_BAR+2:for(int i=0;i<14;i++){
+		   case CMD_BAR+2:printf("\n 5:box0=%i  box1=%i\n",*box0,*box1);
+		   				  for(int i=0;i<14;i++){
 		                       writePort(a[i]); usleep(100); }
 						  usleep(TIEMPO_CAJAS);//tiempo que tarda la caja en cambiar
 						  estado--;
