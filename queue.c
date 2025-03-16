@@ -272,12 +272,10 @@ enum {
 									    pen=1;ibox0=*box0;ibox0++;//increment value box0, to reach box1
 										getBoxPattern(ibox0,&mode,&x1,&y1,&x2,&y2);
 										*box0=ibox0;}}}
-					       if((mode==BOX_VACIA)||(mode==BOX_LLENA)){
-						          writePort(mode); }
-						   else{writePort(BOX_VACIA);}  
-						   if((pen==0)||(pen==1))
-		                          writePort(pen);
-						   else   writePort(0x01);	
+					       if((mode!=BOX_VACIA)||(mode!=BOX_LLENA)){
+						          mode=BOX_VACIA; }
+						   if((pen!=0)||(pen!=1))
+		                          pen=1;
 						   a[6]=x1;a[8]=y1;a[10]=x2;a[12]=y2;	 
 						   estado++;
 						  break;
