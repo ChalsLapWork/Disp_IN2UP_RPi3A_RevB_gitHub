@@ -276,6 +276,7 @@ enum {
 						          mode=BOX_VACIA; }
 						   if((pen!=0)||(pen!=1))
 		                          pen=1;
+						   a[4]=mode;a[5]=pen;		  
 						   a[6]=x1;a[8]=y1;a[10]=x2;a[12]=y2;	 
 						   estado++;
 						  break;
