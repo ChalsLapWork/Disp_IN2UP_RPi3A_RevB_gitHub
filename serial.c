@@ -172,7 +172,7 @@ static unsigned char numParam,numParam0;//numero de parametros    .
    }//fin while ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }//fn de procesamiento de cadena que llega del erial de la procesadora -------------------------------
 
-
+//Procesamiento de Comando con Parametros
 void procesarCmd(unsigned char cmd,unsigned char *param){
 unsigned char x;
 unsigned char mens[]={"COMANDO BARRA ACEPTADO"};

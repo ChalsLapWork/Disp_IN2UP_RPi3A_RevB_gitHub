@@ -134,7 +134,7 @@ unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char 
 const unsigned int TIEMPO_CAJAS=12000;//useg tiempo de espera para cambio de cajas
 //const unsigned char MAX_BOXES =17;//nmero de boxes Dinamicas
 unsigned char *box0,*box1,mode,ibox0,pen;
-unsigned char  x1,y1,x2,y2;						
+unsigned char  x1,y1,x2,y2,a[20];						
 union{
   unsigned short int t;
   unsigned char n[2];
@@ -251,11 +251,17 @@ enum {
 		   case CMD_BAR:  if(vfd.config.bits.BOX_enable){
                                box0=&vfd.box.box0;     
 		                       box1=&vfd.box.box;
-							   *box1=*c;		 
+							   printf("\n 1:box0=%i  box1=%i\n",*box0,*box1);
+							   *box1=*c;  //*box0=0;
+							   printf("\n 2:box0=%i  box1=%i\n",*box0,*box1);
+							   for(int i=0;i<20;i++){
+							              a[i]=0;}
+							   a[0]=0x1F;a[1]=0x28;a[2]=0x64;a[3]=0x11;
 		                       estado++;}
 					      else{estado=CMD_ERR;}
 						  break;		  
-		   case CMD_BAR+1:if(*box0>MAX_BOXES)
+		   case CMD_BAR+1:printf("\n 3:box0=%i  box1=%i\n",*box0,*box1);
+		                  if(*box0>MAX_BOXES)
 						                *box0=0;
 		                  if(*box0==*box1){
 							     estado=CMD_OK;break;}
@@ -269,28 +275,20 @@ enum {
 									    pen=1;ibox0=*box0;ibox0++;//increment value box0, to reach box1
 										getBoxPattern(ibox0,&mode,&x1,&y1,&x2,&y2);
 										*box0=ibox0;}}}
-						  estado++;
+					       if((mode==BOX_VACIA)||(mode==BOX_LLENA)){
+						   if((pen==0)||(pen==1)){
+		                          		   a[4]=mode;a[5]=pen;		  
+						           a[6]=x1;a[8]=y1;a[10]=x2;a[12]=y2;
+                                                           estado++;}	 
+						   else{estado=CMD_ERR;}}
+                                                else{estado=CMD_ERR;}
+						  printf("\n 4:box0=%i  box1=%i\n",*box0,*box1);						
 						  break;
-		   case CMD_BAR+2: writePort(0x1F);  usleep(50);
-		                   writePort(0x28);  usleep(50);
-		                   writePort(0x64);  usleep(50);
-		                   writePort(0x11);  usleep(50);
-						   if((mode==BOX_VACIA)||(mode==BOX_LLENA)){
-						        writePort(mode); usleep(50);}
-						   else{writePort(BOX_VACIA);usleep(50);}  
-						   if((pen==0)||(pen==1))
-		                         writePort(pen);
-						   else  writePort(0x01);		 
-						   writePort(x1);    usleep(50);		
-						   writePort(0x00);  usleep(50);
-						   writePort(y1);    usleep(50);
-						   writePort(0x00);  usleep(50);
-						   writePort(x2);	 usleep(50);
-						   writePort(0x00);  usleep(50);
-						   writePort(y2);	 usleep(50);
-						   writePort(0x00);  usleep(50);
-						   usleep(TIEMPO_CAJAS);//tiempo que tarda la caja en cambiar
-						   estado--;
+		   case CMD_BAR+2:printf("\n 5:box0=%i  box1=%i\n",*box0,*box1);
+		   				  for(int i=0;i<14;i++){
+		                       writePort(a[i]); usleep(100); }
+						  usleep(TIEMPO_CAJAS);//tiempo que tarda la caja en cambiar
+						  estado--;
 						   break;//regresamos al estado anterior
 		                   
 						

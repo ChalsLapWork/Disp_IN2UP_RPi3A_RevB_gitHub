@@ -61,7 +61,20 @@ int main(void){
   init_queues();
   usleep(500);
   init_menu();
-  init_Serial();
+
+  int swap=0;
+  unsigned char k;
+  for(;;){
+     if(swap){swap=0;k=17;
+           procesar_Paquete(CMD_BARRA,&k,0);
+           }
+      else{swap=1;k=0;
+           procesar_Paquete(CMD_BARRA,&k,0);
+           }
+     usleep(800000); }
+
+
+  //init_Serial(); Subprocesos en Depuracion
 
 
 
