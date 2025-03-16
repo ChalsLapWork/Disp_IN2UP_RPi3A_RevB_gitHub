@@ -62,9 +62,9 @@ int main(void){
   usleep(500);
   init_menu();
 
-  int swap=0;
+  /*int swap=0;
   unsigned char k;
-  for(;;){
+  for(;;){//CODIGO DE PRUEBA DE LA BARRA DE DETECCION,
      if(swap){swap=0;k=17;
            procesar_Paquete(CMD_BARRA,&k,0);
            }
@@ -72,9 +72,9 @@ int main(void){
            procesar_Paquete(CMD_BARRA,&k,0);
            }
      usleep(800000); }
+*/
 
-
-  //init_Serial(); Subprocesos en Depuracion
+  init_Serial(); 
 
 
 
