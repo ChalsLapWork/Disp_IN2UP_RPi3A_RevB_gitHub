@@ -134,7 +134,7 @@ unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char 
 const unsigned int TIEMPO_CAJAS=12000;//useg tiempo de espera para cambio de cajas
 //const unsigned char MAX_BOXES =17;//nmero de boxes Dinamicas
 unsigned char *box0,*box1,mode,ibox0,pen;
-unsigned char  x1,y1,x2,y2;						
+unsigned char  x1,y1,x2,y2,a[20];						
 union{
   unsigned short int t;
   unsigned char n[2];
@@ -251,7 +251,10 @@ enum {
 		   case CMD_BAR:  if(vfd.config.bits.BOX_enable){
                                box0=&vfd.box.box0;     
 		                       box1=&vfd.box.box;
-							   *box1=*c;		 
+							   *box1=*c;
+							   for(int i=0;i<20;i++){
+							              a[i]=0;}
+							   a[0]=0x1F;a[1]=0x28;a[2]=0x64;a[3]=0x11;
 		                       estado++;}
 					      else{estado=CMD_ERR;}
 						  break;		  
@@ -269,28 +272,19 @@ enum {
 									    pen=1;ibox0=*box0;ibox0++;//increment value box0, to reach box1
 										getBoxPattern(ibox0,&mode,&x1,&y1,&x2,&y2);
 										*box0=ibox0;}}}
-						  estado++;
-						  break;
-		   case CMD_BAR+2: writePort(0x1F);  usleep(50);
-		                   writePort(0x28);  usleep(50);
-		                   writePort(0x64);  usleep(50);
-		                   writePort(0x11);  usleep(50);
-						   if((mode==BOX_VACIA)||(mode==BOX_LLENA)){
-						        writePort(mode); usleep(50);}
-						   else{writePort(BOX_VACIA);usleep(50);}  
+					       if((mode==BOX_VACIA)||(mode==BOX_LLENA)){
+						          writePort(mode); }
+						   else{writePort(BOX_VACIA);}  
 						   if((pen==0)||(pen==1))
-		                         writePort(pen);
-						   else  writePort(0x01);		 
-						   writePort(x1);    usleep(50);		
-						   writePort(0x00);  usleep(50);
-						   writePort(y1);    usleep(50);
-						   writePort(0x00);  usleep(50);
-						   writePort(x2);	 usleep(50);
-						   writePort(0x00);  usleep(50);
-						   writePort(y2);	 usleep(50);
-						   writePort(0x00);  usleep(50);
-						   usleep(TIEMPO_CAJAS);//tiempo que tarda la caja en cambiar
-						   estado--;
+		                          writePort(pen);
+						   else   writePort(0x01);	
+						   a[6]=x1;a[8]=y1;a[10]=x2;a[12]=y2;	 
+						   estado++;
+						  break;
+		   case CMD_BAR+2:for(int i=0;i<14;i++)
+		                       writePort(a[i]);
+						  usleep(TIEMPO_CAJAS);//tiempo que tarda la caja en cambiar
+						  estado--;
 						   break;//regresamos al estado anterior
 		                   
 						
