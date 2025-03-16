@@ -62,6 +62,7 @@ void *serial_reader(void *arg) {
     ssize_t bytes_read;
     fd_set read_fds;
     struct timeval timeout;
+    int ncount;
 
     while (1) {
         // Configura el conjunto de descriptores de archivo
@@ -86,8 +87,10 @@ void *serial_reader(void *arg) {
             } else if (bytes_read == -1) {
                 printf("%s[LECTOR] Error al leer del puerto serial.%s\n",CROJO,CRESET);
             }
-        } else if (ret == -1) {
-            printf("[LECTOR] Error en select.\n");}
+        } else {if (ret == -1) {
+                     printf("[LECTOR] Error en select.\n");}
+                else{if(ncount++>350){ ncount=0;
+                          printf("%sSin datos Seriales... %s",CAMAR,CRESET);}}}
     }//fin while++++++++++++++++++++++
 return NULL;
 }//fin de serial reader+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
