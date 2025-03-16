@@ -68,7 +68,7 @@ int main(void){
      if(swap){swap=0;k=17;
            procesar_Paquete(CMD_BARRA,&k,0);
            }
-      else{swap=1;k=3;
+      else{swap=1;k=0;
            procesar_Paquete(CMD_BARRA,&k,0);
            }
      usleep(800000); }
