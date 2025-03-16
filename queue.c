@@ -251,7 +251,7 @@ enum {
 		   case CMD_BAR:  if(vfd.config.bits.BOX_enable){
                                box0=&vfd.box.box0;     
 		                       box1=&vfd.box.box;
-							   *box1=*c;
+							   *box1=*c;*box0=0;
 							   for(int i=0;i<20;i++){
 							              a[i]=0;}
 							   a[0]=0x1F;a[1]=0x28;a[2]=0x64;a[3]=0x11;
