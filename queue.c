@@ -272,16 +272,16 @@ enum {
 									    pen=1;ibox0=*box0;ibox0++;//increment value box0, to reach box1
 										getBoxPattern(ibox0,&mode,&x1,&y1,&x2,&y2);
 										*box0=ibox0;}}}
-					       if((mode!=BOX_VACIA)||(mode!=BOX_LLENA)){
-						          mode=BOX_VACIA; }
-						   if((pen!=0)||(pen!=1))
-		                          pen=1;
-						   a[4]=mode;a[5]=pen;		  
-						   a[6]=x1;a[8]=y1;a[10]=x2;a[12]=y2;	 
-						   estado++;
+					       if((mode==BOX_VACIA)||(mode==BOX_LLENA)){
+						   if((pen==0)||(pen==1)){
+		                          		   a[4]=mode;a[5]=pen;		  
+						           a[6]=x1;a[8]=y1;a[10]=x2;a[12]=y2;
+                                                           estado++;}	 
+						   else{estado=CMD_ERR;}}
+                                                else{estado=CMD_ERR;}
 						  break;
-		   case CMD_BAR+2:for(int i=0;i<14;i++)
-		                       writePort(a[i]);
+		   case CMD_BAR+2:for(int i=0;i<14;i++){
+		                       writePort(a[i]); usleep(100); }
 						  usleep(TIEMPO_CAJAS);//tiempo que tarda la caja en cambiar
 						  estado--;
 						   break;//regresamos al estado anterior

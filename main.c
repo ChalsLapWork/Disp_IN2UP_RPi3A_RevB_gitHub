@@ -63,12 +63,15 @@ int main(void){
   init_menu();
 
   int swap=0;
-  for(i=1;i<98;i+=2){
-     if(swap){swap=0;
-           procesar_Paquete(CMD_BARRA,95,0);}
-      else{swap=1;
-           procesar_Paquete(CMD_BARRA,10,0);}
-     usleep(500000); }
+  unsigned char k;
+  for(;;){
+     if(swap){swap=0;k=17;
+           procesar_Paquete(CMD_BARRA,&k,0);
+           }
+      else{swap=1;k=3;
+           procesar_Paquete(CMD_BARRA,&k,0);
+           }
+     usleep(800000); }
 
 
   //init_Serial(); Subprocesos en Depuracion
