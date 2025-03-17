@@ -4,14 +4,17 @@
 #include <string.h>
 #include <wiringPi.h>
 #include <wiringSerial.h>
+#include <unistd.h>
 
 #define SERIAL_DEVICE "/dev/serial0" // Ajusta según tu configuración
 #define BUFFER_SIZE 1024
+#define TIMEOUT_SEC 5 // Tiempo en segundos para indicar falta de datos
 
 // Colores para printf
 #define RED "\033[1;31m"
 #define GREEN "\033[1;32m"
 #define YELLOW "\033[1;33m"
+#define CYAN "\033[1;36m"
 #define RESET "\033[0m"
 
 char buffer1[BUFFER_SIZE];
@@ -29,11 +32,13 @@ void *hiloProductorSerial(void *arg) {
     printf(GREEN "Hilo Productor Serial iniciado\n" RESET);
 
     int index = 0;
+    time_t last_data_time = time(NULL);
     while (1) {
         if (serialDataAvail(serial_fd)) {
             char c = serialGetchar(serial_fd);
             putchar(c); // Mostrar datos en la terminal
             fflush(stdout);
+            last_data_time = time(NULL); // Reiniciar temporizador
 
             pthread_mutex_lock(&mutex);
             if (!buffer1_lleno) {
@@ -46,6 +51,12 @@ void *hiloProductorSerial(void *arg) {
                 }
             }
             pthread_mutex_unlock(&mutex);
+        } else {
+            if (time(NULL) - last_data_time >= TIMEOUT_SEC) {
+                printf(CYAN "\nNo se han recibido datos en %d segundos...\n" RESET, TIMEOUT_SEC);
+                last_data_time = time(NULL); // Reiniciar temporizador
+            }
+            usleep(100000); // Pequeña espera para evitar alto uso de CPU
         }
     }
     return NULL;
