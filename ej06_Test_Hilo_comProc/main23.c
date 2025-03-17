@@ -9,12 +9,14 @@
 #define SERIAL_DEVICE "/dev/serial0" // Ajusta según tu configuración
 #define BUFFER_SIZE 1024
 #define TIMEOUT_SEC 5 // Tiempo en segundos para indicar falta de datos
+#define WAIT_MSG_SEC 2 // Tiempo en segundos para mostrar "Sin datos, esperando..."
 
 // Colores para printf
 #define RED "\033[1;31m"
 #define GREEN "\033[1;32m"
 #define YELLOW "\033[1;33m"
 #define CYAN "\033[1;36m"
+#define MAGENTA "\033[1;35m"
 #define RESET "\033[0m"
 
 char buffer1[BUFFER_SIZE];
@@ -33,12 +35,14 @@ void *hiloProductorSerial(void *arg) {
 
     int index = 0;
     time_t last_data_time = time(NULL);
+    time_t last_wait_msg_time = time(NULL);
     while (1) {
         if (serialDataAvail(serial_fd)) {
             char c = serialGetchar(serial_fd);
             putchar(c); // Mostrar datos en la terminal
             fflush(stdout);
             last_data_time = time(NULL); // Reiniciar temporizador
+            last_wait_msg_time = last_data_time; // Evitar mensaje de espera
 
             pthread_mutex_lock(&mutex);
             if (!buffer1_lleno) {
@@ -52,6 +56,10 @@ void *hiloProductorSerial(void *arg) {
             }
             pthread_mutex_unlock(&mutex);
         } else {
+            if (time(NULL) - last_wait_msg_time >= WAIT_MSG_SEC) {
+                printf(MAGENTA "\nSin datos, esperando...\n" RESET);
+                last_wait_msg_time = time(NULL);
+            }
             if (time(NULL) - last_data_time >= TIMEOUT_SEC) {
                 printf(CYAN "\nNo se han recibido datos en %d segundos...\n" RESET, TIMEOUT_SEC);
                 last_data_time = time(NULL); // Reiniciar temporizador
