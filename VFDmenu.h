@@ -1010,7 +1010,7 @@ unsigned char menus_service(unsigned char *mem);
 unsigned char find_Next_Context(unsigned char *context);
 void cambio_contexto(unsigned char contexto);
 void display_Barra_Deteccion(unsigned char barra);
-
+void display_CuentaRechazosProducto(unsigned char deteccion);
 
 
 #endif /* VFDMENU_H_ */
