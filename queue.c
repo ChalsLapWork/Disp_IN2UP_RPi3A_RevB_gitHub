@@ -26,7 +26,7 @@
 
 
 struct _DISPLAY_VFD_ vfd;
-struct _PRODUCT_ producto;
+struct _PRODUCT_ producto2;
 
 // Buffer compartido
 //unsigned char buffer[BUFFER_SIZE];
