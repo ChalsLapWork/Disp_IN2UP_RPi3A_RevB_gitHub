@@ -169,7 +169,7 @@ struct _Menu1_{
 };
 
 
-struct _PRODUCTO_{
+struct _PRODUCT1_{
    unsigned short int Cuenta_Rechazos;//numer de rechazos de producto
    unsigned short int Cuenta_Productos;//numero de productos que ha pasado por detector
    unsigned short int Sensibilidad;//configurada para este producto
