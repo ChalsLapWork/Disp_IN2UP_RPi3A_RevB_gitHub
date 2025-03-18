@@ -169,6 +169,16 @@ struct _Menu1_{
 };
 
 
+struct _PRODUCTO_{
+   unsigned short int Cuenta_Rechazos;//numer de rechazos de producto
+   unsigned short int Cuenta_Productos;//numero de productos que ha pasado por detector
+   unsigned short int Sensibilidad;//configurada para este producto
+   unsigned char phase;//phase del producto, numero entero
+   float fase;//fase del producto numero flotante
+   unsigned char Phasefrac;// faccion del numero de fase.
+};
+
+
 struct _DISPLAY_VFD_{
 	struct _FIFO_1byte_ x;//parametro 1
 	struct _FIFO_1byte_ y;//parametro 2

@@ -26,9 +26,7 @@
 
 
 struct _DISPLAY_VFD_ vfd;
-//struct Queue qVFDtx;//queue de transmision vfd 
-//struct _Sync2 s1;//sincronia 	
-
+struct _PRODUCTO_ producto;
 
 // Buffer compartido
 //unsigned char buffer[BUFFER_SIZE];
