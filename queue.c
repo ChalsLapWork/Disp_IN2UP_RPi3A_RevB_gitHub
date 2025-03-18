@@ -153,7 +153,8 @@ enum {
     CMD_DUS = 120,
     CMD_ERR = 130,
     CMD_OK = 140,  
-	CMD_BAR= 150 };
+	CMD_BAR= 150,
+	CMD_USINT= 160 };
 
     while(!ret){
        switch(estado){
@@ -172,6 +173,7 @@ enum {
 					 case CMD_DELAY_MS: estado=CMD_DMS;break;
 					 case CMD_DELAY_US: estado=CMD_DUS;break;
 					 case CMD_BARRA:    estado=CMD_BAR;break;//BARRA DE DETECCION
+					 case COMANDO_USINT:estado=CMD_USINT;break;
 					 default:estado=CMD_ERR;break;}
 				   break;
 		   case   CMD_DMS:union_usi.n[0]=*c;
@@ -203,7 +205,8 @@ enum {
 						  estado=CMD_OK;break;
 	       case CMD_BXF:
 		   case CMD_LIN:					  
-           case CMD_BOX:  writePort(0x1F);  usleep(50);
+           case CMD_BOX:  vfd.config.bits.recurso_VFD_Ocupado=TRUE;
+		                  writePort(0x1F);  usleep(50);
 						  writePort(0x28);  usleep(50);
 						  writePort(0x64);  usleep(50);
 						  writePort(0x11);  usleep(50);
@@ -281,18 +284,60 @@ enum {
                                                            estado++;}	 
 						   else{estado=CMD_ERR;}}
                                                 else{estado=CMD_ERR;}
-						  printf("\n 4:box0=%i  box1=%i\n",*box0,*box1);						
+						  //printf("\n 4:box0=%i  box1=%i\n",*box0,*box1);						
 						  break;
-		   case CMD_BAR+2:printf("\n 5:box0=%i  box1=%i\n",*box0,*box1);
+		   case CMD_BAR+2://printf("\n 5:box0=%i  box1=%i\n",*box0,*box1);
 		   				  for(int i=0;i<14;i++){
 		                       writePort(a[i]); usleep(100); }
 						  usleep(TIEMPO_CAJAS);//tiempo que tarda la caja en cambiar
 						  estado--;
 						   break;//regresamos al estado anterior
-		                   
-						
-		   case CMD_OK: ret=TRUE;/*ret2=TRUE;*/ estado=0;break;		   
-		   case CMD_ERR:ret=TRUE;/*ret2=FALSE;*/estado=0;break;			
+		   case CMD_USINT:vfd.config.bits.recurso_VFD_Ocupado=TRUE;
+		                  union_usi.n[0]=*c;
+						  union_usi.n[1]=*(c+1);
+						  //union_usi.t <--Guardado aqui el valor a desplegar
+						  x1=*(c+2);//posx
+						  y1=*(c+3);//posy
+						  x2=*(c+4);//formato
+					      a[0]=0x1F;a[1]=0x24;a[2]=x1;
+						  a[3]=0;a[4]=y1;a[5]=0;
+						  for(int i=0;i<6;i++){
+			                      	writePort(a[i]); usleep(50);}
+						  getCharsFromUINT_var(&a[0],x2);
+						  switch(x2){
+							case RIGHT:Formato_USInt(&a[0],&a[5],5,&y2);
+							           if((5-y2)>0)
+							              for(int i=0;i<(5-y2);i++){
+											  writePort(" ");usleep(50);}
+									   for(int i=0+5;i<(y2+5);i++){
+										    writePort(a[i]);
+											usleep(50);}
+										break;	
+							case LEFT:Formato_USInt(&a[0],&a[5],5,y2);
+							          for(int i=0;i<5;i++){
+										writePort(" ");usleep(50);}
+									  for(int i=0+5;i<(y2+5);i++){
+										  writePort(a[i]);usleep(50);}
+									  break;
+							case CENTER:Formato_USInt(&a[0],&a[5],5,y2);
+							            x1=func_Alge(y2);
+										if(x1>0){
+										   for(int i=0;i<x1;i++){
+											  writePort(" ");usleep(50);}}
+									    for(int i=0+5;i<(y2+5);i++){
+											  writePort(a[i]);usleep(50);}
+							             break;					  
+							case ZEROS:for(int i=0;i<5;i++){
+											  writePort(a[i]);usleep(50);}
+							            break;
+							default:break;}
+                         estado=CMD_OK;
+						 break;
+						  
+		   case CMD_OK:vfd.config.bits.recurso_VFD_Ocupado=FALSE; 
+		               ret=TRUE; estado=0;break;		   
+		   case CMD_ERR:vfd.config.bits.recurso_VFD_Ocupado=FALSE;
+		                ret=TRUE;estado=0;break;			
            default:estado=1;break;}//fin switch+++++++++++++
 	}//fin of while ++++++++++++++++++++++++++++++++++++++++++
 return ret;
