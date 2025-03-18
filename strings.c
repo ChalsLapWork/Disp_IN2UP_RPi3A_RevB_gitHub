@@ -174,6 +174,21 @@ unsigned char func_Alge(unsigned char x){
 }//fin func algebraica++++++++++++++++++++++
 
 
+/*  vaciar cadena A -> B con los indices indicados
+ * inidice inicial i, indice final f
+ *  final cuenta desde indice 0 al ultimo indice deseado y es todo serial sizeof(a)-1*/
+void vaciar_A2B(unsigned char *a,unsigned char *b,unsigned char i,unsigned char f){
+unsigned char ii;	
+	if(i>f)
+		return;
+	if(f==0)
+		return;
+	if(i==f)
+		return;
+	for(ii=i;ii<(f+1);ii++)
+		*(b+ii)=*(a+ii);
+}//fin vaciar_A2B--------------------------------------------------------------
+
 
 /*da formato a los numero unsigned short int e.g.  n="00032" resultado="32"000 
  *   e.g.    n="00000"  res="0"0000    e.g. n="01234" res="1234"0
@@ -187,20 +202,20 @@ auto unsigned char ret=FALSE;
 auto unsigned char i=0,j;
 unsigned char ret2;
   while(ret!=TRUE){
-	if(i>5){__asm(nop);__asm(Halt);}  
+	if(i>5){return;}  
     switch(estado){// 00000
     	case 1:if((*(orig+i)>='0')||(*(orig+i)<='9')){
     		      if(*(orig+i)=='0'){//regresa el indice donde  esta el primero a desplegar
     		    	   if(i<4){i++;}
     		    	   else{estado++;}}
     		      else{estado++;}}
-    		   else{__asm(nop);__asm(Halt);}
+    		   else{return;}
     		   break;
     	case 2:if(i>0)
     		      estado++;
     		   else estado=9;
     	       break;//01234, "xxxx0" "xxx00" "xx000"
-    	case 3:if(i>4){__asm(nop);__asm(Halt);}//no debe se mayor a 4
+    	case 3:if(i>4){return;}//no debe se mayor a 4
     		   estado++;j=0;ret2=5-i;
     		   break;
     	case 4:if(j>4){ estado++;j=0;}//limpiamos destino
