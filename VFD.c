@@ -234,6 +234,47 @@ unsigned char array[40];
 return 1;// fin de enviar mensaje++++++++++++++++++++++
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
 
+/* Metodo Multi-Padre pero solo una Estancia ala Vez     
+ valor es el numero que se va adesplegar en el VFD, posx|posy es la posicion en el VFD  
+ formatos: 
+       RIGHT: se va desplegar de la forma posx:______13
+       LEFT:    se va a desplegar de la forma posx:13________
+       CENTER se va adesplegar de la forma posx:___13____
+       ZEROS se va a desplegar de la forma posx:00013*/
+unsigned char VFDserial_Sendusint(unsigned short int valor,unsigned char posx,unsigned char posy,unsigned char formato){
+unsigned char array[10];
+union{
+   unsigned short int usi;
+   unsigned char c[2];
+}bytes;    
+    if(posy>128) return 0;
+    switch(formato){
+         case RIGHT:
+         case LEFT:
+         case CENTER:
+         case ZEROS:goto next256;break;
+         default:return 0;break;}
+next256:         
+    array[0] = STX;
+    array[1] = 7; // LEN (longitud total del mensaje)
+    array[2] = COMANDO_USINT; // CMD (ejemplo de comando)
+    bytes.usi=valor;
+    array[3]=bytes.c[0];
+    array[4]=bytes.c[1];
+    array[5] = posx;
+    array[6] = posy;
+    array[7] = formato;
+    array[8] = getCRC_v2(array+1,7);
+    array[9] = ETX; // Ejemplo de CRC (ajustar según tu implementación)    
+    VFDserial_SendBlock_buf(array, 10);
+    
+return 1;// fin de enviar mensaje++++++++++++++++++++++
+}//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
+
+
+
+
+
 //mandamos el valor al cual la barra de deteccion debe de aumentar
 //o disminur en un timepo que se vea por el ojo humano
 unsigned char VFDserial_SendBarraDet(unsigned char val){ 

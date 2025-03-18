@@ -124,4 +124,5 @@ unsigned char inicializar_VFD(void);
 unsigned char getCRC_v2(unsigned char *data, unsigned char len);
 //unsigned char VFD_sendBlockChars(const void *datos, size_t longitud);
 unsigned char VFDserial_SendBarraDet(unsigned char val);
+unsigned char VFDserial_Sendusint(unsigned short int valor,unsigned char posx,unsigned char posy,unsigned char formato);
 #endif
