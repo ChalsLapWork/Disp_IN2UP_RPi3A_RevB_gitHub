@@ -16,12 +16,14 @@
 #ifndef  debug_level1 
   #include <wiringPi.h>
 #endif
+#include "serial.h"
 
 #define DEPURANDO_SIN_DISPLAY_ENCENDIDO 1//1=CIERTO 0=DISPLAY ESTA ENCENDIDO Y FUNCIONANDO
 
 //extern pthread_t SubProc_SendBlock_TX_VFD;
 //extern pthread_t SubProc_SendBlock_chars_TX_VFD;
 extern pthread_t hilo_productor, hilo_consumidor;
+extern pthread_t reader_thread, processor_thread;
 
 
 void signal_handler(int signalnum){
@@ -40,6 +42,10 @@ void cleanup1(void) {
   pthread_join(hilo_productor, NULL);
   //pthread_cancel(SubProc_SendBlock_chars_TX_VFD);
   //pthread_join(SubProc_SendBlock_chars_TX_VFD,NULL);
+  // Espera a que los hilos terminen (en este caso, nunca terminarán)
+    pthread_join(reader_thread, NULL);
+    pthread_join(processor_thread, NULL);
+    cerrar_puerto_serial();
   pthread_exit(NULL);
 }//*****************************************************
 
@@ -55,6 +61,20 @@ int main(void){
   init_queues();
   usleep(500);
   init_menu();
+
+  /*int swap=0;
+  unsigned char k;
+  for(;;){//CODIGO DE PRUEBA DE LA BARRA DE DETECCION,
+     if(swap){swap=0;k=17;
+           procesar_Paquete(CMD_BARRA,&k,0);
+           }
+      else{swap=1;k=0;
+           procesar_Paquete(CMD_BARRA,&k,0);
+           }
+     usleep(800000); }
+*/
+
+  init_Serial(); 
 
 
 

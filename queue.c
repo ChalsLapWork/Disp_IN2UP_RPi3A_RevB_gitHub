@@ -1,6 +1,6 @@
 #include "system.h"
 #include "queue.h"
-#include "string.h"
+#include "strings.h"
 #include "errorController.h"
 #include "VFD.h"
 #include <stdio.h>
@@ -62,7 +62,7 @@ unsigned char debug;
     mensOK("Iniciando queueus",CCIAN);	  
 	sync1=0xAA;//mutexs ocupados
 	NoErrorOK();
-	mensOK("Creando Proceso Init VFD",CAZUL);
+	mensOK("Creando Proceso Init VFD",CAZUL1);
 	init_VFD_Threads();
 	inicializar_VFD();//Init VFD
 	mensOK("Fin de Init Queues",CMAGNETA);
@@ -75,7 +75,7 @@ unsigned char debug;
 
 
 
-
+/*
 void VFDserial_SendBlock_Tx1(unsigned char *buffer, size_t len) {
 unsigned char estado,cmd,n;
 unsigned char c[MAX_NUM_CHAR_VFD];
@@ -103,10 +103,11 @@ static int count;
 	  case 5:*crc=len=*str++;n=1;estado++;break;
 	  case 6:*(crc+n++)=cmd=*str++;i=0;estado++;break;
 	  case 7:switch(len){
-		         case 0:mensOK(" error 174, PROTOCOLO mal bytes ",CROJO);break;
+		         case 0:mensOK(" error 174, PROTOCOLO mal bytes ",CROJO1);break;
 				 case 1:mensOK(" eror 175 protocolo par hecho",CAMARILLO);break;
 				 case 2:estado=9;break;
                  default:estado=8;i=0;break;}
+		      break;		 
 	  case 8:if(len==n){n--;c[i]=0;estado++;}
 	         *(crc+n++)=c[i++]=*str++;
              break;
@@ -121,14 +122,19 @@ static int count;
 	  case 99:estado=2;mens_Warnning_Debug(" error 99 ");break;
 	  default:estado=1;break;}
 	  i++;}//fin while 
-	  
 return;
 }//transmisor de datos a VFD+++++++++++++++++++++++++++++++++++++++++
- 				
+ 	*/
+
+	
+				
 /** esta funcion manda los paquetes del 
  *  buffer c en base al comando indicado,*/
-unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,
-                      unsigned char size){
+unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char size){
+const unsigned int TIEMPO_CAJAS=12000;//useg tiempo de espera para cambio de cajas
+//const unsigned char MAX_BOXES =17;//nmero de boxes Dinamicas
+unsigned char *box0,*box1,mode,ibox0,pen;
+unsigned char  x1,y1,x2,y2,a[20];						
 union{
   unsigned short int t;
   unsigned char n[2];
@@ -148,7 +154,8 @@ enum {
     CMD_DMS = 110,
     CMD_DUS = 120,
     CMD_ERR = 130,
-    CMD_OK = 140   };
+    CMD_OK = 140,  
+	CMD_BAR= 150 };
 
     while(!ret){
        switch(estado){
@@ -166,6 +173,7 @@ enum {
 					 case COMANDO_BOLD: estado=CMD_BLD;break;
 					 case CMD_DELAY_MS: estado=CMD_DMS;break;
 					 case CMD_DELAY_US: estado=CMD_DUS;break;
+					 case CMD_BARRA:    estado=CMD_BAR;break;//BARRA DE DETECCION
 					 default:estado=CMD_ERR;break;}
 				   break;
 		   case   CMD_DMS:union_usi.n[0]=*c;
@@ -193,6 +201,7 @@ enum {
 						  writePort(0x00);  usleep(50);
 						  writePort(*(c+1));usleep(50);
 						  writePort(0x00);  usleep(50);
+						  usleep(150);
 						  estado=CMD_OK;break;
 	       case CMD_BXF:
 		   case CMD_LIN:					  
@@ -239,6 +248,51 @@ enum {
 						  if(*c==1) writePort(0x01); 
 						  else{writePort(0x00);}usleep(50);
 						  estado=CMD_OK;break;
+		   case CMD_BAR:  if(vfd.config.bits.BOX_enable){
+                               box0=&vfd.box.box0;     
+		                       box1=&vfd.box.box;
+							   printf("\n 1:box0=%i  box1=%i\n",*box0,*box1);
+							   *box1=*c;  //*box0=0;
+							   printf("\n 2:box0=%i  box1=%i\n",*box0,*box1);
+							   for(int i=0;i<20;i++){
+							              a[i]=0;}
+							   a[0]=0x1F;a[1]=0x28;a[2]=0x64;a[3]=0x11;
+		                       estado++;}
+					      else{estado=CMD_ERR;}
+						  break;		  
+		   case CMD_BAR+1:printf("\n 3:box0=%i  box1=%i\n",*box0,*box1);
+		                  if(*box0>MAX_BOXES)
+						                *box0=0;
+		                  if(*box0==*box1){
+							     estado=CMD_OK;break;}
+						  else{if(*box0>*box1){
+							
+							      pen=0;ibox0=*box0;
+								  getBoxPattern(ibox0,&mode,&x1,&y1,&x2,&y2);//box0 se tiene que decrementar despues no antes
+                                  if(*box0>0)
+								      ibox0--;
+							      *box0=ibox0;}		  
+							   else{if(*box1>*box0){
+									    pen=1;ibox0=*box0;ibox0++;//increment value box0, to reach box1
+										getBoxPattern(ibox0,&mode,&x1,&y1,&x2,&y2);
+										*box0=ibox0;}}}
+					       if((mode==BOX_VACIA)||(mode==BOX_LLENA)){
+						   if((pen==0)||(pen==1)){
+		                          		   a[4]=mode;a[5]=pen;		  
+						           a[6]=x1;a[8]=y1;a[10]=x2;a[12]=y2;
+                                                           estado++;}	 
+						   else{estado=CMD_ERR;}}
+                                                else{estado=CMD_ERR;}
+						  printf("\n 4:box0=%i  box1=%i\n",*box0,*box1);						
+						  break;
+		   case CMD_BAR+2:printf("\n 5:box0=%i  box1=%i\n",*box0,*box1);
+		   				  for(int i=0;i<14;i++){
+		                       writePort(a[i]); usleep(100); }
+						  usleep(TIEMPO_CAJAS);//tiempo que tarda la caja en cambiar
+						  estado--;
+						   break;//regresamos al estado anterior
+		                   
+						
 		   case CMD_OK: ret=TRUE;/*ret2=TRUE;*/ estado=0;break;		   
 		   case CMD_ERR:ret=TRUE;/*ret2=FALSE;*/estado=0;break;			
            default:estado=1;break;}//fin switch+++++++++++++
@@ -260,7 +314,9 @@ unsigned char debug;
    vfd.config.bits.init_Menu=0;//no esta init el VFD
    vfd.config.bits.MenuPendiente=TRUE;//hay pendiente un menu por desplegar
    vfd.config.bits.Menu_Ready=FALSE;//no se a desplegado menu solicitado
+   vfd.config.bits.BOX_enable=FALSE;//NO SE pueden dibujar cajas
    pthread_mutex_init(&vfd.mutex.VDF_busy,NULL);//init recurso VFD
+   vfd.menu.contexto.Actual=PORTAL_INICIO;
    if((debug=pthread_create(&SubProc_Run_Menu,NULL,Run_Menu,NULL))!=0)
        errorCritico2("errorCreacion hilo",175);
    else{pthread_detach(SubProc_Run_Menu);}//hilo independiente	   
@@ -290,7 +346,7 @@ unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despl
 					break;
 	  default:estado3=1;break;}
    }//fin de WHILE bandera de Menu Pendiente--------------------   
-//return;
+return NULL; 
 }//fin de prueba de despliegue de datos en el VFD+++++++++++++++++++++++++++++
 //fin del control operativo del menu de escape-----------------------------------------
  

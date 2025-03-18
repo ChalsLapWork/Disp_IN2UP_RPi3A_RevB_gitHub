@@ -80,35 +80,53 @@ void init_VFD_Threads(void){//
 unsigned char VFDserial_SendBlock_buf(void *ptr, size_t size) {
     if (size > MAX_LEN) {
         fprintf(stderr, "Error: El tamaño de los datos excede el máximo permitido.\n");
-        return 0;}
-    sem_wait(&sem_vacios);
+        mens_Warnning_Debug("VFD fifo no hay");        return 0;}
+    sem_wait(&sem_vacios);//si es cero detiene hilo, si no decrementa y continua
     pthread_mutex_lock(&mutex_buffer);
     buffer_circular[in].len = size;
     memcpy(buffer_circular[in].data, ptr, size);
-    printf("Hilo Principal: Datos agregados al buffer (len: %zu)\n", size);
+    printf("\033[32m Hilo Principal: Datos agregados al buffer (len: %zu)\033[0m\n", size);
     in = (in + 1) % NUM_ENTRADAS;
     pthread_mutex_unlock(&mutex_buffer);
-    sem_post(&sem_llenos);
+    sem_post(&sem_llenos);//incrementa valor lugares llenos
 return 1;
 }//fin VFDserial_SendBlock++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // Hilo Productor: vacía todo el buffer circular a buffer2
 void *VFDserial_SendBlockProductor(void *arg) {
+unsigned char estado=0,i=0,len=0;
+int semaforo;
+//const unsigned char 
     while (1) {
-        sem_wait(&sem_llenos);
-        pthread_mutex_lock(&mutex_buffer);
-        pthread_mutex_lock(&mutex_buffer2);
-        for (int i = 0; i < NUM_ENTRADAS; i++) {
-            size_t len = buffer_circular[out].len;
-            if (len > 0 && buffer2_len + len <= MAX_BUFFER_LEN) {
-                memcpy(buffer2 + buffer2_len, buffer_circular[out].data, len);
-                buffer2_len += len;
-                printf("Productor: Copió datos al buffer2 (len: %zu, total en buffer2: %zu)\n", len, buffer2_len);}
-            out = (out + 1) % NUM_ENTRADAS;}
-        pthread_mutex_unlock(&mutex_buffer2);
-        pthread_mutex_unlock(&mutex_buffer);
-        sem_post(&sem_vacios);
-        usleep(100000);
+        switch(estado){
+            case 1:sem_wait(&sem_llenos);//si hay recurso avanza
+                   estado++;break;
+            case 2:pthread_mutex_lock(&mutex_buffer);
+                   pthread_mutex_lock(&mutex_buffer2);
+                   estado++;i=0;break;
+            case 3:if(i<NUM_ENTRADAS)estado++;
+                   else{estado=40;}break;  
+            case 4:len = buffer_circular[out].len;estado++;break;
+            case 5:if (len > 0 && buffer2_len + len <= MAX_BUFFER_LEN)
+                        estado++;else{estado=30;}break;
+            case 6:memcpy(buffer2 + buffer2_len, buffer_circular[out].data, len);
+                   buffer2_len+=len;
+                   sem_post(&sem_vacios);//incrementa vacios,
+                   printf("Productor: Copió datos al buffer2 (len: %i, total en buffer2: %zu)\n", len, buffer2_len);
+                   out = (out + 1) % NUM_ENTRADAS;
+                   estado++;break;
+            case 7:sem_getvalue(&sem_llenos,&semaforo);
+                   if(semaforo>0){ i++;estado++;}
+                   else{estado=40;}break;
+            case 8:sem_wait(&sem_llenos);
+                   estado=3;break;
+            case 30:if(len>0) mens_Warnning_Debug(" Cadena muy grande, no cabe en buffer"); 
+                    estado=7;break;      
+            case 40:pthread_mutex_unlock(&mutex_buffer2);
+                    pthread_mutex_unlock(&mutex_buffer);
+                    usleep(100000);//100milisecond
+                    estado=1;break;
+           default:estado=40;break;}    
     } //fi nwhile+++++++++++++++++++
 return NULL;
 }//fin VFDserial_SendBlockProductor+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -135,12 +153,12 @@ return NULL;
 
 // Función que procesa buffer3 completo (como un gran array de datos)
 void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len) {
-unsigned char estado = 0, cmd, crc_calculado, crc_recibido;
+unsigned char estado = 0, cmd=0, crc_calculado, crc_recibido;
 unsigned char c[MAX_NUM_CHAR_VFD];
 unsigned char *str = buffer;
 size_t i = 0, datos_len = 0;
 static int count = 0;
-unsigned char *array_crc,index,new_len;
+unsigned char *array_crc,index=0,new_len;
 
     printf("Consumidor-Tx: Procesando buffer completo (len: %zu), cont=%i\n", len, count);
     if (count++ == 19) { printf("Stop here\n");}
@@ -155,7 +173,7 @@ unsigned char *array_crc,index,new_len;
                      //  mens_Warnning_Debug("Error: La longitud de los datos no coincide con el tamaño del buffer.");
                        //return;}
                    datos_len = *str;  // Descontamos el byte de `len` y el byte `cmd`
-                   printf("Longitud de datos: %d\n", datos_len);
+                   printf("Longitud de datos: %d\n", (int)datos_len);
                    str++;i++;estado++;break;
             case 2:printf("Estado 2: Leyendo el byte de comando (CMD)...\n");  // Leer el byte de comando (CMD)
                    cmd=*str++;i++;printf("Comando (CMD): %d\n", cmd);
@@ -165,10 +183,19 @@ unsigned char *array_crc,index,new_len;
                    else{array_crc[0]=new_len;array_crc[1]=cmd;index=2;}
                    if(datos_len==2)  estado=4;else estado++;break;
             case 3:printf("Estado 3: Leyendo los datos...\n");// Leer los datos  
-                   for(size_t j=0;j<datos_len-3;j++) {
-                           c[j] = *str++;i++;  // Almacenamos los datos en el array `c`
-                           array_crc[index++]=c[j];//Array que se va ha usar para calcular el crc
-                           printf("Dato %zu: %02X %i  %c\n", j, c[j],c[j],c[j]);}
+                   {unsigned char j;
+                   switch(cmd){
+                       case 's'://STRING
+                                for(j=0;j<datos_len-3;j++) {
+                                    c[j] = *str++;i++;  // Almacenamos los datos en el array `c`
+                                    array_crc[index++]=c[j];}//Array que se va ha usar para calcular el crc
+                                datos_len-=4;//para el procesamiento    
+                                break;
+                       default:for(j=0;j<datos_len-2;j++){
+                                     c[j]=*str++;i++;  
+                                     array_crc[index++]=c[j];}
+                               break;}             
+                   printf("Dato %i: %02X %i  %c\n", j, c[j],c[j],c[j]);}                
                    estado++;break;
             case 4:printf("Estado 4: Calculando y verificando CRC...\n");  // Calcular y verificar CRC
                    crc_calculado = getCRC_v2(array_crc,new_len);  // Sumar 2 para incluir `len` y `cmd`

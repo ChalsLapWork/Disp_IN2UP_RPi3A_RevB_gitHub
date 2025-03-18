@@ -78,10 +78,8 @@ void BarraDet_VFDserial_SendChar(unsigned char c);
 //void enable_keyboard_IRQ2(void);
 //void Timer_enable_keyboard_IRQ2(void);
 void VFDboxLine(unsigned char pen,unsigned char mode,unsigned short int x1,unsigned short y1,unsigned short int x2,unsigned short y2);
-void VFDclrscrForce(void);
 unsigned char VFDposicion(unsigned char x,unsigned char y);
 //unsigned char VFDposicion(unsigned short int x,unsigned short int y);
-void VFDclrscr_DDS(void);
 //void monitorDDS_Halt(void);
 //void VFDserial_SendChar_DDS(unsigned char c);
 void VFDcommand_Bold_DDS(unsigned char bold);
@@ -95,8 +93,6 @@ unsigned char VFDserial_SendChar(unsigned char c);
 //unsigned char xInit_VFD(struct DPM m);
 //unsigned char VFDcommand(unsigned char cmd,unsigned char s);
 //unsigned char FontSizeVFD(unsigned char m);
-//unsigned char VFDclrscr(void);
-unsigned char VFDclrscr1(unsigned char *mem);
 unsigned char VFDboxLine1(unsigned char pen,unsigned char mode,unsigned char x1,unsigned char y1,unsigned char x2,unsigned char y2);
 //unsigned char VFDserial_SendBlock2(const unsigned char *Ptr,unsigned short Size,unsigned char *inst);
 //unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned char Size,unsigned char *Snd,unsigned char *mem);
@@ -120,11 +116,12 @@ unsigned char FontSizeVFD(unsigned char m,unsigned char *mem);
 void initParallelPort_Global(void);
 void writePort(unsigned char value);
 void test_display(void);
-void* Mon_VFD(void* arg);  //Proceso Productor<---Proceso/hilo/THread
-void *Clean_VFD(void *arg);
+//void* Mon_VFD(void* arg);  //Proceso Productor<---Proceso/hilo/THread
+//void *Clean_VFD(void *arg);
 void VFD_sendChar(uchar c);
 unsigned char inicializar_VFD(void);
 //void init_mutex_VFD(void);
 unsigned char getCRC_v2(unsigned char *data, unsigned char len);
 //unsigned char VFD_sendBlockChars(const void *datos, size_t longitud);
+unsigned char VFDserial_SendBarraDet(unsigned char val);
 #endif

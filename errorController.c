@@ -20,6 +20,7 @@ void errorCritico2(char *c,unsigned char n){
     exit(-1);
 }//fin error critico+++++++++++++++++++++++++++++++++++
 
+//manda un mensaje en amarillo:33
 void mens_Warnning_Debug(char *c){
       printf("\n \033[1;033m%s \033[0m\n",c);
       usleep(10000);

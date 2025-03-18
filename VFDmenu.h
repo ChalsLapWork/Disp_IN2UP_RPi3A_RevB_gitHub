@@ -42,7 +42,7 @@
 */	
 
 #define VERSION_FIRMWARE   "Version F.W 33.11.0" //add frecq CONTROL from menu, Driver to control ADC's 
-#define VERSION2 "v39.24.1.71"   //branch:feature6_OS_&_Pantalla
+#define VERSION2 "v40.0.1.43"   //branch:RevE2 
 
 
 
@@ -292,7 +292,11 @@ los ADC se perdio la sincronia de los pulsos deSCLK cada 1mseg
 *   "v39.22.12.38"     12-Ene-24  mejoramos el manejo de recursos y el menu DDS en zoom con enter  y grafica se�al en DDS y hace cambio de zoom
 *   "v39.22.13.115"    14-feb-24 systema operativo funcionando con 2 procesos, pero vamos a implementar 
 *                                  el system-call en la version 14 
-*   
+     "v39.24.1.71"   //branch:feature6_OS_&_Pantalla
+*   "v40.0.1.40"       28-Feb-25  estamos trabanado con RaspBerry, pasamos todo, debido alo gigantesco
+                                  de construir un S.O para manejo de memoria.
+								  estamos deplegando el PORTALinicio con hilos independientes de despleiegue VFD
+
 *   
 *                    
 *                                  
@@ -911,7 +915,7 @@ void rotateVarParte11(void);
 void displayvarParte11(void);
 void DisplayParte11Menu(void);
 void DisplayAjusteVibracionMenu(void);
-void getBoxPattern(unsigned char box,unsigned char *mode,unsigned short int *x1,unsigned short int *y1,unsigned short int *x2,unsigned short int *y2);
+//void getBoxPattern(unsigned char box,unsigned char *mode,unsigned short int *x1,unsigned short int *y1,unsigned short int *x2,unsigned short int *y2);
 unsigned char displayBoxDestructor(unsigned char mode);
 void DisplayEstaSeguro2(void);
 void displayBox(unsigned char *MutexCV);
@@ -1005,5 +1009,8 @@ unsigned char enterCursorDDS_v2(unsigned char *inst);
 unsigned char menus_service(unsigned char *mem);
 unsigned char find_Next_Context(unsigned char *context);
 void cambio_contexto(unsigned char contexto);
+void display_Barra_Deteccion(unsigned char barra);
+
+
 
 #endif /* VFDMENU_H_ */

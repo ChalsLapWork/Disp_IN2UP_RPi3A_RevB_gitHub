@@ -153,18 +153,13 @@ return ret;
 
 
 /*limpia el VFD de caracteres y todo   */
-unsigned char VFDclrscr1(unsigned char *mem){//AUTORIZADO 5:BYTES DE memoria
-//unsigned char ret=0; 
-//unsigned char *estado4,*c;//comando limpiar pantalla stx,04,CMD,0CU,CRC,ETX
-//unsigned short int suma;//comando delay  stx,04,CMD,xx,CRC,ETX
-//const unsigned char DELAY_DESPUES_DE_COMANDO_ms=10;//milisegundos
+void VFDclrscr(void){//AUTORIZADO 5:BYTES DE memoria
 unsigned char LEN=0x02; //bytes a calcular por CRC
 unsigned char buf[]={STX,LEN,COMANDO_CLRSCR,0x00,ETX};
 
      buf[LEN+1]=getCRC_v2(&buf[1],LEN);
      VFDserial_SendBlock_buf(&buf[0],sizeof(buf));
-            
-return 1;    
+               
 }//fin clear screen VFD-----------------------------------------------------------------------------
 
 
@@ -239,6 +234,24 @@ unsigned char array[40];
 return 1;// fin de enviar mensaje++++++++++++++++++++++
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
 
+//mandamos el valor al cual la barra de deteccion debe de aumentar
+//o disminur en un timepo que se vea por el ojo humano
+unsigned char VFDserial_SendBarraDet(unsigned char val){ 
+unsigned char array[6];
+unsigned char len=3; //longitud del calculo crc   
+     array[0]=STX;
+     array[1]=len;//longitud;
+     array[2]=CMD_BARRA;
+     array[3]=val;
+     array[4]=getCRC_v2(&array[1],len);
+     array[5]=ETX;
+   VFDserial_SendBlock_buf(array,6);
+return 0;   
+}//fin de mandar comando de barra de deteccion+++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
 //init el VFD++++++++++++++++++++++++++++++++++++++++++++++ 
 unsigned char inicializar_VFD(void){
 const unsigned char LEN=2;//cantidad de bytes a calcular porf CRC    	
@@ -252,72 +265,6 @@ return 1;
 
 
 
-
-//Proceso  unico de Padre unico, PROCESO
-//Funcion DEPRECATED
-void* Mon_VFD(void* arg){  //Proceso Productor<---Proceso/hilo/THread
-/*struct Queue *q=(struct Queue*)arg;//
-unsigned char ret=0,estado;
-unsigned char i=0,debug,count;
-pthread_attr_t attr;
-size_t stacksize=2*1024*1024;// memoria parga el hilo
-
- pthread_attr_init(&attr);
- mensOK("Asignando Recursos a Tx",CRESET);
- if(pthread_attr_setstacksize(&attr,stacksize)!=0){
-	  errorCritico2("Error config tamaño de pila:",217);}
- else{NoErrorOK();}        	   
- while(!ret){
-	switch(estado){
-		case 1:mensOK("Mon VFD starting. . .",CRESET);estado++;break;
-        case 2:if(!vfd.config.bits.Proc_VFD_Tx_running)estado++;break;
-		case 3:pthread_mutex_lock(vfd.mutex.m_Free);
-               q->isPadreAlive=TRUE;
-			   estado++;break;
-		case 4:NoErrorOK();estado++;break;
-		case 5://mensOK("Creando Hilo Transmisor",CRESET);
-		       //if((debug=pthread_create(&Proc_TX_VFD,&attr,SubProceso_Tx_VFD,&q))!=0){//ret==0 :all OK	
-			   //	    errorCritico2("Error Creacion de Hilo:",debug);}
-			   // else{NoErrorOK();}estado++;break;
-	    case 6:mensOK("llenar FIFOs para Transmitir",CRESET);count=0;estado++;break;
-		case 7:if(VFDserial_SendChar1(*(q->p+count)))estado++;break;
-        case 8:if(++count<(q->size+1))estado--;else{estado++;}break;
-		case 9:if(++i<(q->sizeStream+1))estado--;else{estado++;}break;
-		case 10:pthread_cond_signal(vfd.mutex.cond_free);estado++;break;
-        case 11:q->isPadreAlive=FALSE;estado++;break;//ya puede morir el hijo, si esta vacia la queue
-		case 12:estado=0;ret=TRUE;break;
-		default:estado=1;break;}}//fin switch while 
-  pthread_join(Proc_TX_VFD,NULL);//esperamos termine de transmitir a display el otro hilo
-  mensOK("Sub Proceso TX Terminado",CRESET);
-  pthread_attr_destroy(&attr);
-  pthread_mutex_unlock(vfd.mutex.m_Free);
-  NoErrorOK();*/		
-return NULL;
-}//fin init VFD -------------------------------------------------------------------
-
-//** Proceso Hilo encargado de limpiar el Proceso Init VFD
-void *Clean_VFD(void *arg) {//HILO DEPRECATED
-/*truct Queue *q=(struct Queue*)arg;//
-unsigned char estado;	
-    mensOK("Proceso Limpiador de VFD activo",CAMARILLO);
-	pthread_mutex_lock(vfd.mutex.m_Free);
-	mensOK("Limpieza de  recursos de init VFD...",CRESET);
-	switch(estado){
-	    case 1:pthread_cond_wait(vfd.mutex.cond_free,vfd.mutex.m_Free);estado++;break;
-		case 2:usleep(3);estado++;break;
-		case 3:pthread_mutex_destroy(vfd.mutex.m_Free);
-			   pthread_cond_destroy(vfd.mutex.cond_free);
-			   pthread_mutex_destroy(vfd.mutex.m_Tx);
-			   pthread_cond_destroy(vfd.mutex.cond_Tx);
-			   estado++;break;
-        case 4:vfd.config.bits.isProc_Free_running=FALSE;estado++;break;
-        case 5:vfd.config.bits.recurso_VFD_Ocupado=FALSE;estado++;break;
-		case 6:NoErrorOK();printf("\n");usleep(300);
-			   estado++;break;
-               
-		default:estado=1;break;}*/
-    return NULL;
-}//fin del proceso hilo limpiador+++++++++++++++++++++++++++++++
 
 
 unsigned char VFDboxLine1(unsigned char pen,unsigned char mode,
