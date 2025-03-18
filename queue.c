@@ -303,7 +303,7 @@ enum {
 						  a[3]=0;a[4]=y1;a[5]=0;
 						  for(int i=0;i<6;i++){
 			                      	writePort(a[i]); usleep(50);}
-						  getCharsFromUINT_var(&a[0],x2);
+						  getCharsFromUINT_var(&a[0],union_usi.t);
 						  switch(x2){
 							case RIGHT:Formato_USInt(&a[0],&a[5],5,&y2);
 							           if((5-y2)>0)
