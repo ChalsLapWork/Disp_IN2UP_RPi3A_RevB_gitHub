@@ -252,6 +252,7 @@ union{
          case RIGHT:
          case LEFT:
          case CENTER:
+         case CENTRAL:
          case ZEROS:goto next256;break;
          default:return 0;break;}
 next256:         

@@ -42,7 +42,7 @@
 */	
 
 #define VERSION_FIRMWARE   "Version F.W 33.11.0" //add frecq CONTROL from menu, Driver to control ADC's 
-#define VERSION2 "v40.0.3.8"   //branch:RevE2 
+#define VERSION2 "v40.0.3.10"   //branch:RevE2 
 
 
 

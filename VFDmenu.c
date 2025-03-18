@@ -156,10 +156,10 @@ if(deteccion>50){sel=1;
 else{if(deteccion>10){sel=2;producto2.Cuenta_Productos++;}}
 if(vfd.menu.contexto.Actual==PORTAL_INICIO){
 	   switch(sel){
-		  case 1:VFDserial_Sendusint(producto2.Cuenta_Rechazos,POS_X_CONT_RECHAZ,POS_Y_CONT_RECHAZ,CENTRAL);
-		 		 VFDserial_Sendusint(producto2.Cuenta_Productos,POS_X_CONT_PROD,POS_Y_CONT_PROD,CENTRAL);
+		  case 1:VFDserial_Sendusint(producto2.Cuenta_Rechazos,POS_X_CONT_RECHAZ,POS_Y_CONT_RECHAZ,CENTER);
+		 		 VFDserial_Sendusint(producto2.Cuenta_Productos,POS_X_CONT_PROD,POS_Y_CONT_PROD,CENTER);
 		         break;
-		  case 2:VFDserial_Sendusint(producto2.Cuenta_Productos,POS_X_CONT_PROD,POS_Y_CONT_PROD,CENTRAL);
+		  case 2:VFDserial_Sendusint(producto2.Cuenta_Productos,POS_X_CONT_PROD,POS_Y_CONT_PROD,CENTER);
 		        break;
 	      default:break;}}			  
 }//fin de desplaiegue de conteo de rechazos y producto++++++++++++++++++++++++++
