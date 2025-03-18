@@ -14,6 +14,7 @@ struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
 extern struct _PRODUCTO1_ producto;
 extern struct _DISPLAY_VFD_ vfd;
 extern struct _Detection Deteccion;
+extern struct _PRODUCT1_ producto2;
 
 
 
@@ -139,6 +140,30 @@ void display_Barra_Deteccion(unsigned char barra){
 	if(validos[vfd.menu.contexto.Actual]){
 		     VFDserial_SendBarraDet(barra);}     
 }//FIN DE display de barra de deteccion++++++++++++++++++++++++++++++++++++++++++++
+
+
+void display_CuentaRechazosProducto(unsigned char deteccion){
+unsigned char sel=0;	
+const unsigned char POS_X_CONT_RECHAZ=100;
+const unsigned char POS_X_CONT_PROD=100;
+const unsigned char POS_Y_CONT_RECHAZ=POSY8;
+const unsigned char POS_Y_CONT_PROD=POSY10;
+
+
+if(deteccion>50){sel=1;
+      producto2.Cuenta_Rechazos++;
+	  producto2.Cuenta_Productos++;}
+else{if(deteccion>10){sel=2;producto2.Cuenta_Productos++;}}
+if(vfd.menu.contexto.Actual==PORTAL_INICIO){
+	   switch(sel){
+		  case 1:VFDserial_Sendusint(producto2.Cuenta_Rechazos,POS_X_CONT_RECHAZ,POS_Y_CONT_RECHAZ,CENTRAL);
+		 		 VFDserial_Sendusint(producto2.Cuenta_Productos,POS_X_CONT_PROD,POS_Y_CONT_PROD,CENTRAL);
+		         break;
+		  case 2:VFDserial_Sendusint(producto2.Cuenta_Productos,POS_X_CONT_PROD,POS_Y_CONT_PROD,CENTRAL);
+		        break;
+	      default:break;}}			  
+}//fin de desplaiegue de conteo de rechazos y producto++++++++++++++++++++++++++
+
 
 
 unsigned char display_centrarNombres(unsigned char nchars){
