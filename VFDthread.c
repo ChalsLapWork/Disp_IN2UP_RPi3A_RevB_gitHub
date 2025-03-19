@@ -195,7 +195,8 @@ unsigned char *array_crc,index=0,new_len;
                                      c[j]=*str++;i++;  
                                      array_crc[index++]=c[j];}
                                break;}             
-                   //printf("Dato %i: %02X %i  %c\n", j, c[j],c[j],c[j]);}                
+                   //printf("Dato %i: %02X %i  %c\n", j, c[j],c[j],c[j]);
+                   }                
                    estado++;break;
             case 4://printf("Estado 4: Calculando y verificando CRC...\n");  // Calcular y verificar CRC
                    crc_calculado = getCRC_v2(array_crc,new_len);  // Sumar 2 para incluir `len` y `cmd`
