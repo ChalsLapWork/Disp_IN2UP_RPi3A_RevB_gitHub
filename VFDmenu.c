@@ -144,10 +144,10 @@ void display_Barra_Deteccion(unsigned char barra){
 
 void display_CuentaRechazosProducto(unsigned char deteccion){
 unsigned char sel=0;	
-const unsigned char POS_X_CONT_RECHAZ=100;
-const unsigned char POS_X_CONT_PROD=100;
-const unsigned char POS_Y_CONT_RECHAZ=POSY8;
-const unsigned char POS_Y_CONT_PROD=POSY10;
+const unsigned char POS_X_CONT_RECHAZ=210;
+const unsigned char POS_X_CONT_PROD=210;
+const unsigned char POS_Y_CONT_RECHAZ=POSY10;
+const unsigned char POS_Y_CONT_PROD=POSY12;
 
 
 if(deteccion>50){sel=1;

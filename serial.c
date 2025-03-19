@@ -252,5 +252,5 @@ unsigned char var;
                 break;}
     display_Barra_Deteccion(var);
     display_CuentaRechazosProducto(var);
-                
+                error  se le esta metiendo 8 ala func de abajo
 }//fin serial comando  barra deteccion+++++++++++++++++++++++++++++++++++++++++++++++++++
