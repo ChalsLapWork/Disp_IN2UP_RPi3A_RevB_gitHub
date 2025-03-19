@@ -102,7 +102,7 @@ union W16{
 	         vfd.box.boxs[i]=0;//init boxees variables 
        vfd.config.bits.BOX_enable=TRUE;//se autoriza a dibujar cajas
 	   //init_Sensibilidad();
-	   usleep(100);//espera que se envien los datos del menu al VFD
+	   //usleep(100);//espera que se envien los datos del menu al VFD
        vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
 	   
        ret=TRUE;
