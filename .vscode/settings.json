@@ -10,6 +10,7 @@
         "stdio.h": "c",
         "errorcontroller.h": "c",
         "strings.h": "c",
-        "math.h": "c"
+        "math.h": "c",
+        "errno.h": "c"
     }
 }

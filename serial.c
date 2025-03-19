@@ -12,6 +12,7 @@
 #include "serial.h"
 #include "VFDmenu.h"
 #include "math.h"
+#include "queue.h"
 
 #define BUF_SIZE 256
 #define BUFFER6_SIZE 1024  // Tamaño del nuevo buffer6
@@ -28,6 +29,7 @@ typedef struct {
 
 pthread_t reader_thread, processor_thread;
 thread_data_t data;
+extern struct _DISPLAY_VFD_ vfd;
 
 int init_Serial(void){
 // Abre el puerto serial
@@ -225,27 +227,28 @@ unsigned char buffer[2];
     valores aceptados 15,20,25,30,35...95 de 5 en cinco*/
 void Serial_Command_Barra_Detection(unsigned char parametro){
 unsigned char var;
-    var=parametro;    
-    switch(var){
-       case 15:var=1;break; 
-       case 20:var=2;break;
-       case 25:var=3;break;
-       case 30:var=4;break;
-       case 35:var=5;break;
-       case 40:var=6;break;
-       case 45:var=7;break;
-       case 50:var=8;break;
-       case 55:var=9;break;
-       case 60:var=10;break;
-       case 65:var=11;break;
-       case 70:var=12;break;
-       case 75:var=13;break;
-       case 80:var=14;break;
-       case 85:var=15;break;
-       case 90:var=16;break;
-       case 95:var=17;break;
-       default:if(var>15)
-                    var=recalcular_valor_Ser_Barr_det(var);
-               break;}
- display_Barra_Deteccion(var);
+    
+    switch(parametro){//desntro de los display func se determina si se despleigua o no
+        case 15:var=1;break; 
+        case 20:var=2;break;
+        case 25:var=3;break;
+        case 30:var=4;break;
+        case 35:var=5;break;
+        case 40:var=6;break;
+        case 45:var=7;break;
+        case 50:var=8;break;
+        case 55:var=9;break;
+        case 60:var=10;break;
+        case 65:var=11;break;
+        case 70:var=12;break;
+        case 75:var=13;break;
+        case 80:var=14;break;
+        case 85:var=15;break;
+        case 90:var=16;break;
+        case 95:var=17;break;
+        default:if(parametro>15)
+                    var=recalcular_valor_Ser_Barr_det(parametro);
+                break;}
+    display_Barra_Deteccion(var);
+    display_CuentaRechazosProducto(parametro);
 }//fin serial comando  barra deteccion+++++++++++++++++++++++++++++++++++++++++++++++++++

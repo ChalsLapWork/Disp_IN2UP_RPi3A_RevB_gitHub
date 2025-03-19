@@ -14,6 +14,7 @@ struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
 extern struct _PRODUCTO1_ producto;
 extern struct _DISPLAY_VFD_ vfd;
 extern struct _Detection Deteccion;
+extern struct _PRODUCT1_ producto2;
 
 
 
@@ -101,6 +102,7 @@ union W16{
 	         vfd.box.boxs[i]=0;//init boxees variables 
        vfd.config.bits.BOX_enable=TRUE;//se autoriza a dibujar cajas
 	   //init_Sensibilidad();
+	   //usleep(100);//espera que se envien los datos del menu al VFD
        vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
 	   
        ret=TRUE;
@@ -139,6 +141,35 @@ void display_Barra_Deteccion(unsigned char barra){
 	if(validos[vfd.menu.contexto.Actual]){
 		     VFDserial_SendBarraDet(barra);}     
 }//FIN DE display de barra de deteccion++++++++++++++++++++++++++++++++++++++++++++
+
+
+void display_CuentaRechazosProducto(unsigned char deteccion){
+unsigned char sel=0;	
+const unsigned char POS_X_CONT_RECHAZ=185;
+const unsigned char POS_X_CONT_PROD=185;
+const unsigned char POS_Y_CONT_RECHAZ=POSY12;
+const unsigned char POS_Y_CONT_PROD=POSY14;
+static unsigned char detection0,Rechazo0,producto0;//estado anterior de la deteccion
+
+
+if((deteccion>50)&&(detection0<50))
+      producto2.Cuenta_Rechazos++;
+if((detection0<25)&&(deteccion>30))
+	  producto2.Cuenta_Productos++;
+
+if((vfd.config.bits.MenuPendiente==0)&&
+    (vfd.config.bits.Menu_Ready==1)){
+		if(vfd.menu.contexto.Actual==PORTAL_INICIO){
+			if(Rechazo0!=producto2.Cuenta_Rechazos)
+				VFDserial_Sendusint(producto2.Cuenta_Rechazos,POS_X_CONT_RECHAZ,POS_Y_CONT_RECHAZ,CENTER);
+			if(producto0!=producto2.Cuenta_Productos)		  
+				VFDserial_Sendusint(producto2.Cuenta_Productos,POS_X_CONT_PROD,POS_Y_CONT_PROD,CENTER);}}
+
+  detection0=deteccion;//se guarda estado anterior		  
+  Rechazo0=producto2.Cuenta_Rechazos;
+  producto0=producto2.Cuenta_Productos;
+}//fin de desplaiegue de conteo de rechazos y producto++++++++++++++++++++++++++
+
 
 
 unsigned char display_centrarNombres(unsigned char nchars){

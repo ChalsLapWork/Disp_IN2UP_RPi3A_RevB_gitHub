@@ -42,7 +42,7 @@
 */	
 
 #define VERSION_FIRMWARE   "Version F.W 33.11.0" //add frecq CONTROL from menu, Driver to control ADC's 
-#define VERSION2 "v40.0.1.43"   //branch:RevE2 
+#define VERSION2 "v40.0.3.22"   //branch:RevE2 
 
 
 
@@ -296,7 +296,7 @@ los ADC se perdio la sincronia de los pulsos deSCLK cada 1mseg
 *   "v40.0.1.40"       28-Feb-25  estamos trabanado con RaspBerry, pasamos todo, debido alo gigantesco
                                   de construir un S.O para manejo de memoria.
 								  estamos deplegando el PORTALinicio con hilos independientes de despleiegue VFD
-
+     v40.0.2.??   16-feb-25   comando serial y controlar la barra de deteccion por comandos, portal inicio, desplegado
 *   
 *                    
 *                                  
@@ -1010,7 +1010,7 @@ unsigned char menus_service(unsigned char *mem);
 unsigned char find_Next_Context(unsigned char *context);
 void cambio_contexto(unsigned char contexto);
 void display_Barra_Deteccion(unsigned char barra);
-
+void display_CuentaRechazosProducto(unsigned char deteccion);
 
 
 #endif /* VFDMENU_H_ */

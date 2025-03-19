@@ -77,6 +77,8 @@
 #define RIGHT        'R'
 #define CENTRAL      19
 #define LEFT         'L'
+#define CENTER       'c'
+#define ZEROS        '0'
 #define MAYUSCULAS   21
 #define MINUSCULAS   22
 #define SYMBOL       23
@@ -248,7 +250,7 @@
 #define COMANDO_INIT       'i'//69h
 #define COMANDO_BOLD       'B'
 #define COMANDO_BOXF       'F'
-
+#define COMANDO_USINT      0x12
 
 //CONSTANTES DE COMUNICACION
 #define PARAM_SIZE_COMANDOS 10 //numero de parametros por comando 
