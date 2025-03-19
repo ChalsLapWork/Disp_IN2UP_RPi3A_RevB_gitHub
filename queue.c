@@ -304,19 +304,17 @@ enum {
 						  for(int i=0;i<6;i++){
 			                      	writePort(a[i]); usleep(50);}
 						  getCharsFromUINT_var(&a[0],union_usi.t);
+						  get_5_Chars_to_ASCII(&a[0]);
 						  switch(x2){
 							case RIGHT:Formato_USInt(&a[0],&a[5],5,&y2);
-							           if((5-y2)>0)
-							              for(int i=0;i<(5-y2);i++){
-											  writePort(' ');usleep(50);}
-									   for(int i=0+5;i<(y2+5);i++){
-										    writePort(a[i]);
+							           format_Right(&a[5]);
+							           for(int i=0;i<5;i++){
+											writePort(a[i]);
 											usleep(50);}
 										break;	
 							case LEFT:Formato_USInt(&a[0],&a[5],5,&y2);
+									  format_Left(&a[5]);
 							          for(int i=0;i<5;i++){
-										writePort(' ');usleep(50);}
-									  for(int i=0+5;i<(y2+5);i++){
 										  writePort(a[i]);usleep(50);}
 									  break;
 							case CENTER:Formato_USInt(&a[0],&a[5],5,&y2);

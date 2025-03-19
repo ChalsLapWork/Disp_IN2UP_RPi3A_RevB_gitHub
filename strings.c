@@ -236,6 +236,121 @@ unsigned char ret2;
 *n=ret2;
 }//fin Formato_USInt-------------------------------------------------------------
 
+//El array va a cambiar los numeros por asciis
+void get_5_Chars_to_ASCII(unsigned char *array){
+ for (int i = 0; i < 5; i++) {
+        if (array[i]>9){ // Solo permitir valores numéricos (0-9)
+            printf("\033[33mError: El valor en la posición %d no es un número válido.\033[0m\n", i);
+            return;}
+        array[i] += '0'; }// Convertir número a su representación ASCII
+}//fin de get 5 chars to ascii++++++++++++++++++++
 
 
 
+/* parametros: array es donde estan los numeros
+   num: son la cantidad de NUMEROS
+   mueve los numeros a la derecha y los 
+   restos de numeros  los llena con " "espacio
+*/
+void format_Right(char *array) {
+int len = 5; // Tamaño fijo del array de entrada
+int count = 0; // Contador de dígitos numéricos
+    
+// Contar cuántos números hay (ignorando los ceros iniciales)
+    for (int i = 0; i < len; i++) {
+        if (array[i] != '0') {
+            break;}
+        count++;}
+// Si todos son ceros, mantener solo el último '0'
+    if (count == len) {
+        count = len - 1;}
+    int num_digits = len - count; // Cantidad de números reales
+    // Crear un nuevo array con espacios
+    char temp[5] = {' ', ' ', ' ', ' ', ' '};
+    // Copiar los números al final del nuevo array
+    memcpy(&temp[len - num_digits], &array[count], num_digits);
+    // Copiar de vuelta al array original
+    memcpy(array, temp, len);
+}//fin format_Right++++++++++++++++++++++++++++
+
+
+
+
+
+/* Detecta y elimina ceros iniciales automáticamente.
+Si el número es solo ceros ("00000"), lo deja como "0 ".
+Alinea los números a la izquierda y llena con espacios a la derecha*/
+void format_Left(char *array) {
+int len = 5; // Tamaño fijo del array de entrada
+int count = 0; // Contador de ceros iniciales
+
+// Contar cuántos ceros iniciales hay
+    while (count < len && array[count] == '0') {
+        count++;}
+    if (count == len) {// Si todos son ceros, dejar solo uno
+        count = len - 1;}
+    int num_digits = len - count; // Cantidad de números reales
+    // Crear un nuevo array con espacios
+    char temp[5] = {' ', ' ', ' ', ' ', ' '};
+    // Copiar los números al inicio del nuevo array
+    memcpy(temp, &array[count], num_digits);
+    // Copiar de vuelta al array original
+    memcpy(array, temp, len);
+}//fin de format_Left+++++++++++++++++++++++++++++++
+
+
+
+
+/*
+
+*/
+void format_Center(char *array) {
+    int len = 5; // Tamaño fijo del array de entrada
+    int count = 0; // Contador de ceros iniciales
+
+    // Contar cuántos ceros iniciales hay
+    while (count < len && array[count] == '0') {
+        count++;
+    }
+
+    // Si todos son ceros, mantener solo el último '0'
+    if (count == len) {
+        count = len - 1;
+    }
+
+    int num_digits = len - count; // Cantidad de números reales
+    int padding_left = (len - num_digits) / 2; // Espacios a la izquierda
+    int padding_right = len - num_digits - padding_left; // Espacios a la derecha
+
+    // Crear un nuevo array con espacios
+    char temp[5] = {' ', ' ', ' ', ' ', ' '};
+
+    // Copiar los números en la posición centrada
+    memcpy(&temp[padding_left], &array[count], num_digits);
+
+    // Copiar de vuelta al array original
+    memcpy(array, temp, len);
+}
+
+// Ejemplo de uso
+int main() {
+    char a1[5] = {'0', '0', '0', '3', '2'};
+    char a2[5] = {'0', '4', '3', '2', '1'};
+    char a3[5] = {'0', '0', '0', '0', '1'};
+    char a4[5] = {'0', '0', '0', '1', '1'};
+    char a5[5] = {'0', '0', '0', '0', '0'}; // Caso especial, debe regresar "  0  "
+
+    format_Center(a1);
+    format_Center(a2);
+    format_Center(a3);
+    format_Center(a4);
+    format_Center(a5);
+
+    printf("\"%.*s\"\n", 5, a1); // " 32  "
+    printf("\"%.*s\"\n", 5, a2); // "4321 "
+    printf("\"%.*s\"\n", 5, a3); // "  1  "
+    printf("\"%.*s\"\n", 5, a4); // " 11  "
+    printf("\"%.*s\"\n", 5, a5); // "  0  "
+
+    return 0;
+}

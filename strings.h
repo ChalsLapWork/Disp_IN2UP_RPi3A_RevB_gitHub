@@ -11,3 +11,6 @@ void suma_BCD_digito(unsigned char op,unsigned char n,unsigned char *p);
 unsigned char func_Alge(unsigned char x);
 void Formato_USInt(unsigned char *orig,unsigned char *dest,unsigned char size,unsigned char *n);
 void vaciar_A2B(unsigned char *a,unsigned char *b,unsigned char i,unsigned char f);
+void get_5_Chars_to_ASCII(unsigned char *array);
+void format_Right(char *array);
+void format_Left(char *array);
