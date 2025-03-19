@@ -227,9 +227,8 @@ unsigned char buffer[2];
     valores aceptados 15,20,25,30,35...95 de 5 en cinco*/
 void Serial_Command_Barra_Detection(unsigned char parametro){
 unsigned char var;
-    var=parametro;
-
-    switch(var){//desntro de los display func se determina si se despleigua o no
+    
+    switch(parametro){//desntro de los display func se determina si se despleigua o no
         case 15:var=1;break; 
         case 20:var=2;break;
         case 25:var=3;break;
@@ -247,10 +246,9 @@ unsigned char var;
         case 85:var=15;break;
         case 90:var=16;break;
         case 95:var=17;break;
-        default:if(var>15)
-                    var=recalcular_valor_Ser_Barr_det(var);
+        default:if(parametro>15)
+                    var=recalcular_valor_Ser_Barr_det(parametro);
                 break;}
     display_Barra_Deteccion(var);
-    display_CuentaRechazosProducto(var);
-                error  se le esta metiendo 8 ala func de abajo
+    display_CuentaRechazosProducto(parametro);
 }//fin serial comando  barra deteccion+++++++++++++++++++++++++++++++++++++++++++++++++++
