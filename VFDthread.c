@@ -160,29 +160,29 @@ size_t i = 0, datos_len = 0;
 static int count = 0;
 unsigned char *array_crc,index=0,new_len;
 
-    printf("Consumidor-Tx: Procesando buffer completo (len: %zu), cont=%i\n", len, count);
+    //printf("Consumidor-Tx: Procesando buffer completo (len: %zu), cont=%i\n", len, count);
     if (count++ == 19) { printf("Stop here\n");}
     
     while (i < len) {
         switch (estado) {
-            case 0:printf("Estado 0: Buscando STX...\n");// Buscar STX
+            case 0://printf("Estado 0: Buscando STX...\n");// Buscar STX
                    if(*str==STX){printf("Encontrado STX en la posición %zu\n", i);estado++;}  // Avanzamos al siguiente estad
                    str++;i++;break;
-            case 1:printf("Estado 1: Leyendo el byte de longitud (LEN)...\n");  // Leer el byte de longitud (LEN)
+            case 1://printf("Estado 1: Leyendo el byte de longitud (LEN)...\n");  // Leer el byte de longitud (LEN)
                    //if (*str+3>=len-i){// Verificamos que haya suficiente espacio
                      //  mens_Warnning_Debug("Error: La longitud de los datos no coincide con el tamaño del buffer.");
                        //return;}
                    datos_len = *str;  // Descontamos el byte de `len` y el byte `cmd`
-                   printf("Longitud de datos: %d\n", (int)datos_len);
+                   //printf("Longitud de datos: %d\n", (int)datos_len);
                    str++;i++;estado++;break;
-            case 2:printf("Estado 2: Leyendo el byte de comando (CMD)...\n");  // Leer el byte de comando (CMD)
-                   cmd=*str++;i++;printf("Comando (CMD): %d\n", cmd);
+            case 2://printf("Estado 2: Leyendo el byte de comando (CMD)...\n");  // Leer el byte de comando (CMD)
+                   cmd=*str++;i++;//printf("Comando (CMD): %d\n", cmd);
                    new_len=datos_len;
                    array_crc=(unsigned char *)malloc(new_len * sizeof(unsigned char));
                    if(array_crc==NULL){mens_Warnning_Debug("Error al asignar memoria");estado=0;}
                    else{array_crc[0]=new_len;array_crc[1]=cmd;index=2;}
                    if(datos_len==2)  estado=4;else estado++;break;
-            case 3:printf("Estado 3: Leyendo los datos...\n");// Leer los datos  
+            case 3://printf("Estado 3: Leyendo los datos...\n");// Leer los datos  
                    {unsigned char j;
                    switch(cmd){
                        case 's'://STRING
@@ -195,25 +195,27 @@ unsigned char *array_crc,index=0,new_len;
                                      c[j]=*str++;i++;  
                                      array_crc[index++]=c[j];}
                                break;}             
-                   printf("Dato %i: %02X %i  %c\n", j, c[j],c[j],c[j]);}                
+                   //printf("Dato %i: %02X %i  %c\n", j, c[j],c[j],c[j]);}                
                    estado++;break;
-            case 4:printf("Estado 4: Calculando y verificando CRC...\n");  // Calcular y verificar CRC
+            case 4://printf("Estado 4: Calculando y verificando CRC...\n");  // Calcular y verificar CRC
                    crc_calculado = getCRC_v2(array_crc,new_len);  // Sumar 2 para incluir `len` y `cmd`
                    crc_recibido = *str++;i++;  // Leemos el CRC recibido
-                   printf("CRC: %02X, CRC recibido: %02X\n", crc_calculado, crc_recibido);
+                   //printf("CRC: %02X, CRC recibido: %02X\n", crc_calculado, crc_recibido);
                    if (crc_calculado != crc_recibido) {mens_Warnning_Debug("Error: El CRC recibido no coincide con el calculado.");
                                                        estado=7;}  // Reiniciar el ciclo para buscar el siguiente STX
                    else {estado++;}break;
-            case 5:printf("Estado 5: Verificando si el paquete termina con ETX...\n");  // Verificar ETX
-                   if (*str == ETX) {printf("Encontrado ETX\n");estado = 6;}  // Avanzamos al siguiente estado si encontramos ETX
+            case 5://printf("Estado 5: Verificando si el paquete termina con ETX...\n");  // Verificar ETX
+                   if (*str == ETX) {
+                         //printf("Encontrado ETX\n");
+                         estado = 6;}  // Avanzamos al siguiente estado si encontramos ETX
                    else {mens_Warnning_Debug("Error: No se encontró ETX al final del paquete.");
                         estado = 7;}  // Reiniciar el ciclo para buscar el siguiente STX
                    break;
-            case 6:printf("Estado 6: Procesando el paquete...\n");// Procesar el paquete  
+            case 6://printf("Estado 6: Procesando el paquete...\n");// Procesar el paquete  
                    procesar_Paquete(cmd, c, datos_len);estado++;break;  // Reiniciar el ciclo para buscar el siguiente STX
-            case 7:printf("Estado 7: Reiniciando búsqueda para el siguiente paquete...\n");  // Reiniciar y buscar el siguiente paquete
+            case 7://printf("Estado 7: Reiniciando búsqueda para el siguiente paquete...\n");  // Reiniciar y buscar el siguiente paquete
                    estado=0;break; // Volver al estado inicial para buscar el siguiente STX
-            default:printf("Estado desconocido. Reiniciando...\n");
+            default://printf("Estado desconocido. Reiniciando...\n");
                     estado = 0;  // En caso de un estado inesperado, reiniciamos
                     break;}//fin sitch+++++++++++++++++++++++++++++
        }//fin while  Avanzamos al siguiente byte en el buffer

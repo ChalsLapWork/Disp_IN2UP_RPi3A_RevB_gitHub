@@ -148,20 +148,23 @@ const unsigned char POS_X_CONT_RECHAZ=185;
 const unsigned char POS_X_CONT_PROD=185;
 const unsigned char POS_Y_CONT_RECHAZ=POSY12;
 const unsigned char POS_Y_CONT_PROD=POSY14;
+static unsigned char detection0,Rechazo0,producto0;//estado anterior de la deteccion
 
 
-if(deteccion>50){sel=1;
+if((deteccion>50)&&(detection0<50))
       producto2.Cuenta_Rechazos++;
-	  producto2.Cuenta_Productos++;}
-else{if(deteccion>10){sel=2;producto2.Cuenta_Productos++;}}
+if((detection0<25)&&(deteccion>30))
+	  producto2.Cuenta_Productos++;
+
 if(vfd.menu.contexto.Actual==PORTAL_INICIO){
-	   switch(sel){
-		  case 1:VFDserial_Sendusint(producto2.Cuenta_Rechazos,POS_X_CONT_RECHAZ,POS_Y_CONT_RECHAZ,CENTER);
-		 		 VFDserial_Sendusint(producto2.Cuenta_Productos,POS_X_CONT_PROD,POS_Y_CONT_PROD,CENTER);
-		         break;
-		  case 2:VFDserial_Sendusint(producto2.Cuenta_Productos,POS_X_CONT_PROD,POS_Y_CONT_PROD,CENTER);
-		        break;
-	      default:break;}}			  
+	   if(rechazo0!=producto2.Cuenta_Rechazos)
+		  VFDserial_Sendusint(producto2.Cuenta_Rechazos,POS_X_CONT_RECHAZ,POS_Y_CONT_RECHAZ,CENTER);
+       if(producto0!=producto2.Cuenta_Productos)		  
+		  VFDserial_Sendusint(producto2.Cuenta_Productos,POS_X_CONT_PROD,POS_Y_CONT_PROD,CENTER);}
+		  			  
+  detection0=deteccion;//se guarda estado anterior		  
+  rechazo0=producto2.Cuenta_Rechazos;
+  prodcuto0=producto2.Cuenta_Productos;
 }//fin de desplaiegue de conteo de rechazos y producto++++++++++++++++++++++++++
 
 
