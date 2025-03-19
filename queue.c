@@ -308,21 +308,18 @@ enum {
 						  switch(x2){
 							case RIGHT:Formato_USInt(&a[0],&a[5],5,&y2);
 							           format_Right(&a[5]);
-							           for(int i=0;i<5;i++){
+							           for(int i=5;i<10;i++){
 											writePort(a[i]);
 											usleep(50);}
 										break;	
 							case LEFT:Formato_USInt(&a[0],&a[5],5,&y2);
 									  format_Left(&a[5]);
-							          for(int i=0;i<5;i++){
+							          for(int i=5;i<10;i++){
 										  writePort(a[i]);usleep(50);}
 									  break;
 							case CENTER:Formato_USInt(&a[0],&a[5],5,&y2);
-							            x1=func_Alge(y2);
-										if(x1>0){
-										   for(int i=0;i<x1;i++){
-											  writePort(' ');usleep(50);}}
-									    for(int i=0+5;i<(y2+5);i++){
+									    format_Center(&a[5]);
+							            for(int i=5;i<10;i++){
 											  writePort(a[i]);usleep(50);}
 							             break;					  
 							case ZEROS:for(int i=0;i<5;i++){

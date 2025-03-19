@@ -14,3 +14,4 @@ void vaciar_A2B(unsigned char *a,unsigned char *b,unsigned char i,unsigned char 
 void get_5_Chars_to_ASCII(unsigned char *array);
 void format_Right(char *array);
 void format_Left(char *array);
+void format_Center(char *array);

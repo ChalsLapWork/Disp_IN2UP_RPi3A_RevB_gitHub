@@ -261,17 +261,13 @@ int count = 0; // Contador de dígitos numéricos
         if (array[i] != '0') {
             break;}
         count++;}
-// Si todos son ceros, mantener solo el último '0'
-    if (count == len) {
+    if (count == len) {// Si todos son ceros, mantener solo el último '0'
         count = len - 1;}
     int num_digits = len - count; // Cantidad de números reales
-    // Crear un nuevo array con espacios
-    char temp[5] = {' ', ' ', ' ', ' ', ' '};
-    // Copiar los números al final del nuevo array
-    memcpy(&temp[len - num_digits], &array[count], num_digits);
-    // Copiar de vuelta al array original
-    memcpy(array, temp, len);
-}//fin format_Right++++++++++++++++++++++++++++
+    char temp[5] = {' ', ' ', ' ', ' ', ' '};  // Crear un nuevo array con espacios
+    memcpy(&temp[len - num_digits], &array[count], num_digits);// Copiar los números al final del nuevo array
+    memcpy(array, temp, len);    // Copiar de vuelta al array original
+}//fin format_Right+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
@@ -290,67 +286,28 @@ int count = 0; // Contador de ceros iniciales
     if (count == len) {// Si todos son ceros, dejar solo uno
         count = len - 1;}
     int num_digits = len - count; // Cantidad de números reales
-    // Crear un nuevo array con espacios
-    char temp[5] = {' ', ' ', ' ', ' ', ' '};
-    // Copiar los números al inicio del nuevo array
-    memcpy(temp, &array[count], num_digits);
-    // Copiar de vuelta al array original
-    memcpy(array, temp, len);
-}//fin de format_Left+++++++++++++++++++++++++++++++
+    char temp[5] = {' ', ' ', ' ', ' ', ' '};// Crear un nuevo array con espacios
+    memcpy(temp, &array[count], num_digits);    // Copiar los números al inicio del nuevo array
+    memcpy(array, temp, len);    // Copiar de vuelta al array original
+}//fin de format_Left+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
 
-/*
-
-*/
+/*pone el array en central con ascii espacio 
+      " 32  " "4321 " "  1  " " 11  " "  0  " */
 void format_Center(char *array) {
-    int len = 5; // Tamaño fijo del array de entrada
-    int count = 0; // Contador de ceros iniciales
+int len = 5; // Tamaño fijo del array de entrada
+int count = 0; // Contador de ceros iniciales
 
-    // Contar cuántos ceros iniciales hay
-    while (count < len && array[count] == '0') {
-        count++;
-    }
-
-    // Si todos son ceros, mantener solo el último '0'
-    if (count == len) {
-        count = len - 1;
-    }
-
+    while (count < len && array[count] == '0') {// Contar cuántos ceros iniciales hay
+        count++;}
+    if (count == len) {// Si todos son ceros, mantener solo el último '0'
+        count = len - 1;}
     int num_digits = len - count; // Cantidad de números reales
     int padding_left = (len - num_digits) / 2; // Espacios a la izquierda
     int padding_right = len - num_digits - padding_left; // Espacios a la derecha
-
-    // Crear un nuevo array con espacios
-    char temp[5] = {' ', ' ', ' ', ' ', ' '};
-
-    // Copiar los números en la posición centrada
-    memcpy(&temp[padding_left], &array[count], num_digits);
-
-    // Copiar de vuelta al array original
-    memcpy(array, temp, len);
-}
-
-// Ejemplo de uso
-int main() {
-    char a1[5] = {'0', '0', '0', '3', '2'};
-    char a2[5] = {'0', '4', '3', '2', '1'};
-    char a3[5] = {'0', '0', '0', '0', '1'};
-    char a4[5] = {'0', '0', '0', '1', '1'};
-    char a5[5] = {'0', '0', '0', '0', '0'}; // Caso especial, debe regresar "  0  "
-
-    format_Center(a1);
-    format_Center(a2);
-    format_Center(a3);
-    format_Center(a4);
-    format_Center(a5);
-
-    printf("\"%.*s\"\n", 5, a1); // " 32  "
-    printf("\"%.*s\"\n", 5, a2); // "4321 "
-    printf("\"%.*s\"\n", 5, a3); // "  1  "
-    printf("\"%.*s\"\n", 5, a4); // " 11  "
-    printf("\"%.*s\"\n", 5, a5); // "  0  "
-
-    return 0;
-}
+    char temp[5] = {' ', ' ', ' ', ' ', ' '};// Crear un nuevo array con espacios
+    memcpy(&temp[padding_left], &array[count], num_digits);// Copiar los números en la posición centrada
+    memcpy(array, temp, len);// Copiar de vuelta al array original
+}//fin format central++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
