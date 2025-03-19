@@ -248,8 +248,8 @@ union{
    unsigned char c[2];
 }bytes;    
     if(posy>128) return 0;
-    switch(formato){
-         case RIGHT:
+    switch(formato){//FALTA DE PROBAR LOS DEMAS
+         case RIGHT://SOLO SE HA PROBADO EL DE CENTRAL|CENTER
          case LEFT:
          case CENTER:
          case CENTRAL:
