@@ -1,6 +1,8 @@
 #include "strings.h"
 #include "system.h"
 #include "Memoria.h"
+#include <stdio.h>
+#include <string.h>
 
 
 
