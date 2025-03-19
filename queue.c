@@ -176,7 +176,6 @@ enum {
 					 case CMD_BARRA:    estado=CMD_BAR;break;//BARRA DE DETECCION
 					 case COMANDO_USINT:estado=CMD_USINT;break;
 					 case COMANDO_PHASE:estado=CMD_PHASE;break;     
-:
 					 default:estado=CMD_ERR;break;}
 				   break;
 		   case   CMD_DMS:union_usi.n[0]=*c;
@@ -343,7 +342,7 @@ enum {
 			                      	writePort(a[i]); usleep(50);}
                           getASCIIFromUChar1(x1,&a[0]);//sacar los ascii phase entero
 						  y2=procesar_Frac_Fase(y1);//get ascii frac
-                          Formato_uChar(&a[0],pen);//format phase entero
+                          Formato_uChar((char *)a,pen);//format phase entero
 						  for(int i=0;i<3;i++){
 								writePort(a[i]);usleep(50);}
 						  writePort('.');usleep(50);

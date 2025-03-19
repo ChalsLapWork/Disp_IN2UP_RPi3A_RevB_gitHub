@@ -173,14 +173,12 @@ if((vfd.config.bits.MenuPendiente==0)&&
 
 /* se despliega en portal inicio la sensibilidad y la phase detectada que llega por 
   comando serial */
-void display_Sens_Phase(unsigned short int sens,unsigned char phase,unsigned char phasefrac){
-const unsigned char POS_X_SENS=80,POS_Y_SENS=POSY10;
-const unsigned char POS_X_PHAS=185,POS_Y_PHAS=POSY10;	
+void display_Sens_Phase(unsigned short int sens,unsigned char phase,unsigned char phasefrac){	
 if((vfd.config.bits.MenuPendiente==0)&&
     (vfd.config.bits.Menu_Ready==1)){
 		if(vfd.menu.contexto.Actual==PORTAL_INICIO){
-               VFDserial_Sendusint(sens,POS_X_SENS,POS_Y_SENS,CENTER);
-			   VFDserial_SendPhase(phase,phasefrac,POS_X_PHAS,POS_Y_PHAS,RIGHT);//no mover el formato de RIGHT porque left y centrado dara "3  .5"  
+               VFDserial_Sendusint(sens,POS_X_SENS,POSY10,CENTER);
+			   VFDserial_SendPhase(phase,phasefrac,POS_X_PHASE,POSY10,RIGHT);//no mover el formato de RIGHT porque left y centrado dara "3  .5"  
 				 }}            
  
 }//fin de desplegar en portal inicio la sensibildiad y la phase detectada++++++++++++++++++++++++++

@@ -277,14 +277,14 @@ return 1;// fin de enviar mensaje++++++++++++++++++++++
 void VFDserial_SendPhase(unsigned char fase,unsigned char fasefrac,unsigned char posx,unsigned char posy,unsigned char formato){
 unsigned char array[10];
 
-    if(posy>128) return 0;
+    if(posy>128) return;
     switch(formato){//FALTA DE PROBAR LOS DEMAS
          case RIGHT://SOLO SE HA PROBADO EL DE CENTRAL|CENTER
          case LEFT:
          case CENTER:
          case CENTRAL:
          case ZEROS:goto next286;break;
-         default:return 0;break;}
+         default:return;break;}
 next286:
     array[0] = STX;
     array[1] = 7; // LEN (longitud total del mensaje)

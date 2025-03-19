@@ -354,7 +354,7 @@ return;
  * entre 0 y 9 si si, se le convierte en ascii es para 
  procesar el frec de phase*/
  unsigned char procesar_Frac_Fase(unsigned char frac){
-   if((frac>=0)&&(frac<10)){
+   if(frac<10){
 	      return (frac|0x30);}
    else return 0x30;
  }//fin de procesar el numero fraccion de fase++++++++++++
