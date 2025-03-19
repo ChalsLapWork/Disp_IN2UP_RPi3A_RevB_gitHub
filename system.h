@@ -251,13 +251,15 @@
 #define COMANDO_BOLD       'B'
 #define COMANDO_BOXF       'F'
 #define COMANDO_USINT      0x12
+#define COMANDO_PHASE      0x23
 
 //CONSTANTES DE COMUNICACION
 #define PARAM_SIZE_COMANDOS 10 //numero de parametros por comando 
 //COMANDOS DE COMUNICACION SERIAL PROCESADORA
 #define CMD_DET_ON 0x10 //Param:N/A Deteccion Activada/detectada
-#define CMD_BARRA  0x11 //Param:1byte Hasta donde llego la barra de deteccion.
-#define CMD_DET_PM 0x12 //PAram:4bytes parametro de SEnsibilidad y phase.
+#define CMD_BARRA      0x11 //Param:1byte Hasta donde llego la barra de deteccion.
+#define CMD_DET_PM     0x12 //PAram:4bytes parametro de SEnsibilidad y phase.
+#define CMD_SENS_PHASE 0x13 //display Sens&phase in Portal inicio, 
 
 
 //SIZES-------------------------------------------------------

@@ -181,6 +181,8 @@ static unsigned char numParam,numParam0;//numero de parametros    .
 void procesarCmd(unsigned char cmd,unsigned char *param){
 unsigned char x;
 unsigned char mens[]={"COMANDO BARRA ACEPTADO"};
+unsigned char mens2[]={"COMANDO SENSE ACEPTADO"};
+
     x=*param;    
     printf(" %d %c",x,x);
     switch(cmd){
@@ -189,6 +191,9 @@ unsigned char mens[]={"COMANDO BARRA ACEPTADO"};
                        Serial_Command_Barra_Detection(*param); 
                        printf("%s %s  %i %s:%i",CAMAR,mens,cmd,CRESET,*param);
                        break;  //mueve la barra de deteccion
+        case CMD_SENS_PHASE:Serial_Command_Sens_Phase_Det(param);
+                            printf("%s %s  %i %s:%i",CAMAR,mens2,cmd,CRESET,*param);
+                            break;
         case CMD_DET_PM:printf("%s %s %s",CMORA,mens,CRESET);break; //hace display de los parametros de Portal Inicio
         default:break;
     }//fin switch ----------------------------------------------------------------------------
@@ -252,3 +257,17 @@ unsigned char var;
     display_Barra_Deteccion(var);
     display_CuentaRechazosProducto(parametro);
 }//fin serial comando  barra deteccion+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+/* comando que recibe la sensibilidad y la pase detectada 
+   param0: sensibilidad byte0
+   param1: sensibilidad byte1, param2: phase-entero param3:phase-frac */
+void Serial_Command_Sens_Phase_Det(unsigned char *parametros){
+union{
+    unsigned short int usint1;
+    unsigned char c[2];
+}usi;    
+     usi.c[0]=*parametros;
+     usi.c[1]=*(parametros+1);
+     display_Sens_Phase(usi.usint1,*(parametros+2),*(parametros+3));
+}//fin de serial comando sensibilidad phase detectada a desplegar

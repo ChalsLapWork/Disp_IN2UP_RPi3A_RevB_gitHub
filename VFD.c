@@ -273,6 +273,31 @@ return 1;// fin de enviar mensaje++++++++++++++++++++++
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
 
 
+/** mandar aa dislpay send phase y frac, tres digitos y fraccion un digito */
+void VFDserial_SendPhase(unsigned char fase,unsigned char fasefrac,unsigned char posx,unsigned char posy,unsigned char formato){
+unsigned char array[10];
+
+    if(posy>128) return 0;
+    switch(formato){//FALTA DE PROBAR LOS DEMAS
+         case RIGHT://SOLO SE HA PROBADO EL DE CENTRAL|CENTER
+         case LEFT:
+         case CENTER:
+         case CENTRAL:
+         case ZEROS:goto next286;break;
+         default:return 0;break;}
+next286:
+    array[0] = STX;
+    array[1] = 7; // LEN (longitud total del mensaje)
+    array[2] = COMANDO_PHASE; // CMD (ejemplo de comando)
+    array[3] = fase;
+    array[4] = fasefrac;
+    array[5] = posx;
+    array[6] = posy;
+    array[7] = formato;
+    array[8] = getCRC_v2(array+1,7);
+    array[9] = ETX; // Ejemplo de CRC (ajustar según tu implementación)    
+    VFDserial_SendBlock_buf(array, 10);
+}//fin de VFD serial send phase++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
