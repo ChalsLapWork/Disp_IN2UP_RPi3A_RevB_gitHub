@@ -252,7 +252,7 @@ void get_5_Chars_to_ASCII(unsigned char *array){
    mueve los numeros a la derecha y los 
    restos de numeros  los llena con " "espacio
 */
-void format_Right(char *array) {
+void format_Right(unsigned char *array) {
 int len = 5; // Tamaño fijo del array de entrada
 int count = 0; // Contador de dígitos numéricos
     
@@ -276,7 +276,7 @@ int count = 0; // Contador de dígitos numéricos
 /* Detecta y elimina ceros iniciales automáticamente.
 Si el número es solo ceros ("00000"), lo deja como "0 ".
 Alinea los números a la izquierda y llena con espacios a la derecha*/
-void format_Left(char *array) {
+void format_Left(unsigned char *array) {
 int len = 5; // Tamaño fijo del array de entrada
 int count = 0; // Contador de ceros iniciales
 
@@ -296,7 +296,7 @@ int count = 0; // Contador de ceros iniciales
 
 /*pone el array en central con ascii espacio 
       " 32  " "4321 " "  1  " " 11  " "  0  " */
-void format_Center(char *array) {
+void format_Center(unsigned char *array) {
 int len = 5; // Tamaño fijo del array de entrada
 int count = 0; // Contador de ceros iniciales
 
