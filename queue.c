@@ -371,7 +371,9 @@ unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despl
  while(vfd.config.bits.MenuPendiente){ //hilo corriendo  
 	switch(estado3){//Maquina de Estados
 	  case INIT_M:  if(!vfd.config.bits.init_Menu)estado3++;else{estado3=30;}break;
-	  case INIT_M+1:vfd.config.bits.MenuPendiente=TRUE;estado3++;break;
+	  case INIT_M+1:vfd.config.bits.MenuPendiente=TRUE;
+	                vfd.config.bits.Menu_Ready=0;
+	                estado3++;break;
 	  case INIT_M+2:estado3++;break;//Mejora de la funcion: recurso.solicitar
 	  case INIT_M+3:contexto=find_contexto_Siguiente();estado3++;break;
 	  case INIT_M+4:InitArbolMenu(contexto);estado3++;break;
