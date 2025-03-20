@@ -103,7 +103,7 @@ int main() {
 
     printf("[MAIN] Iniciando programa...\n");
 
-    data.serial_fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_SYNC);
+    data.serial_fd = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_SYNC);
     if (data.serial_fd == -1) {
         perror("[ERROR] No se pudo abrir el puerto serial");
         return 1;
