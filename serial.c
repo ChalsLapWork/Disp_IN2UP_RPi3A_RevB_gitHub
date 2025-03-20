@@ -88,9 +88,9 @@ void *serial_reader(void *arg) {
                 //printf("%s[LECTOR] Datos leídos:%s %s %s\n",CAZUL,CAMAR, temp_buffer,CRESET);  // Depuración
                printf("%sDatos recibidos (hex):%s ", CVERD, CRESET);
                for (int i = 0; i < bytes_read; i++) {
-                    printf("%s%02X %s ", CROJO, buffer[i], CRESET);}
+                    printf("%s%02X %s ", CROJO, temp_buffer[i], CRESET);}
                for (int i = 0; i < bytes_read; i++) {
-                    printf("%s%c%s", CAMAR, buffer[i], CRESET);}
+                    printf("%s%c%s", CAMAR, temp_buffer[i], CRESET);}
 
                 printf("\n");
 
