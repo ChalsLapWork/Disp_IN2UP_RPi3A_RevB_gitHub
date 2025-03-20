@@ -9,8 +9,8 @@
 
 #define BUF_SIZE 256
 #define BUFFER6_SIZE 1024
-#define STX 0x02
-#define ETX 0x03
+#define STX 0x03
+#define ETX 0x02
 
 typedef struct {
     int serial_fd;
