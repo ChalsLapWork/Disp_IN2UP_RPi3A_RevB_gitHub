@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <sys/select.h>
 #include <errno.h>
+#include <termios.h>
 
 #define BUF_SIZE 256
 #define BUFFER6_SIZE 1024
@@ -18,6 +19,19 @@ typedef struct {
     int data_ready;
     pthread_mutex_t mutex;
 } thread_data_t;
+
+void configure_serial(int fd) {
+    struct termios options;
+    tcgetattr(fd, &options);
+    cfsetispeed(&options, B9600);
+    cfsetospeed(&options, B9600);
+    options.c_cflag = CS8 | CLOCAL | CREAD;
+    options.c_iflag = IGNPAR;
+    options.c_oflag = 0;
+    options.c_lflag = 0;
+    tcflush(fd, TCIFLUSH);
+    tcsetattr(fd, TCSANOW, &options);
+}
 
 void *serial_reader(void *arg) {
     thread_data_t *data = (thread_data_t *)arg;
@@ -51,7 +65,11 @@ void *serial_reader(void *arg) {
                 
                 data->data_ready = 1;
                 pthread_mutex_unlock(&data->mutex);
-                printf("[LECTOR] Datos leídos: %s\n", temp_buffer);
+                printf("[LECTOR] Datos leídos: ");
+                for (int i = 0; i < bytes_read; i++) {
+                    printf("%02X(%c) ", (unsigned char)temp_buffer[i], temp_buffer[i]);
+                }
+                printf("\n");
             } else if (bytes_read == -1) {
                 perror("[LECTOR] Error al leer del puerto serial");
             }
@@ -84,8 +102,9 @@ void *cons_serial_processor(void *arg) {
             data->buffer6[0] = '\0';
             pthread_mutex_unlock(&data->mutex);
             
+            printf("[PROCESADOR] Procesando: %s\n", local_buffer);
             if (strchr(local_buffer, STX) && strchr(local_buffer, ETX)) {
-                printf("[PROCESADOR] Datos procesados: %s\n", local_buffer);
+                printf("[PROCESADOR] Mensaje válido recibido: %s\n", local_buffer);
             } else {
                 printf("[PROCESADOR] Esperando mensaje completo...\n");
             }
@@ -109,6 +128,7 @@ int main() {
         return 1;
     }
 
+    configure_serial(data.serial_fd);
     data.buffer6[0] = '\0';
     data.data_ready = 0;
     pthread_mutex_init(&data.mutex, NULL);
