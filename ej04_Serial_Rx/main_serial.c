@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <fcntl.h>
 #include <sys/select.h>
+#include <errno.h>
 
 #define BUF_SIZE 256
 #define BUFFER6_SIZE 1024
@@ -25,6 +26,8 @@ void *serial_reader(void *arg) {
     fd_set read_fds;
     struct timeval timeout;
     int ncount = 0;
+
+    printf("[LECTOR] Hilo de lectura iniciado. Esperando datos...\n");
 
     while (1) {
         FD_ZERO(&read_fds);
@@ -50,15 +53,15 @@ void *serial_reader(void *arg) {
                 pthread_mutex_unlock(&data->mutex);
                 printf("[LECTOR] Datos leídos: %s\n", temp_buffer);
             } else if (bytes_read == -1) {
-                printf("[LECTOR] Error al leer del puerto serial.\n");
+                perror("[LECTOR] Error al leer del puerto serial");
             }
         } else {
             if (ret == -1) {
-                printf("[LECTOR] Error en select.\n");
+                perror("[LECTOR] Error en select");
             } else {
                 if (ncount++ > 350) {
                     ncount = 0;
-                    printf("Sin datos Seriales...\n");
+                    printf("[LECTOR] Sin datos Seriales...\n");
                 }
             }
         }
@@ -69,6 +72,8 @@ void *serial_reader(void *arg) {
 void *cons_serial_processor(void *arg) {
     thread_data_t *data = (thread_data_t *)arg;
     char local_buffer[BUFFER6_SIZE];
+
+    printf("[PROCESADOR] Hilo de procesamiento iniciado.\n");
 
     while (1) {
         pthread_mutex_lock(&data->mutex);
@@ -81,7 +86,6 @@ void *cons_serial_processor(void *arg) {
             
             if (strchr(local_buffer, STX) && strchr(local_buffer, ETX)) {
                 printf("[PROCESADOR] Datos procesados: %s\n", local_buffer);
-                // Procesamiento_de_cadena_serProc(local_buffer);
             } else {
                 printf("[PROCESADOR] Esperando mensaje completo...\n");
             }
@@ -97,7 +101,14 @@ int main() {
     thread_data_t data;
     pthread_t reader_thread, processor_thread;
 
-    data.serial_fd = 0; // Simulación: Entrada estándar (stdin) como puerto serial
+    printf("[MAIN] Iniciando programa...\n");
+
+    data.serial_fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_SYNC);
+    if (data.serial_fd == -1) {
+        perror("[ERROR] No se pudo abrir el puerto serial");
+        return 1;
+    }
+
     data.buffer6[0] = '\0';
     data.data_ready = 0;
     pthread_mutex_init(&data.mutex, NULL);
@@ -109,5 +120,6 @@ int main() {
     pthread_join(processor_thread, NULL);
 
     pthread_mutex_destroy(&data.mutex);
+    close(data.serial_fd);
     return 0;
 }
