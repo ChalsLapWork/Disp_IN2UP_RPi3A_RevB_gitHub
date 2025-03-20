@@ -39,9 +39,10 @@ int main() {
 
                 // Mostrar cada byte en formato hexadecimal
                 for (int i = 0; i < bytes_received; i++) {
-                    printf("%s%02X %s:: %s%c %s", COLOR_ROJO, buffer[i],COLOR_BLANCO,COLOR_AMARILLO,buffer[i], COLOR_RESET);
-
-                }
+                    printf("%s%02X %s ", COLOR_ROJO, buffer[i], COLOR_RESET);}
+                for (int i = 0; i < bytes_received; i++) {
+                    printf("%s%c%s", COLOR_AMARILLO, buffer[i], COLOR_RESET);}
+                    
                 printf("\n");
             }
         }
