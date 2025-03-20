@@ -85,7 +85,16 @@ void *serial_reader(void *arg) {
                 strncat(data->buffer6, temp_buffer, BUFFER6_SIZE - strlen(data->buffer6) - 1);
                 data->data_ready = 1;  // Indica que hay datos nuevos
                 pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
-                printf("%s[LECTOR] Datos leídos:%s %s %s\n",CAZUL,CAMAR, temp_buffer,CRESET);  // Depuración
+                //printf("%s[LECTOR] Datos leídos:%s %s %s\n",CAZUL,CAMAR, temp_buffer,CRESET);  // Depuración
+               printf("%sDatos recibidos (hex):%s ", CVERD, CRESET);
+               for (int i = 0; i < bytes_read; i++) {
+                    printf("%s%02X %s ", CROJO, buffer[i], CRESET);}
+               for (int i = 0; i < bytes_read; i++) {
+                    printf("%s%c%s", CAMAR, buffer[i], CRESET);}
+
+                printf("\n");
+
+ 
             } else if (bytes_read == -1) {
                 printf("%s[LECTOR] Error al leer del puerto serial.%s\n",CROJO,CRESET);
             }
