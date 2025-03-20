@@ -3,7 +3,6 @@
 #include <wiringPi.h>
 #include <wiringSerial.h>
 #include <unistd.h>
-#include <string.h>
 
 // Códigos de escape ANSI para colores
 #define COLOR_VERDE "\033[32m"
@@ -12,7 +11,7 @@
 
 int main() {
     int serial_port;
-    char buffer[256];
+    unsigned char buffer[256];
     int bytes_received;
 
     // Inicializar WiringPi
@@ -32,12 +31,15 @@ int main() {
     // Bucle principal para recibir datos
     while (1) {
         if (serialDataAvail(serial_port) > 0) {
-            bytes_received = read(serial_port, buffer, sizeof(buffer) - 1);  // Leer datos
+            bytes_received = read(serial_port, buffer, sizeof(buffer));  // Leer datos
             if (bytes_received > 0) {
-                buffer[bytes_received] = '\0';  // Terminar la cadena
+                printf("%sDatos recibidos (hex):%s ", COLOR_VERDE, COLOR_RESET);
 
-                // Mostrar los datos recibidos con colores
-                printf("%sDatos recibidos:%s %s%s\n", COLOR_VERDE, COLOR_RESET, COLOR_ROJO, buffer);
+                // Mostrar cada byte en formato hexadecimal
+                for (int i = 0; i < bytes_received; i++) {
+                    printf("%s%02X%s ", COLOR_ROJO, buffer[i], COLOR_RESET);
+                }
+                printf("\n");
             }
         }
 
