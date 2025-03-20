@@ -8,6 +8,8 @@
 #define COLOR_VERDE "\033[32m"
 #define COLOR_ROJO  "\033[31m"
 #define COLOR_RESET "\033[0m"
+#define COLOR_BLANCO "\033[37m"
+#define COLOR_AMARILLO "\033[33m"
 
 int main() {
     int serial_port;
@@ -21,7 +23,7 @@ int main() {
     }
 
     // Abrir el puerto serial ttyAMA0
-    if ((serial_port = serialOpen("/dev/ttyAMA0", 115200)) < 0) {
+    if ((serial_port = serialOpen("/dev/ttyAMA0", 9600)) < 0) {
         fprintf(stderr, "Error al abrir el puerto serial.\n");
         return 1;
     }
@@ -37,7 +39,8 @@ int main() {
 
                 // Mostrar cada byte en formato hexadecimal
                 for (int i = 0; i < bytes_received; i++) {
-                    printf("%s%02X%s ", COLOR_ROJO, buffer[i], COLOR_RESET);
+                    printf("%s%02X%s %s:: %s%c %s", COLOR_ROJO, buffer[i],COLOR_BLANCO,COLOR_AMARILLO,buffer[i], COLOR_RESET);
+
                 }
                 printf("\n");
             }
