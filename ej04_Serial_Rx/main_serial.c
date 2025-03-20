@@ -13,13 +13,10 @@
 #define STX 0x03
 #define ETX 0x02
 
-// Definición de colores ANSI
-#define RESET   "\033[0m"
-#define RED     "\033[31m"
-#define GREEN   "\033[32m"
-#define YELLOW  "\033[33m"
-#define BLUE    "\033[34m"
-#define CYAN    "\033[36m"
+#define CAZUL "\033[34m"
+#define CAMAR "\033[31m"
+#define CAQUA "\033[36m"
+#define CRESET "\033[0m"
 
 typedef struct {
     int serial_fd;
@@ -49,7 +46,7 @@ void *serial_reader(void *arg) {
     struct timeval timeout;
     int ncount = 0;
 
-    printf(CYAN "[LECTOR] Hilo de lectura iniciado. Esperando datos...\n" RESET);
+    printf("%s[LECTOR] Hilo de lectura iniciado. Esperando datos...%s\n", CAZUL, CRESET);
 
     while (1) {
         FD_ZERO(&read_fds);
@@ -67,27 +64,27 @@ void *serial_reader(void *arg) {
                 if (strlen(data->buffer6) + bytes_read < BUFFER6_SIZE) {
                     strncat(data->buffer6, temp_buffer, bytes_read);
                 } else {
-                    printf(RED "[LECTOR] Buffer desbordado, limpiando...\n" RESET);
+                    printf("%s[LECTOR] Buffer desbordado, limpiando...%s\n", CAMAR, CRESET);
                     data->buffer6[0] = '\0';
                 }
                 
                 data->data_ready = 1;
                 pthread_mutex_unlock(&data->mutex);
-                printf(GREEN "[LECTOR] Datos recibidos (HEX): " RESET);
+                printf("%s[LECTOR] Datos recibidos (HEX): %s", CAZUL, CRESET);
                 for (int i = 0; i < bytes_read; i++) {
                     printf("%02X ", (unsigned char)temp_buffer[i]);
                 }
                 printf("\n");
             } else if (bytes_read == -1) {
-                perror(RED "[LECTOR] Error al leer del puerto serial" RESET);
+                perror("[LECTOR] Error al leer del puerto serial");
             }
         } else {
             if (ret == -1) {
-                perror(RED "[LECTOR] Error en select" RESET);
+                perror("[LECTOR] Error en select");
             } else {
                 if (ncount++ > 350) {
                     ncount = 0;
-                    printf(YELLOW "[LECTOR] Esperando datos...\n" RESET);
+                    printf("%s[LECTOR] Esperando datos...%s\n", CAQUA, CRESET);
                 }
             }
         }
@@ -99,7 +96,7 @@ void *cons_serial_processor(void *arg) {
     thread_data_t *data = (thread_data_t *)arg;
     char local_buffer[BUFFER6_SIZE];
 
-    printf(BLUE "[PROCESADOR] Hilo de procesamiento iniciado.\n" RESET);
+    printf("%s[PROCESADOR] Hilo de procesamiento iniciado.%s\n", CAQUA, CRESET);
 
     while (1) {
         pthread_mutex_lock(&data->mutex);
@@ -110,20 +107,20 @@ void *cons_serial_processor(void *arg) {
             data->buffer6[0] = '\0';
             pthread_mutex_unlock(&data->mutex);
             
-            printf(BLUE "[PROCESADOR] Procesando (HEX): " RESET);
+            printf("%s[PROCESADOR] Procesando (HEX): %s", CAQUA, CRESET);
             for (int i = 0; i < strlen(local_buffer); i++) {
                 printf("%02X ", (unsigned char)local_buffer[i]);
             }
             printf("\n");
             
             if (strchr(local_buffer, STX) && strchr(local_buffer, ETX)) {
-                printf(GREEN "[PROCESADOR] Mensaje válido recibido (HEX): " RESET);
+                printf("%s[PROCESADOR] Mensaje válido recibido (HEX): %s", CAQUA, CRESET);
                 for (int i = 0; i < strlen(local_buffer); i++) {
                     printf("%02X ", (unsigned char)local_buffer[i]);
                 }
                 printf("\n");
             } else {
-                printf(YELLOW "[PROCESADOR] Esperando mensaje completo...\n" RESET);
+                printf("%s[PROCESADOR] Esperando mensaje completo...%s\n", CAQUA, CRESET);
             }
         } else {
             pthread_mutex_unlock(&data->mutex);
@@ -137,11 +134,11 @@ int main() {
     thread_data_t data;
     pthread_t reader_thread, processor_thread;
 
-    printf(CYAN "[MAIN] Iniciando programa...\n" RESET);
+    printf("%s[MAIN] Iniciando programa...%s\n", CAZUL, CRESET);
 
     data.serial_fd = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_SYNC);
     if (data.serial_fd == -1) {
-        perror(RED "[ERROR] No se pudo abrir el puerto serial" RESET);
+        perror("[ERROR] No se pudo abrir el puerto serial");
         return 1;
     }
 
