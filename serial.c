@@ -24,7 +24,7 @@ typedef struct {
     char buffer[BUF_SIZE];   // Buffer compartido
     char buffer6[BUFFER6_SIZE]; // Nuevo buffer para concatenar datos
     int data_ready;          // Bandera para indicar que hay datos nuevos
-    int sizeData;  //numero de datos a procesar y transferir
+    int sizedata;
     pthread_mutex_t mutex;   // Mutex para proteger el buffer
 } thread_data_t;//*********************************************************
 
@@ -74,7 +74,7 @@ void *serial_reader(void *arg) {
         // Configura el tiempo de espera (1 segundo)
         timeout.tv_sec = 1;
         timeout.tv_usec = 0;
-
+        int sizedata;
         // Espera a que haya datos disponibles en el puerto serial
         int ret = select(data->serial_fd + 1, &read_fds, NULL, NULL, &timeout);
         if (ret > 0 && FD_ISSET(data->serial_fd, &read_fds)) {
@@ -82,17 +82,16 @@ void *serial_reader(void *arg) {
             if (bytes_read > 0) {
                 temp_buffer[bytes_read] = '\0';  // Asegura que el buffer esté terminado con un carácter nulo
                 pthread_mutex_lock(&data->mutex);// Bloquea el mutex para proteger el buffer compartido
-                asdfasdfsdf
-                strncpy(data->buffer6, temp_buffer,bytes_read);
-                asdf data->sizeData=bytes_read;//datos a procesar 
+                strcpy(data->buffer6, temp_buffer,bytes_read);
                 data->data_ready = 1;  // Indica que hay datos nuevos
+                sizedata=bytes_read;
+                data->sizedata=bytes_read;
                 pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
-
-               printf("%sDatos recibidos (hex):%s%zd %s",CVERD,CAMAR,bytes_read,CRESET);
-
-               for (int i = 0; i < bytes_read; i++) {
+                //printf("%s[LECTOR] Datos leídos:%s %s %s\n",CAZUL,CAMAR, temp_buffer,CRESET);  // Depuración
+               printf("%sDatos recibidos (hex):%s%i %s", CVERD,CAMAR,sizedata,CRESET);
+               for (int i = 0; i < sizedata; i++) {
                     printf("%s%02X %s ", CROJO, temp_buffer[i], CRESET);}
-               for (int i = 0; i < bytes_read; i++) {
+               for (int i = 0; i < sizedata; i++) {
                     printf("%s%c%s", CAMAR, temp_buffer[i], CRESET);}
 
                 printf("\n");
@@ -114,22 +113,20 @@ void *cons_serial_processor(void *arg) {
     thread_data_t *data = (thread_data_t *)arg;
     char local_buffer[BUFFER6_SIZE];
     int sizedata;
-
     while (1) {
         pthread_mutex_lock(&data->mutex);// Bloquea el mutex para acceder al buffer compartido
         if (data->data_ready) {// Si hay datos nuevos, los copia y los procesa
-            strncpy(local_buffer, data->buffer6,data->sizeData);
+            strncpy(local_buffer, data->buffer6, data->sizedata);
             data->data_ready = 0;  // Reinicia la bandera
             data->buffer6[0] = '\0';// Limpia buffer6 después de copiar los datos
-            local_buffer[data->sizeData]='\0';//Asegura el caracter nulo al final
-            sizedata=data->sizeData;
+            local_buffer[BUFFER6_SIZE-1]='\0';//Asegura el caracter nulo al final
+            sizedata=data->sizedata;
             pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
-            printf("%s[PROCESADOR] Datos procesados:",CAQUA);
+            printf("%s[Consumdr] a procesar:%s%i%s%s%s",CAQUA,CAMAR,sizedata,CMORA, local_buffer,CAQUA);
             for (int i = 0; i < sizedata; i++) {
-                    printf("%s%02X  ",CBLAN, local_buffer[i]);}
-            printf("%s %s %s \n",CMORA, local_buffer,CRESET);
-
-            Procesamiento_de_cadena_serProc(&local_buffer[0],sizedat11a);}//  sdfsdf  Procesa los datos (en este caso, simplemente los imprime)
+                    printf("%02X  ",local_buffer[i]);}
+            printf("\n%s",CRESET);        
+            Procesamiento_de_cadena_serProc(&local_buffer[0],sizedata);}// Procesa los datos (en este caso, simplemente los imprime)
         else {
             pthread_mutex_unlock(&data->mutex);}// Desbloquea el mutex si no hay datos nuevos
         usleep(1000);  // Espera 1 ms,// Espera un poco antes de verificar nuevamente
@@ -142,7 +139,7 @@ return NULL;
 /* ¨Prpcesamiento de cadena de datos que llega del puerto serial|
  procesa la cadena completa y si se queda el protocolo a medias y se termina la 
    cadena se sale quedando en el estado que estaba para recargar la cadena******************************/
-void Procesamiento_de_cadena_serProc(char *c,int sizedata){
+void Procesamiento_de_cadena_serProc(char *c,int size){
 static unsigned char estado;
 static unsigned char len,cmd,crc,len1;//estado de la cadena
 static unsigned short int indice; //el buffer6 es  de 1024 tamaño
@@ -150,8 +147,8 @@ static unsigned char param[PARAM_SIZE_COMANDOS],index;
 unsigned char crc_array[PARAM_SIZE_COMANDOS];
 static unsigned char numParam,numParam0;//numero de parametros    .
 
-     indice=0;
- while((*(c+indice)!='\0')&&(indice<BUFFER6_SIZE)){
+ indice=0;
+ while(indice<size){
    unsigned char dato=*(c+indice);
    *(c+indice++)=0xFF;
    switch(estado){
@@ -285,7 +282,7 @@ union{
     unsigned short int usint1;
     unsigned char c[2];
 }usi;    
-     usi.c[0]=*parametros;
-     usi.c[1]=*(parametros+1);
+     usi.c[1]=*parametros;
+     usi.c[0]=*(parametros+1);
      display_Sens_Phase(usi.usint1,*(parametros+2),*(parametros+3));
 }//fin de serial comando sensibilidad phase detectada a desplegar
