@@ -121,7 +121,7 @@ void *cons_serial_processor(void *arg) {
             data->buffer6[0] = '\0';// Limpia buffer6 después de copiar los datos
             sizedata=data->sizedata;
             if(sizedata==0){
-                 mens_Warnning_Debug(" error en consumidor serial");exit(1)}
+                 mens_Warnning_Debug(" error en consumidor serial");exit(1);}
             local_buffer[sizedata]='\0';//Asegura el caracter nulo al final
             pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
             printf("%s[Consumdr] a procesar:%s %i %s %s %s",CAQUA,CAMAR,sizedata,CMORA, local_buffer,CAQUA);
