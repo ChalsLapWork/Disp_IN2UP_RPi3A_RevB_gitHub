@@ -87,7 +87,7 @@ void *serial_reader(void *arg) {
                 data->data_ready = 1;  // Indica que hay datos nuevos
                 pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
 
-               printf("%sDatos recibidos (hex):%s%zd%s",CVERD,CAMAR,bytes_read,CRESET);
+               printf("%sDatos recibidos (hex):%s%zd %s",CVERD,CAMAR,bytes_read,CRESET);
 
                for (int i = 0; i < bytes_read; i++) {
                     printf("%s%02X %s ", CROJO, temp_buffer[i], CRESET);}
@@ -128,7 +128,7 @@ void *cons_serial_processor(void *arg) {
                     printf("%s%02X  ",CBLAN, local_buffer[i]);}
             printf("%s %s %s \n",CMORA, local_buffer,CRESET);
 
-            Procesamiento_de_cadena_serProc(&local_buffer[0]);}// Procesa los datos (en este caso, simplemente los imprime)
+            Procesamiento_de_cadena_serProc(&local_buffer[0],sizedata);}// Procesa los datos (en este caso, simplemente los imprime)
         else {
             pthread_mutex_unlock(&data->mutex);}// Desbloquea el mutex si no hay datos nuevos
         usleep(1000);  // Espera 1 ms,// Espera un poco antes de verificar nuevamente
@@ -141,7 +141,7 @@ return NULL;
 /* ¨Prpcesamiento de cadena de datos que llega del puerto serial|
  procesa la cadena completa y si se queda el protocolo a medias y se termina la 
    cadena se sale quedando en el estado que estaba para recargar la cadena******************************/
-void Procesamiento_de_cadena_serProc(char *c){
+void Procesamiento_de_cadena_serProc(char *c,int sizedata){
 static unsigned char estado;
 static unsigned char len,cmd,crc,len1;//estado de la cadena
 static unsigned short int indice; //el buffer6 es  de 1024 tamaño
