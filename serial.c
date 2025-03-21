@@ -149,7 +149,7 @@ static unsigned char param[PARAM_SIZE_COMANDOS],index;
 unsigned char crc_array[PARAM_SIZE_COMANDOS];
 static unsigned char numParam,numParam0;//numero de parametros    .
 
- indice=0;
+ indice=0;estado=1;
  while(indice<size){
    unsigned char dato=*(c+indice);
    *(c+indice++)=0xFF;
