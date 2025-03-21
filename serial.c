@@ -15,7 +15,7 @@
 #include "queue.h"
 
 #define BUF_SIZE 256
-#define BUFFER6_SIZE 24  // Tamaño del nuevo buffer6
+#define BUFFER6_SIZE 400  // Tamaño del nuevo buffer6
 
 
 // Estructura para compartir datos entre hilos
@@ -119,11 +119,13 @@ void *cons_serial_processor(void *arg) {
             strncpy(local_buffer, data->buffer6, data->sizedata);
             data->data_ready = 0;  // Reinicia la bandera
             data->buffer6[0] = '\0';// Limpia buffer6 después de copiar los datos
-            local_buffer[BUFFER6_SIZE-1]='\0';//Asegura el caracter nulo al final
             sizedata=data->sizedata;
+            if(sizedata==0){
+                 mens_Warnning_Debug(" error en consumidor serial");exit(1)}
+            local_buffer[sizedata]='\0';//Asegura el caracter nulo al final
             pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
-            printf("%s[Consumdr] a procesar:%s%i%s%s%s",CAQUA,CAMAR,sizedata,CMORA, local_buffer,CAQUA);
-            for (int i = 0; i < sizedata; i++) {
+            printf("%s[Consumdr] a procesar:%s %i %s %s %s",CAQUA,CAMAR,sizedata,CMORA, local_buffer,CAQUA);
+            for(int i=0;i<sizedata;i++){
                     printf("%02X  ",local_buffer[i]);}
             printf("\n%s",CRESET);        
             Procesamiento_de_cadena_serProc(&local_buffer[0],sizedata);}// Procesa los datos (en este caso, simplemente los imprime)
