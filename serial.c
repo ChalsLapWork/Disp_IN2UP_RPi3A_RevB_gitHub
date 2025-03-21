@@ -120,7 +120,7 @@ void *cons_serial_processor(void *arg) {
             local_buffer[BUFFER6_SIZE-1]='\0';//Asegura el caracter nulo al final
             pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
             printf("%s[PROCESADOR] Datos procesados:",CAQUA);
-            for (int i = 0; i < bytes_read; i++) {
+            for (int i = 0; i < BUFFER6_SIZE; i++) {
                     printf("%s%02X  ",CBLAN, local_buffer[i]);}
             printf("%s %s %s \n",CMORA, local_buffer,CRESET);
 
