@@ -119,7 +119,11 @@ void *cons_serial_processor(void *arg) {
             data->buffer6[0] = '\0';// Limpia buffer6 después de copiar los datos
             local_buffer[BUFFER6_SIZE-1]='\0';//Asegura el caracter nulo al final
             pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
-            printf("%s[PROCESADOR] Datos procesados:%s %s %s\n",CAQUA,CAMAR, local_buffer,CRESET);
+            printf("%s[PROCESADOR] Datos procesados:",CAQUA);
+            for (int i = 0; i < bytes_read; i++) {
+                    printf("%s%02X  ",CBLAN, local_buffer[i]);}
+            printf("%s %s %s \n",CMORA, local_buffer,CRESET);
+
             Procesamiento_de_cadena_serProc(&local_buffer[0]);}// Procesa los datos (en este caso, simplemente los imprime)
         else {
             pthread_mutex_unlock(&data->mutex);}// Desbloquea el mutex si no hay datos nuevos
