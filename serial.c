@@ -82,8 +82,9 @@ void *serial_reader(void *arg) {
             if (bytes_read > 0) {
                 temp_buffer[bytes_read] = '\0';  // Asegura que el buffer esté terminado con un carácter nulo
                 pthread_mutex_lock(&data->mutex);// Bloquea el mutex para proteger el buffer compartido
+                asdfasdfsdf
                 strncpy(data->buffer6, temp_buffer,bytes_read);
-                data->sizeData=bytes_read;//datos a procesar 
+                asdf data->sizeData=bytes_read;//datos a procesar 
                 data->data_ready = 1;  // Indica que hay datos nuevos
                 pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
 
