@@ -128,7 +128,7 @@ void *cons_serial_processor(void *arg) {
                     printf("%s%02X  ",CBLAN, local_buffer[i]);}
             printf("%s %s %s \n",CMORA, local_buffer,CRESET);
 
-            Procesamiento_de_cadena_serProc(&local_buffer[0],sizedata);}// Procesa los datos (en este caso, simplemente los imprime)
+            Procesamiento_de_cadena_serProc(&local_buffer[0],sizedat11a);}//  sdfsdf  Procesa los datos (en este caso, simplemente los imprime)
         else {
             pthread_mutex_unlock(&data->mutex);}// Desbloquea el mutex si no hay datos nuevos
         usleep(1000);  // Espera 1 ms,// Espera un poco antes de verificar nuevamente
