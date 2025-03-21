@@ -15,7 +15,7 @@
 #include "queue.h"
 
 #define BUF_SIZE 256
-#define BUFFER6_SIZE 1024  // Tamaño del nuevo buffer6
+#define BUFFER6_SIZE 24  // Tamaño del nuevo buffer6
 
 
 // Estructura para compartir datos entre hilos
@@ -24,6 +24,7 @@ typedef struct {
     char buffer[BUF_SIZE];   // Buffer compartido
     char buffer6[BUFFER6_SIZE]; // Nuevo buffer para concatenar datos
     int data_ready;          // Bandera para indicar que hay datos nuevos
+    int sizeData;  //numero de datos a procesar y transferir
     pthread_mutex_t mutex;   // Mutex para proteger el buffer
 } thread_data_t;//*********************************************************
 
@@ -81,12 +82,12 @@ void *serial_reader(void *arg) {
             if (bytes_read > 0) {
                 temp_buffer[bytes_read] = '\0';  // Asegura que el buffer esté terminado con un carácter nulo
                 pthread_mutex_lock(&data->mutex);// Bloquea el mutex para proteger el buffer compartido
-                //strncpy(data->buffer, temp_buffer, BUF_SIZE);// Copia los datos al buffer compartido
-                strncat(data->buffer6, temp_buffer, BUFFER6_SIZE - strlen(data->buffer6) - 1);
+                strncpy(data->buffer6, temp_buffer,bytes_read);
+                data->sizeData=bytes_read;//datos a procesar 
                 data->data_ready = 1;  // Indica que hay datos nuevos
                 pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
                 //printf("%s[LECTOR] Datos leídos:%s %s %s\n",CAZUL,CAMAR, temp_buffer,CRESET);  // Depuración
-               printf("%sDatos recibidos (hex):%s ", CVERD, CRESET);
+               printf("%sDatos recibidos (hex):%s%zs %s ", CVERD,CAMAR,bytes_read, CRESET);
                for (int i = 0; i < bytes_read; i++) {
                     printf("%s%02X %s ", CROJO, temp_buffer[i], CRESET);}
                for (int i = 0; i < bytes_read; i++) {
@@ -110,17 +111,19 @@ return NULL;
 void *cons_serial_processor(void *arg) {
     thread_data_t *data = (thread_data_t *)arg;
     char local_buffer[BUFFER6_SIZE];
+    int sizedata;
 
     while (1) {
         pthread_mutex_lock(&data->mutex);// Bloquea el mutex para acceder al buffer compartido
         if (data->data_ready) {// Si hay datos nuevos, los copia y los procesa
-            strncpy(local_buffer, data->buffer6, BUFFER6_SIZE);
+            strncpy(local_buffer, data->buffer6,data->sizeData);
             data->data_ready = 0;  // Reinicia la bandera
             data->buffer6[0] = '\0';// Limpia buffer6 después de copiar los datos
-            local_buffer[BUFFER6_SIZE-1]='\0';//Asegura el caracter nulo al final
+            local_buffer[data->sizeData]='\0';//Asegura el caracter nulo al final
+            sizedata=data->sizeData;
             pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
             printf("%s[PROCESADOR] Datos procesados:",CAQUA);
-            for (int i = 0; i < BUFFER6_SIZE; i++) {
+            for (int i = 0; i < sizedata; i++) {
                     printf("%s%02X  ",CBLAN, local_buffer[i]);}
             printf("%s %s %s \n",CMORA, local_buffer,CRESET);
 
