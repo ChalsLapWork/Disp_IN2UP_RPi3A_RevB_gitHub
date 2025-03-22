@@ -146,13 +146,14 @@ static unsigned char estado;
 static unsigned char len,cmd,crc,len1;//estado de la cadena
 static unsigned short int indice; //el buffer6 es  de 1024 tamaño
 static unsigned char param[PARAM_SIZE_COMANDOS],index;
-unsigned char crc_array[PARAM_SIZE_COMANDOS];
+unsigned char crc_array[PARAM_SIZE_COMANDOS],ret;
 static unsigned char numParam,numParam0;//numero de parametros    .
+unsigned char dato;
 
- indice=0;estado=1;
- while(indice<size){
-   unsigned char dato=*(c+indice);
-   *(c+indice++)=0xFF;
+ indice=0;estado=1;ret=0;
+ while((indice<size)||(ret==1)){
+        dato=*(c+indice);
+        *(c+indice++)=0xFF;
    switch(estado){
       case 1:if(dato==STX)
                     estado++;
@@ -167,7 +168,7 @@ static unsigned char numParam,numParam0;//numero de parametros    .
                   for(int i=0;i<PARAM_SIZE_COMANDOS;i++){
                           param[i]=0;   }
                   }break;//comandos con parametros
-      case 4:crc=dato;estado++;break;    //comandos sin parametros
+      case 4:crc=dato;estado++;ret=1;break;    //comandos sin parametros
       case 5:if(dato==ETX){
                 procesarComando(len,cmd,crc);}
              estado=98;
@@ -178,16 +179,15 @@ static unsigned char numParam,numParam0;//numero de parametros    .
                    crc_array[1]=cmd;
                    for(int i=0, j=2;i<len-2;i++,j++)
                         crc_array[j]=param[i];
-                    int crc1=getCRC_v2(&crc_array[0],len);
-                    if(crc1==crc)
+                   int crc1=getCRC_v2(&crc_array[0],len);
+                   if(crc1==crc){
                          estado++;
-                    else{ 
-                        estado=98;}}
-              else{
-                param[numParam-numParam0--]=dato;}
+                         ret=1;}//se puede ejecutar el estado->11
+                   else{estado=98;}}
+              else{param[numParam-numParam0--]=dato;}
               break;
       case 11:if(dato==ETX){
-                            procesarCmd(cmd,&param[0]);}
+                            procesarCmd(cmd,&param[0]);ret=0;}
               estado=98;break;
       case 98:estado=1;cmd=0;len=0;break;//cadena corrupta
       default:estado=1;break;}//fin switch-++++++++++++++++++++++++
