@@ -156,7 +156,7 @@ unsigned char dato;
         *(c+indice++)=0xFF;
    switch(estado){
       case 1:if(dato==STX)
-                    estado++;
+                    estado++;adfsdf
               break;
       case 2:len=dato;
              if(len<2){estado=98;break;}
