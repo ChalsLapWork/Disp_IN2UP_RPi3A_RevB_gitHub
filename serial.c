@@ -170,7 +170,7 @@ unsigned char dato;
              break;
       case 6:if(dato==ETX){
                procesarComando(cmd,&param[0]);}
-             estado=1;
+             estado=1;break;
       case 4:param[nParam0++]=dato;
              if(nParam0==nParam)
                      estado=5;
