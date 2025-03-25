@@ -146,59 +146,48 @@ static unsigned char estado;
 static unsigned char len,cmd,crc,len1;//estado de la cadena
 static unsigned short int indice; //el buffer6 es  de 1024 tamaño
 static unsigned char param[PARAM_SIZE_COMANDOS],index;
-unsigned char crc_array[PARAM_SIZE_COMANDOS],ret;
-static unsigned char numParam,numParam0;//numero de parametros    .
+//unsigned char crc_array[PARAM_SIZE_COMANDOS],ret;
+static unsigned char nParam,nParam0;//numero de parametros    .
 unsigned char dato;
 
- indice=0;estado=1;ret=0;
- while((indice<size)||(ret==1)){
-        dato=*(c+indice);
-        *(c+indice++)=0xFF;
+ indice=0;
+ do{dato=*(c+indice);                   //  while(indice<size){
    switch(estado){
-      case 1:if(dato==STX)
-                    estado++;
+     default:estado=1;//sin break 
+      case 1:if(dato==STX){
+                    estado=2;}
               break;
-      case 2:len=dato;
-             if(len<2){estado=98;break;}
-             estado++;break;
+      case 2:len=dato;estado++;break;
       case 3:cmd=dato;
-             if(len==2)estado++;//comandos sin parametros
-             else{estado=10;len1=len;index=0;
-                  numParam0=numParam=len-2;
-                  for(int i=0;i<PARAM_SIZE_COMANDOS;i++){
-                          param[i]=0;   }
-                  }break;//comandos con parametros
-      case 4:crc=dato;estado++;ret=1;break;    //comandos sin parametros
-      case 5:if(dato==ETX){
-                procesarComando(len,cmd,crc);}
-             estado=98;
+             if(len<2){estado=1;}//error de numeros de comm
+             else{if(len==2){estado=5;}//sin parametros el comando
+                  else{estado=4;nParam0=0;nParam=len-2;}}//con parametros
              break;
-      case 10:if(numParam0==0){
-                   crc=dato;
-                   crc_array[0]=len;
-                   crc_array[1]=cmd;
-                   for(int i=0, j=2;i<len-2;i++,j++)
-                        crc_array[j]=param[i];
-                   int crc1=getCRC_v2(&crc_array[0],len);
-                   if(crc1==crc){
-                         estado++;
-                         ret=1;}//se puede ejecutar el estado->11
-                   else{estado=98;}}
-              else{param[numParam-numParam0--]=dato;}
-              break;
-      case 11:if(dato==ETX){
-                            procesarCmd(cmd,&param[0]);ret=0;}
-              estado=98;break;
-      case 98:estado=1;cmd=0;len=0;break;//cadena corrupta
-      default:estado=1;break;}//fin switch-++++++++++++++++++++++++
-   }//fin while ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      case 5:crc=dato;
+             if(crc_Eval(len,cmd,&param[0],crc))
+                 estado=6;//al ETX
+             else{estado=1;}//error
+             break;
+      case 6:if(dato==ETX){
+               procesarComando(cmd,&param[0]);}
+             estado=1;
+      case 4:param[nParam0++]=dato;
+             if(nParam0==nParam)
+                     estado=5;
+             break;}//fin switch-++++++++++++++++++++++++
+  }while(++indice<size);//fin while ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }//fn de procesamiento de cadena que llega del erial de la procesadora -------------------------------
 
+
+
+
+
 //Procesamiento de Comando con Parametros
-void procesarCmd(unsigned char cmd,unsigned char *param){
+void procesarComando(unsigned char cmd,unsigned char *param){
 unsigned char x;
 unsigned char mens[]={"COMANDO BARRA ACEPTADO"};
 unsigned char mens2[]={"COMANDO SENSE ACEPTADO"};
+unsigned char mens3[]={"COMANDO DESCONOCIDO "};
 
     x=*param;    
     printf(" %d %c",x,x);
@@ -212,26 +201,11 @@ unsigned char mens2[]={"COMANDO SENSE ACEPTADO"};
                             printf("%s %s  %i %s:%i",CAMAR,mens2,cmd,CRESET,*param);
                             break;
         case CMD_DET_PM:printf("%s %s %s",CMORA,mens,CRESET);break; //hace display de los parametros de Portal Inicio
-        default:break;
+        default:printf("%s %s %s",CAMAR,mens3,CRESET);break;
     }//fin switch ----------------------------------------------------------------------------
 }//fin de procesar cmd+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-/* procesamiento de comando sin parametros */
-void procesarComando(unsigned char len,unsigned char cmd,unsigned char crc){
-unsigned char crc1;
-unsigned char buffer[2];
-      if(len==2){
-         buffer[0]=len;buffer[1]=cmd;
-         crc1=getCRC_v2(&buffer[0],len);
-         if(crc==crc1){
-               switch(cmd){
-                  case CMD_DET_ON:mens_Warnning_Debug("Comando En construccion");
-                                  break;
-                  default:break;}}
-         else{mens_Warnning_Debug(" Error -Len- Procesar Cmd Serial Comms");}}
-      else{mens_Warnning_Debug(" Error -Len- Procesar Cmd Serial Comms");}
-}//fin procesar comando++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 /*****************************************************************************************+++*/
