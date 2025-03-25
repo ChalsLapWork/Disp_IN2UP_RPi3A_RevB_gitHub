@@ -15,7 +15,7 @@
 #include "queue.h"
 
 #define BUF_SIZE 256
-#define BUFFER6_SIZE 400  // Tamaño del nuevo buffer6
+#define BUFFER6_SIZE BUF_SIZE  // Tamaño del nuevo buffer6
 
 
 // Estructura para compartir datos entre hilos
