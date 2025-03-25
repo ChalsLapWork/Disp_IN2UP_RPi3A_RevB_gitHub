@@ -390,7 +390,7 @@ void Formato_uChar(char *array, unsigned char format) {
 }//fin de formato uchar++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //copea el origen al destino y necesita saber cuantos van a copiar
-unsigned char strcpy2(unsigned char *dest,const unsigned char *orig,unsigned char size ){
+unsigned char strcpy2(char *dest,char *orig,unsigned char size ){
 unsigned char i;
     if(size==0)
     	 return 0;
