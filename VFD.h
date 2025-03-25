@@ -125,4 +125,6 @@ unsigned char getCRC_v2(unsigned char *data, unsigned char len);
 //unsigned char VFD_sendBlockChars(const void *datos, size_t longitud);
 unsigned char VFDserial_SendBarraDet(unsigned char val);
 unsigned char VFDserial_Sendusint(unsigned short int valor,unsigned char posx,unsigned char posy,unsigned char formato);
+void VFDserial_SendPhase(unsigned char fase,unsigned char fasefrac,unsigned char posx,unsigned char posy,unsigned char formato);
+unsigned char crc_Eval(unsigned char len, unsigned char cmd,unsigned char *param,unsigned char crc);
 #endif

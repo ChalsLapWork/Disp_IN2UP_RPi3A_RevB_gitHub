@@ -313,3 +313,88 @@ int count = 0; // Contador de ceros iniciales
     memcpy(&temp[padding_left], &array[count], num_digits);// Copiar los números en la posición centrada
     memcpy(array, temp, len);// Copiar de vuelta al array original
 }//fin format central++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+//n: es el numero que queremos obtener sus asciis
+//*cc: es el apuntador a un array u string de tamaño tres, se apunta al cero
+// indice 0:centena 1:decena 2:unidad
+void getASCIIFromUChar1(unsigned char n,unsigned char *cc){
+	unsigned char n1, n2=0, i, j, * p,e=0;
+	p = cc;
+	if (n == 0) {
+		*cc++ = '0'; *cc++ = '0'; *cc = '0';
+		return;}
+	if (n < 200) {
+		if (n > 99) {
+			*cc = '1'; n1 = n - 100;
+			if (n1 < 10) {  }
+			if (n1 > 99) { e+=1; }}
+		else { *cc = '0'; n1 = n; }}
+	else {
+        *cc = '2'; n1 = n - 200;
+		if (n1 > 99) {  e+=2; }}
+	if (n1 > 99) {  e+=3; }
+	if (n1 > 9) {
+		for (i = 10, j = 1; i < 100; i += 10, j++) {
+			if (((n1 - i) < 10) || ((n1 - i) == 0))
+				break;}
+		*(cc + 1) = j + 0x30;
+		if (n1 > i)
+			n2 = n1 - i;}
+	else {*(cc + 1) = '0';
+		  n2 = n1;}
+	if (n2 > 9) {  e+=4; }
+	*(cc + 2) = n2 + '0';
+	if(e>0){printf("\033[33m \nError en get ascii from char \033[0m ");}
+return;
+}//fin get char from unsigned char---------------------------------------
+
+
+/** Evalua si la variables tiene el valor 
+ * entre 0 y 9 si si, se le convierte en ascii es para 
+ procesar el frec de phase*/
+ unsigned char procesar_Frac_Fase(unsigned char frac){
+   if(frac<10){
+	      return (frac|0x30);}
+   else return 0x30;
+ }//fin de procesar el numero fraccion de fase++++++++++++
+
+
+/*Detecta y elimina ceros iniciales, excepto si el formato es ZERO.
+Distribuye los números según el formato:
+    RIGHT: Alinea los números a la derecha (" 3")
+    LEFT: Alinea los números a la izquierda ("23 ")
+    CENTER: Centra los números ("123", " 3 ")
+    ZERO: No elimina ceros ("000", "023")
+Si todos son ceros y el formato no es ZERO, mantiene solo un '0'. */
+void Formato_uChar(char *array, unsigned char format) {
+    int len = 3; // Tamaño fijo del array
+    int count = 0; // Contador de ceros iniciales
+
+    while (count < len && array[count] == '0') {// Contar cuántos ceros iniciales hay
+           count++;}
+    if (count == len && format != ZEROS) {// Si todos son ceros y el formato no es ZERO, dejar solo uno
+        count = len - 1;}
+    int num_digits = len - count; // Cantidad de números reales
+    if (format == ZEROS) {// Si el formato es ZERO, no modificar el array
+        return;}
+    char temp[3] = {' ', ' ', ' '};    // Crear un nuevo array con espacios
+    switch(format){// Dependiendo del formato, colocar los números en la posición adecuada
+		case  RIGHT:memcpy(&temp[len - num_digits], &array[count], num_digits);break; // A la derecha
+		case   LEFT:memcpy(&temp[0], &array[count], num_digits);break; // A la izquierda
+	    case CENTER:int padding_left = (len - num_digits) / 2; // Espacios a la izquierda
+                    memcpy(&temp[padding_left], &array[count], num_digits); // Centrado
+					break;
+		default:break;}
+    memcpy(array, temp, len);// Copiar de vuelta al array original
+}//fin de formato uchar++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//copea el origen al destino y necesita saber cuantos van a copiar
+unsigned char strcpy2(char *dest,char *orig,unsigned char size ){
+unsigned char i;
+    if(size==0)
+    	 return 0;
+    for(i=0;i<size;i++)
+    	  *(dest+i)=*(orig+i);
+return 1;    
+}//--------------------------------------------------------

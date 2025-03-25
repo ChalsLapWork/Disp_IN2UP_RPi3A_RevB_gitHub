@@ -13,9 +13,10 @@
 #include "VFDmenu.h"
 #include "math.h"
 #include "queue.h"
+#include "strings.h"
 
 #define BUF_SIZE 256
-#define BUFFER6_SIZE 1024  // Tamaño del nuevo buffer6
+#define BUFFER6_SIZE BUF_SIZE  // Tamaño del nuevo buffer6
 
 
 // Estructura para compartir datos entre hilos
@@ -24,6 +25,7 @@ typedef struct {
     char buffer[BUF_SIZE];   // Buffer compartido
     char buffer6[BUFFER6_SIZE]; // Nuevo buffer para concatenar datos
     int data_ready;          // Bandera para indicar que hay datos nuevos
+    int sizedata;
     pthread_mutex_t mutex;   // Mutex para proteger el buffer
 } thread_data_t;//*********************************************************
 
@@ -73,7 +75,7 @@ void *serial_reader(void *arg) {
         // Configura el tiempo de espera (1 segundo)
         timeout.tv_sec = 1;
         timeout.tv_usec = 0;
-
+        int sizedata;
         // Espera a que haya datos disponibles en el puerto serial
         int ret = select(data->serial_fd + 1, &read_fds, NULL, NULL, &timeout);
         if (ret > 0 && FD_ISSET(data->serial_fd, &read_fds)) {
@@ -81,11 +83,21 @@ void *serial_reader(void *arg) {
             if (bytes_read > 0) {
                 temp_buffer[bytes_read] = '\0';  // Asegura que el buffer esté terminado con un carácter nulo
                 pthread_mutex_lock(&data->mutex);// Bloquea el mutex para proteger el buffer compartido
-                //strncpy(data->buffer, temp_buffer, BUF_SIZE);// Copia los datos al buffer compartido
-                strncat(data->buffer6, temp_buffer, BUFFER6_SIZE - strlen(data->buffer6) - 1);
+                strcpy2(data->buffer6,temp_buffer,bytes_read);
                 data->data_ready = 1;  // Indica que hay datos nuevos
+                sizedata=bytes_read;
+                data->sizedata=bytes_read;
                 pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
-                printf("%s[LECTOR] Datos leídos:%s %s %s\n",CAZUL,CAMAR, temp_buffer,CRESET);  // Depuración
+                //printf("%s[LECTOR] Datos leídos:%s %s %s\n",CAZUL,CAMAR, temp_buffer,CRESET);  // Depuración
+               printf("%sDatos recibidos (hex):%s%i %s", CVERD,CAMAR,sizedata,CRESET);
+               for (int i = 0; i < sizedata; i++) {
+                    printf("%s%02X %s ", CROJO, temp_buffer[i], CRESET);}
+               for (int i = 0; i < sizedata; i++) {
+                    printf("%s%c%s", CAMAR, temp_buffer[i], CRESET);}
+
+                printf("\n");
+
+ 
             } else if (bytes_read == -1) {
                 printf("%s[LECTOR] Error al leer del puerto serial.%s\n",CROJO,CRESET);
             }
@@ -101,17 +113,23 @@ return NULL;
 void *cons_serial_processor(void *arg) {
     thread_data_t *data = (thread_data_t *)arg;
     char local_buffer[BUFFER6_SIZE];
-
+    int sizedata;
     while (1) {
         pthread_mutex_lock(&data->mutex);// Bloquea el mutex para acceder al buffer compartido
         if (data->data_ready) {// Si hay datos nuevos, los copia y los procesa
-            strncpy(local_buffer, data->buffer6, BUFFER6_SIZE);
+            strcpy2(local_buffer, data->buffer6, data->sizedata);
             data->data_ready = 0;  // Reinicia la bandera
             data->buffer6[0] = '\0';// Limpia buffer6 después de copiar los datos
-            local_buffer[BUFFER6_SIZE-1]='\0';//Asegura el caracter nulo al final
+            sizedata=data->sizedata;
+            if(sizedata==0){
+                 mens_Warnning_Debug(" error en consumidor serial");exit(1);}
+            local_buffer[sizedata]='\0';//Asegura el caracter nulo al final
             pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
-            printf("%s[PROCESADOR] Datos procesados:%s %s %s\n",CAQUA,CAMAR, local_buffer,CRESET);
-            Procesamiento_de_cadena_serProc(&local_buffer[0]);}// Procesa los datos (en este caso, simplemente los imprime)
+            printf("%s[Consumdr] a procesar:%s %i %s %s %s",CAQUA,CAMAR,sizedata,CMORA, local_buffer,CAQUA);
+            for(int i=0;i<sizedata;i++){
+                    printf("%02X  ",local_buffer[i]);}
+            printf("\n%s",CRESET);        
+            Procesamiento_de_cadena_serProc(&local_buffer[0],sizedata);}// Procesa los datos (en este caso, simplemente los imprime)
         else {
             pthread_mutex_unlock(&data->mutex);}// Desbloquea el mutex si no hay datos nuevos
         usleep(1000);  // Espera 1 ms,// Espera un poco antes de verificar nuevamente
@@ -124,63 +142,55 @@ return NULL;
 /* ¨Prpcesamiento de cadena de datos que llega del puerto serial|
  procesa la cadena completa y si se queda el protocolo a medias y se termina la 
    cadena se sale quedando en el estado que estaba para recargar la cadena******************************/
-void Procesamiento_de_cadena_serProc(char *c){
+void Procesamiento_de_cadena_serProc(char *c,int size){
 static unsigned char estado;
 static unsigned char len,cmd,crc,len1;//estado de la cadena
 static unsigned short int indice; //el buffer6 es  de 1024 tamaño
 static unsigned char param[PARAM_SIZE_COMANDOS],index;
-unsigned char crc_array[PARAM_SIZE_COMANDOS];
-static unsigned char numParam,numParam0;//numero de parametros    .
+//unsigned char crc_array[PARAM_SIZE_COMANDOS],ret;
+static unsigned char nParam,nParam0;//numero de parametros    .
+unsigned char dato;
 
-     indice=0;
- while((*(c+indice)!='\0')&&(indice<BUFFER6_SIZE)){
-   unsigned char dato=*(c+indice);
-   *(c+indice++)=0xFF;
+ indice=0;
+ do{dato=*(c+indice);                   //  while(indice<size){
    switch(estado){
-      case 1:if(dato==STX)
-                    estado++;
+     default:estado=1;        //sin break
+             if(dato==STX){estado=2;}break; 
+      case 1:if(dato==STX){
+                    estado=2;}
               break;
-      case 2:len=dato;
-             if(len<2){estado=98;break;}
-             estado++;break;
+      case 2:len=dato;estado++;break;
       case 3:cmd=dato;
-             if(len==2)estado++;//comandos sin parametros
-             else{estado=10;len1=len;index=0;
-                  numParam0=numParam=len-2;
-                  for(int i=0;i<PARAM_SIZE_COMANDOS;i++){
-                          param[i]=0;   }
-                  }break;//comandos con parametros
-      case 4:crc=dato;estado++;break;    //comandos sin parametros
-      case 5:if(dato==ETX){
-                procesarComando(len,cmd,crc);}
-             estado=98;
+             if(len<2){estado=1;}//error de numeros de comm
+             else{if(len==2){estado=5;}//sin parametros el comando
+                  else{estado=4;nParam0=0;nParam=len-2;}}//con parametros
              break;
-      case 10:if(numParam0==0){
-                   crc=dato;
-                   crc_array[0]=len;
-                   crc_array[1]=cmd;
-                   for(int i=0, j=2;i<len-2;i++,j++)
-                        crc_array[j]=param[i];
-                    int crc1=getCRC_v2(&crc_array[0],len);
-                    if(crc1==crc)
-                         estado++;
-                    else{ 
-                        estado=98;}}
-              else{
-                param[numParam-numParam0--]=dato;}
-              break;
-      case 11:if(dato==ETX){
-                            procesarCmd(cmd,&param[0]);}
-              estado=98;break;
-      case 98:estado=1;cmd=0;len=0;break;//cadena corrupta
-      default:estado=1;break;}//fin switch-++++++++++++++++++++++++
-   }//fin while ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      case 5:crc=dato;
+             if(crc_Eval(len,cmd,&param[0],crc))
+                 estado=6;//al ETX
+             else{estado=1;}//error
+             break;
+      case 6:if(dato==ETX){
+               procesarComando(cmd,&param[0]);}
+             estado=1;break;
+      case 4:param[nParam0++]=dato;
+             if(nParam0==nParam)
+                     estado=5;
+             break;}//fin switch-++++++++++++++++++++++++
+  }while(++indice<size);//fin while ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 }//fn de procesamiento de cadena que llega del erial de la procesadora -------------------------------
 
+
+
+
+
 //Procesamiento de Comando con Parametros
-void procesarCmd(unsigned char cmd,unsigned char *param){
+void procesarComando(unsigned char cmd,unsigned char *param){
 unsigned char x;
 unsigned char mens[]={"COMANDO BARRA ACEPTADO"};
+unsigned char mens2[]={"COMANDO SENSE ACEPTADO"};
+unsigned char mens3[]={"COMANDO DESCONOCIDO "};
+
     x=*param;    
     printf(" %d %c",x,x);
     switch(cmd){
@@ -189,27 +199,15 @@ unsigned char mens[]={"COMANDO BARRA ACEPTADO"};
                        Serial_Command_Barra_Detection(*param); 
                        printf("%s %s  %i %s:%i",CAMAR,mens,cmd,CRESET,*param);
                        break;  //mueve la barra de deteccion
+        case CMD_SENS_PHASE:Serial_Command_Sens_Phase_Det(param);
+                            printf("%s %s  %i %s:%i",CAMAR,mens2,cmd,CRESET,*param);
+                            break;
         case CMD_DET_PM:printf("%s %s %s",CMORA,mens,CRESET);break; //hace display de los parametros de Portal Inicio
-        default:break;
+        default:printf("%s %s %s",CAMAR,mens3,CRESET);break;
     }//fin switch ----------------------------------------------------------------------------
 }//fin de procesar cmd+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-/* procesamiento de comando sin parametros */
-void procesarComando(unsigned char len,unsigned char cmd,unsigned char crc){
-unsigned char crc1;
-unsigned char buffer[2];
-      if(len==2){
-         buffer[0]=len;buffer[1]=cmd;
-         crc1=getCRC_v2(&buffer[0],len);
-         if(crc==crc1){
-               switch(cmd){
-                  case CMD_DET_ON:mens_Warnning_Debug("Comando En construccion");
-                                  break;
-                  default:break;}}
-         else{mens_Warnning_Debug(" Error -Len- Procesar Cmd Serial Comms");}}
-      else{mens_Warnning_Debug(" Error -Len- Procesar Cmd Serial Comms");}
-}//fin procesar comando++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 /*****************************************************************************************+++*/
@@ -252,3 +250,17 @@ unsigned char var;
     display_Barra_Deteccion(var);
     display_CuentaRechazosProducto(parametro);
 }//fin serial comando  barra deteccion+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+/* comando que recibe la sensibilidad y la pase detectada 
+   param0: sensibilidad byte0
+   param1: sensibilidad byte1, param2: phase-entero param3:phase-frac */
+void Serial_Command_Sens_Phase_Det(unsigned char *parametros){
+union{
+    unsigned short int usint1;
+    unsigned char c[2];
+}usi;    
+     usi.c[1]=*parametros;
+     usi.c[0]=*(parametros+1);
+     display_Sens_Phase(usi.usint1,*(parametros+2),*(parametros+3));
+}//fin de serial comando sensibilidad phase detectada a desplegar

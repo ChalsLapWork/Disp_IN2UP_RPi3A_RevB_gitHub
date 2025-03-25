@@ -171,6 +171,22 @@ if((vfd.config.bits.MenuPendiente==0)&&
 }//fin de desplaiegue de conteo de rechazos y producto++++++++++++++++++++++++++
 
 
+/* se despliega en portal inicio la sensibilidad y la phase detectada que llega por 
+  comando serial */
+void display_Sens_Phase(unsigned short int sens,unsigned char phase,unsigned char phasefrac){	
+const unsigned char  a[]="     ";
+if((vfd.config.bits.MenuPendiente==0)&&
+    (vfd.config.bits.Menu_Ready==1)){
+		if(vfd.menu.contexto.Actual==PORTAL_INICIO){
+		       VFDposicion(POS_X_SENS,POSY10);	
+			   VFDserial_SendBlock1(&a[0],sizeof(a)); 
+               VFDserial_Sendusint(sens,POS_X_SENS,POSY10,CENTER);
+			   VFDserial_SendPhase(phase,phasefrac,POS_X_PHASE,POSY10,RIGHT);//no mover el formato de RIGHT porque left y centrado dara "3  .5"  
+				 }}            
+ 
+}//fin de desplegar en portal inicio la sensibildiad y la phase detectada++++++++++++++++++++++++++
+
+
 
 unsigned char display_centrarNombres(unsigned char nchars){
 const unsigned char middle=256/2;

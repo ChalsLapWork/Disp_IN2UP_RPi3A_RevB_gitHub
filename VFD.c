@@ -163,6 +163,18 @@ unsigned char buf[]={STX,LEN,COMANDO_CLRSCR,0x00,ETX};
 }//fin clear screen VFD-----------------------------------------------------------------------------
 
 
+unsigned char crc_Eval(unsigned char len, unsigned char cmd,unsigned char *param,unsigned char crc){
+unsigned char crc_Array[255];
+unsigned char ret=0;
+         crc_Array[0]=len;
+         crc_Array[1]=cmd;
+         for(int i=0, j=2;i<len-2;i++,j++)
+                        crc_Array[j]=*(param+i);
+         int crc1=getCRC_v2(&crc_Array[0],len);
+         if(crc1==crc)           
+               ret=1;
+return ret;    
+}//fin eval crc evaluar si coniciden los crc+++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
@@ -273,6 +285,31 @@ return 1;// fin de enviar mensaje++++++++++++++++++++++
 }//fin insertar en la FIFO un comando para graficar varios carateres.------------------------
 
 
+/** mandar aa dislpay send phase y frac, tres digitos y fraccion un digito */
+void VFDserial_SendPhase(unsigned char fase,unsigned char fasefrac,unsigned char posx,unsigned char posy,unsigned char formato){
+unsigned char array[10];
+
+    if(posy>128) return;
+    switch(formato){//FALTA DE PROBAR LOS DEMAS
+         case RIGHT://SOLO SE HA PROBADO EL DE CENTRAL|CENTER
+         case LEFT:
+         case CENTER:
+         case CENTRAL:
+         case ZEROS:goto next286;break;
+         default:return;break;}
+next286:
+    array[0] = STX;
+    array[1] = 7; // LEN (longitud total del mensaje)
+    array[2] = COMANDO_PHASE; // CMD (ejemplo de comando)
+    array[3] = fase;
+    array[4] = fasefrac;
+    array[5] = posx;
+    array[6] = posy;
+    array[7] = formato;
+    array[8] = getCRC_v2(array+1,7);
+    array[9] = ETX; // Ejemplo de CRC (ajustar según tu implementación)    
+    VFDserial_SendBlock_buf(array, 10);
+}//fin de VFD serial send phase++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 

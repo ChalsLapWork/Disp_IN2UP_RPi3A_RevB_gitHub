@@ -42,7 +42,7 @@
 */	
 
 #define VERSION_FIRMWARE   "Version F.W 33.11.0" //add frecq CONTROL from menu, Driver to control ADC's 
-#define VERSION2 "v40.0.3.22"   //branch:RevE2 
+#define VERSION2 "v40.0.3.35"   //branch:RevE2 
 
 
 
@@ -1011,6 +1011,6 @@ unsigned char find_Next_Context(unsigned char *context);
 void cambio_contexto(unsigned char contexto);
 void display_Barra_Deteccion(unsigned char barra);
 void display_CuentaRechazosProducto(unsigned char deteccion);
-
+void display_Sens_Phase(unsigned short int sens,unsigned char phase,unsigned char phasefrac);
 
 #endif /* VFDMENU_H_ */

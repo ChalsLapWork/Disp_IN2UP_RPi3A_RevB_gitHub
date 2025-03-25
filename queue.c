@@ -154,7 +154,8 @@ enum {
     CMD_ERR = 130,
     CMD_OK = 140,  
 	CMD_BAR= 150,
-	CMD_USINT= 160 };
+	CMD_USINT= 160,
+	CMD_PHASE= 162 };
 
     while(!ret){
        switch(estado){
@@ -174,6 +175,7 @@ enum {
 					 case CMD_DELAY_US: estado=CMD_DUS;break;
 					 case CMD_BARRA:    estado=CMD_BAR;break;//BARRA DE DETECCION
 					 case COMANDO_USINT:estado=CMD_USINT;break;
+					 case COMANDO_PHASE:estado=CMD_PHASE;break;     
 					 default:estado=CMD_ERR;break;}
 				   break;
 		   case   CMD_DMS:union_usi.n[0]=*c;
@@ -328,7 +330,25 @@ enum {
 							default:break;}
                          estado=CMD_OK;
 						 break;
-						  
+		   case CMD_PHASE:vfd.config.bits.recurso_VFD_Ocupado=TRUE;
+		                  x1 =*c;//phase
+						  y1 =*(c+1);//phasefrac
+						  x2 =*(c+2);//posx
+						  y2 =*(c+3);//posy
+						  pen=*(c+4);//formato
+					      a[0]=0x1F;a[1]=0x24;a[2]=x2;//comando posicion
+						  a[3]=0;a[4]=y2;a[5]=0;
+						  for(int i=0;i<6;i++){//poner la posicion
+			                      	writePort(a[i]); usleep(50);}
+                          getASCIIFromUChar1(x1,&a[0]);//sacar los ascii phase entero
+						  y2=procesar_Frac_Fase(y1);//get ascii frac
+                          Formato_uChar((char *)a,pen);//format phase entero
+						  for(int i=0;i<3;i++){
+								writePort(a[i]);usleep(50);}
+						  writePort('.');usleep(50);
+						  writePort(y2); usleep(50);
+                          estado=CMD_OK;
+						  break;				  
 		   case CMD_OK:vfd.config.bits.recurso_VFD_Ocupado=FALSE; 
 		               ret=TRUE; estado=0;break;		   
 		   case CMD_ERR:vfd.config.bits.recurso_VFD_Ocupado=FALSE;
