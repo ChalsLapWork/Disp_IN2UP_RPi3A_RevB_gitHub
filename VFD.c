@@ -163,6 +163,18 @@ unsigned char buf[]={STX,LEN,COMANDO_CLRSCR,0x00,ETX};
 }//fin clear screen VFD-----------------------------------------------------------------------------
 
 
+unsigned char crc_Eval(unsigned char len, unsigned char cmd,unsigned char *param,unsigned char crc){
+unsigned char crc_Array[255];
+unsigned char ret=0;
+         crc_Array[0]=len;
+         crc_Array[1]=cmd;
+         for(int i=0, j=2;i<len-2;i++,j++)
+                        crc_Array[j]=*(param+i);
+         int crc1=getCRC_v2(&crc_Array[0],len);
+         if(crc1==crc)           
+               ret=1;
+return ret;    
+}//fin eval crc evaluar si coniciden los crc+++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 

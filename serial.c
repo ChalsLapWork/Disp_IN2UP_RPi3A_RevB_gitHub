@@ -153,7 +153,8 @@ unsigned char dato;
  indice=0;
  do{dato=*(c+indice);                   //  while(indice<size){
    switch(estado){
-     default:estado=1;//sin break 
+     default:estado=1;        //sin break
+             if(dato==STX){estado=2;}break; 
       case 1:if(dato==STX){
                     estado=2;}
               break;
