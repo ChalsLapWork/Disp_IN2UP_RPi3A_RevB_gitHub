@@ -388,3 +388,13 @@ void Formato_uChar(char *array, unsigned char format) {
 		default:break;}
     memcpy(array, temp, len);// Copiar de vuelta al array original
 }//fin de formato uchar++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//copea el origen al destino y necesita saber cuantos van a copiar
+unsigned char strcpy2(unsigned char *dest,const unsigned char *orig,unsigned char size ){
+unsigned char i;
+    if(size==0)
+    	 return 0;
+    for(i=0;i<size;i++)
+    	  *(dest+i)=*(orig+i);
+return 1;    
+}//--------------------------------------------------------

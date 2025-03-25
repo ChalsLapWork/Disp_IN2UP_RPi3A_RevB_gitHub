@@ -13,6 +13,7 @@
 #include "VFDmenu.h"
 #include "math.h"
 #include "queue.h"
+#include "strings.h"
 
 #define BUF_SIZE 256
 #define BUFFER6_SIZE BUF_SIZE  // Tamaño del nuevo buffer6
@@ -82,7 +83,7 @@ void *serial_reader(void *arg) {
             if (bytes_read > 0) {
                 temp_buffer[bytes_read] = '\0';  // Asegura que el buffer esté terminado con un carácter nulo
                 pthread_mutex_lock(&data->mutex);// Bloquea el mutex para proteger el buffer compartido
-                strncpy(data->buffer6, temp_buffer,bytes_read);
+                strcpy2(data->buffer6,temp_buffer,bytes_read);
                 data->data_ready = 1;  // Indica que hay datos nuevos
                 sizedata=bytes_read;
                 data->sizedata=bytes_read;
@@ -116,7 +117,7 @@ void *cons_serial_processor(void *arg) {
     while (1) {
         pthread_mutex_lock(&data->mutex);// Bloquea el mutex para acceder al buffer compartido
         if (data->data_ready) {// Si hay datos nuevos, los copia y los procesa
-            strncpy(local_buffer, data->buffer6, data->sizedata);
+            strcpy2(local_buffer, data->buffer6, data->sizedata);
             data->data_ready = 0;  // Reinicia la bandera
             data->buffer6[0] = '\0';// Limpia buffer6 después de copiar los datos
             sizedata=data->sizedata;

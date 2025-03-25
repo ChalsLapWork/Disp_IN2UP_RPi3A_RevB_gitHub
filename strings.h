@@ -18,3 +18,5 @@ void format_Center(unsigned char *array);
 void getASCIIFromUChar1(unsigned char n,unsigned char *cc);
  unsigned char procesar_Frac_Fase(unsigned char frac);
  void Formato_uChar(char *array, unsigned char format);
+ unsigned char strcpy2(unsigned char *dest,const unsigned char *orig,unsigned char size );
+ 
