@@ -170,7 +170,7 @@ struct _KeyPAd_{
 
 struct _Menu1_{
    struct _Contexto contexto;
-   struct _KeyPAd_ keypad;    
+   
 };
 
 

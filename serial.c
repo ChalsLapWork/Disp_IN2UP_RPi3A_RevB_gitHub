@@ -273,10 +273,10 @@ union{
 void Serial_Command_Teclado(unsigned char parametro){ 
   if(vfd.keypad.enable){//=1;//habilitar teclado
     switch(parametro){
-		case 'E':menus(keyEN);break;
-		case 'R':menus(keyRT);break;
-		case 'L':menus(keyLF);break;
-		case 'D':menus(keyDN);break;
-		case 'U':menus(keyUP);break;
+		case 'E':menus(keyEN);break;//45h
+		case 'R':menus(keyRT);break;//52h
+		case 'L':menus(keyLF);break;//4Ch
+		case 'D':menus(keyDN);break;//44h
+		case 'U':menus(keyUP);break;//55h
 		default:vfd.keypad.enable=1;break;}}
 }//fin de serial comando teclado+++++++++++++++++++++++++++++

@@ -420,7 +420,7 @@ unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despl
 	  case TERMINAR:vfd.config.bits.init_Menu=TRUE;//no esta init el VFD
                     vfd.config.bits.MenuPendiente=FALSE;//hay pendiente un menu por desplegar
                     vfd.menu.contexto.Actual=contexto;
-					vfd.menu.keypad.enable=1;//habilitado teclado
+					vfd.keypad.enable=1;//habilitado teclado
 					break;
 	  default:estado3=1;break;}
    }//fin de WHILE bandera de Menu Pendiente--------------------   
