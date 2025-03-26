@@ -270,9 +270,9 @@ union{
 
 //comandos por serial para controlar teclado por serial
 //parametro: es la tecla a ejecutar
-void Serial_Command_Teclado(unsigned char *parametros){ 
+void Serial_Command_Teclado(unsigned char parametro){ 
   if(vfd.keypad.enable){//=1;//habilitar teclado
-    switch(*parametros){
+    switch(parametro){
 		case 'E':menus(keyEN);break;
 		case 'R':menus(keyRT);break;
 		case 'L':menus(keyLF);break;
