@@ -10,6 +10,7 @@
 #include "strings.h"
 #include "stdbool.h"
 #include "VFDkey.h"
+#include <unistd.h>
 
 struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
 extern struct _PRODUCTO1_ producto;
@@ -175,13 +176,13 @@ if((vfd.config.bits.MenuPendiente==0)&&
 /* se despliega en portal inicio la sensibilidad y la phase detectada que llega por 
   comando serial */
 void display_Sens_Phase(unsigned short int sens,unsigned char phase,unsigned char phasefrac){	
-const unsigned char  a[]="$$$$$";
+const unsigned char  a[]="     ";
 if((vfd.config.bits.MenuPendiente==0)&&
     (vfd.config.bits.Menu_Ready==1)){
 		if(vfd.menu.contexto.Actual==PORTAL_INICIO){
 		       VFDposicion(POS_X_SENS,POSY10);	
 			   VFDserial_SendBlock1(&a[0],sizeof(a)); 
-               usleep(500000);//500mseg 
+               usleep(80000);//500mseg 
 			   VFDserial_Sendusint(sens,POS_X_SENS,POSY10,CENTER);
 			   VFDserial_SendPhase(phase,phasefrac,POS_X_PHASE,POSY10,RIGHT);//no mover el formato de RIGHT porque left y centrado dara "3  .5"  
 				 }}            
