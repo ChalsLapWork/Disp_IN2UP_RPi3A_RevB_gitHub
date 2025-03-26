@@ -123,3 +123,14 @@ void getBoxPattern(unsigned char box,unsigned char *mode,unsigned char *x1,unsig
       }//fin PRIMER SWITCH           	   
       		    		     	  
 }//fin de get patter of the boxes-------------------------------------------------------------------------------
+
+
+//cambio de contexto funcion principal
+/* detiene cualquier ejecucion en proceso del VFD
+   y abre un hilo para pasarnos al contexto que se solicita*/
+void cambio_de_contexto(unsigned char contexto){
+
+     vfd.config.bits.MenuPendiente=contexto;
+	 iniciar_Run_Menu();
+
+}//FIN DE FUNCION maestra de cambio de contexto

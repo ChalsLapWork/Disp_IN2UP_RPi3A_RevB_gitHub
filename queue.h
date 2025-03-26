@@ -164,8 +164,13 @@ struct _Contexto{
 		unsigned char solicitaCambioA;//a donde se ccambiar de contexto
 };
 
+struct _KeyPAd_{
+   unsigned char enable;//enable teclado
+};
+
 struct _Menu1_{
-   struct _Contexto contexto;    
+   struct _Contexto contexto;
+   struct _KeyPAd_ keypad;    
 };
 
 
@@ -177,6 +182,8 @@ struct _PRODUCT1_{
    float fase;//fase del producto numero flotante
    unsigned char Phasefrac;// faccion del numero de fase.
 };
+
+
 
 
 struct _DISPLAY_VFD_{
@@ -195,6 +202,7 @@ struct _DISPLAY_VFD_{
 		 unsigned char box0;
 		 unsigned char box; 
 		 unsigned short int timer;//se activa  por timer y resetea el array
+	     unsigned char enable;//display cajas o lo que sea
 	   }box;
 	
 	struct _Vars_{
@@ -361,6 +369,6 @@ void *Run_Menu(void *arg);
 unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char size);
 //void VFDserial_SendBlock_Tx1(unsigned char *buffer, size_t len);
 //unsigned char VFDserial_SendBlock_data(void *ptr, size_t size); 
-
+void iniciar_Run_Menu(void);
 
 #endif 

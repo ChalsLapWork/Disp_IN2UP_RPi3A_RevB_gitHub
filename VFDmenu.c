@@ -27,11 +27,11 @@ auto unsigned char ret=0;
 		                     //MenuActualScreen.func=0;
 		                     //MenuActualScreen.func1=PortalinicioDisplay; // -------------------------------------------------------EN-REVISION    		 
 		                     MenuActualScreen.func2=PortalinicioDisplay;
-		                    // MenuActualScreen.funcKeyUP=PortaliniciokeyUP;
-		                     // MenuActualScreen.funcKeyRT=PortaliniciokeyRT;
-		                     // MenuActualScreen.funcKeyLF=PortaliniciokeyLF;
-		                    //  MenuActualScreen.funcKeyDN=PortaliniciokeyDN;//Insert the function pointer
-		                    //  MenuActualScreen.funcKeyEN=PortaliniciokeyEN;//---poner en los apuntadores apuntar a las funciones--------------4
+		                     MenuActualScreen.funcKeyUP=PortaliniciokeyUP;
+		                     MenuActualScreen.funcKeyRT=PortaliniciokeyRT;
+		                     MenuActualScreen.funcKeyLF=PortaliniciokeyLF;
+		                     MenuActualScreen.funcKeyDN=PortaliniciokeyDN;//Insert the function pointer
+		                     MenuActualScreen.funcKeyEN=PortaliniciokeyEN;//---poner en los apuntadores apuntar a las funciones--------------4
 							 ret=TRUE;
 		                     break;		
          default: errorCritico2("error de InitArbol",19);break;                     
@@ -200,3 +200,40 @@ const unsigned char charpixel=8;
 		case 5:return(middle-(charpixel*3));break;
 		default: return(middle-((nchars/2)*charpixel));break;	}
 }//fin unsigned char display_centrarNombres(unsigned char nchars){------------------------------------
+
+
+//MANEJADOR  PRINCIPAL DE EJECUCION DEL MENU++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+void menus(unsigned char key){//MANEJADOR DEL LAS FUNCIONES COORDINADAS Y SUBORDINADAS DE LOS MENUS
+          /* y tambien tiene entradas a SUB-MENUS EL MENUCONTROL SE ejecuta en el enter del case*/
+     vfd.keypad.enable=0;//desabilitar teclado
+     cursorMenuControl(key);  
+
+//fin de  void menu(unsigned char key){//MANEJADOR DEL LAS FUNCIONES COORDINADAS Y SUBORDINADAS DE LOS MENUS	   
+}// fin del Manejador principal de ejecucion del menu+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+//CONTROL DEL CURSOR EN CADA MENU, keyx, ES LA  TECLA QUE SE PRESIONO
+void cursorMenuControl(unsigned char keyx){//control del cursosr por cada menu
+ const short int xpos=235,xpos2=239;
+ struct ArbolMenu *p=0;  
+ 
+	  p=&MenuActualScreen;        		
+      cursorMenuControlService(keyx,p);
+
+}//FIN CURSOR MENU CONTROL-------------------------------------------------------------------------------
+
+
+/* this method is filted to be executed w/o error of context failure, 'cos
+ * the filter it has been pass through, it control the execution concequence of every key */
+void cursorMenuControlService(unsigned char key,struct ArbolMenu *Pantalla){//(key,void (*a)())
+unsigned char i;
+   // keypad.b.enable=FALSE;
+	switch(key){case keyUP:Pantalla->funcKeyUP();break;
+		        case keyDN:Pantalla->funcKeyDN();break;
+		        case keyRT:Pantalla->funcKeyRT();break;
+		        case keyLF:Pantalla->funcKeyLF();break;
+		        case keyEN:Pantalla->funcKeyEN();break;
+		         }//fin		           default:break;//fin default de segundo switch de PORTAL INICIO
+    //keypad.b.enable=TRUE;
+}//fin cursorMenuControlService------------------------------------------------------
+

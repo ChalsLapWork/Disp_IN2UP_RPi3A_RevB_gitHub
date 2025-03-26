@@ -260,6 +260,7 @@
 #define CMD_BARRA      0x11 //Param:1byte Hasta donde llego la barra de deteccion.
 #define CMD_DET_PM     0x12 //PAram:4bytes parametro de SEnsibilidad y phase.
 #define CMD_SENS_PHASE 0x13 //display Sens&phase in Portal inicio, 
+#define CMD_TECLADO    0X14 //comando Teclado para mover el cursos del menu
 
 
 //SIZES-------------------------------------------------------

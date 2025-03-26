@@ -202,6 +202,9 @@ unsigned char mens3[]={"COMANDO DESCONOCIDO "};
         case CMD_SENS_PHASE:Serial_Command_Sens_Phase_Det(param);
                             printf("%s %s  %i %s:%i",CAMAR,mens2,cmd,CRESET,*param);
                             break;
+        case CMD_TECLADO:Serial_Command_Teclado(*param);
+                         printf("%s %s  %i %s:%i",CAMAR,mens,cmd,CRESET,*param);
+                         break; 
         case CMD_DET_PM:printf("%s %s %s",CMORA,mens,CRESET);break; //hace display de los parametros de Portal Inicio
         default:printf("%s %s %s",CAMAR,mens3,CRESET);break;
     }//fin switch ----------------------------------------------------------------------------
@@ -264,3 +267,16 @@ union{
      usi.c[0]=*(parametros+1);
      display_Sens_Phase(usi.usint1,*(parametros+2),*(parametros+3));
 }//fin de serial comando sensibilidad phase detectada a desplegar
+
+//comandos por serial para controlar teclado por serial
+//parametro: es la tecla a ejecutar
+void Serial_Command_Teclado(unsigned char *parametros){ 
+  if(vfd.keypad.enable){//=1;//habilitar teclado
+    switch(*parametros){
+		case 'E':menus(keyEN);break;
+		case 'R':menus(keyRT);break;
+		case 'L':menus(keyLF);break;
+		case 'D':menus(keyDN);break;
+		case 'U':menus(keyUP);break;
+		default:vfd.keypad.enable=1;break;}}
+}//fin de serial comando teclado+++++++++++++++++++++++++++++

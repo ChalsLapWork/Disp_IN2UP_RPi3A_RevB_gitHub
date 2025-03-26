@@ -208,6 +208,9 @@ enum {
 	       case CMD_BXF:
 		   case CMD_LIN:					  
            case CMD_BOX:  vfd.config.bits.recurso_VFD_Ocupado=TRUE;
+		                  if((vfd.box.enable==0)||
+						      (vfd.config.bits.BOX_enable==0))
+						       {estado=CMD_OK;break;}
 		                  writePort(0x1F);  usleep(50);
 						  writePort(0x28);  usleep(50);
 						  writePort(0x64);  usleep(50);
@@ -251,7 +254,8 @@ enum {
 						  if(*c==1) writePort(0x01); 
 						  else{writePort(0x00);}usleep(50);
 						  estado=CMD_OK;break;
-		   case CMD_BAR:  if(vfd.config.bits.BOX_enable){
+		   case CMD_BAR:  if(vfd.box.enable==0){estado=CMD_ERR;break;}
+		                  if(vfd.config.bits.BOX_enable){
                                box0=&vfd.box.box0;     
 		                       box1=&vfd.box.box;
 							   printf("\n 1:box0=%i  box1=%i\n",*box0,*box1);
@@ -380,6 +384,13 @@ unsigned char debug;
    else{pthread_detach(SubProc_Run_Menu);}//hilo independiente	   
 }//fin del init Menu+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+void iniciar_Run_Menu(void){
+  if((pthread_create(&SubProc_Run_Menu,NULL,Run_Menu,NULL))!=0)
+       errorCritico2("errorCreacion hilo",175);
+  else{pthread_detach(SubProc_Run_Menu);}//hilo independiente
+}//fin de iniciar run menu+++++++++++++++++++++++++++++++++++++
+
+
 
 //Proceso de control de Menus
 void *Run_Menu(void *arg){
@@ -391,18 +402,25 @@ unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despl
  while(vfd.config.bits.MenuPendiente){ //hilo corriendo  
 	switch(estado3){//Maquina de Estados
 	  case INIT_M:  if(!vfd.config.bits.init_Menu)estado3++;else{estado3=30;}break;
-	  case INIT_M+1:vfd.config.bits.MenuPendiente=TRUE;
+	  case INIT_M+1:if(vfd.config.bits.recurso_VFD_Ocupado==0)
+	                         estado3++;
+					break;		   
+	  case INIT_M+2://vfd.config.bits.MenuPendiente=TRUE;
+	                vfd.box.enable=0;
+					vfd.config.bits.BOX_enable=0;
 	                vfd.config.bits.Menu_Ready=0;
-	                estado3++;break;
-	  case INIT_M+2:estado3++;break;//Mejora de la funcion: recurso.solicitar
-	  case INIT_M+3:contexto=find_contexto_Siguiente();estado3++;break;
-	  case INIT_M+4:InitArbolMenu(contexto);estado3++;break;
-	  case INIT_M+5:vfd.config.bits.Menu_Ready=0;estado3++;break;//menu no esta terminado aun
-	  case INIT_M+6:if(MenuActualScreen.func2(&mem[0]))estado3=TERMINAR;break;//se despliega el MenuÂ¡Â¡
+	                estado3++;
+					break;
+	  case INIT_M+3:estado3++;break;//Mejora de la funcion: recurso.solicitar
+	  case INIT_M+4:contexto=find_contexto_Siguiente();estado3++;break;
+	  case INIT_M+5:InitArbolMenu(contexto);estado3++;break;
+	  case INIT_M+6:vfd.config.bits.Menu_Ready=0;estado3++;break;//menu no esta terminado aun
+	  case INIT_M+7:if(MenuActualScreen.func2(&mem[0]))estado3=TERMINAR;break;//se despliega el MenuÂ¡Â¡
 					
 	  case TERMINAR:vfd.config.bits.init_Menu=TRUE;//no esta init el VFD
                     vfd.config.bits.MenuPendiente=FALSE;//hay pendiente un menu por desplegar
                     vfd.menu.contexto.Actual=contexto;
+					vfd.menu.keypad.enable=1;//habilitado teclado
 					break;
 	  default:estado3=1;break;}
    }//fin de WHILE bandera de Menu Pendiente--------------------   
