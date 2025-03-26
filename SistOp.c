@@ -19,7 +19,7 @@ if(!vfd.config.bits.init_Menu){
 else{ 
    switch(vfd.menu.contexto.solicitaCambioA){
 	   case PORTAL_INICIO:switch(vfd.menu.contexto.Anterior0){
-		   	   	   	   	   	      case PORTAL_INICIO:ret=PORTAL_INICIO;break;
+		   	   		   	   	   	      case PORTAL_INICIO:ret=PORTAL_INICIO;break;
 		   	   	   	   	   	      case  MENU_INSIGHT:ret=PORTAL_INICIO;break;
 		   	   	   	   	   	      default:break;}
 	                     break;       
@@ -27,4 +27,4 @@ else{
 	   default:break;}//Debug EN CONSTRUCCION 
      }//---------------------------------------------------------  
 return ret;	 
-}//FIN FIND CONTEXTO siguiente+++++++++++++++++++++++++++++++++++++++++++
+}//FIN FIND CONTEXTO siguiente++++++++++++++++++++++++++++++++++++++++++++++

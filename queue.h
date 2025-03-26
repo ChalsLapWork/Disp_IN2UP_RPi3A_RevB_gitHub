@@ -195,6 +195,7 @@ struct _DISPLAY_VFD_{
     struct _Sync2   mutex;//syncronia y control de hilos
 	struct Queue q;//pila para manejar el VFD   
 	struct _Menu1_ menu;  
+	struct _KeyPAd_ keypad;
 
 	//size_t pthread_attr_t attr_mon,attr_free,atrr_Tx;//atributos  
  	struct _box_control{
