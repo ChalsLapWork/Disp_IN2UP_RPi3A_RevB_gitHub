@@ -1,6 +1,7 @@
 #ifndef __QUEUE_H__
   #define __QUEUE_H__  
 
+#include <stdint.h>
 
 #ifndef _PTHREAD_H_
   #define _PTHREAD_H_
@@ -151,7 +152,7 @@ struct _FIFO_func_{
 };//fin _FIFO_func_----------------------------------------
 
 struct FIFOc {
-    uint8_t buffer[FIFO_SIZE];  // Almacena números de 1 byte (8 bits)
+    uint8_t buffer[FIFOc_SIZE];  // Almacena números de 1 byte (8 bits)
     int head;  // Índice de inserción
     int tail;  // Índice de extracción
     int count; // Cantidad de elementos almacenados
@@ -173,7 +174,7 @@ struct _Contexto{
         struct FIFOc fifo;
         int  (*pop)(struct FIFOc *fifo, uint8_t *value);
 		void (*push)(uint8_t value);
-		int  (*peek)(struct FIFO *fifo, int position, uint8_t *value);		
+		int  (*peek)(struct FIFOc *fifo, int position, uint8_t *value);		
 };
 
 
@@ -392,7 +393,7 @@ void iniciar_Run_Menu(void);
 void init_fifo_contexto(struct FIFOc *fifo);
 int pop_contexto(struct FIFOc *fifo, uint8_t *value);
 void push_contexto(struct FIFOc *fifo, uint8_t value);
-int peek_contexto(struct FIFO *fifo, int position, uint8_t *value);
+int peek_contexto(struct FIFOc *fifo, int position, uint8_t *value);
 void push_fifo_contexto(uint8_t dato);
 int pop_fifo_contexto(uint8_t *value);
 int peek_fifo_contexto(int position, uint8_t *value);

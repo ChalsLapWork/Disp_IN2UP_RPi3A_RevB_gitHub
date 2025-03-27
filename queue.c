@@ -411,7 +411,7 @@ void *Run_Menu(void *arg){
 unsigned char contexto;
 unsigned char estado3;
 enum{NORMAL=30,INIT_M=1,TERMINAR=90};
-unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despliegue
+//unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despliegue
 
  while(vfd.config.bits.MenuPendiente){ //hilo corriendo  
 	switch(estado3){//Maquina de Estados
@@ -429,7 +429,7 @@ unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despl
 	  case INIT_M+4:contexto=find_contexto_Siguiente();estado3++;break;
 	  case INIT_M+5:InitArbolMenu(contexto);estado3++;break;
 	  case INIT_M+6:vfd.config.bits.Menu_Ready=0;estado3++;break;//menu no esta terminado aun
-	  case INIT_M+7:if(MenuActualScreen.func2(&mem[0]))estado3=TERMINAR;break;//se despliega el MenuÂ¡Â¡
+	  case INIT_M+7:if(MenuActualScreen.func1())estado3=TERMINAR;break;//se despliega el MenuÂ¡Â¡
 					
 	  case TERMINAR:vfd.config.bits.init_Menu=TRUE;//no esta init el VFD
                     vfd.config.bits.MenuPendiente=FALSE;//hay pendiente un menu por desplegar

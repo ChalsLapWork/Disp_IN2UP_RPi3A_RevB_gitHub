@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include "VFDmenu.h"
 #include "BarraDisplay.h"
-
+#include <stdint.h>
 
 extern struct _DISPLAY_VFD_ vfd;
 

@@ -819,7 +819,8 @@ struct ArbolMenu{
 //void initArbolMenu(void);
 //void MenuControl(void);
 //void PortalinicioDisplay(void);
-unsigned char  PortalinicioDisplay(unsigned char *mem);//Funcion Suprema de Despliegue de la Pantalla0
+//unsigned char  PortalinicioDisplay(unsigned char *mem);//Funcion Suprema de Despliegue de la Pantalla0
+unsigned char  PortalinicioDisplay(void);
 void menus(unsigned char key);
 //void displayMenuInsight(void);
 void cursorMenuControl(unsigned char keyx);

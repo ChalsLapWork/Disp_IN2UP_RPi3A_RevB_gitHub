@@ -218,7 +218,6 @@ return VFDserial_SendBlock_buf(&a,sizeof(a));//Init VFD
 }//------------------------------------------------------------------
 
 
-
 //REGRESA TRUE si ya se ejecuto todo el comando hasta el final
 unsigned char VFDcommand_init(unsigned char cmd){
 unsigned char ret=FALSE;

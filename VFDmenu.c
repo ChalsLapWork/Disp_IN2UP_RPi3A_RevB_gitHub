@@ -28,7 +28,7 @@ auto unsigned char ret=0;
 		                     MenuActualScreen.permisos=DESARROLLADOR_PERMISO;//------------------------------------EN-REVISION
 		                     //MenuActualScreen.func=0;
 		                     //MenuActualScreen.func1=PortalinicioDisplay; // -------------------------------------------------------EN-REVISION    		 
-		                     MenuActualScreen.func2=PortalinicioDisplay;
+		                     MenuActualScreen.func1=PortalinicioDisplay;
 		                     MenuActualScreen.funcKeyUP=PortaliniciokeyUP;
 		                     MenuActualScreen.funcKeyRT=PortaliniciokeyRT;
 		                     MenuActualScreen.funcKeyLF=PortaliniciokeyLF;
@@ -39,7 +39,7 @@ auto unsigned char ret=0;
 		 case MENU_INSIGHT:  MenuActualScreen.menuNodo=MENU_INSIGHT;
 							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
 							 //MenuActualScreen.func=0;
-							 MenuActualScreen.func2=displayMenuInsight;
+							 MenuActualScreen.func1=displayMenuInsight;
 							 MenuActualScreen.funcKeyUP=MenuInsightkeyUP;
 							 MenuActualScreen.funcKeyDN=MenuInsightkeyDN;
 							 MenuActualScreen.funcKeyRT=MenuInsightkeyRT;
@@ -57,7 +57,7 @@ return ret;
 //despliega el menu principal, el recurso se solicita y gestiona
 //desde el hilo padre del manejo del menu.
 //Este metodo Solo se ejecuta una vez sin instancias
-unsigned char  PortalinicioDisplay(unsigned char *mem){//Funcion Suprema de Despliegue de la Pantalla0
+unsigned char  PortalinicioDisplay(void){//Funcion Suprema de Despliegue de la Pantalla0
 const unsigned char s[]=VERSION2;
 unsigned char ss;
 const unsigned char  a[]="Test Set-up";
@@ -126,7 +126,7 @@ unsigned char x[7]={65,0,8,8, 8, 8,8};
 unsigned char y[7]={0 ,4,6,8,10,12,4};
 //word n;
 	
-      VFDclrscr()
+      VFDclrscr();
       VFDposicion(x[0],y[0]);
       VFDserial_SendBlock1(&z[0],sizeof(z));
 	  VFDposicion(x[1],y[1]);

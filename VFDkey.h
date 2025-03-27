@@ -4,4 +4,9 @@ void PortaliniciokeyRT(void);//fin PortaliniciokeyRT-------LLENAR LAS FUNCIONES 
 void PortaliniciokeyLF(void);//fin PortaliniciokeyLF--------------------------------------
 void PortaliniciokeyDN(void);//fin PortaliniciokeyLF--------------------------------------
 void PortaliniciokeyEN(void);                             
-	
+
+void MenuInsightkeyUP(void);
+void MenuInsightkeyRT(void);
+void MenuInsightkeyLF(void);
+void MenuInsightkeyDN(void);
+void MenuInsightkeyEN(void);
