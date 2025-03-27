@@ -144,7 +144,7 @@ void cambio_de_contexto(unsigned char contexto){
  *  Regresamos     Tamaño de memoria: 1 */	
 unsigned char find_contexto_Siguiente(void){
 unsigned char ret;     
-bool normal[256]={[0 ... 255]=false;}
+bool normal[256]={[0 ... 255]=false};
 normal[PORTAL_INICIO]=true;
 normal[MENU_INSIGHT]=true;
 
