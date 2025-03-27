@@ -124,57 +124,30 @@ unsigned char v[]="Pantalla DDS";
 unsigned char b[]="Informacion del usuario";
 unsigned char x[7]={65,0,8,8, 8, 8,8};
 unsigned char y[7]={0 ,4,6,8,10,12,4};
-word n;
+//word n;
 	
-
-
       VFDclrscr()
       VFDposicion(x[0],y[0]);
-      VFDserial_SendBlock1(&z[0],sizeof(z),&n,Inst1);
+      VFDserial_SendBlock1(&z[0],sizeof(z));
+	  VFDposicion(x[1],y[1]);
+	  VFDserial_SendBlock1(&a[0],sizeof(a));
+	  VFDposicion(x[2],y[2]);
+      VFDserial_SendBlock1(&c[0],sizeof(c));
+	  VFDposicion(x[3],y[3]);
+	  VFDserial_SendBlock1(&w[0],sizeof(w));
+	  VFDposicion(x[4],y[4]);
+	  VFDserial_SendBlock1(&v[0],sizeof(v));
+	  VFDposicion(x[5],y[5]);
+	  VFDserial_SendBlock1(&b[0],sizeof(b));
+	  VFDposicion(x[6],y[6]);
+	  vfd.menu.cursorx=POSX0;
+	  vfd.menu.cursory=POSY4;
+	  vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
+	  //keypad.b.enable=1;//Habilitado el teclado	
+	  vfd.box.enable=0;//disable pintar cajas barra detector
+	  vfd.config.bits.BOX_enable=TRUE;//se autoriza a dibujar cajas
+	  ret=TRUE;
 
-
-	 case 6:if(VFDposicion(x[1],y[1]))//;   delay1us();
-	  	  		 estado++;
-	        break;
-	 case 7:if(VFDserial_SendBlock2(&a[0],sizeof(a),&n,Inst1))//;delay1us();
-		        estado++;
-	        break;
-	 case 8:if(VFDposicion(x[2],y[2]))//   delay1us();
-		 	 	estado++;
-	 	 	break;
-	 case 9:if(VFDserial_SendBlock2(&c[0],sizeof(c),&n,Inst1))//;delay1us();
-		 	 	estado++;
-	 	 	 break;
-	 case 10:if(VFDposicion(x[3],y[3])) //;   delay1us();
-		        estado++;
-	 	 	 break;
-	 case 11:if(VFDserial_SendBlock2(&w[0],sizeof(w),&n,Inst1))//;delay1us();
-		 	 	estado++;
-	 	 	 break;
-	 case 12:if(VFDposicion(x[4],y[4]))//  delay1us();
-		 	 	estado++;
-	 	 	 break;
-	 case 13:if(VFDserial_SendBlock2(&v[0],sizeof(v),&n,Inst1))//;delay1us();
-		 	 	estado++;
-	 	 	 break;
-	 case 14:if(VFDposicion(x[5],y[5]))//;   delay1us();
-		 	 	estado++;
-	 	 	 break;
-	 case 15:if(VFDserial_SendBlock2(&b[0],sizeof(b),&n,Inst1))//;delay1us();
-		 	 	estado++;
-	 	 	 break;
-	 case 16:if(VFDposicion(x[6],y[6]))////posiCION del cursor despues de desplegar el menu  
-		 	 	estado++;
-	 	 	 break;
-	 case 17:cursorx=POSX0;cursory=POSY4;
-           	 isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
-           	 menu.b.b.isMenu=1;//se ejecuto este menu.
-           	 estado=0;
-		     keypad.b.enable=1;//Habilitado el teclado
-			 menu.b.b.isMenu=1;//se ejecuto este menu.	
-			 ret=TRUE;
-			 break;
-	 default:estado=1;break;}
 return ret;
 }//fin display menu inicio display----------------------------------------------------------------------------
 

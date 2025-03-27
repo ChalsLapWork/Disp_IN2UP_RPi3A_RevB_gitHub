@@ -186,6 +186,8 @@ struct _KeyPAd_{
 
 struct _Menu1_{
    struct _Contexto contexto;
+   unsigned char cursorx;
+   unsigned char cursory;
    
 };
 
