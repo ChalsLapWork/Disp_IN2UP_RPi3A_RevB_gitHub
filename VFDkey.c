@@ -1,6 +1,10 @@
 #include "VFDkey.h"
 #include "VFDmenu.h"
 #include "VFDisplay.h"
+#include "queue.h"
+#include "VFD.h"
+
+extern struct _DISPLAY_VFD_ vfd;
 
 
 void PortaliniciokeyUP(void){return;}//fin PortaliniciokeyUP--------PONER LAS FUNCIONES KEY DEL MENU------------------6

@@ -491,11 +491,11 @@ Pop: A4
 Pop: A5
 Pop: A6
 FIFO: A7 A8 A9 AA AB AC AD */
-int peek_contexto(struct FIFO *fifo, int position, uint8_t *value) {
+int peek_contexto(struct FIFOc *fifo, int position, uint8_t *value) {
     if (position < 1 || position > 5 || position > fifo->count) {
         return 0; // Posición fuera de rango
     }
-    int index = (fifo->head - position + FIFO_SIZE) % FIFO_SIZE;
+    int index = (fifo->head - position + FIFOc_SIZE) % FIFOc_SIZE;
     *value = fifo->buffer[index];
     return 1;
 }//fni peek++++++++++++++++++++++++++++++++++++++++

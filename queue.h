@@ -172,9 +172,9 @@ struct _Contexto{
 		unsigned char Anterior4;
 		unsigned char solicitaCambioA;//a donde se ccambiar de contexto
         struct FIFOc fifo;
-        int  (*pop)(struct FIFOc *fifo, uint8_t *value);
+        int  (*pop)( uint8_t *value);
 		void (*push)(uint8_t value);
-		int  (*peek)(struct FIFOc *fifo, int position, uint8_t *value);		
+		int  (*peek)( int position, uint8_t *value);		
 };
 
 
