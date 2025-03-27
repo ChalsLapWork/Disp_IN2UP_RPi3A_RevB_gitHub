@@ -19,6 +19,7 @@
 
 #define PROBAR_HILOS_CONS_PROD_VFD 0 //1:probar hilos productor consumidor VFD
 
+extern struct _DISPLAY_VFD_ vfd;
 
 // Estructura para almacenar datos en el buffer circular
 typedef struct {
@@ -161,7 +162,7 @@ pthread_t thread;
 
 // Función que será ejecutada por el hilo
 void* resetKeypadEnable(void* arg) {
-    usleep(500000);  // Espera 500 milisegundos (500,000 microsegundos)
+    usleep(700000);  // Espera 500 milisegundos (500,000 microsegundos)
     vfd.keypad.enable = 1;  // Ponemos la bandera enable a 1
     //printf("vfd.keypad.enable = 1\n");
 return NULL;
