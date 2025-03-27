@@ -44,6 +44,7 @@
 #define SIZE_MAX_FIFO 10//TAMAÑÑO de fifo de transmision a VFD
 
 #define SIZE_MAX_SENDBLOCK 20 //TAMAÑO maximo de envio en bloque de la funcion
+#define FIFOc_SIZE 10 //fifo de contexto
 
 
 
@@ -149,6 +150,13 @@ struct _FIFO_func_{
 	  unsigned char (*resetFIFOS)(void);//resetear todas las FIFOs Y arrays y registros
 };//fin _FIFO_func_----------------------------------------
 
+struct FIFOc {
+    uint8_t buffer[FIFO_SIZE];  // Almacena números de 1 byte (8 bits)
+    int head;  // Índice de inserción
+    int tail;  // Índice de extracción
+    int count; // Cantidad de elementos almacenados
+};//contexto
+
 struct _Contexto{
 		unsigned char Actual;  //contexto Actual
 		unsigned char Modificado;
@@ -162,11 +170,19 @@ struct _Contexto{
 		unsigned char Anterior3;
 		unsigned char Anterior4;
 		unsigned char solicitaCambioA;//a donde se ccambiar de contexto
+        struct FIFOc fifo;
+        int  (*pop)(struct FIFOc *fifo, uint8_t *value);
+		void (*push)(uint8_t value);
+		int  (*peek)(struct FIFO *fifo, int position, uint8_t *value);		
 };
+
+
 
 struct _KeyPAd_{
    unsigned char enable;//enable teclado
 };
+
+
 
 struct _Menu1_{
    struct _Contexto contexto;
@@ -371,5 +387,11 @@ unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char 
 //void VFDserial_SendBlock_Tx1(unsigned char *buffer, size_t len);
 //unsigned char VFDserial_SendBlock_data(void *ptr, size_t size); 
 void iniciar_Run_Menu(void);
-
+void init_fifo_contexto(struct FIFOc *fifo);
+int pop_contexto(struct FIFOc *fifo, uint8_t *value);
+void push_contexto(struct FIFOc *fifo, uint8_t value);
+int peek_contexto(struct FIFO *fifo, int position, uint8_t *value);
+void push_fifo_contexto(uint8_t dato);
+int pop_fifo_contexto(uint8_t *value);
+int peek_fifo_contexto(int position, uint8_t *value);
 #endif 

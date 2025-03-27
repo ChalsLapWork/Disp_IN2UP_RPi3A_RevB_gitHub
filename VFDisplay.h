@@ -141,4 +141,6 @@ unsigned char  displayControlCursorSubMenusKey_v2(unsigned char direccion,unsign
 unsigned char xDisplay_Cursores_en_DDS_VFD(unsigned char *inst);
 unsigned char  display_Sens_Lim_v2(float angulo,unsigned short int sens,unsigned char *inst,unsigned short int *usi,float *f);
 void getBoxPattern(unsigned char box,unsigned char *mode,unsigned char *x1,unsigned char *y1,unsigned char *x2,unsigned char *y2);
+unsigned char find_contexto_Siguiente(void);
+
 #endif /* VFDISPLAY_H_ */

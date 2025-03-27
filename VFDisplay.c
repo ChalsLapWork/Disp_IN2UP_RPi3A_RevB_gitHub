@@ -130,7 +130,30 @@ void getBoxPattern(unsigned char box,unsigned char *mode,unsigned char *x1,unsig
    y abre un hilo para pasarnos al contexto que se solicita*/
 void cambio_de_contexto(unsigned char contexto){
 
-     vfd.config.bits.MenuPendiente=contexto;
+     vfd.config.bits.MenuPendiente=TRUE;
+	 vfd.menu.contexto.solicitaCambioA=contexto;
 	 iniciar_Run_Menu();
 
 }//FIN DE FUNCION maestra de cambio de contexto
+
+
+
+
+/* Methodo sin sistema operativo
+ *  Regresamos     Tamaño de memoria: 1 */	
+unsigned char find_contexto_Siguiente(void){
+unsigned char ret;     
+bool normal[256]={[0 ... 255]=false;}
+normal[PORTAL_INICIO]=true;
+normal[MENU_INSIGHT]=true;
+
+  
+if(!vfd.config.bits.init_Menu){
+         ret=PORTAL_INICIO;}
+else{ 
+   if(normal[vfd.menu.contexto.solicitaCambioA]){	  
+	  vfd.menu.contexto.push(vfd.menu.contexto.Actual);
+	  ret=vfd.menu.contexto.solicitaCambioA;}
+     }//fin else							
+return ret;	 
+}//FIN FIND CONTEXTO siguiente++++++++++++++++++++++++++++++++++++++++++++++

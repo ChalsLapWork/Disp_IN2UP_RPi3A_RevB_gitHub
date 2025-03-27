@@ -35,7 +35,18 @@ auto unsigned char ret=0;
 		                     MenuActualScreen.funcKeyDN=PortaliniciokeyDN;//Insert the function pointer
 		                     MenuActualScreen.funcKeyEN=PortaliniciokeyEN;//---poner en los apuntadores apuntar a las funciones--------------4
 							 ret=TRUE;
-		                     break;		
+		                     break;	
+		 case MENU_INSIGHT:  MenuActualScreen.menuNodo=MENU_INSIGHT;
+							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
+							 //MenuActualScreen.func=0;
+							 MenuActualScreen.func2=displayMenuInsight;
+							 MenuActualScreen.funcKeyUP=MenuInsightkeyUP;
+							 MenuActualScreen.funcKeyDN=MenuInsightkeyDN;
+							 MenuActualScreen.funcKeyRT=MenuInsightkeyRT;
+							 MenuActualScreen.funcKeyLF=MenuInsightkeyLF;
+							 MenuActualScreen.funcKeyEN=MenuInsightkeyEN;//MenuInsightkeyEN;
+							 ret=TRUE;
+							 break;	
          default: errorCritico2("error de InitArbol",19);break;                     
         }//fin switch ++EN CONSTRUCCION ++++++++++++++++++++++++++++++++++++
 return ret;
@@ -67,15 +78,6 @@ union W16{
 }word_16bits;
 
 
- /*while(1){		
-    VFDserial_SendBlock1(&a[0],sizeof(a));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
-	VFDserial_SendBlock1(&b[0],sizeof(b));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
-	VFDserial_SendBlock1(&c[0],sizeof(c));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
-	VFDserial_SendBlock1(&d[0],sizeof(d));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
-	VFDposicion(x1,y1);
-	if(x1++>40) x1=1;
-	if(y1>14) y1=0;else{y1+=2;}}*/
-
 	  mensOK("Estoy en portal Inicio",CAMARILLO);
       Deteccion.CuadroMadreReady=FALSE;
       NoErrorOK();			  
@@ -106,11 +108,75 @@ union W16{
 	   //init_Sensibilidad();
 	   //usleep(100);//espera que se envien los datos del menu al VFD
        vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
-	   
+	   vfd.box.enable=1;
        ret=TRUE;
 return ret;   
 }// FIN DESPLIEGUE DEL PORTAL INICIO-------------------------------------------------------------------
 
+
+unsigned char displayMenuInsight(void){// MESPLIEGUE DEL MENU INSGHT----------------------------------------------
+unsigned char ret=0;
+unsigned char z[]="Menu de Insight       x";
+unsigned char a[]=">Ajuste de Producto";
+unsigned char c[]="Ajuste Parametrico de Producto";
+unsigned char w[]="Ajuste de sistema";
+unsigned char v[]="Pantalla DDS";
+unsigned char b[]="Informacion del usuario";
+unsigned char x[7]={65,0,8,8, 8, 8,8};
+unsigned char y[7]={0 ,4,6,8,10,12,4};
+word n;
+	
+
+
+      VFDclrscr()
+      VFDposicion(x[0],y[0]);
+      VFDserial_SendBlock1(&z[0],sizeof(z),&n,Inst1);
+
+
+	 case 6:if(VFDposicion(x[1],y[1]))//;   delay1us();
+	  	  		 estado++;
+	        break;
+	 case 7:if(VFDserial_SendBlock2(&a[0],sizeof(a),&n,Inst1))//;delay1us();
+		        estado++;
+	        break;
+	 case 8:if(VFDposicion(x[2],y[2]))//   delay1us();
+		 	 	estado++;
+	 	 	break;
+	 case 9:if(VFDserial_SendBlock2(&c[0],sizeof(c),&n,Inst1))//;delay1us();
+		 	 	estado++;
+	 	 	 break;
+	 case 10:if(VFDposicion(x[3],y[3])) //;   delay1us();
+		        estado++;
+	 	 	 break;
+	 case 11:if(VFDserial_SendBlock2(&w[0],sizeof(w),&n,Inst1))//;delay1us();
+		 	 	estado++;
+	 	 	 break;
+	 case 12:if(VFDposicion(x[4],y[4]))//  delay1us();
+		 	 	estado++;
+	 	 	 break;
+	 case 13:if(VFDserial_SendBlock2(&v[0],sizeof(v),&n,Inst1))//;delay1us();
+		 	 	estado++;
+	 	 	 break;
+	 case 14:if(VFDposicion(x[5],y[5]))//;   delay1us();
+		 	 	estado++;
+	 	 	 break;
+	 case 15:if(VFDserial_SendBlock2(&b[0],sizeof(b),&n,Inst1))//;delay1us();
+		 	 	estado++;
+	 	 	 break;
+	 case 16:if(VFDposicion(x[6],y[6]))////posiCION del cursor despues de desplegar el menu  
+		 	 	estado++;
+	 	 	 break;
+	 case 17:cursorx=POSX0;cursory=POSY4;
+           	 isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
+           	 menu.b.b.isMenu=1;//se ejecuto este menu.
+           	 estado=0;
+		     keypad.b.enable=1;//Habilitado el teclado
+			 menu.b.b.isMenu=1;//se ejecuto este menu.	
+			 ret=TRUE;
+			 break;
+	 default:estado=1;break;}
+return ret;
+}//fin display menu inicio display----------------------------------------------------------------------------
 
 
 
@@ -182,7 +248,7 @@ if((vfd.config.bits.MenuPendiente==0)&&
 		if(vfd.menu.contexto.Actual==PORTAL_INICIO){
 		       VFDposicion(POS_X_SENS,POSY10);	
 			   VFDserial_SendBlock1(&a[0],sizeof(a)); 
-               usleep(80000);//500mseg 
+               usleep(1000);//500mseg 
 			   VFDserial_Sendusint(sens,POS_X_SENS,POSY10,CENTER);
 			   VFDserial_SendPhase(phase,phasefrac,POS_X_PHASE,POSY10,RIGHT);//no mover el formato de RIGHT porque left y centrado dara "3  .5"  
 				 }}            

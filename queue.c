@@ -65,11 +65,25 @@ unsigned char debug;
 	inicializar_VFD();//Init VFD
 	mensOK("Fin de Init Queues",CMAGNETA);
 	NoErrorOK();
+    init_fifo_contexto(&vfd.menu.contexto.fifo);
+	vfd.menu.contexto.pop=pop_fifo_contexto;
+	vfd.menu.contexto.push=push_fifo_contexto;
+	vfd.menu.contexto.peek=peek_fifo_contexto;
+
 }//fin init queue+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+void push_fifo_contexto(uint8_t dato){
+push_contexto(&vfd.menu.contexto.fifo,dato);
+}//fin e push contexto de fifo ++++++++++++++++++++
 
+int pop_fifo_contexto(uint8_t *value){
+return(pop_contexto(&vfd.menu.contexto.fifo,value));
+}//fin de pop fifo contexto++++++++++++++++++++++++++++
 
+int peek_fifo_contexto(int position, uint8_t *value){
+return(peek_contexto(&vfd.menu.contexto.fifo,position,value)); 
+}//fin de peek fifo de contexto+++++++++++++++++++++ 
 
 
 
@@ -420,6 +434,7 @@ unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despl
 	  case TERMINAR:vfd.config.bits.init_Menu=TRUE;//no esta init el VFD
                     vfd.config.bits.MenuPendiente=FALSE;//hay pendiente un menu por desplegar
                     vfd.menu.contexto.Actual=contexto;
+					vfd.menu.contexto.solicitaCambioA=0;
 					vfd.keypad.enable=1;//habilitado teclado
 					break;
 	  default:estado3=1;break;}
@@ -429,6 +444,61 @@ return NULL;
 //fin del control operativo del menu de escape-----------------------------------------
  
 
+// Inicializa la FIFO,
+void init_fifo_contexto(struct FIFOc *fifo) {
+    fifo->head = 0;
+    fifo->tail = 0;
+    fifo->count = 0;
+}//FIN init fifo+++++++++++++++++++++++++++++
+
+// Inserta un número en la FIFO, eliminando el más antiguo si está llena
+void push_contexto(struct FIFOc *fifo, uint8_t value) {
+    if (fifo->count == FIFOc_SIZE) {
+        // FIFO llena, descartamos el elemento más antiguo
+        fifo->tail = (fifo->tail + 1) % FIFOc_SIZE;
+        fifo->count--;
+    }
+    fifo->buffer[fifo->head] = value;
+    fifo->head = (fifo->head + 1) % FIFOc_SIZE;
+    fifo->count++;
+}//fin de push contexto+++++++++++++++++++++++++++++++
+
+// Extrae el número más antiguo de la FIFO
+int pop_contexto(struct FIFOc *fifo, uint8_t *value) {
+    if (fifo->count == 0) {
+        return 0; // FIFO vacía
+    }
+    *value = fifo->buffer[fifo->tail];
+    fifo->tail = (fifo->tail + 1) % FIFOc_SIZE;
+    fifo->count--;
+    return 1;
+}//fin pop contexto+++++++++++++++++++++++++++++
+
+// Lee un elemento sin sacarlo (último, penúltimo... hasta el quinto último)
+/*FIFO: A0 
+FIFO: A0 A1 
+FIFO: A0 A1 A2 
+...
+FIFO: A2 A3 A4 A5 A6 A7 A8 A9 AA AB 
+FIFO: A3 A4 A5 A6 A7 A8 A9 AA AB AC 
+FIFO: A4 A5 A6 A7 A8 A9 AA AB AC AD 
+Peek(1): AD
+Peek(2): AC
+Peek(3): AB
+Peek(4): AA
+Peek(5): A9
+Pop: A4
+Pop: A5
+Pop: A6
+FIFO: A7 A8 A9 AA AB AC AD */
+int peek_contexto(struct FIFO *fifo, int position, uint8_t *value) {
+    if (position < 1 || position > 5 || position > fifo->count) {
+        return 0; // Posición fuera de rango
+    }
+    int index = (fifo->head - position + FIFO_SIZE) % FIFO_SIZE;
+    *value = fifo->buffer[index];
+    return 1;
+}//fni peek++++++++++++++++++++++++++++++++++++++++
 
 
 
