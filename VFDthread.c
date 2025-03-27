@@ -151,6 +151,22 @@ void *VFDserial_SendBlockConsumidor(void *arg) {
 return NULL;
 }///fin VFDserial_SendBlockConsumidor++++++++++++++++++++++++++++++++++++++++++++++++
 
+//activar teclado despues de un tiempo
+void activar_Teclado(void){
+pthread_t thread;
+    pthread_create(&thread, NULL, resetKeypadEnable, NULL);
+    pthread_detach(thread);// Desprendemos el hilo para que se ejecute independientemente
+}//fin activar teclado+++++++++++++++++++++++++++++++++++++++++++++
+
+
+// Función que será ejecutada por el hilo
+void* resetKeypadEnable(void* arg) {
+    usleep(500000);  // Espera 500 milisegundos (500,000 microsegundos)
+    vfd.keypad.enable = 1;  // Ponemos la bandera enable a 1
+    //printf("vfd.keypad.enable = 1\n");
+return NULL;
+}//fin reset keypad eneable++++++++++++++++++++++++++++++++++++++++
+
 // Función que procesa buffer3 completo (como un gran array de datos)
 void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len) {
 unsigned char estado = 0, cmd=0, crc_calculado, crc_recibido;

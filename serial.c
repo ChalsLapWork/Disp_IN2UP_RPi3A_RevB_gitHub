@@ -14,6 +14,7 @@
 #include "math.h"
 #include "queue.h"
 #include "strings.h"
+#include "VFDthread.h"
 
 #define BUF_SIZE 256
 #define BUFFER6_SIZE BUF_SIZE  // Tamaño del nuevo buffer6
@@ -279,4 +280,5 @@ void Serial_Command_Teclado(unsigned char parametro){
 		case 'D':menus(keyDN);break;//44h
 		case 'U':menus(keyUP);break;//55h
 		default:vfd.keypad.enable=1;break;}}
+  activar_Teclado();       
 }//fin de serial comando teclado+++++++++++++++++++++++++++++

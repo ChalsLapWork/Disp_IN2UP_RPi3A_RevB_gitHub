@@ -12,3 +12,5 @@ void *VFDserial_SendBlockConsumidor(void *arg);
 void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len);
 unsigned char VFDserial_SendBlock_buf(void *ptr, size_t size);
 void init_VFD_Threads(void);
+void activar_Teclado(void);
+void* resetKeypadEnable(void* arg);
