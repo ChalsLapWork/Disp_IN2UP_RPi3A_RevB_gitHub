@@ -415,12 +415,11 @@ enum{NORMAL=30,INIT_M=1,TERMINAR=90};
 
  while(vfd.config.bits.MenuPendiente){ //hilo corriendo  
 	switch(estado3){//Maquina de Estados
-	  case INIT_M:  if(!vfd.config.bits.init_Menu)estado3++;else{estado3=30;}break;
+	  case INIT_M:  estado3++;break;    
 	  case INIT_M+1:if(vfd.config.bits.recurso_VFD_Ocupado==0)
 	                         estado3++;
 					break;		   
-	  case INIT_M+2://vfd.config.bits.MenuPendiente=TRUE;
-	                vfd.box.enable=0;
+	  case INIT_M+2:vfd.box.enable=0;
 					vfd.config.bits.BOX_enable=0;
 	                vfd.config.bits.Menu_Ready=0;
 	                estado3++;
