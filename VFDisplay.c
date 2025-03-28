@@ -147,6 +147,12 @@ unsigned char ret;
 bool normal[256]={[0 ... 255]=false};
 normal[PORTAL_INICIO]=true;
 normal[MENU_INSIGHT]=true;
+normal[AJUSTE_DE_PRODUCTO]=true;
+normal[AJUSTE_PARAMETRICO_DE_PRODUCTO]=true;
+normal[AJUSTE_DE_SISTEMA]=true;
+normal[PANTALLA_DDS]=true;
+normal[INFORMACION_DE_USUARIO]=true;
+
 
   
 if(!vfd.config.bits.init_Menu){
