@@ -132,7 +132,7 @@ unsigned char *cursorx,*cursory;
 	switch(*cursory){
 		case POSY4:/*cambio_de_contexto cambio_de_contexto(EN_DESARROLLO;*/break;
 		case POSY6: cambio_de_contexto(SELECCIONAR_PRODUCTO); break;
-	    case POSY8: arg0=0;arg1=0;//sin argumentos para entrar aqui
+	    case POSY8: //arg0=0;arg1=0;//sin argumentos para entrar aqui
                   	cambio_de_contexto(NUEVO_PRODUCTO);
                     break;
 		case POSY10:menu.contexto.Anterior=AJUSTE_DE_PRODUCTO;//de donde vengo, que eligimos
@@ -145,3 +145,97 @@ unsigned char *cursorx,*cursory;
 /* FIN  AjusteProducto  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 /* FIN  AjusteProducto  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * */
+
+
+void AjusteParamProdkeyUP(void){
+	if(AjParamProd->igxc0>0){//esta seleccionado cambiar por numero
+	  	 operacionVariable(POSXAJUSPROD-8,cursory,AjParamProd->igxc0,SUMAR);
+		 configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
+		 isEnable_Keypad(WAIT);
+		 return;}
+	if(cursory==POSY6){//MENU con sistema OPERATIVO
+		VFDposicion(cursorx,cursory);
+		VFDserial_SendChar1(' ');
+		cursory=POSY0;	  
+		VFDposicion(POSXESQ235,cursory);
+		VFDserial_SendChar1('>');
+		VFDserial_SendChar1('X');
+		VFDserial_SendChar1(0x01);
+		return;}
+	if(cursory==POSY0){return;}
+	if(cursory<=POSY14){	
+		 VFDposicion(cursorx,cursory);
+		 VFDserial_SendChar1(' ');
+		 --cursory;
+		 VFDposicion(cursorx,--cursory);
+		 VFDserial_SendChar1('>');
+		 VFDserial_SendChar1(0x01);
+		 return;}
+}//fin AjusteParamProdkeyUP
+
+void AjusteParamProdkeyDN(void){
+
+	if(AjParamProd->igxc0>0){//esta seleccionado cambiar por numero
+		operacionVariable(POSXAJUSPROD-8,cursory,AjParamProd->igxc0,RESTAR);
+		return;}
+	if(cursory==POSY0){
+	   VFDposicion(POSXESQ235,POSY0); 
+	   VFDserial_SendChar1(' ');
+	   VFDserial_SendChar1('x');
+	   cursory=POSY6;
+	   VFDposicion(cursorx,cursory);
+	   VFDserial_SendChar1('>');
+	   VFDserial_SendChar1(0x01);
+	   return;}
+	if(cursory<POSY14){	 
+	   VFDposicion(cursorx,cursory);
+	   VFDserial_SendChar1(' ');
+	   cursory++;
+	   VFDposicion(cursorx,++cursory);
+	   VFDserial_SendChar1('>');
+	   VFDserial_SendChar1(0x01);
+	   __asm(nop);
+	   return;}
+}//------------------------------------------------------------
+
+
+
+void AjusteParamProdkeyRT(void){
+unsigned char 	phasefrac,phase;
+	if(cursory==POSY6){
+		procSensxDigitoRT(POSXAJUSPROD,POSY6,&Deteccion.Sensibilidad);
+	    configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
+		return;}
+	if(cursory==POSY8){
+		phase=getCharsFromFloat(&phasefrac,Deteccion.Phase);
+		if(++phasefrac>9){
+			phasefrac=0;
+			if(++phase>179){
+				phase=0;
+				phasefrac=0;}}
+		display_pushFIFOcOP_Phase_var(POSXAJUSPROD,POSY8);
+		configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
+		
+		return;}
+}//FIN AjusteParamProdkeyRT ----------------------------------
+
+void AjusteParamProdkeyLF(void){
+unsigned char 	phasefrac,phase;
+	if(cursory==POSY6){	
+	   procSensxDigitoLF(POSXAJUSPROD,POSY6,&Deteccion.Sensibilidad);
+	   configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);}
+   if(cursory==POSY8){
+		   phase=getCharsFromFloat(&phasefrac,Deteccion.Phase);
+		   if(phasefrac!=0)
+			   phasefrac--;
+		   else{phasefrac=9;
+				if(phase==0)
+					phase=179;
+				  else phase--;}
+		   display_pushFIFOcOP_Phase_var(POSXAJUSPROD,POSY8);//fin contextobuffer 0
+		   configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
+	       Deteccion.Phase=get_Float_from_Phase(phase,phasefrac);   
+		   return;}
+}//FIN  AjusteParamProdkeyLF-------------------------------------
+
+
