@@ -4,8 +4,12 @@
 #include "queue.h"
 #include "VFD.h"
 #include "system.h"
+#include "math.h"
+#include "strings.h"
+
 
 extern struct _DISPLAY_VFD_ vfd;
+struct _PRODUCT1_ producto2;
 
 
 void PortaliniciokeyUP(void){return;}//fin PortaliniciokeyUP--------PONER LAS FUNCIONES KEY DEL MENU------------------6
@@ -110,7 +114,7 @@ unsigned char *cursorx,*cursory;
 			VFDposicion(*cursorx,*cursory);
 			VFDserial_SendChar('>');return;}
 	else{if(*cursory<POSY14){
-		   switch(menu.contexto.control){
+		   switch(vfd.menu.contexto.control){
 			   case OPERADOR:if(*cursory>=POSY6){//NIVEL-1
 				          *cursory=POSY6;
 			              return;}
@@ -126,17 +130,15 @@ unsigned char *cursorx,*cursory;
 			   default:return;break; }}}//fin switch ----------------------------------------------
 return;}//f----------------------------------------------------------------------------------------
 void AjusteProductokeyEN(void){
-unsigned char *cursorx,*cursory;
+unsigned char *cursorx,*cursory,anterior;
 	cursorx=&vfd.menu.cursorx;
 	cursory=&vfd.menu.cursory;	
 	switch(*cursory){
 		case POSY4:/*cambio_de_contexto cambio_de_contexto(EN_DESARROLLO;*/break;
 		case POSY6: cambio_de_contexto(SELECCIONAR_PRODUCTO); break;
-	    case POSY8: //arg0=0;arg1=0;//sin argumentos para entrar aqui
-                  	cambio_de_contexto(NUEVO_PRODUCTO);
+	    case POSY8: cambio_de_contexto(NUEVO_PRODUCTO);
                     break;
-		case POSY10:menu.contexto.Anterior=AJUSTE_DE_PRODUCTO;//de donde vengo, que eligimos
-			        cambio_de_contexto(AJUSTE_PRODUCTO_SEL); break;
+		case POSY10:cambio_de_contexto(AJUSTE_PRODUCTO_SEL); break;
 		case POSY12:cambio_de_contexto(BORRAR_PRODUCTO); break;//Borrar PRODUCTO
 		case POSY14:cambio_de_contexto(COPY_PRODUCTO);break;
 		case POSY0:cambio_de_contexto(PORTAL_INICIO);break;
@@ -148,66 +150,70 @@ unsigned char *cursorx,*cursory;
 
 
 void AjusteParamProdkeyUP(void){
-	if(AjParamProd->igxc0>0){//esta seleccionado cambiar por numero
-	  	 operacionVariable(POSXAJUSPROD-8,cursory,AjParamProd->igxc0,SUMAR);
+unsigned char *cursorx,*cursory;
+cursorx=&vfd.menu.cursorx;
+cursory=&vfd.menu.cursory;
+
+	if(*(AjParamProd->editarSensFase)>0){//->igxc0>0){//esta seleccionado cambiar por numero
+	  	 operacionVariable(POSXAJUSPROD-8,*cursory,*(AjParamProd->editarSensFase),SUMAR);
 		 configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
-		 isEnable_Keypad(WAIT);
+		 //isEnable_Keypad(WAIT);
 		 return;}
 	if(cursory==POSY6){//MENU con sistema OPERATIVO
-		VFDposicion(cursorx,cursory);
+		VFDposicion(*cursorx,*cursory);
 		VFDserial_SendChar1(' ');
-		cursory=POSY0;	  
-		VFDposicion(POSXESQ235,cursory);
+		*cursory=POSY0;	  
+		VFDposicion(POSXESQ235,*cursory);
 		VFDserial_SendChar1('>');
 		VFDserial_SendChar1('X');
 		VFDserial_SendChar1(0x01);
 		return;}
-	if(cursory==POSY0){return;}
-	if(cursory<=POSY14){	
-		 VFDposicion(cursorx,cursory);
+	if(*cursory==POSY0){return;}
+	if(*cursory<=POSY14){	
+		 VFDposicion(*cursorx,*cursory);
 		 VFDserial_SendChar1(' ');
-		 --cursory;
-		 VFDposicion(cursorx,--cursory);
+		 --(*cursory);
+		 VFDposicion(*cursorx,--(*cursory));
 		 VFDserial_SendChar1('>');
 		 VFDserial_SendChar1(0x01);
 		 return;}
-}//fin AjusteParamProdkeyUP
-
+}//fin AjusteParamProdkeyUP++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void AjusteParamProdkeyDN(void){
-
-	if(AjParamProd->igxc0>0){//esta seleccionado cambiar por numero
-		operacionVariable(POSXAJUSPROD-8,cursory,AjParamProd->igxc0,RESTAR);
+unsigned char *cursorx,*cursory;
+	cursorx=&vfd.menu.cursorx;
+	cursory=&vfd.menu.cursory;		
+	if(*(AjParamProd->editarSensFase)>0){//esta seleccionado cambiar por numero
+		operacionVariable(POSXAJUSPROD-8,*cursory,*(AjParamProd->editarSensFase),RESTAR);
 		return;}
 	if(cursory==POSY0){
 	   VFDposicion(POSXESQ235,POSY0); 
 	   VFDserial_SendChar1(' ');
 	   VFDserial_SendChar1('x');
 	   cursory=POSY6;
-	   VFDposicion(cursorx,cursory);
+	   VFDposicion(*cursorx,*cursory);
 	   VFDserial_SendChar1('>');
 	   VFDserial_SendChar1(0x01);
 	   return;}
 	if(cursory<POSY14){	 
-	   VFDposicion(cursorx,cursory);
+	   VFDposicion(*cursorx,*cursory);
 	   VFDserial_SendChar1(' ');
 	   cursory++;
-	   VFDposicion(cursorx,++cursory);
+	   VFDposicion(*cursorx,++(*cursory));
 	   VFDserial_SendChar1('>');
 	   VFDserial_SendChar1(0x01);
-	   __asm(nop);
 	   return;}
-}//------------------------------------------------------------
-
-
-
+}//--FIN AJUSTE PARAM PROD KEY DOWN-------------------------------------------------------------------------------------
 void AjusteParamProdkeyRT(void){
+unsigned char *cursorx,*cursory;
 unsigned char 	phasefrac,phase;
-	if(cursory==POSY6){
-		procSensxDigitoRT(POSXAJUSPROD,POSY6,&Deteccion.Sensibilidad);
+	cursorx=&vfd.menu.cursorx;
+	cursory=&vfd.menu.cursory;	
+	if(*cursory==POSY6){
+		procSensxDigitoRT(POSXAJUSPROD,POSY6,&producto2.Sensibilidad);
 	    configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
 		return;}
-	if(cursory==POSY8){
-		phase=getCharsFromFloat(&phasefrac,Deteccion.Phase);
+	if(*cursory==POSY8){
+		phase=getCharsFromFloat(&phasefrac,producto2.fase);
 		if(++phasefrac>9){
 			phasefrac=0;
 			if(++phase>179){
@@ -215,17 +221,20 @@ unsigned char 	phasefrac,phase;
 				phasefrac=0;}}
 		display_pushFIFOcOP_Phase_var(POSXAJUSPROD,POSY8);
 		configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
-		
 		return;}
-}//FIN AjusteParamProdkeyRT ----------------------------------
-
+}//FIN AjusteParamProdkeyRT ---------------------------------------------------------------
 void AjusteParamProdkeyLF(void){
+unsigned char *cursorx,*cursory;
 unsigned char 	phasefrac,phase;
-	if(cursory==POSY6){	
-	   procSensxDigitoLF(POSXAJUSPROD,POSY6,&Deteccion.Sensibilidad);
+unsigned char 	phasefrac,phase;
+
+	cursorx=&vfd.menu.cursorx;
+	cursory=&vfd.menu.cursory;	
+	if(*cursory==POSY6){	
+	   procSensxDigitoLF(POSXAJUSPROD,POSY6,&producto2.Sensibilidad);
 	   configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);}
-   if(cursory==POSY8){
-		   phase=getCharsFromFloat(&phasefrac,Deteccion.Phase);
+    if(*cursory==POSY8){
+		   phase=getCharsFromFloat(&phasefrac,producto2.fase);
 		   if(phasefrac!=0)
 			   phasefrac--;
 		   else{phasefrac=9;
@@ -234,8 +243,185 @@ unsigned char 	phasefrac,phase;
 				  else phase--;}
 		   display_pushFIFOcOP_Phase_var(POSXAJUSPROD,POSY8);//fin contextobuffer 0
 		   configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
-	       Deteccion.Phase=get_Float_from_Phase(phase,phasefrac);   
+	       producto2.fase=get_Float_from_Phase(phase,phasefrac);   
 		   return;}
-}//FIN  AjusteParamProdkeyLF-------------------------------------
+}//FIN  AjusteParamProdkeyLF----------------------------------------------------------------
+
+//*****************************************************************************************
+void AjustedeSistemakeyUP(void){
+unsigned char *cursorx,*cursory;
+		cursorx=&vfd.menu.cursorx;
+		cursory=&vfd.menu.cursory;
+	    if(*cursory>POSY4){
+           VFDposicion(*cursorx,*cursory);
+           VFDserial_SendChar(' ');
+           --(*cursory);
+           VFDposicion(*cursorx,--(*cursory));
+           VFDserial_SendChar('>');
+           return;}
+        else 
+        	if(*cursory==POSY4){
+        		VFDposicion(*cursorx,*cursory); 
+                VFDserial_SendChar(' ');
+                *cursorx=POSXESQ235;*cursory=POSY0; //xpos=POSXESQ235
+                VFDposicion(*cursorx,*cursory);
+                VFDserial_SendChar('>');
+                VFDserial_SendChar('X');  }
+return;}
+void AjustedeSistemakeyRT(void){
+return;}	 
+void AjustedeSistemakeyLF(void){
+	return;}
+void AjustedeSistemakeyDN(void){
+unsigned char *cursorx,*cursory;
+		cursorx=&vfd.menu.cursorx;
+		cursory=&vfd.menu.cursory;
+	 	 if(*cursory==POSY0){
+	 		 VFDposicion(*cursorx,*cursory);
+	 		 VFDserial_SendChar(' ');
+	 		 VFDserial_SendChar('x');
+	 		 *cursorx=POSX0;*cursory=POSY4;
+	 		 VFDposicion(*cursorx,*cursory);
+	 		 VFDserial_SendChar('>');return;}
+	     else{
+	 	 		 if(*cursory<POSY14){
+	 	 			 switch(vfd.menu.contexto.control){ //Autor=3
+	 	 				 case 1: 
+	 	 				 case 2:return;break;
+	 	 				 case 3:
+	 	 				 case 4:if(*cursory==POSY12){
+	 	 					         return;break;}
+	 	 				 case 5:VFDposicion(*cursorx,*cursory);
+		 	 			 	 	VFDserial_SendChar(' ');
+		 	 			        ++(*cursory);
+		 	 			        VFDposicion(*cursorx,++(*cursory));
+		 	 			        VFDserial_SendChar('>');
+	 	 				 default: return;break;
+	 	 			 }}}//fin switch, if, else
+return;}
+void AjustedeSistemakeyEN(void){
+unsigned char *cursorx,*cursory;
+	cursorx=&vfd.menu.cursorx;
+	cursory=&vfd.menu.cursory;
+	if(*cursory==POSY2){/*);ret;*/ return;}
+	if(*cursory==POSY4){ cambio_de_contexto( MENU_ADMINISTRATIVO); return;}//-------------M8:poner el contexto al que se quiere entrar
+	if(*cursory==POSY6){ cambio_de_contexto(AJUSTE_DE_VIBRACION);  return;}
+	if(*cursory==POSY8){ cambio_de_contexto(CONFIGURAR_ENTRADAS_DE_SISTEMA); *(ConfEntSyst->cursorAnterior)=POSY0;return;}
+	if(*cursory==POSY10){cambio_de_contexto(CONTROL_DE_FRECUENCIA);return;}
+	if(*cursory==POSY12){cambio_de_contexto(ID_COMUNICACIONES);    return;}
+	if(*cursory==POSY14){cambio_de_contexto(INGENIERIA_GRACIDA);   return;}
+	if(*cursory==POSY0){ cambio_de_contexto(PORTAL_INICIO);	      return;}	        
+return;  }//fin AjustedeSistemakeyEN
+/* fin AjustedeSistemakeyDN+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * AjustedeSistemakeyDN+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
+
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+/*******************************************************************************************************+*/
+
+
+
+/*  resta o suma a un digto a la variable de sensibilidad o phase*/
+/* Metodo exclusivo de Ajustes PArametricos de Producto por la vriable global */
+void operacionVariable(unsigned char posx,unsigned short int y,unsigned char igxm0,unsigned char op){
+byte a[5],*p,i,b[6];
+typedef unsigned short int usint;
+unsigned char phase,phasefrac;
+	 p=&a[0];
+	 switch(y){
+	  case POSY6:
+	  case POSY2:		 
+			  operacionUShortInt(&Deteccion.Sensibilidad,igxm0,op);//opera en el digito indicado
+			  cursorx=posx;//+(8*(5-igxm0));//  igxm
+			  VFDposicion(cursorx,cursory);
+			  getCharsFromUINT_var(p,Deteccion.Sensibilidad);
+			  switch(igxm0){ //VFDserial_SendChar1((*(p+5-igxm0))+'0');
+				  case 5:b[0]='>';
+						 b[1]=a[0]+0x30;
+						 b[2]=a[1]+0x30;
+						 b[3]=a[2]+0x30;
+						 b[4]=a[3]+0x30;
+						 b[5]=a[4]+0x30;
+				         break;
+				  case 4:b[0]=a[0]+0x30;
+				         b[1]='>';
+				         b[2]=a[1]+0x30;
+				         b[3]=a[2]+0x30;
+				         b[4]=a[3]+0x30;
+				         b[5]=a[4]+0x30;
+				         break;
+				  case 3:b[0]=a[0]+0x30;
+						 b[1]=a[1]+0x30;
+						 b[2]='>';
+						 b[3]=a[2]+0x30;
+						 b[4]=a[3]+0x30;
+						 b[5]=a[4]+0x30;
+						 break;
+				  case 2:b[0]=a[0]+0x30;
+						 b[1]=a[1]+0x30;
+						 b[2]=a[2]+0x30;
+						 b[3]='>';
+						 b[4]=a[3]+0x30;
+						 b[5]=a[4]+0x30;
+						 break;
+				  case 1:b[0]=a[0]+0x30;
+						 b[1]=a[1]+0x30;
+						 b[2]=a[2]+0x30;
+						 b[3]=a[3]+0x30;
+						 b[4]='>';
+						 b[5]=a[4]+0x30;
+						 break; 
+				  default:break;}
+			for(i=0;i<6;i++)
+				VFDserial_SendChar1(b[i]);
+		    break; //fin de POSY6 POSY2
+	 case POSY8:
+     case POSY4: 
+		      phase=getCharsFromFloat(&phasefrac,Deteccion.Phase);
+			  if(phasefrac>9)
+				  phasefrac=0;
+			  getASCII_from_Fase(&a[0],phase,phasefrac);
+			  //Deteccion.Phase=get_Float_Fase(&a[0]);
+			  operacion_ASCII_Phase2(igxm0,op,&a[0]);
+			  Deteccion.Phase=get_Float_From_ASCII(&a[0]);
+			  //configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
+//			  display_Phase_DDS(posx+8,y,&a[0]);
+			  setASCII_to_Fase(&a[0],&phase,&phasefrac);
+			  Deteccion.Phase=get_Float_from_Phase(phase,phasefrac);
+			  __asm(nop);//for debug purpuses
+			  break;// FIN POS Y8 posy4
+	  default:break;}
+}//fin operacionVariable-------------------------------------------------------------
+
+unsigned char procSensxDigitoRT(unsigned char posx,unsigned char posy,unsigned short int *Sens){
+	if((*Sens)>=32000)
+		 return FALSE;
+	else  ++(*Sens); 
+	BarraDet_displayUINT_var(posx,posy,Sens);//displayUINT_var(POSXCFNUM,POSY2,&Sensibilidad,NONE);	
+}//fin ---procSensxDigitoRT--------------------------------------------

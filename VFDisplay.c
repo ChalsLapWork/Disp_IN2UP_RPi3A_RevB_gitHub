@@ -7,6 +7,7 @@
 #include "BarraDisplay.h"
 #include <stdint.h>
 #include <stdbool.h>
+#include "strings.h"
 
 extern struct _DISPLAY_VFD_ vfd;
 
@@ -164,3 +165,43 @@ else{
      }//fin else							
 return ret;	 
 }//FIN FIND CONTEXTO siguiente++++++++++++++++++++++++++++++++++++++++++++++
+
+//Desplega datos usando el sistema operativo cuando hay una barra 
+void BarraDet_displayUINT_var(unsigned char posx,unsigned char posy,unsigned short int *usint){
+unsigned char a[5],*p,n=0;
+//uword3 v;	
+
+		p=&a[0];
+		getCharsFromUINT_var(p,*usint);
+		VFDposicion(posx,posy);		
+		VFDserial_SendChar(*(p+0)+0x30); //decmil+0x30);
+		VFDserial_SendChar(*(p+1)+0x30);//mil+0x30);
+		VFDserial_SendChar(*(p+2)+0x30);//cent+0x30);
+		VFDserial_SendChar(*(p+3)+0x30);//dec+0x30);
+		VFDserial_SendChar(*(p+4)+0x30);//unidad+0x30);	  
+	   // if(n>0)
+	     //  __asm(HALT);//debug alto, error de ingenieria de software
+}//fin BarraDet_displayUINT_var-------------------------------------------------------------
+
+
+void display_pushFIFOcOP_Phase_var(unsigned short int posx,unsigned short int posy){//despliega la variable de phase en la posicion
+unsigned char a[3];
+unsigned char *p,phasefrac,phase; //para los valores ascii del numero entero
+//uword2 v;
+
+        p=&a[0];
+        phase=getCharsFromFloat(&phasefrac,Deteccion.Phase);
+	    getUChar2Chars(p,phase,YES);//obtiene los tres char de un numero char unsigned
+        if(phasefrac>9)
+        	phasefrac=0;
+       //if((posx>0)&&(posx<6))
+	       // posx=digito2posicion(posx); //convierte numero de orden de digito en coordenadasx del display 
+       posx=POSXAJUSPROD;
+       VFDposicion(posx,posy);
+       VFDserial_SendChar(a[0]);
+       VFDserial_SendChar(a[1]);
+       VFDserial_SendChar(a[2]);
+       VFDserial_SendChar('.');
+       VFDserial_SendChar(phasefrac+0x30);	   
+       Deteccion.Phase=get_Float_from_Phase(phase,phasefrac);   
+}//display phase var---------------------------------------------------------------------------------------

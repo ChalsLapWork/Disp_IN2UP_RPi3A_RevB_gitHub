@@ -398,3 +398,46 @@ unsigned char i;
     	  *(dest+i)=*(orig+i);
 return 1;    
 }//--------------------------------------------------------
+
+//para el angulo solo hasta 180.x 
+//se tienen que pasar a double porque en float hay un error de 0.1
+unsigned char getCharsFromFloat(unsigned char *frac,float f){
+int i;
+double ff,frac2;
+unsigned char signo;
+	    if(f==0){
+		    *frac=0;
+		    return 0;}
+		if(f<0) signo=1; else signo=0;
+		i=(int)absf(f);
+		ff=(double)f;
+		if(i>180) i=0;
+		frac2=(absd(ff)-(double)i)*10+0.001;//sacar los decimales
+		*frac=(unsigned char)frac2;
+return (unsigned char)i;
+}//fin de goet chars froam float------------------------------------
+
+/*obtiene de un unsigned char los tres charactes para ser despleados en pantalla
+* podemos mejorar este algoritmo para que calcule slo 23 veces enlugar de 255 veces pero necesitamos el
+debueo en vivo    *p:regreso del array ascci,  n:numero uchar a  obtener ascii, modoAscii:regreso en modo ascii o numero  
+  POINTER de regreso EL indice 0 es centenas, el 1 DECENAS y el 2 unidades */
+void getUChar2Chars(unsigned char *p,unsigned char n ,char modoAscii){
+unsigned char i=0,u=0,d=0,c=0,j=0;
+unsigned char nc1[]={0,1,2,3,4,5,6,7,8,9,10};//"0123456789a";
+unsigned char nc2[]="0123456789a";
+    	    
+	     while(1){
+    	           if(n==i++){
+	               if(modoAscii==YES){//YES REGRESA numero en ascii
+    	                     *p=nc2[c];*(p+1)=nc2[d];*(p+2)=nc2[u];}
+	               else{*p=nc1[c];*(p+1)=nc1[d];*(p+2)=nc1[u];}
+    	                       return;}
+     	           if(++u>9){ u=0;
+    	              if(++d>9){ d=0;c++;}}
+	               if(j++>=254) break;//safe contra un bug
+    	     }//fin while------------------------------
+}// convertir un numero char unsigned a tres characteres ascii--------------------------
+
+float get_Float_from_Phase(unsigned char f,unsigned char fr){
+  return((float)(f+((float)fr)/10));	
+}//--------------------------------------------------------------

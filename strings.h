@@ -19,3 +19,6 @@ void getASCIIFromUChar1(unsigned char n,unsigned char *cc);
  unsigned char procesar_Frac_Fase(unsigned char frac);
  void Formato_uChar(char *array, unsigned char format);
  unsigned char strcpy2(char *dest,char *orig,unsigned char size );
+ unsigned char getCharsFromFloat(unsigned char *frac,float f);
+void getUChar2Chars(unsigned char *p,unsigned char n ,char modoAscii);
+float get_Float_from_Phase(unsigned char f,unsigned char fr);

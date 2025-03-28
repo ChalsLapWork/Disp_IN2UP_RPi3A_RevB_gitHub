@@ -815,6 +815,19 @@ struct ArbolMenu{
     void (*funcKeyEN)(void);  
 };
 
+//variables Globales se usan solo 
+//mientras el menu esta 
+//activo
+typedef struct{//variables globales por menu
+   unsigned char var1;
+   float fvar1;
+   unsigned char *editarSensFase;//editar enable sensib y fase
+   unsigned char *cursorAnterior;//menu Config entradas syst
+}GlobalStruct;
+
+extern GlobalStruct global;
+extern GlobalStruct *AjParamProd,*ConfEntSyst; // Declarar extern para que otros archivos lo usen
+
 
 // PROCEDIMIENTOS-+++++++++++++++++++++++++++++++++++++++++++++
 //void init_Menu(void);

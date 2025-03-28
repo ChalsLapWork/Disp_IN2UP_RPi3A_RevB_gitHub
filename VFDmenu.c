@@ -17,7 +17,9 @@ extern struct _PRODUCTO1_ producto;
 extern struct _DISPLAY_VFD_ vfd;
 extern struct _Detection Deteccion;
 extern struct _PRODUCT1_ producto2;
-
+GlobalStruct global = {0, 0.0};
+GlobalStruct *AjParamProd = NULL; // Inicialización
+extern _PRODUCT1_ producto2;
 
 
 unsigned char InitArbolMenu(unsigned char destino){// initializar estructura de datos de los menus
@@ -147,9 +149,169 @@ unsigned char y[7]={0 ,4,6,8,10,12,4};
 	  vfd.box.enable=0;//disable pintar cajas barra detector
 	  vfd.config.bits.BOX_enable=TRUE;//se autoriza a dibujar cajas
 	  ret=TRUE;
-
 return ret;
 }//fin display menu inicio display----------------------------------------------------------------------------
+
+
+
+
+void DisplayAjusteParamProd(void){
+unsigned char a[]=" x";
+//unsigned char b[]=VERSION_FIRMWARE;
+//unsigned char c[]=">Inizializar memoria"; //2
+//unsigned char d[]="PSU E/S";              //4
+unsigned char e[]=">Sensibilidad"; //6
+unsigned char f[]="Fase         ";// 8en revision, debemos leer el valor de la variable si es uno o cero
+unsigned char h[]="Borrar contadores"; //10
+unsigned char i[]="Pantalla DDS";               //12
+unsigned char j[]="Ajustes Avanzados";   //14
+unsigned char x[9]={POSXESQ235,0,0,8,0, 8, 8, 8, 8};
+unsigned char y[9]={         0,0,2,4,6, 8,10,12,14};
+unsigned char *cursorx,*cursory;
+//word n;
+		cursorx=&vfd.menu.cursorx;
+		cursory=&vfd.menu.cursory;
+		VFDclrscr();
+		VFDposicion(x[0],y[0]);  
+		VFDserial_SendBlock(&a[0],sizeof(a));
+		VFDposicion(x[4],y[4]);   
+	    VFDserial_SendBlock(&e[0],sizeof(e));
+		VFDposicion(x[5],y[5]); 
+	    VFDserial_SendBlock(&f[0],sizeof(f));
+		VFDposicion(x[6],y[6]);   
+	    VFDserial_SendBlock(&h[0],sizeof(h));
+	    VFDposicion(x[7],y[7]);   
+	    VFDserial_SendBlock(&i[0],sizeof(i));
+	    VFDposicion(x[8],y[8]);
+	    VFDserial_SendBlock(&j[0],sizeof(j));
+	    displayUINT_var(POSXAJUSPROD,POSY6,&Deteccion.Sensibilidad,NONE);
+	    displayPhase_var(POSXAJUSPROD,POSY8);
+	   // displayFaseVar();
+	    displayCuadroMadre();//despliega el cuadro de barra de deteccion
+	    vfd.box.box0=0;//se inicia la barra en 0s. sino empieza ala mitad
+	    *cursorx=POSX0;*cursory=POSY6; 
+	    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
+		AjParamProd=&global;
+		AjParamProd->editarSensFase=&AjParamProd->var1;
+        *(AjParamProd->editarSensFase)=(unsigned char)0; //variable que indica si se esta editando el numero sensibildad y Fase
+        menu.b.b.isMenu=1;
+}//fin display ingenieria2 gracida---------------------------------------------------
+
+
+
+void displayMenuAjustedeProducto(void){
+unsigned char z[]="Menu de Ajuste de Producto  x";
+unsigned char a[]=">Hacer prueba de ejemplo";
+unsigned char c[]="Seleccionar producto";
+unsigned char w[]="Nuevo producto";
+unsigned char v[]="Ajuste de producto";
+unsigned char b[]="Borrar Producto";
+unsigned char q[]="Copiar Producto"; 
+unsigned char x[7]={20,0,8,8, 8, 8, 8};
+unsigned char y[7]={0 ,4,6,8,10,12,14};
+unsigned char *cursorx,*cursory;
+//word n;
+			cursorx=&vfd.menu.cursorx;
+			cursory=&vfd.menu.cursory;	
+		    VFDclrscr();
+			VFDposicion(x[0],y[0]); //  delay1us();
+		    VFDserial_SendBlock(&z[0],sizeof(z));//delay1us();
+			VFDposicion(x[1],y[1]);//   delay1us();
+		    VFDserial_SendBlock(&a[0],sizeof(a));//delay1us();
+			VFDposicion(x[2],y[2]);   //delay1us();
+		    VFDserial_SendBlock(&c[0],sizeof(c));//delay1us();
+			VFDposicion(x[3],y[3]); //  delay1us();
+			VFDserial_SendBlock(&w[0],sizeof(w));//delay1us();
+			VFDposicion(x[4],y[4]); //  delay1us();
+		    VFDserial_SendBlock(&v[0],sizeof(v));//delay1us();
+			VFDposicion(x[5],y[5]);  // delay1us();
+		    VFDserial_SendBlock(&b[0],sizeof(b));//delay1us();
+		    VFDposicion(x[6],y[6]);   //delay1us();
+		    VFDserial_SendBlock(&q[0],sizeof(q));//delay1us();
+		    //VFDposicion(x[7],y[7]);//posiCION del cursor despues de desplegar el menu  
+		    *cursorx=POSX0;*cursory=POSY4;
+		    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
+		    menu.b.b.isMenu=1;//se ejecuto este menu.
+
+}//fin display menu del ajuste de producto------------------------------------------------------------------
+
+
+
+void DisplayMenuAjustedeSistema(void){//despliega el menu del AJUSTE DE SISTEMA-------------
+unsigned char z[]="Menu de Ajuste de Sistema   x";
+unsigned char a[]=">Menu Administrativo           ";
+unsigned char c[]=" Ajuste de vibracion           ";
+unsigned char w[]=" Configurar entradas de sistema";
+unsigned char v[]=" Control de frecuencia";
+unsigned char b[]=" ID de comunicaciones";
+unsigned char q[]=" Ingenieria Gracida"; 
+unsigned char x[7]={20,0,0,0,0, 0, 0};
+unsigned char y[7]={0 ,4,6,8,10,12,14};
+unsigned char *cursorx,*cursory;
+//word n;
+			  cursorx=&vfd.menu.cursorx;
+			  cursory=&vfd.menu.cursory;	
+  			  VFDclrscr();
+			  VFDposicion(x[0],y[0]); //  delay1us();
+		      VFDserial_SendBlock(&z[0],sizeof(z));//delay1us();
+		  	  VFDposicion(x[1],y[1]);   //delay1us();
+		      VFDserial_SendBlock(&a[0],sizeof(a));//delay1us();
+			  VFDposicion(x[2],y[2]);   //delay1us();
+		      VFDserial_SendBlock(&c[0],sizeof(c));//delay1us();
+			  VFDposicion(x[3],y[3]);   //delay1us();
+			  VFDserial_SendBlock(&w[0],sizeof(w));//delay1us();
+			  VFDposicion(x[4],y[4]);   //delay1us();
+		      VFDserial_SendBlock(&v[0],sizeof(v));//delay1us();
+			  VFDposicion(x[5],y[5]);  // delay1us();
+		      VFDserial_SendBlock(&b[0],sizeof(b));//delay1us();
+		      VFDposicion(x[6],y[6]);  // delay1us();
+		      VFDserial_SendBlock(&q[0],sizeof(q));//delay1us();
+		      //VFDposicion(x[7],y[7]);//posiCION del cursor despues de desplegar el menu  
+		      *cursorx=POSX0;*cursory=POSY4;
+			  //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
+			  menu.b.b.isMenu=1;//se ejecuto este menu.
+}//fin display del menu de AJUSTE DE SISTEMA-----------------------------------------------------------------
+
+
+void DisplayMenuInformacionUsuario(void){
+unsigned char r[]=" x";
+unsigned char z[]=">Hacer pruebas de ruido";
+unsigned char a[]="Medidas de voltaje";
+unsigned char c[]="Ajustes de producto";
+unsigned char w[]="Tiempos de Rechazo";
+unsigned char v[]="Ajuste sistema de entradas";
+unsigned char b[]="ID de maquinas";//en revision--en desarrollo, debemmos leer el valor de la variable en 1 y0
+unsigned char q[]="Cuenta producto"; 
+unsigned char x[8]={POSXESQUINA,0,8,8,8, 8, 8, 8};
+unsigned char y[8]={          0,2,4,6,8,10,12,14};
+unsigned char *cursorx,*cursory;
+//word n;
+			    cursorx=&vfd.menu.cursorx;
+			    cursory=&vfd.menu.cursory;	
+			    VFDclrscr();
+				VFDposicion(x[0],y[0]);   //delay1us();
+				VFDserial_SendBlock(&r[0],sizeof(r));//delay1us();
+				VFDposicion(x[1],y[1]);   //delay1us();
+			    VFDserial_SendBlock(&z[0],sizeof(z));//delay1us();
+				VFDposicion(x[2],y[2]);  // delay1us();
+			    VFDserial_SendBlock(&a[0],sizeof(a));//delay1us();
+				VFDposicion(x[3],y[3]);   //delay1us();
+			    VFDserial_SendBlock(&c[0],sizeof(c));//delay1us();
+				VFDposicion(x[4],y[4]);   //delay1us();
+				VFDserial_SendBlock(&w[0],sizeof(w));//delay1us();
+				VFDposicion(x[5],y[5]);   //delay1us();
+			    VFDserial_SendBlock(&v[0],sizeof(v));//delay1us();
+				VFDposicion(x[6],y[6]);   //delay1us();
+			    VFDserial_SendBlock(&b[0],sizeof(b));//delay1us();
+			    VFDposicion(x[7],y[7]);   //delay1us();
+			    VFDserial_SendBlock(&q[0],sizeof(q));//delay1us();
+			    //VFDposicion(x[7],y[7]);//posiCION del cursor despues de desplegar el menu  
+			    *cursorx=POSX0;*cursory=POSY2;//POSICION DE LA FLECHA LA DEJAMOS EN 0,2
+			    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
+			    menu.b.b.isMenu=1;//se ejecuto este menu.
+}//fin Display Menu INFORMATION  usuarioo-------------------------------------------------------------
+
+
 
 
 

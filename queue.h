@@ -280,7 +280,7 @@ unsigned char FIFO_Display_DDS_Char_pop2(unsigned char *x,unsigned char *y);
 unsigned char FIFO_Display_DDS_Char_push(unsigned char datox,unsigned char datoy);
 unsigned char *gotonext(unsigned char *last,unsigned char *first,unsigned char *tail);
 unsigned char FIFO_displayBox_pop(void);
-void BarraDet_displayUINT_var(unsigned char posx,unsigned char posy,unsigned short int *usint);
+//void BarraDet_displayUINT_var(unsigned char posx,unsigned char posy,unsigned short int *usint);
 unsigned char FIFO_displayBox_push(unsigned char box);
 unsigned char FIFO_displayBox_isEmpty(void);
 void FIFO_Display_DDS_Char_clean(void);
