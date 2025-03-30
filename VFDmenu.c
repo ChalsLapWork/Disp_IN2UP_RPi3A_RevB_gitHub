@@ -194,7 +194,7 @@ unsigned char *cursorx,*cursory;
 		AjParamProd=&global;
 		AjParamProd->editarSensFase=&AjParamProd->var1;
         *(AjParamProd->editarSensFase)=(unsigned char)0; //variable que indica si se esta editando el numero sensibildad y Fase
-        menu.b.b.isMenu=1;
+        vfd.config.bits.Menu_Ready=1;
 }//fin display ingenieria2 gracida---------------------------------------------------
 
 
@@ -231,7 +231,7 @@ unsigned char *cursorx,*cursory;
 		    //VFDposicion(x[7],y[7]);//posiCION del cursor despues de desplegar el menu  
 		    *cursorx=POSX0;*cursory=POSY4;
 		    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
-		    menu.b.b.isMenu=1;//se ejecuto este menu.
+		    vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
 
 }//fin display menu del ajuste de producto------------------------------------------------------------------
 
@@ -269,7 +269,7 @@ unsigned char *cursorx,*cursory;
 		      //VFDposicion(x[7],y[7]);//posiCION del cursor despues de desplegar el menu  
 		      *cursorx=POSX0;*cursory=POSY4;
 			  //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
-			  menu.b.b.isMenu=1;//se ejecuto este menu.
+			  vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
 }//fin display del menu de AJUSTE DE SISTEMA-----------------------------------------------------------------
 
 
@@ -308,7 +308,7 @@ unsigned char *cursorx,*cursory;
 			    //VFDposicion(x[7],y[7]);//posiCION del cursor despues de desplegar el menu  
 			    *cursorx=POSX0;*cursory=POSY2;//POSICION DE LA FLECHA LA DEJAMOS EN 0,2
 			    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
-			    menu.b.b.isMenu=1;//se ejecuto este menu.
+			    vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
 }//fin Display Menu INFORMATION  usuarioo-------------------------------------------------------------
 
 
