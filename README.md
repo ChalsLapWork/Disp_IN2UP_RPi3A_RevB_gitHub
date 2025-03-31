@@ -13,7 +13,7 @@ manejarlo como un protocolo de comunicacion,
 - **RevD4_tx_VFD_v3** desplegar Menu Portal Usando Hilo especialista ✅
 - ** En espera  ** 📚
 - **Código limpio** 🧑‍💻
-- **COMANDOS SERIALES: hex++
+- **COMANDOS SERIALES: hex**
 -     BarDet:15%:03.03.11.0F.F9.02
 -     BarDet:99%:03.03.11.63.FA.02
 -     BarDet:45%:03.03.11.2D.17.02
