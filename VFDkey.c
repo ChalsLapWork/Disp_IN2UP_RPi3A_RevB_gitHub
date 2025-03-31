@@ -226,7 +226,6 @@ unsigned char 	phasefrac,phase;
 void AjusteParamProdkeyLF(void){
 unsigned char *cursorx,*cursory;
 unsigned char 	phasefrac,phase;
-unsigned char 	phasefrac,phase;
 
 	cursorx=&vfd.menu.cursorx;
 	cursory=&vfd.menu.cursory;	
@@ -414,7 +413,7 @@ unsigned char phase,phasefrac;
 //			  display_Phase_DDS(posx+8,y,&a[0]);
 			  setASCII_to_Fase(&a[0],&phase,&phasefrac);
 			  Deteccion.Phase=get_Float_from_Phase(phase,phasefrac);
-			  __asm(nop);//for debug purpuses
+			  //__asm(nop);//for debug purpuses
 			  break;// FIN POS Y8 posy4
 	  default:break;}
 }//fin operacionVariable-------------------------------------------------------------

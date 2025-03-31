@@ -184,11 +184,120 @@ struct _KeyPAd_{
 };
 
 
+struct ZoomControl{//para crear  el zoom y las ecuaciones  polinomicas de acondicionamiento de señal para el DDS
+	   signed short int Max;//valor maximo del cuadro central de la pantalla
+	   //signed short int Maxn;//valor negativo
+	   //float a; //coeficiente del termino grado2
+	   //float b;//coeficiente del termino grado 1
+	   //float c; //coeficiente del termino grado 0
+	   double zFactor;// son los mas menos 32768 entre los 100 zoom's
+	   float indiceConversion;//lo que se multiplica para escalar al zoom seleccionado
+	   unsigned char Cx; //coordenada x del centro de la pantalla
+	   unsigned char Cy;//coordenadas y del centro de la pantalla
+	   unsigned char Zoom;//es el zoom se seleccionado actual
+	   unsigned short int pixelSizeX;//limite del numero digital despleglable en DDS en funcion del Zoom
+	   unsigned short int Maxx;//limite del numero digital desplegable en DDS en funciona del Zoom
+	   unsigned short int pixelSizeY;//limite del numero digital despleglable en DDS en funcion del Zoom
+	   unsigned short int Maxy;//limite del numero digital desplegable en DDS en funciona del Zoom
+	   signed short int lapso;//es el Maximo - Minimo	
+	   unsigned short int Ymax;//maximo valor a graficar el zoom en Y, linea de sensibilidad para este zoom
+	   unsigned short int Ymin;//minimo valor en la posicion-1 de linea de sesibilidad 
+       //zoom.indiceConversion
+	  // float factor;//factor de multiplicacion por zoom
+	   float (*factor)(unsigned char);//apiunta ala funcion que nos da el factor en funcion del zooom
+	   struct Coordusi (*MaxZoom)(unsigned char);//maximo valor para ese zoom en x 
+};
+
+
+struct _Comando_DDS{//comando DDS para graficar en touch
+	struct _PIX_ pix;
+	union Bytex{
+	   unsigned char Bnderas;
+	   struct{
+		   unsigned char DDS_Reload:1;//cuando se recarga el DDS por un zoom CON LOS valores anteriores guardadso de las detecciones
+		   unsigned char Apagando:1;//le dice que nos vamos a salir del menu DDS, para que no mande datos del DDS en otro menu
+	       unsigned char EventDDS:1;//nos dice que tenemos autorizacion para ejecutar graficacion en DDS		 
+		   unsigned char DDS1_BORRAR:1;//Borrando de el DDS
+		   unsigned char DDS1_TIMER:1;
+		   unsigned char clean_Buffers:1;//para decirle cuando limpiar los buffers que guardan los datos de los puntos pintados en el DDS para repintrlos
+		   unsigned char Aspect_Zoom:1;
+		   unsigned char debug:1;
+		   unsigned char Gain_AB:1;
+	   }bit;
+	}Bnderas;
+	
+	struct _Display_{
+		unsigned char flag_TX_Pixel; //timer para desplegar en DDS
+		unsigned short int delay;//para manejo de delay por comando y timer de display VFD
+	}display;
+	
+	struct _TOUCHSCREEN_{
+		signed short int bufferX[SIZE_BUFFER_DDS_FIFO];//buffer DDS fifo TRansmision Serial
+		signed short int bufferY[SIZE_BUFFER_DDS_FIFO];//buffer y DDS FIFO Transmision Serial
+		signed short int *headx; //head de buffer x
+		signed short int *tailx; //head de buffer y
+		signed short int *popx;  //pointer to pop from fifo
+		signed short int *pushx; //
+		signed short int *heady; //head de buffer x
+		signed short int *taily; //head de buffer y
+		signed short int *popy;  //
+		signed short int *pushy;
+	    unsigned char ncount;//numero de nodos ocupados en la fifo
+	}touch;
+	
+	struct _SAVE_PIXELS_{
+		signed short int xPixel[SIZE_TEMP_PIXEL];
+		signed short int yPixel[SIZE_TEMP_PIXEL];
+		signed short int *p[8];
+#if(SIZE_TEMP_PIXEL<254)		
+		unsigned char ncount;
+#else   
+	    unsigned short int ncount;
+#endif	    
+	}SaveTempPix; 	
+		
+//	unsigned char (*pop)(signed short int *x,signed short int *y);//pop function
+//    unsigned char (*push)(signed short int x,signed short int y);
+    unsigned char (*remove)(signed short int *x,signed short int *y);//quita el nodo primer en indicce 0
+    unsigned char (*append)(signed short int x,signed short int y);//pone un nodo al final dela cola
+    
+    struct _DispayPixel_{//para pintar el pixel
+    	unsigned char *pop,*popx,*popy;
+    	unsigned char *push,*pushx,*pushy;
+    	unsigned char *tail,*tailx,*taily;
+    	unsigned char *head,*headx,*heady;
+    	unsigned char buffX[SIZE_DDS_PIXEL];
+    	unsigned char buffY[SIZE_DDS_PIXEL];
+    	unsigned char pen[SIZE_DDS_PIXEL];
+#if(SIZE_DDS_PIXEL<254)
+    	unsigned char ncount;
+#else 
+    	unsigned short int ncount;
+#endif    	
+    }pixel;
+        
+    struct _Repaint_ZOOM{
+    	//signed short int xx[SIZE_DDS_ZOOM];
+        //signed short int yy[SIZE_DDS_ZOOM];
+    	unsigned char  xy[SIZE_Y][SIZE_X];
+    	unsigned char xy0[SIZE_Y][SIZE_X];
+    	unsigned short int ii;
+    	unsigned char j,k,uy;
+    	unsigned char ix,iy,b;
+    	unsigned char x1[100],y1[100];//depurar
+    	unsigned short int debug5;
+    	unsigned short int debug6;
+    }rePaint; 
+
+  struct ZoomControl zoom;
+   
+};//fin DDS STRUCT++++++++++++++++++++++++++++++
 
 struct _Menu1_{
    struct _Contexto contexto;
    unsigned char cursorx;
    unsigned char cursory;
+   struct _Comando_DDS dds;
    
 };
 

@@ -205,3 +205,25 @@ unsigned char *p,phasefrac,phase; //para los valores ascii del numero entero
        VFDserial_SendChar(phasefrac+0x30);	   
        Deteccion.Phase=get_Float_from_Phase(phase,phasefrac);   
 }//display phase var---------------------------------------------------------------------------------------
+
+void displayPhase_var(unsigned short int posx,unsigned short int posy){//despliega la variable de phase en la posicion
+unsigned char a[3];
+unsigned char *p,phase,phasefrac; //para los valores ascii del numero entero
+        p=&a[0];
+        phase=getCharsFromFloat(&phasefrac,Deteccion.Phase);
+	    getUChar2Chars(p,phase,YES);//obtiene los tres char de un numero char unsigned
+        if(phasefrac>9)
+        	phasefrac=0;
+    	//debug    if(posx==0)
+	        //controlador de errores aqui
+       if((posx>0)&&(posx<6))
+	        posx=digito2posicion(posx); //convierte numero de orden de digito en coordenadasx del display 
+       VFDposicion(posx,posy);
+       VFDserial_SendChar(a[0]);
+       VFDserial_SendChar(a[1]);
+       VFDserial_SendChar(a[2]);
+	   VFDserial_SendChar('.');
+       VFDserial_SendChar(phasefrac+0x30);	    
+       Deteccion.Phase=get_Float_from_Phase(phase,phasefrac);
+}//display phase var-----------------------------------------------------------------------------
+	

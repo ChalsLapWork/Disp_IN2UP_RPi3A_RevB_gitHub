@@ -19,7 +19,7 @@ extern struct _Detection Deteccion;
 extern struct _PRODUCT1_ producto2;
 GlobalStruct global = {0, 0.0};
 GlobalStruct *AjParamProd = NULL; // Inicialización
-extern _PRODUCT1_ producto2;
+extern struct _PRODUCT1_ producto2;
 
 
 unsigned char InitArbolMenu(unsigned char destino){// initializar estructura de datos de los menus

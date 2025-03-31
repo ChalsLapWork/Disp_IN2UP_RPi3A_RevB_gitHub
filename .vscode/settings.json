@@ -12,6 +12,7 @@
         "strings.h": "c",
         "math.h": "c",
         "errno.h": "c",
-        "queue": "c"
+        "queue": "c",
+        "memoria.h": "c"
     }
 }
