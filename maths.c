@@ -44,76 +44,6 @@ return ret;
 }//fin de recalcular valores de serial barra de deteccion
 
 
-/*  *n: numero a ser procesado del tipo short int    
- *  digito: digito que se va ha hacer la operacion   digito-> 12345  <--posicion, 5->unidad
- *  op: operacion SUMAR | RESTAR    
- *  Funcion que resta o suma  en un digito en particular  */
-void operacionUShortInt(unsigned short int *n,unsigned char digito,unsigned char op){//opera en el digito indicado
-unsigned short int i,j;
-const unsigned short int num[]={0,0,10,100,1000,10000};
-	switch(op){
-		case RESTAR:if(*n==1)
-			             break;
-		             j=num[digito];
-		             //if(digito==5)
-		            	//  j=32765;
-					 switch(digito){
-						 case 1: (*n)--; return;
-						 case 2:
-						 case 3:
-						 case 4:
-						 case 5: i=*n;
-								 if(i<j)
-									 *n=1;    	 
-								else{i-=num[digito];
-									 *n=i;}
-							    break;
-						default:break;}
-				   break;//case restar
-		case SUMAR:if(*n<32767){
-			    	  if(digito==1){
-			    		  (*n)++;
-			    		  break;}
-			    	  if(digito==2){
-			    		  i=*n;
-			    		  i+=10;
-			    		  if(i>32767)
-			    			  i=32767;
-			    		  *n=i;
-			    	      break;}
-			    	  if(digito==3){
-			    		  i=*n;
-			    		  i+=100;
-			    		  if(i>32767)
-			    		     i=32767;
-			    		  *n=i;
-			    		  break;}
-			    	  if(digito==4){
-			    		  i=*n;
-			    		  i+=1000;
-			    		  if(i>32767)
-			    		  	  i=32767;
-			    		  *n=i;
-			    		  break;}
-			    	  if(digito==4){
-						  i=*n;
-						  i+=1000;
-						  if(i>32767)
-							  i=32767;
-						  *n=i;
-						  break;}
-			    	  if(digito==5){
-			    		 i=*n;
-			    		 i+=10000;
-			    		 if(i>32767)
-			    			 i=32767;
-			    		 *n=i;
-			    	     break;}
-			       }else break; 
-		default:break;}
-}//fin operacion de  numero short int -------------------------------------------------------
-
-
 
 
 
@@ -555,7 +485,7 @@ struct Coordsf AgetEcuation(struct Ec_Recta* f, struct Coordf P1, float angulo) 
 /*  *n: numero a ser procesado del tipo short int    
  *  digito: digito que se va ha hacer la operacion   digito-> 12345  <--posicion, 5->unidad
  *  op: operacion SUMAR | RESTAR    
- *  Funcion que resta o suma  en un digito en particular  */
+ *  Funcion que resta o suma  en un digito en particular def1 */
 void operacionUShortInt(unsigned short int *n,unsigned char digito,unsigned char op){//opera en el digito indicado
 unsigned short int i,j;
 const unsigned short int num[]={0,0,10,100,1000,10000};
@@ -652,7 +582,7 @@ static unsigned char bit,num,init,reg,var;
 static unsigned char debugx[20],debugy[20],i;
 static unsigned char row,col;
           
-      row=vfd.menu.vfd.menu.dds.rePaint.iy;
+      row=vfd.menu.dds.rePaint.iy;
       reg=vfd.menu.dds.rePaint.ix;
       b=vfd.menu.dds.rePaint.b;
       if(init!=0xAA){
@@ -1277,7 +1207,7 @@ struct Coordsf get_Puntos(struct Ec_Recta f,float angulo,unsigned char linea,uns
 	float x,y;
 	//Revisar en que cuadrate pertence
 	if(angulo<0){mens_Warnning_Debug("Error de software: f.get_Puntos");//__asm(nop);__asm(Halt);
-	             return NULL;}//no se procesan angulos negativos
+	             }//no se procesan angulos negativos
 	if(angulo<90) estado=1;//angulo de cero a 90
 	else{if(absf(angulo-90)<1.2){estado=2;}//angulo de 90° o casi de 90°
 	     else{estado=3;}}//angulo>90°}
@@ -1310,7 +1240,7 @@ struct Coordsf get_Puntos(struct Ec_Recta f,float angulo,unsigned char linea,uns
 				P.Pn.x=x;P.Pn.y=y;break;
 		case 0:
 		default:mens_Warnning_Debug("Error de software: f.get_Puntos");//__asm(nop);__asm(Halt);
-		         return NULL;
+		         
 				 break;}//error de software
 		
    for (i = 0, p = &P.Pm; i < 2; i++, p++){	
@@ -1445,10 +1375,11 @@ return P;
 struct Coordsf get_Evaluar_2(struct Coordsf P,struct Ec_Recta f,float angulo){
 	unsigned char i, n = 0,error=0,estado=0;
 	struct Coordf* p;
+	struct Coordsf errorCoords = {0}; // Inicializa en 0 (o valores de error)
 	float x,y;
 	//Revisar en que cuadrate pertence
 	if(angulo<0){//__asm(nop);__asm(Halt);
-	              mens_Warnning_Debug("error de Sotware f.get Evaluar2");return NULL;
+	              mens_Warnning_Debug("error de Sotware f.get Evaluar2");return errorCoords;
 	             }//no se procesan angulos negativos
 	if(angulo<90) estado=1;//angulo de cero a 90
 	else{if(absf(angulo-90)<1.2){estado=2;}//angulo de 90° o casi de 90°
@@ -1474,7 +1405,7 @@ struct Coordsf get_Evaluar_2(struct Coordsf P,struct Ec_Recta f,float angulo){
 				else{y=-127;x=frecta(&f,'y',y);}
 				P.Pn.x=x;P.Pn.y=y;break;
 		case 0:
-		default:mens_Warnning_Debug("error de Sotware f.get Evaluar2");return NULL;//__asm(nop);__asm(Halt);
+		default:mens_Warnning_Debug("error de Sotware f.get Evaluar2");return errorCoords;//__asm(nop);__asm(Halt);
 		        break;}//error de software
 		
    for (i = 0, p = &P.Pm; i < 2; i++, p++){	
@@ -1484,7 +1415,7 @@ struct Coordsf get_Evaluar_2(struct Coordsf P,struct Ec_Recta f,float angulo){
 	   if(p->x<0   ) error|=0x08;//Error, Debug/Depuracion, error 0000 1010
 	   if(error>0){
 		   //__asm(nop);
-		   mens_Warnning_Debug("error de Sotware f.get Evaluar2");return NULL;//__asm(Halt);
+		   mens_Warnning_Debug("error de Sotware f.get Evaluar2");return errorCoords;//__asm(Halt);
 		   }}
 return P;
 }//fin get evaluar -----------------------------------------zoom
@@ -1651,7 +1582,7 @@ unsigned char b[4], * up;
 		error |= 0x08;
 	if (error > 0) { 
 		//__asm(nop);
-		mens_Warnning_Debug("error de Sotware f.trad coord 2 vfd");return NULL;//__asm(Halt);
+		mens_Warnning_Debug("error de Sotware f.trad coord 2 vfd");//__asm(Halt);
 		}//Debug  
 	if (f.Pm.y < 0)
 		f.Pm.y *= -1;

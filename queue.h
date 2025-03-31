@@ -337,6 +337,8 @@ struct _DISPLAY_VFD_{
 	struct _Menu1_ menu;  
 	struct _KeyPAd_ keypad;
     struct _Deteccion_ deteccion;
+	unsigned char Text[NOMBRE_PRODUCTO_SIZE];//texto que regresa  del procesador de textos
+
 	//size_t pthread_attr_t attr_mon,attr_free,atrr_Tx;//atributos  
  	struct _box_control{
 		 unsigned char boxs[SIZE_BOXES];

@@ -5,32 +5,9 @@
 #include <string.h>
 #include "queue.h"
 
+extern struct _DISPLAY_VFD_ vfd;
 
 
-//* Logitud de la cadena si es numero o letra*/
-unsigned short int length(unsigned char *c,unsigned char size){
-//unsigned short int count=0;                            
-unsigned char i=1,estado=0;
-
-  for(i=0;i<size;i++)
-    switch(estado){
-	   case 0:if(*c!=NAME_INIT) //primer char es ame init?
-		          insertChar(c,size,0,NAME_INIT); 
-	          estado++;
-	          break;
-	   case 1:if(*(c+1)==0)
-		         return 0;
-	          if(isNumLetter(*(c+1)))
-	        	   estado++;
-	          else{ *(c+1)=0;return 0;}
-	          break;
-	   case 2:if(isNumLetter(*(c+i)))
-		            break;
-	          else return ((unsigned short)(i-1));
-              break;
-	   default:break;}       
-return size;  
-}//ends the char chain lenght assess .---------------------------------------------------------------
 
 
 //def1
@@ -73,7 +50,7 @@ void getCharsFromUINT_var(unsigned char *p,unsigned short int var){
 
 
 
-
+//def 1
 void suma_BCD(unsigned char dm1,unsigned char m1,unsigned char c1,unsigned char d1,unsigned char u1,unsigned char *p){
 	 suma_BCD_digito(_DM_,dm1,p);
 	 suma_BCD_digito(_M_ ,m1,p);
@@ -932,13 +909,13 @@ unsigned char i,a;//1234123123123
 void TextInsertSpace(unsigned char indice){//indice es en donde esta actualmente el cursor
 unsigned char i=0,j=0,k=0;
 	  if(indice>=(NOMBRE_PRODUCTO_SIZE-1)){
-		   Text[NOMBRE_PRODUCTO_SIZE-1]=' ';
+		   vfd.Text[NOMBRE_PRODUCTO_SIZE-1]=' ';
 	       return;}
 	  i=NOMBRE_PRODUCTO_SIZE-1;
 	  do{ if(i==indice){
-		      Text[i]=' ';
+		      vfd.Text[i]=' ';
 		      break;}
-		  Text[i]=Text[i-1];
+		  vfd.Text[i]=vfd.Text[i-1];
 	     }while(i--!=0);
 }//fin insertamos un espacio y recorremos los char uno a la derecha para Text de text Processor
 
@@ -952,13 +929,13 @@ unsigned char i=0,j=0,k=0;             //indice va de 0 a 19=PRODUCT_SIZE..blabl
 	  while((i+1)!=indice){
 	        i++;}
 	  if(i==NOMBRE_PRODUCTO_SIZE-2)
-		     Text[NOMBRE_PRODUCTO_SIZE-1]=0;
+		     vfd.Text[NOMBRE_PRODUCTO_SIZE-1]=0;
       for(j=i;j<(NOMBRE_PRODUCTO_SIZE-1);j++)
-         	  Text[j]=Text[j+1];
+         	  vfd.Text[j]=vfd.Text[j+1];
       return i;     
 }//fin insertamos un espacio y recorremos los char uno a la derecha para Text de text Processor
 
-//* Logitud de la cadena si es numero o letra*/
+//* Logitud de la cadena si es numero o letra def1*/
 unsigned short int length(unsigned char *c,unsigned char size){
 unsigned short int count=0;                            
 unsigned char i=1,estado=0;
@@ -985,9 +962,8 @@ return size;
 
    
 
-
-word length2(unsigned char *c){
-word count=0;
+unsigned short int length2(unsigned char *c){
+unsigned short int count=0;
 	unsigned char i=1;
 		 if(*c==NAME_INIT){
 			 for(i=1;i<NOMBRE_PRODUCTO_SIZE;i++){

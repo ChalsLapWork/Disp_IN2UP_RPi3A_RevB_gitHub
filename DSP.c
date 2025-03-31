@@ -38,7 +38,7 @@ void init_Sensibilidad(void){
 //unsigned short int cuadroBase;//conversor de sensilidad para 	
 	    
              Zoom_init();  
-	          .EnCurso=0;//no hay deteccion
+	         vfd.deteccion.EnCurso=0;//no hay deteccion
 	         //Offset.Status=0;//debug poner control con EEPROM AQUI FIRST_START;//no estamos listos para evaluar el offset
 	         /*if(Deteccion.tipo==NORMAL){
 	        			cuadroBase=(Deteccion.Sensibilidad)/8;//7 cuadros base

@@ -10,7 +10,7 @@
 #include "strings.h"
 
 extern struct _DISPLAY_VFD_ vfd;
-
+extern struct _PRODUCT1_ producto2;
 
 /*funcion que nos da las coordenadas de las cajas en  y las cajas con pen=1 con, caja BOX_VACIA hasta 
  *  la 8,  y la caja BOX_LLENA es de la box=9 hasta box=17; */ 
@@ -210,7 +210,7 @@ void displayPhase_var(unsigned char posx,unsigned char posy){//despliega la vari
 unsigned char a[3];
 unsigned char *p,phase,phasefrac; //para los valores ascii del numero entero
         p=&a[0];
-        phase=getCharsFromFloat(&phasefrac,Deteccion.Phase);
+        phase=getCharsFromFloat(&phasefrac,producto2.phase);
 	    getUChar2Chars(p,phase,YES);//obtiene los tres char de un numero char unsigned
         if(phasefrac>9)
         	phasefrac=0;
@@ -224,6 +224,6 @@ unsigned char *p,phase,phasefrac; //para los valores ascii del numero entero
        VFDserial_SendChar(a[2]);
 	   VFDserial_SendChar('.');
        VFDserial_SendChar(phasefrac+0x30);	    
-       Deteccion.Phase=get_Float_from_Phase(phase,phasefrac);
+       producto2.phase=get_Float_from_Phase(phase,phasefrac);
 }//display phase var-----------------------------------------------------------------------------
 	
