@@ -85,7 +85,7 @@ void displayNumbers(unsigned char n);
 void  displayEntradadeSistemas(unsigned char var);	
 void displayZoomDDS_var(unsigned char operacion);
 unsigned short int displayZoomDDS_varxDigito(unsigned short int posx,unsigned char operacion);
-void display_pushFIFOcOP_Phase_var(unsigned short int posx,unsigned short int posy);
+void display_pushFIFOcOP_Phase_var(unsigned char posx,unsigned char posy);
 void displayPhase_var(unsigned char posx,unsigned char posy);
 void displayControlContrasenaVal(unsigned char varnum);
 unsigned char  displayTime(unsigned char t);//desplega un valor de tiempo a la vez

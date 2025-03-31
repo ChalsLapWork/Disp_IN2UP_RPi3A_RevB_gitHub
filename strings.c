@@ -31,18 +31,8 @@ unsigned char i=1,estado=0;
 return size;  
 }//ends the char chain lenght assess .---------------------------------------------------------------
 
-/* insertar el char en el indice indicado en index, 
- * pero se recorre todo los char a la izquierda */
-void insertChar(unsigned char *s,unsigned char size,unsigned char index,unsigned char c){
-unsigned char i,b,a;
-    b=c;
-	for(i=index;i<size;i++){
-	     a=*(s+i);
-	     *(s+i)=b; 
-		 b=a;}
-}//fin insertchar----------------------------------------
 
-
+//def1
 unsigned char isNumLetter(char a){   
 	 if(a==0x20)
 		  return TRUE;
@@ -1298,32 +1288,6 @@ unsigned char isNumAscii(char a){
 	else return FALSE;
 }//is isNumAscii--------------------------------------------------
 
-
-unsigned char isNumLetter(char a){
-   
-	 if(a==0x20)
-		  return TRUE;
-	 if(a==0)
-		 return FALSE;
-	 if((a<0x5B)&&(a>0x40))  //A=65h, Z=5Ah
-		 return TRUE;
-	 if((a<0x7B)&&(a>0x60)) //a=61h, z=7Ah
-		 return TRUE;
-	 if((a<0x3C)&&(a>0x2f))//0=30h  9=39h  :3A ;3B
-		 return TRUE;
-	 if(a==0xA5)//Ñ
-	    return TRUE;
-	 if(a==0xA4)//ñ
-	    return TRUE;
-	 if((a<0xA4)&&(a>0x7B))//   7C<=symbols<=A3
-		return TRUE;
-	 if(a==0x2C)
-		 return TRUE;//','=2Ch
-	 if(a==0x2E)//'.'=2Eh
-		 return TRUE;
-	 else 
-		return FALSE;
-}//FIN DE LA FUNCion que determina si el ascci es numero o letra
 
 /* Regresa el tamaño real util del array, regresa el numero de datos
  *  que hay en el array sin tomar en cuenta los ceros de dato cero

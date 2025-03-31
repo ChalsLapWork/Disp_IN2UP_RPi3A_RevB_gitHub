@@ -351,15 +351,17 @@ return;  }//fin AjustedeSistemakeyEN
 void operacionVariable(unsigned char posx,unsigned short int y,unsigned char igxm0,unsigned char op){
 unsigned char a[5],*p,i,b[6];
 typedef unsigned short int usint;
-unsigned char phase,phasefrac;
+unsigned char phase,phasefrac,*cursorx,*cursory;
 	 p=&a[0];
+	 cursorx=&vfd.menu.cursorx;
+	 cursory=&vfd.menu.cursory;
 	 switch(y){
 	  case POSY6:
 	  case POSY2:		 
-			  operacionUShortInt(&Deteccion.Sensibilidad,igxm0,op);//opera en el digito indicado
-			  cursorx=posx;//+(8*(5-igxm0));//  igxm
-			  VFDposicion(cursorx,cursory);
-			  getCharsFromUINT_var(p,Deteccion.Sensibilidad);
+			  operacionUShortInt(&producto2.Sensibilidad,igxm0,op);//opera en el digito indicado
+			  *cursorx=posx;//+(8*(5-igxm0));//  igxm
+			  VFDposicion(*cursorx,*cursory);
+			  getCharsFromUINT_var(p,producto2.Sensibilidad);
 			  switch(igxm0){ //VFDserial_SendChar1((*(p+5-igxm0))+'0');
 				  case 5:b[0]='>';
 						 b[1]=a[0]+0x30;
@@ -402,17 +404,17 @@ unsigned char phase,phasefrac;
 		    break; //fin de POSY6 POSY2
 	 case POSY8:
      case POSY4: 
-		      phase=getCharsFromFloat(&phasefrac,Deteccion.Phase);
+		      phase=getCharsFromFloat(&phasefrac,producto2.phase);
 			  if(phasefrac>9)
 				  phasefrac=0;
 			  getASCII_from_Fase(&a[0],phase,phasefrac);
 			  //Deteccion.Phase=get_Float_Fase(&a[0]);
 			  operacion_ASCII_Phase2(igxm0,op,&a[0]);
-			  Deteccion.Phase=get_Float_From_ASCII(&a[0]);
+			  producto2.phase=get_Float_From_ASCII(&a[0]);
 			  //configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
 //			  display_Phase_DDS(posx+8,y,&a[0]);
 			  setASCII_to_Fase(&a[0],&phase,&phasefrac);
-			  Deteccion.Phase=get_Float_from_Phase(phase,phasefrac);
+			  producto2.phase=get_Float_from_Phase(phase,phasefrac);
 			  //__asm(nop);//for debug purpuses
 			  break;// FIN POS Y8 posy4
 	  default:break;}
