@@ -146,7 +146,7 @@ struct Coordf Centrar_Puntos_en_DDS(struct Coordf P);
 unsigned char isDisplayable_in_ACtual_Zoom(struct Coordf P,unsigned char zoom1);
 unsigned char find_Cuadrante(struct Coordf P);
 struct Coordf Centrar_Puntos_en_DDS(struct Coordf P);
-unsigned long int absul(unsigned long int m);
+unsigned long int absul(long int m);
 //signed short int absusi(unsigned short int a);
 struct Coordsuc traducirCoordenadas_to_VFD(struct Coordsf f/*,struct Ec_Recta fx*/);
 unsigned char getCheckSUM(unsigned char cmd, unsigned char *data, unsigned char len);

@@ -13,6 +13,7 @@
         "math.h": "c",
         "errno.h": "c",
         "queue": "c",
-        "memoria.h": "c"
+        "memoria.h": "c",
+        "vfdisplay.h": "c"
     }
 }

@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "queue.h"
+#include "errorController.h"
+
 
 extern struct _DISPLAY_VFD_ vfd;
 
@@ -242,7 +244,7 @@ return 1;
 /*obtiene de un unsigned char los tres charactes para ser despleados en pantalla
 * podemos mejorar este algoritmo para que calcule slo 23 veces enlugar de 255 veces pero necesitamos el
 debueo en vivo    *p:regreso del array ascci,  n:numero uchar a  obtener ascii, modoAscii:regreso en modo ascii o numero  
-  POINTER de regreso EL indice 0 es centenas, el 1 DECENAS y el 2 unidades */
+  POINTER de regreso EL indice 0 es centenas, el 1 DECENAS y el 2 unidades def1 */
 void getUChar2Chars(unsigned char *p,unsigned char n ,char modoAscii){
 unsigned char i=0,u=0,d=0,c=0,j=0;
 unsigned char nc1[]={0,1,2,3,4,5,6,7,8,9,10};//"0123456789a";
@@ -742,29 +744,26 @@ unsigned char Procesamiento_con_Signo(unsigned char *p){
 unsigned char v,c,i;	
 	  c=*p;
 	  switch(c){
-		  case '0':for(i=4;i>=1;i--){
-		                 *(p+i)=*(p+i-1);}
+		  case '0':for(i=4;i>=1;i--){*(p+i)=*(p+i-1);}
 		           *p='-';
 		           for(i=1;i<5;i++){
-		        	   if((*(p+i)=='0')||(*(p+i)=='.'))
-		        		   v=0xAA;
+		        	   if((*(p+i)=='0')||(*(p+i)=='.')) v=0xAA;
 		        	   else{ v=0; break;}}
 		           if(v==0xAA){
 		        	  for(i=0;i<5;i++)
 		        		   *(p+i)=' ';
-		        	  *(p+2)='0'; }//
+		        	       *(p+2)='0';}//
 		           break;
 		  case ' ':if(*(p+1)==' '){
 			          if((*(p+3)==0x20)&&(*(p+2)=='0'))
-		                	   break;
-			          else{
-		                *(p+1)='-';
-		                break;}}
+		                	 __asm__ volatile ("nop"); // Ejecuta una instrucción NOP en ARM
+			          else{*(p+1)='-';}
+					  break;}
 		  	  	   else{*(p+3)=*(p+2);
 		  	  	        *(p+2)=*(p+1);
 		  	  	        *(p+1)='-';
-		  	  	        return 0;
-		  	  	        break;}
+		  	  	        return 0;}
+		  	  	  break;
 		  default:*(p+4)=*(p+3);
 				  *(p+3)=*(p+2);
 				  *(p+2)=*(p+1);
@@ -845,26 +844,6 @@ unsigned short int v=0;
 }//fin convertit 5 chars to variable UINT de maximo 99999
 	
 
-/*obtiene de un unsigned char los tres charactes para ser despleados en pantalla
-* podemos mejorar este algoritmo para que calcule slo 23 veces enlugar de 255 veces pero necesitamos el
-debueo en vivo    *p:regreso del array ascci,  n:numero uchar a  obtener ascii, modoAscii:regreso en modo ascii o numero  
-  POINTER de regreso EL indice 0 es centenas, el 1 DECENAS y el 2 unidades */
-void getUChar2Chars(unsigned char *p,unsigned char n ,char modoAscii){
-unsigned char i=0,u=0,d=0,c=0,j=0;
-unsigned char nc1[]={0,1,2,3,4,5,6,7,8,9,10};//"0123456789a";
-unsigned char nc2[]="0123456789a";
-    	    
-	     while(1){
-    	           if(n==i++){
-	               if(modoAscii==YES){//YES REGRESA numero en ascii
-    	                     *p=nc2[c];*(p+1)=nc2[d];*(p+2)=nc2[u];}
-	               else{*p=nc1[c];*(p+1)=nc1[d];*(p+2)=nc1[u];}
-    	                       return;}
-     	           if(++u>9){ u=0;
-    	              if(++d>9){ d=0;c++;}}
-	               if(j++>=254) break;//safe contra un bug
-    	     }//fin while------------------------------
-}// convertir un numero char unsigned a tres characteres ascii--------------------------
 
 
 
@@ -961,7 +940,7 @@ return 0;
 
 /*return true if a it is a number from 0 to 9*/
 unsigned char isNum(char a){
-	if((a<=9)&&(a>=0))
+	if((a<=9)&&(a>-1))
 			return TRUE;
 	else return FALSE;
 }//isNum----------------------------------------------------------
@@ -1140,7 +1119,7 @@ unsigned char i,k;
 unsigned char get_Char2ASCII(unsigned char *orig,unsigned char *dest,unsigned char size){
 unsigned char i;
     for(i=0;i<size;i++){
-    	if((*(orig+i)<=9)||(*(orig+i)>=0))
+    	if(*(orig+i)<=9)//||(*(orig+i)>=0))
      	       *(dest+i)=*(orig+i)+'0';
     	else{//__asm(nop);__asm(Halt);
 		     return 1;

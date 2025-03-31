@@ -352,7 +352,7 @@ float fr;
  * */
 void re_Calcular_Buffers_DDS(unsigned char zoom_wished){
 	 
-	 if(zoom_wished==vfd.menu.dds.vfd.menu.dds.zoom.Zoom)
+	 if(zoom_wished==vfd.menu.dds.zoom.Zoom)
 		 return;
 	 if(zoom_wished<vfd.menu.dds.zoom.Zoom){//se vamos a restar?
 		 if((vfd.menu.dds.zoom.Zoom-zoom_wished)==1)//solo le sera uno, la resta
@@ -388,7 +388,7 @@ float f;
  * */
 void operacionPhase(unsigned char digito,unsigned char op){
 unsigned char phase=getFloat_uchar(producto2.phase);
-unsigned char phasefrac=getFloat_Frac(producto2.Phase);
+unsigned char phasefrac=getFloat_Frac(producto2.Phasefrac);
 	switch(op){
 		case RESTAR:if((phase==0)&&(phasefrac==0)){
 			            	  phase=179;
@@ -1036,42 +1036,32 @@ struct Coordsf P58 = { {0,0},{0,0} };
 const float inf1 = 432454221;
 float xa=96, xb=inf1,inc=10;
 
-    if(s==0)
-    	s=30; //DEBUG error aqui guardar el s en la memoria
+    if(s==0) s=30; //DEBUG error aqui guardar el s en la memoria
 	//ang=atan((double)(f.m));
-	if ((f.m == 0) && (f.b == 0)) {//recta igual al eje de las X
+	if((f.m == 0) && (f.b == 0)) {//recta igual al eje de las X
 		P58.Pm.x = 0; P58.Pm.y = -64;
 		P58.Pn.x = 192; P58.Pn.y = -64;
 		return P58;}
-    x2 = xa;
-L1:	if (x2 < xb) goto L2; else {mens_Warnning_Debug("Error de Software f.getx2r");//__asm(nop);__asm(Halt);
+    x2=xa;
+L1:	if(x2 < xb) goto L2; else {mens_Warnning_Debug("Error de Software f.getx2r");//__asm(nop);__asm(Halt);
                                 }
-L3:	if (x2 > xb) goto L2; 
-    else {mens_Warnning_Debug("Error de Software f.getx2r");//__asm(nop);__asm(Halt);
-	      }
+L3:	if(x2 > xb) goto L2; 
+    else {mens_Warnning_Debug("Error de Software f.getx2r");}
 L2:	    x2 += inc;
 		d = Raiz2((pow1((x2 - P.x), 2)) + (pow1(((((f.m * x2)) + f.b - P.y)), 2)));
 		e = absf(d - s);
-		if (e < 1.1) {
-			if (!flip) {
-				P58.Pm.x = x2; flip++;
-				xa = 96; inc = -10; xb = 0; x2 = xa; ff = 0;
-				goto L3;}
+		if(e < 1.1) {
+			if (!flip) {P58.Pm.x = x2; flip++;
+				        xa = 96; inc = -10; xb = 0; x2 = xa; ff = 0;
+				        goto L3;}
 			else { P58.Pn.x = x2; return P58; }}
-		else {
-			if (d < s) {
-				xa = x2; ff |= 1;
-				if (!flip)  goto L1; else  goto L3;}
-		else {
-			if (d > s) {
-				xb = x2; x2 = xa; ff |= 2;}
-				   else {mens_Warnning_Debug("Error de Software f.getx2r");//__asm(nop);__asm(Halt);
-				         }
-			 if (ff > 1) {
-				ff = 0;
-				inc /= 10;}
-			 if (!flip)  goto L1; else  goto L3;}}
-	return P58;
+		else{if (d < s) {xa = x2; ff |= 1;
+				          if (!flip)  goto L1; else  goto L3;}
+			 else {if (d > s) {xb = x2; x2 = xa; ff |= 2;}
+				else {mens_Warnning_Debug("Error de Software f.getx2r");}
+				if (ff > 1) {ff = 0;inc /= 10;}
+				if (!flip)  goto L1; else  goto L3;}}
+return P58;
 }//fin obtener la distacia y la coordenadda x en el punto inferior
 
 
@@ -1687,10 +1677,10 @@ return sum;
 double cos(double g) {
 unsigned char n;
 double sum = 0, r;
-r = (g * 3.141592653) / 180;
-  for (n = 0; n < 5; n++) 
-	sum += (pow1(-1, n) * pow1(r, (2 * n ))) / factorial(2 * n );
-	return sum;
+   r = (g * 3.141592653) / 180;
+   for (n = 0; n < 5; n++) 
+	    sum += (pow1(-1, n) * pow1(r, (2 * n ))) / factorial(2 * n );
+return sum;
 }//fin sinus -------------------------------
 
 
@@ -1776,9 +1766,9 @@ float absf(float m) {//get absolute from float
 }//fin de obtener el absoluto de un numero float---------------------------------------
 
 
-unsigned long int absul(unsigned long int m){
+unsigned long int absul(long int m){
 	if (m < 0)
-	  return(m * (-1));
+	      return(m * (-1));
 	else return(m);  //absoluto de la pendiente
 }//--------------------------------------------------------
 
