@@ -4,7 +4,7 @@
 #include "queue.h"
 #include "VFD.h"
 #include "system.h"
-#include "math.h"
+#include "maths.h"
 #include "strings.h"
 
 
@@ -116,8 +116,8 @@ unsigned char *cursorx,*cursory;
 	else{if(*cursory<POSY14){
 		   switch(vfd.menu.contexto.control){
 			   case OPERADOR:if(*cursory>=POSY6){//NIVEL-1
-				          *cursory=POSY6;
-			              return;}
+				                    *cursory=POSY6;
+			                        return;}
 			   case ADMINISTRADOR:	   //NIVEL-3
 			   case SUPERVISOR:	   //NIVEL-2
 			   case SERVICIO://NIVEL-4	   
@@ -144,9 +144,8 @@ unsigned char *cursorx,*cursory,anterior;
 		case POSY0:cambio_de_contexto(PORTAL_INICIO);break;
 		default:break;}//fin PortaliniciokeyDN--------------------------------------------------------------------------------------
 }//fin AjusteProductokeyEN--------------------------------------------------
-/* FIN  AjusteProducto  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-/* FIN  AjusteProducto  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- * */
+// FIN  AjusteProducto  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/* FIN  AjusteProducto  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
 
 void AjusteParamProdkeyUP(void){
@@ -159,23 +158,23 @@ cursory=&vfd.menu.cursory;
 		 configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
 		 //isEnable_Keypad(WAIT);
 		 return;}
-	if(cursory==POSY6){//MENU con sistema OPERATIVO
+	if(*cursory==POSY6){//MENU con sistema OPERATIVO
 		VFDposicion(*cursorx,*cursory);
-		VFDserial_SendChar1(' ');
+		VFDserial_SendChar(' ');
 		*cursory=POSY0;	  
 		VFDposicion(POSXESQ235,*cursory);
-		VFDserial_SendChar1('>');
-		VFDserial_SendChar1('X');
-		VFDserial_SendChar1(0x01);
+		VFDserial_SendChar('>');
+		VFDserial_SendChar('X');
+		VFDserial_SendChar(0x01);
 		return;}
 	if(*cursory==POSY0){return;}
 	if(*cursory<=POSY14){	
 		 VFDposicion(*cursorx,*cursory);
-		 VFDserial_SendChar1(' ');
+		 VFDserial_SendChar(' ');
 		 --(*cursory);
 		 VFDposicion(*cursorx,--(*cursory));
-		 VFDserial_SendChar1('>');
-		 VFDserial_SendChar1(0x01);
+		 VFDserial_SendChar('>');
+		 VFDserial_SendChar(0x01);
 		 return;}
 }//fin AjusteParamProdkeyUP++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void AjusteParamProdkeyDN(void){
@@ -185,22 +184,22 @@ unsigned char *cursorx,*cursory;
 	if(*(AjParamProd->editarSensFase)>0){//esta seleccionado cambiar por numero
 		operacionVariable(POSXAJUSPROD-8,*cursory,*(AjParamProd->editarSensFase),RESTAR);
 		return;}
-	if(cursory==POSY0){
+	if(*cursory==POSY0){
 	   VFDposicion(POSXESQ235,POSY0); 
-	   VFDserial_SendChar1(' ');
-	   VFDserial_SendChar1('x');
+	   VFDserial_SendChar(' ');
+	   VFDserial_SendChar('x');
 	   cursory=POSY6;
 	   VFDposicion(*cursorx,*cursory);
-	   VFDserial_SendChar1('>');
-	   VFDserial_SendChar1(0x01);
+	   VFDserial_SendChar('>');
+	   VFDserial_SendChar(0x01);
 	   return;}
-	if(cursory<POSY14){	 
+	if(*cursory<POSY14){	 
 	   VFDposicion(*cursorx,*cursory);
-	   VFDserial_SendChar1(' ');
-	   cursory++;
+	   VFDserial_SendChar(' ');
+	   (*cursory)++;
 	   VFDposicion(*cursorx,++(*cursory));
-	   VFDserial_SendChar1('>');
-	   VFDserial_SendChar1(0x01);
+	   VFDserial_SendChar('>');
+	   VFDserial_SendChar(0x01);
 	   return;}
 }//--FIN AJUSTE PARAM PROD KEY DOWN-------------------------------------------------------------------------------------
 void AjusteParamProdkeyRT(void){
@@ -350,7 +349,7 @@ return;  }//fin AjustedeSistemakeyEN
 /* Metodo exclusivo de Ajustes PArametricos de Producto por la vriable global */
 void operacionVariable(unsigned char posx,unsigned short int y,unsigned char igxm0,unsigned char op){
 unsigned char a[5],*p,i,b[6];
-typedef unsigned short int usint;
+//typedef unsigned short int usint;
 unsigned char phase,phasefrac,*cursorx,*cursory;
 	 p=&a[0];
 	 cursorx=&vfd.menu.cursorx;
@@ -362,7 +361,7 @@ unsigned char phase,phasefrac,*cursorx,*cursory;
 			  *cursorx=posx;//+(8*(5-igxm0));//  igxm
 			  VFDposicion(*cursorx,*cursory);
 			  getCharsFromUINT_var(p,producto2.Sensibilidad);
-			  switch(igxm0){ //VFDserial_SendChar1((*(p+5-igxm0))+'0');
+			  switch(igxm0){ //VFDserial_SendChar((*(p+5-igxm0))+'0');
 				  case 5:b[0]='>';
 						 b[1]=a[0]+0x30;
 						 b[2]=a[1]+0x30;
@@ -400,7 +399,7 @@ unsigned char phase,phasefrac,*cursorx,*cursory;
 						 break; 
 				  default:break;}
 			for(i=0;i<6;i++)
-				VFDserial_SendChar1(b[i]);
+				VFDserial_SendChar(b[i]);
 		    break; //fin de POSY6 POSY2
 	 case POSY8:
      case POSY4: 
@@ -425,4 +424,5 @@ unsigned char procSensxDigitoRT(unsigned char posx,unsigned char posy,unsigned s
 		 return FALSE;
 	else  ++(*Sens); 
 	BarraDet_displayUINT_var(posx,posy,Sens);//displayUINT_var(POSXCFNUM,POSY2,&Sensibilidad,NONE);	
+return 1;	
 }//fin ---procSensxDigitoRT--------------------------------------------

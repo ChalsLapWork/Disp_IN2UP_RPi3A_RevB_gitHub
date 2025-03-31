@@ -230,7 +230,7 @@ return ret;
 }//fin vfd command----------------------------------------------------
 
 /* Metodo Multi-Padre pero solo una Estancia ala Vez      */
-unsigned char VFDserial_SendBlock1(const void *Ptr,unsigned char size1){
+unsigned char VFDserial_SendBlock(const void *Ptr,unsigned char size1){
 unsigned char array[40];
     
     const unsigned char *data = (const unsigned char *)Ptr;// Convertir los datos a unsigned char y copiarlos al índice 3 del array

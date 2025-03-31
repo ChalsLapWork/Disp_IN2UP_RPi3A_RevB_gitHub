@@ -221,9 +221,9 @@
 #define _DESTIN_  2	
 #define _AUTHOR_  3
 //--------------------------------------
-#define ADMINISTRADOR  'A'
-#define SERVICIO       'S'
-#define OPERADOR       'O'
+#define ADMINISTRADOR  0x41//'A'
+#define SERVICIO       0x53//'S'
+#define OPERADOR       0x4F//'O'
 
 
 

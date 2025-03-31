@@ -5,7 +5,7 @@
 #include "system.h"
 #include "queue.h"
 #include "VFDisplay.h"
-
+#include "errorController.h"
 
 
 extern unsigned char phase,phasefrac;//phase de ajustes de deteccion la variable fraccionaria es de la misma vriable
@@ -680,15 +680,12 @@ struct Coordsf AgetEcuation2(struct Ec_Recta* f, struct Coordf P1, float angulo)
 	else {if ((angulo > ang_Max) && (angulo < 180))
 			estado = 2;
 		  else estado=3;}
-	
 	switch (estado) {
 	case 1:ang2 = angulo - 90;
-	       
 		   Cop = absf(P1.y) * (float)tan4(ang2);
 		   if((P1.x<0)||(P1.y<-127)){//para el punto inferior que se sale del cuadro
 		   	    	      //__asm(Halt);__asm(nop);
-						  mens_Warnning_Debug("Error de Software en AgetEcuation2");
-						   }
+						  mens_Warnning_Debug("Error de Software en AgetEcuation2");}
    		   P2.x = P1.x - Cop; P2.y = 0;
 		   *f = getEcuation(P1, P2);
 		   P3.y = 0;    P3.x = frecta(f,'y', P3.y);
@@ -701,9 +698,6 @@ struct Coordsf AgetEcuation2(struct Ec_Recta* f, struct Coordf P1, float angulo)
 		Cop = absf(P1.y) * (float)tan4(ang2);//
         f->m=(float)tan4(angulo);
         f->b=(-1)*f->m*P1.x+P1.y;
-        
-        
-		
 		if (Cop < 96) {// __asm(nop);__asm(Halt);
 						mens_Warnning_Debug("Error de Software en AgetEcuation2");}
 		P2.x = Cop - 96; P2.y = 0;
@@ -1876,13 +1870,13 @@ return r;
 unsigned char find_Cuadrante(struct Coordf P){
 unsigned char i,j,r=0;	
 	if((P.x==0)||(P.y==0))
-		  return 0;
+		return 0;
 	if(P.x<0) i=0; else i=0xFF;
 	if(P.y<0) j=0; else j=0xFF;
 	if(j&i) r=2;
-	else if(i&!j)  r=4;
-	else if(!i&j)  r=1;
-	else if(!i&!j) r=3;
+	else if(i&(!j))    r=4;
+	else if((!i)&j)    r=1;
+	else if((!i)&(!j)) r=3;
 	else r=0;
 return r;	
 }//fin de find cuadrante--------------------------------------

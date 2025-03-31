@@ -518,14 +518,14 @@ Undefined : "contextoActual" Referenced from "AnguloVibracionProcesadorCentral" 
 #define POSXSELPROD                24 //POSICION DE INICIO nombres DE SELECCION DE PRODUCTO
 #define POSXSELPRODCURSORX         16//POSICION DE SEL PRODUCTO MENU cursorX
 #define POSXSI                     78
-#define POSY0                      0
-#define POSY2                      2
-#define POSY4                      4  //POSICION EN DISPLAY A QUE VALE 4
-#define POSY6                      6
-#define POSY8                      8
-#define POSY10                     10
-#define POSY12                     12
-#define POSY14                     14
+#define POSY0                      ((unsigned char)0)
+#define POSY2                      ((unsigned char)2)
+#define POSY4                      ((unsigned char)4)  //POSICION EN DISPLAY A QUE VALE 4
+#define POSY6                      ((unsigned char)6)
+#define POSY8                      ((unsigned char)8)
+#define POSY10                     ((unsigned char)10)
+#define POSY12                     ((unsigned char)12)
+#define POSY14                     ((unsigned char)14)
 #define POSXDIGPRUEBASSAL          136//posicion del digito de estado del menu PRUEBAS_SALIDAS
 #define POSXDIGPRUEBAENT           104//posicion del digito de estado del menu PRUEBAS_ENTRADAS
 #define POSX_COL1                  8//16 //TEXT PROCESSOR columna-1 de x

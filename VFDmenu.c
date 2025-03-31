@@ -17,7 +17,7 @@ struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
 extern struct _DISPLAY_VFD_ vfd;
 //extern struct _Detection Deteccion;
 extern struct _PRODUCT1_ producto2;
-GlobalStruct global = {0, 0.0};
+GlobalStruct global = {0};
 GlobalStruct *AjParamProd = NULL; // Inicialización
 extern struct _PRODUCT1_ producto2;
 
@@ -86,19 +86,19 @@ union W16{
       VFDclrscr();
 	  delay_ms_VFD(500);
       VFDposicion(65,0);
-      VFDserial_SendBlock1(&s[0],sizeof(s));//version
+      VFDserial_SendBlock(&s[0],sizeof(s));//version
 	  aux3_char=producto2.name[1];
 	  aux1_usi=length(&producto2.name[0],sizeof(producto2.name));  	 
       aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);
       (Status_Prod == MEMO) ? VFDposicion(aux0_uchar, 2) : VFDposicion(x[0], y[0]);
 
-	   VFDserial_SendBlock1(&a[0],sizeof(a)); 
+	   VFDserial_SendBlock(&a[0],sizeof(a)); 
 	   VFDposicion(x[1],y[1]);
-	   VFDserial_SendBlock1(&b[0],sizeof(b));
+	   VFDserial_SendBlock(&b[0],sizeof(b));
        VFDposicion(x[2],y[2]);
-       VFDserial_SendBlock1(&c[0],sizeof(c));
+       VFDserial_SendBlock(&c[0],sizeof(c));
        VFDposicion(x[3],y[3]);
-       VFDserial_SendBlock1(&d[0],sizeof(d));
+       VFDserial_SendBlock(&d[0],sizeof(d));
 	   displayCuadroMadre_VFD();
        vfd.menu.CuadroMadreReady=TRUE;
 	   vfd.box.box0=0;//se inicia desde el primer cuadro a graficar. 
@@ -130,17 +130,17 @@ unsigned char y[7]={0 ,4,6,8,10,12,4};
 	
       VFDclrscr();
       VFDposicion(x[0],y[0]);
-      VFDserial_SendBlock1(&z[0],sizeof(z));
+      VFDserial_SendBlock(&z[0],sizeof(z));
 	  VFDposicion(x[1],y[1]);
-	  VFDserial_SendBlock1(&a[0],sizeof(a));
+	  VFDserial_SendBlock(&a[0],sizeof(a));
 	  VFDposicion(x[2],y[2]);
-      VFDserial_SendBlock1(&c[0],sizeof(c));
+      VFDserial_SendBlock(&c[0],sizeof(c));
 	  VFDposicion(x[3],y[3]);
-	  VFDserial_SendBlock1(&w[0],sizeof(w));
+	  VFDserial_SendBlock(&w[0],sizeof(w));
 	  VFDposicion(x[4],y[4]);
-	  VFDserial_SendBlock1(&v[0],sizeof(v));
+	  VFDserial_SendBlock(&v[0],sizeof(v));
 	  VFDposicion(x[5],y[5]);
-	  VFDserial_SendBlock1(&b[0],sizeof(b));
+	  VFDserial_SendBlock(&b[0],sizeof(b));
 	  VFDposicion(x[6],y[6]);
 	  vfd.menu.cursorx=POSX0;
 	  vfd.menu.cursory=POSY4;
@@ -382,7 +382,7 @@ if((vfd.config.bits.MenuPendiente==0)&&
     (vfd.config.bits.Menu_Ready==1)){
 		if(vfd.menu.contexto.Actual==PORTAL_INICIO){
 		       VFDposicion(POS_X_SENS,POSY10);	
-			   VFDserial_SendBlock1(&a[0],sizeof(a)); 
+			   VFDserial_SendBlock(&a[0],sizeof(a)); 
                usleep(1000);//500mseg 
 			   VFDserial_Sendusint(sens,POS_X_SENS,POSY10,CENTER);
 			   VFDserial_SendPhase(phase,phasefrac,POS_X_PHASE,POSY10,RIGHT);//no mover el formato de RIGHT porque left y centrado dara "3  .5"  

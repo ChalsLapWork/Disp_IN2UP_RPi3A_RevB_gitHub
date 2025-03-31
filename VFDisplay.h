@@ -144,5 +144,10 @@ void getBoxPattern(unsigned char box,unsigned char *mode,unsigned char *x1,unsig
 unsigned char find_contexto_Siguiente(void);
 void BarraDet_displayUINT_var(unsigned char posx,unsigned char posy,unsigned short int *usint);
 void displayPhase_var(unsigned char posx,unsigned char posy);//despliega la variable de phase en la posicion
+unsigned short int  digito2posicion(unsigned short int digito);
+void displayUINT_var(unsigned char posx,unsigned char posy,unsigned short int *pn,unsigned char operacion);
+void display5UChars(unsigned char posx,unsigned char posy,unsigned char *p);
+void displayPhase_var(unsigned char posx,unsigned char posy);//despliega la variable de phase en la posicion
+
 
 #endif /* VFDISPLAY_H_ */
