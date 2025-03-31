@@ -1,4 +1,6 @@
-unsigned char recalcular_valor_Ser_Barr_det(unsigned char val);
+#ifndef MATHS_H
+#define MATHS_H
+
 
 union FloatChar {
 	float f;
@@ -48,6 +50,7 @@ struct Ec_Recta {
 	float b;
 };
 
+unsigned char recalcular_valor_Ser_Barr_det(unsigned char val);
 struct Coordsf AgetEcuation(struct Ec_Recta* f, struct Coordf P1, float angulo);
 struct Ec_Recta getEcuation(struct Coordf P1, struct Coordf P2);
 struct Coordsf get_x2r(unsigned short int s, struct Ec_Recta f, struct Coordf P);
@@ -147,3 +150,5 @@ unsigned long int absul(unsigned long int m);
 //signed short int absusi(unsigned short int a);
 struct Coordsuc traducirCoordenadas_to_VFD(struct Coordsf f/*,struct Ec_Recta fx*/);
 unsigned char getCheckSUM(unsigned char cmd, unsigned char *data, unsigned char len);
+
+#endif // MATHS_H

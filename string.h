@@ -42,7 +42,7 @@ float get_Float_from_Phase(unsigned char f,unsigned char fr);
 void getASCIIFromFloat(unsigned char *p,float f);
 float get_Float_From_ASCII(unsigned char *p);	
 unsigned char strcpy1(unsigned char *dest,unsigned char *orig,unsigned char size );
-unsigned char strcpy2(unsigned char *dest,const unsigned char *orig,unsigned char size );
+unsigned char strcpy2(char *dest, char *orig,unsigned char size );
 void getASCIIfromUCharArray(unsigned char *orig,unsigned char *dest,unsigned char size);
 unsigned char Formato_USInt(unsigned char *orig,unsigned char *dest,unsigned char size,unsigned char *n);
 void get_Char2ASCII(unsigned char *orig,unsigned char *dest,unsigned char size);

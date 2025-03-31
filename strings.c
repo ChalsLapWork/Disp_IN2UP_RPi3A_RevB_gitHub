@@ -50,15 +50,6 @@ void getCharsFromUINT_var(unsigned char *p,unsigned short int var){
 
 
 
-//def 1
-void suma_BCD(unsigned char dm1,unsigned char m1,unsigned char c1,unsigned char d1,unsigned char u1,unsigned char *p){
-	 suma_BCD_digito(_DM_,dm1,p);
-	 suma_BCD_digito(_M_ ,m1,p);
-	 suma_BCD_digito(_C_ ,c1,p);
-	 suma_BCD_digito(_D_ ,d1,p);
-	 suma_BCD_digito(_U_ ,u1,p);
-}//---------------------------------------------------------------------------------
-
 
 /*  *(p+0)=DM    *(p+1)=M    *(p+2)=C   *(p+3)=D   *(p+4)=U
  * def1 */
@@ -303,15 +294,6 @@ return 1;
 }//--------------------------------------------------------
 
 
-//copea el origen al destino y necesita saber cuantos van a copiar
-unsigned char strcpy2(unsigned char *dest,const unsigned char *orig,unsigned char size ){
-unsigned char i;
-    if(size==0)
-    	 return 0;
-    for(i=0;i<size;i++)
-    	  *(dest+i)=*(orig+i);
-return 1;    
-}//--------------------------------------------------------
 
 
 

@@ -14,6 +14,8 @@
  *      Digital Signal Processor Main controller
  */
 
+#include "maths.h"
+
 #ifndef DSP_H_
 #define DSP_H_
 

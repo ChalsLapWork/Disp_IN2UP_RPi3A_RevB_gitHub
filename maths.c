@@ -1028,14 +1028,14 @@ struct Coordsf get_Puntos_Perpendiculares(float m, struct Coordf P, unsigned sho
  * regresa un punto x donde es la distancia igual a sens en la recta f(r)
  * sacamos los puntos x de la recta perpendicular superior e inferior de la mediatriz*/
 struct Coordsf get_x2r(unsigned short int s, struct Ec_Recta f, struct Coordf P) {
-	float x2 = 0;
-	float d, e = 0;
-	unsigned char n = 0, estado = 0,ff=0,i=0;
-	unsigned char punto = 0, flip = 0;
-	struct Coordsf P58 = { {0,0},{0,0} };
-	const float inf1 = 432454221;
-	float xa=96, xb=inf1,inc=10;
-	
+float x2 = 0;
+float d, e = 0;
+unsigned char n = 0, estado = 0,ff=0,i=0;
+unsigned char punto = 0, flip = 0;
+struct Coordsf P58 = { {0,0},{0,0} };
+const float inf1 = 432454221;
+float xa=96, xb=inf1,inc=10;
+
     if(s==0)
     	s=30; //DEBUG error aqui guardar el s en la memoria
 	//ang=atan((double)(f.m));
