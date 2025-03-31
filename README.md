@@ -38,7 +38,8 @@ manejarlo como un protocolo de comunicacion,
     ```bash
     gcc -g *.c display_RevD.4 -o  -lwiringPi -v
     ```
-    MakeFile:
+3. MakeFile:
+   ```bash
    # Nombre del ejecutable
 TARGET = output
 
@@ -76,6 +77,6 @@ clean:
 
 ## Uso 🔥
 Display Insight !¡¡
-
+```
 ```python
 gdb -/disp_Revxx
