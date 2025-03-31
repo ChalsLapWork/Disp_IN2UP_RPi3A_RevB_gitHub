@@ -69,13 +69,6 @@ unsigned char isNumLetter(char a){
 }//FIN DE LA FUNCion que determina si el ascci es numero o letra
 
 
-/* arr: es el array a limpiar, size es el tamaño del array, k es la kosntante
- * que se va allenar el array  */
-void cleanArray(unsigned char *arr,unsigned char size,unsigned char k){
-unsigned char  i;        
-	for(i=0;i<size;i++)
-	     *(arr+i)=k;
-}//fin de clean array----------------------------------------------------------------
 
 
 // 54321 en chars seria c[]={5,4,3,2,1}
@@ -175,21 +168,6 @@ unsigned char func_Alge(unsigned char x){
     return -1;     
 }//fin func algebraica++++++++++++++++++++++
 
-
-/*  vaciar cadena A -> B con los indices indicados
- * inidice inicial i, indice final f
- *  final cuenta desde indice 0 al ultimo indice deseado y es todo serial sizeof(a)-1*/
-void vaciar_A2B(unsigned char *a,unsigned char *b,unsigned char i,unsigned char f){
-unsigned char ii;	
-	if(i>f)
-		return;
-	if(f==0)
-		return;
-	if(i==f)
-		return;
-	for(ii=i;ii<(f+1);ii++)
-		*(b+ii)=*(a+ii);
-}//fin vaciar_A2B--------------------------------------------------------------
 
 
 /*da formato a los numero unsigned short int e.g.  n="00032" resultado="32"000 
@@ -533,8 +511,10 @@ void getASCIIFromUChar1(unsigned char n,unsigned char *cc){
 		  n2 = n1;}
 	if (n2 > 9) {  e+=4; }
 	*(cc + 2) = n2 + '0';
-	if(e>0){__asm(nop);
-            __asm(Halt);}
+	if(e>0){//__asm(nop);
+            //__asm(Halt);
+			 return;
+			  }
 return;
 }//fin get char from unsigned char---------------------------------------
 
@@ -564,7 +544,7 @@ unsigned char i,j,m=0;
 	     m-=i;}//restamos la decena
 	 else{*(p+1)='0';}
 	 if(m>10){
-		 __asm(Halt);
+		 //__asm(Halt);
 	     return;}
 	 else{ *(p+2)=m+'0';}
 	 
@@ -890,8 +870,10 @@ unsigned char i;
        *(dest+i)=*(orig+i)+0x30;
 	for(i=0;i<size;i++){
 		if(*(orig+i)>0x39){
-			 __asm(nop);
-			 __asm(Halt);}}
+			 //__asm(nop);
+			 //__asm(Halt);
+			 return;
+			 }}
 }//fin getASCIIfromUCharArray &menu.v.uchar1[0],&menu.v.uchar2[0],5);
 
 
@@ -900,15 +882,16 @@ unsigned char i;
 
 /* dos ASCII's que representan un numero del 00 al 99 , *p apuntador al array donde se guarda los ascci el indice 0 es la decena.
  * se le suma o resta un uno ala decena o unidad, op: SUMAR|RESTAR  digito:LEFT|RIGHT LEFT:decena y el otro unidad*/
-void procesar_ASCII(unsigned char *p,unsigned char op,unsigned char digito){//sumar uno al digito decena
+unsigned char procesar_ASCII(unsigned char *p,unsigned char op,unsigned char digito){//sumar uno al digito decena
 unsigned char n;	
 	  if(digito==CENTRAL)
 		   n=*(p+1);//save the decena one
 	  else n=*(p+2);
 	  if(!isNumAscii(n)){
 		    n=0;
-	        __asm(Halt); //debug error de ingenieria de software
-	        return;} 
+
+	        //__asm(Halt); //debug error de ingenieria de software
+	        return 1;} 
 	  if(op==SUMAR){
 		  if(n=='9')
 			  n='0';
@@ -919,7 +902,7 @@ unsigned char n;
 	  if(digito==CENTRAL)
 		  *(p+1)=n;
 	  else *(p+2)=n;
-
+return 0;
 }//fin procesar_ASCII-----------------------------------------------------------------------------------------
 
 
@@ -975,7 +958,7 @@ unsigned char b[5],i;
 	for(i=0;i<5;i++)
 	   if(i!=3)
 	      if(!isNumAscii(*(p+i))){
-		   __asm(Halt);//debug error de ingenieria de softwre
+		   //__asm(Halt);//debug error de ingenieria de softwre
 		   return;}
     return;
 }//fin getASCII_from_Fase-----------------------------------------------------------------
@@ -1361,27 +1344,32 @@ unsigned short int i;
  *    para poder mandarlo al display aparti del indice cero que es el MSB  
  *    regresa el numero de digitos a desplegar en el display de 1 a 5  
  *     size: es el tamaño del origen
- *     n: REGRESA  el numero de chars a desplegar*/
-void Formato_USInt(unsigned char *orig,unsigned char *dest,unsigned char size,unsigned char *n){
+ *     n: REGRESA  el numero de chars a desplegar
+ * return 1:error 0:OK*/
+unsigned char Formato_USInt(unsigned char *orig,unsigned char *dest,unsigned char size,unsigned char *n){
 auto unsigned char estado;
 auto unsigned char ret=FALSE;
 auto unsigned char i=0,j;
 unsigned char ret2;
   while(ret!=TRUE){
-	if(i>5){__asm(nop);__asm(Halt);}  
+	if(i>5){//__asm(nop);__asm(Halt);
+	        return 1;}  
     switch(estado){// 00000
     	case 1:if((*(orig+i)>='0')||(*(orig+i)<='9')){
     		      if(*(orig+i)=='0'){//regresa el indice donde  esta el primero a desplegar
     		    	   if(i<4){i++;}
     		    	   else{estado++;}}
     		      else{estado++;}}
-    		   else{__asm(nop);__asm(Halt);}
+    		   else{//__asm(nop);__asm(Halt);
+			        return 1;
+				    }
     		   break;
     	case 2:if(i>0)
     		      estado++;
     		   else estado=9;
     	       break;//01234, "xxxx0" "xxx00" "xx000"
-    	case 3:if(i>4){__asm(nop);__asm(Halt);}//no debe se mayor a 4
+    	case 3:if(i>4){return 1;//__asm(nop);__asm(Halt);
+		               }//no debe se mayor a 4
     		   estado++;j=0;ret2=5-i;
     		   break;
     	case 4:if(j>4){ estado++;j=0;}//limpiamos destino
@@ -1400,6 +1388,7 @@ unsigned char ret2;
     	default:estado=1;ret=0;break;}	
     }//fin while ------------------------------
 *n=ret2;
+return 0;
 }//fin Formato_USInt-------------------------------------------------------------
 
 /* da formato de un numero long integer *o origen *d destino array 
@@ -1449,8 +1438,12 @@ unsigned char k,i,m;
 					   else {i=0xAA;m=3;}
 				       break;
 				case 4:break;
-				default:__asm(nop);__asm(Halt);}}
-		 if(m>5){__asm(nop);__asm(Halt);}
+				default://__asm(nop);__asm(Halt);
+				        mens_Warnning_Debug("Error de software func.Formato_Phase");
+				        }}
+		 if(m>5){//__asm(nop);__asm(Halt);
+		         mens_Warnning_Debug("Error de software func.Formato_Phase");
+		         }
 		 if((*(a+3)=='.')&&(*(a+2)=='0')&&(m==3))
 			   m=2;
 		 for(i=0;i<m;i++)
@@ -1495,12 +1488,15 @@ unsigned char i,k;
 
 
 //convierte los char del array en ASCII--------------------------
-void get_Char2ASCII(unsigned char *orig,unsigned char *dest,unsigned char size){
+unsigned char get_Char2ASCII(unsigned char *orig,unsigned char *dest,unsigned char size){
 unsigned char i;
     for(i=0;i<size;i++){
     	if((*(orig+i)<=9)||(*(orig+i)>=0))
      	       *(dest+i)=*(orig+i)+'0';
-    	else{__asm(nop);__asm(Halt);}}
+    	else{//__asm(nop);__asm(Halt);
+		     return 1;
+			   }}
+return 0;
 }//fin get_Char2ASCII--------------------------------------------------------------
 
 

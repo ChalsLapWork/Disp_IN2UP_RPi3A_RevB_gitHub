@@ -13,9 +13,9 @@
 #include <unistd.h>
 
 struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
-extern struct _PRODUCTO1_ producto;
+//extern struct _PRODUCTO1_ producto;
 extern struct _DISPLAY_VFD_ vfd;
-extern struct _Detection Deteccion;
+//extern struct _Detection Deteccion;
 extern struct _PRODUCT1_ producto2;
 GlobalStruct global = {0, 0.0};
 GlobalStruct *AjParamProd = NULL; // Inicialización
@@ -81,14 +81,14 @@ union W16{
 
 
 	  mensOK("Estoy en portal Inicio",CAMARILLO);
-      Deteccion.CuadroMadreReady=FALSE;
+      vfd.menu.CuadroMadreReady=FALSE;
       NoErrorOK();			  
       VFDclrscr();
 	  delay_ms_VFD(500);
       VFDposicion(65,0);
       VFDserial_SendBlock1(&s[0],sizeof(s));//version
-	  aux3_char=producto.name[1];
-	  aux1_usi=length(&producto.name[0],sizeof(producto.name));  	 
+	  aux3_char=producto2.name[1];
+	  aux1_usi=length(&producto2.name[0],sizeof(producto2.name));  	 
       aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);
       (Status_Prod == MEMO) ? VFDposicion(aux0_uchar, 2) : VFDposicion(x[0], y[0]);
 
@@ -100,7 +100,7 @@ union W16{
        VFDposicion(x[3],y[3]);
        VFDserial_SendBlock1(&d[0],sizeof(d));
 	   displayCuadroMadre_VFD();
-       Deteccion.CuadroMadreReady=TRUE;
+       vfd.menu.CuadroMadreReady=TRUE;
 	   vfd.box.box0=0;//se inicia desde el primer cuadro a graficar. 
 	   vfd.box.box=0;//se inicializa la barra de deteccion.
 	   vfd.box.timer=0;
@@ -184,7 +184,7 @@ unsigned char *cursorx,*cursory;
 	    VFDserial_SendBlock(&i[0],sizeof(i));
 	    VFDposicion(x[8],y[8]);
 	    VFDserial_SendBlock(&j[0],sizeof(j));
-	    displayUINT_var(POSXAJUSPROD,POSY6,&Deteccion.Sensibilidad,NONE);
+	    displayUINT_var(POSXAJUSPROD,POSY6,&producto2.Sensibilidad,NONE);
 	    displayPhase_var(POSXAJUSPROD,POSY8);
 	   // displayFaseVar();
 	    displayCuadroMadre();//despliega el cuadro de barra de deteccion

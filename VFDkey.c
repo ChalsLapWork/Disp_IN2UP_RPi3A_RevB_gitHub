@@ -349,7 +349,7 @@ return;  }//fin AjustedeSistemakeyEN
 /*  resta o suma a un digto a la variable de sensibilidad o phase*/
 /* Metodo exclusivo de Ajustes PArametricos de Producto por la vriable global */
 void operacionVariable(unsigned char posx,unsigned short int y,unsigned char igxm0,unsigned char op){
-byte a[5],*p,i,b[6];
+unsigned char a[5],*p,i,b[6];
 typedef unsigned short int usint;
 unsigned char phase,phasefrac;
 	 p=&a[0];

@@ -47,6 +47,8 @@
 #define SIZE_MAX_SENDBLOCK 20 //TAMAÑO maximo de envio en bloque de la funcion
 #define FIFOc_SIZE 10 //fifo de contexto
 
+#define NOMBRE_PRODUCTO_SIZE  20
+#define NAME_INIT             0xE8 //DETERMINA QUE LA cadena de nombre del producto es un producto con nombre real y no solo basura
 
 
 /*version 310322-1641 add reset genaral */
@@ -210,7 +212,7 @@ struct ZoomControl{//para crear  el zoom y las ecuaciones  polinomicas de acondi
 
 
 struct _Comando_DDS{//comando DDS para graficar en touch
-	struct _PIX_ pix;
+	//struct _PIX_ pix;
 	union Bytex{
 	   unsigned char Bnderas;
 	   struct{
@@ -298,6 +300,8 @@ struct _Menu1_{
    unsigned char cursorx;
    unsigned char cursory;
    struct _Comando_DDS dds;
+   unsigned char CuadroMadreReady;//el cuadro madre esta construido y listo?.
+
    
 };
 
@@ -309,6 +313,8 @@ struct _PRODUCT1_{
    unsigned char phase;//phase del producto, numero entero
    float fase;//fase del producto numero flotante
    unsigned char Phasefrac;// faccion del numero de fase.
+   unsigned char name[NOMBRE_PRODUCTO_SIZE]; 
+
 };
 
 

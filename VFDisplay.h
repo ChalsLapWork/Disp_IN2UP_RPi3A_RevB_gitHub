@@ -86,7 +86,7 @@ void  displayEntradadeSistemas(unsigned char var);
 void displayZoomDDS_var(unsigned char operacion);
 unsigned short int displayZoomDDS_varxDigito(unsigned short int posx,unsigned char operacion);
 void display_pushFIFOcOP_Phase_var(unsigned short int posx,unsigned short int posy);
-void displayPhase_var(unsigned short int posx,unsigned short int posy);
+void displayPhase_var(unsigned char posx,unsigned char posy);
 void displayControlContrasenaVal(unsigned char varnum);
 unsigned char  displayTime(unsigned char t);//desplega un valor de tiempo a la vez
 void displayGananciaValues(unsigned char tarjeta);
@@ -143,6 +143,6 @@ unsigned char  display_Sens_Lim_v2(float angulo,unsigned short int sens,unsigned
 void getBoxPattern(unsigned char box,unsigned char *mode,unsigned char *x1,unsigned char *y1,unsigned char *x2,unsigned char *y2);
 unsigned char find_contexto_Siguiente(void);
 void BarraDet_displayUINT_var(unsigned char posx,unsigned char posy,unsigned short int *usint);
-void displayPhase_var(unsigned short int posx,unsigned short int posy);//despliega la variable de phase en la posicion
+void displayPhase_var(unsigned char posx,unsigned char posy);//despliega la variable de phase en la posicion
 
 #endif /* VFDISPLAY_H_ */

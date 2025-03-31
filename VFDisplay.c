@@ -206,7 +206,7 @@ unsigned char *p,phasefrac,phase; //para los valores ascii del numero entero
        Deteccion.Phase=get_Float_from_Phase(phase,phasefrac);   
 }//display phase var---------------------------------------------------------------------------------------
 
-void displayPhase_var(unsigned short int posx,unsigned short int posy){//despliega la variable de phase en la posicion
+void displayPhase_var(unsigned char posx,unsigned char posy){//despliega la variable de phase en la posicion
 unsigned char a[3];
 unsigned char *p,phase,phasefrac; //para los valores ascii del numero entero
         p=&a[0];
