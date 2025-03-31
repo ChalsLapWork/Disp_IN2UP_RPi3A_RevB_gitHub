@@ -11,6 +11,7 @@
 #include "stdbool.h"
 #include "VFDkey.h"
 #include <unistd.h>
+#include "VFDisplay.h"
 
 struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
 extern struct _PRODUCTO1_ producto;

@@ -143,4 +143,6 @@ unsigned char  display_Sens_Lim_v2(float angulo,unsigned short int sens,unsigned
 void getBoxPattern(unsigned char box,unsigned char *mode,unsigned char *x1,unsigned char *y1,unsigned char *x2,unsigned char *y2);
 unsigned char find_contexto_Siguiente(void);
 void BarraDet_displayUINT_var(unsigned char posx,unsigned char posy,unsigned short int *usint);
+void displayPhase_var(unsigned short int posx,unsigned short int posy);
+
 #endif /* VFDISPLAY_H_ */
