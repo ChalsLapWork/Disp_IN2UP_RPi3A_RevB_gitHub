@@ -54,7 +54,7 @@ struct Coordsf get_x2r(unsigned short int s, struct Ec_Recta f, struct Coordf P)
 struct Coordsf get_Evaluar_(struct Coordsf P, struct Ec_Recta f);
 double raizCuadrada(unsigned short int numero);
 signed short int absSSInt(signed short int a);
-float absf(float m);
+//float absf(float m);
 double absd(double m);
 float tan1(float deg);
 

@@ -68,6 +68,6 @@ void suma_BCD2(unsigned char a5,unsigned char a4,unsigned char a3,unsigned char 
 void convertir_ULInt_to_ASCII(unsigned char *p,unsigned long int var);
 void suma_BCD_digito2(unsigned char op,unsigned char n,unsigned char *p,unsigned char flo);
 unsigned char Formato_ULInt(unsigned char i,unsigned char *p);
-unsigned char* getCharsFromFloat1(unsigned char *frac,float f,unsigned char *inst);
+//unsigned char* getCharsFromFloat1(unsigned char *frac,float f,unsigned char *inst);
 unsigned char getCharsFromUINT_var1(unsigned char *p,unsigned short int var,unsigned char *v);
 void clearFormato(unsigned char *a);

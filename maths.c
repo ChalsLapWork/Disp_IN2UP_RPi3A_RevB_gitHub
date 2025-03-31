@@ -756,14 +756,17 @@ struct Coordsf AgetEcuation2(struct Ec_Recta* f, struct Coordf P1, float angulo)
 	       
 		   Cop = absf(P1.y) * (float)tan4(ang2);
 		   if((P1.x<0)||(P1.y<-127)){//para el punto inferior que se sale del cuadro
-		   	    	      __asm(Halt);__asm(nop);}
+		   	    	      //__asm(Halt);__asm(nop);
+						  mens_Warnning_Debug("Error de Software en AgetEcuation2");
+						   }
    		   P2.x = P1.x - Cop; P2.y = 0;
 		   *f = getEcuation(P1, P2);
 		   P3.y = 0;    P3.x = frecta(f,'y', P3.y);
 		   P4.y = -127; P4.x = frecta(f,'y', P4.y);
 		   break;
 	case 2:		
-		if (angulo < ang_Max){ __asm(nop);__asm(Halt); }
+		if (angulo < ang_Max){// __asm(nop);__asm(Halt);
+		                      mens_Warnning_Debug("Error de Software en AgetEcuation2"); }
 		ang2 = angulo - 90;//
 		Cop = absf(P1.y) * (float)tan4(ang2);//
         f->m=(float)tan4(angulo);
@@ -771,7 +774,8 @@ struct Coordsf AgetEcuation2(struct Ec_Recta* f, struct Coordf P1, float angulo)
         
         
 		
-		if (Cop < 96) { __asm(nop);__asm(Halt); }
+		if (Cop < 96) {// __asm(nop);__asm(Halt);
+						mens_Warnning_Debug("Error de Software en AgetEcuation2");}
 		P2.x = Cop - 96; P2.y = 0;
 		*f = getEcuation(P1, P2);
 		P3.x = 0;   P3.y = frecta(f,'x', P3.x);
@@ -801,7 +805,9 @@ unsigned char edo=0;
 					  PP.Pm.y=frecta(g,'x',PP.Pm.x);}
 				  PP.Pn.x=192;
 				  PP.Pn.y=frecta(g,'x',PP.Pn.x);
-                  if(PP.Pn.y>0){__asm(nop);__asm(Halt);}
+                  if(PP.Pn.y>0){mens_Warnning_Debug("Error de Software en AgetEcuation3");
+								//__asm(nop);__asm(Halt);
+				                }
 				  if(PP.Pn.y<-127){
 					    PP.Pn.y=-127;
 				  	    PP.Pn.x=frecta(g,'y',PP.Pn.y);}	}}
@@ -824,7 +830,9 @@ l682:if(PP.Pm.x<0)   edo=1;
 		 case 5:
 		 case 6:
 		 case 7:
-		 case 8:edo--;__asm(Halt);break;
+		 case 8:edo--;//__asm(Halt);
+					  mens_Warnning_Debug("Error de Software en AgetEcuation3");
+					  break;
 		 default:break;}
       if(edo>0)
 	    	 goto l682;
@@ -930,7 +938,9 @@ float dxM,dmid,ret=0;//dd: dista maxima, dmed, distancia media
 float xmid,ss;
 
        ss=(float)s;
-       if((xM==0)&&(xmin==0)){__asm(nop);__asm(Halt);} 
+       if((xM==0)&&(xmin==0)){//__asm(nop);__asm(Halt);
+							mens_Warnning_Debug("Error de Software f.Busqueda_Binaria_de_un_Punto");
+	                          } 
        dxM =distancia_Entre_Puntos(f,P1,xM);//   Obtener_Mitad_Recta(M,min);
        xmid=Obtener_Mitad_Recta(xM,xmin);
        dmid=distancia_Entre_Puntos(f,P1,xmid); 
@@ -940,7 +950,9 @@ float xmid,ss;
     	       ret=Busqueda_Binaria_de_un_Punto(xM,f,P1,s,e,xmid);
             else{if(dmid>ss) 
             	   ret=Busqueda_Binaria_de_un_Punto(xmid,f,P1,s,e,xmin);
-                 else{__asm(Halt);__asm(nop);}}}
+                 else{//__asm(Halt);__asm(nop);
+					mens_Warnning_Debug("Error de Software f.Busqueda_Binaria_de_un_Punto");				      
+				 }}}
 return ret;       
 }//fin de busqueda binaria--------------------------------------
 
@@ -953,8 +965,11 @@ float ret;
 	 d=Raizd(pow1d(x2d-P1.x,2)+pow1d(y2-P1.y,2));
 	 ret=(float)d;
 	 if(ret==0){
-		 __asm(Halt);
-		 __asm(nop);}
+		 //__asm(Halt);
+		 //__asm(nop);
+		mens_Warnning_Debug("Error de Software f.distancia_Entre_Puntos");
+		 }
+		
 return ret;	
 }//fin de distancia entre dos puntos------------------------------------------
 
@@ -986,7 +1001,9 @@ float d,ss,ret;
     	 case  LEFT: if(P.x<i)//el numero propuesto esta mas a la derecha que el cenrto
     		             i=i-P.x;
     		         break; 
-    	 default:__asm(Halt);__asm(nop);}
+    	 default://__asm(Halt);__asm(nop);
+		         mens_Warnning_Debug("Error de software en f.Buscar_Maximo_para_Busqueda_Binaria");
+		         }
       P2.x=i; 
       do{count++;
       P2.y=f.m*P2.x+f.b;
@@ -1025,9 +1042,10 @@ unsigned char comprobante=0;
   		comprobante++;
   	if(comprobante==2)
           return mitad;
-  	else{__asm(nop);
-  	     __asm(Halt);
-  	     __asm(nop);}
+  	else{//__asm(nop);
+  	     //__asm(Halt);
+		mens_Warnning_Debug("Error de software en f.Obtener_Mitad_Recta");
+		 }
 return 0;  	
 }//Fin de obtener la mitad del valor entre dos puntos de una recta de 1 dimension
 
@@ -1096,9 +1114,11 @@ struct Coordsf get_x2r(unsigned short int s, struct Ec_Recta f, struct Coordf P)
 		P58.Pn.x = 192; P58.Pn.y = -64;
 		return P58;}
     x2 = xa;
-L1:	if (x2 < xb) goto L2; else {__asm(nop);__asm(Halt);}
+L1:	if (x2 < xb) goto L2; else {mens_Warnning_Debug("Error de Software f.getx2r");//__asm(nop);__asm(Halt);
+                                }
 L3:	if (x2 > xb) goto L2; 
-    else {__asm(nop);__asm(Halt);}
+    else {mens_Warnning_Debug("Error de Software f.getx2r");//__asm(nop);__asm(Halt);
+	      }
 L2:	    x2 += inc;
 		d = Raiz2((pow1((x2 - P.x), 2)) + (pow1(((((f.m * x2)) + f.b - P.y)), 2)));
 		e = absf(d - s);
@@ -1115,7 +1135,8 @@ L2:	    x2 += inc;
 		else {
 			if (d > s) {
 				xb = x2; x2 = xa; ff |= 2;}
-				   else {__asm(nop);__asm(Halt);}
+				   else {mens_Warnning_Debug("Error de Software f.getx2r");//__asm(nop);__asm(Halt);
+				         }
 			 if (ff > 1) {
 				ff = 0;
 				inc /= 10;}
@@ -1177,24 +1198,30 @@ L173:for (i = 0, p = &P.Pm; i < 2; i++, p++) {//Error 127
 				if ((p->y < -127) || (p->y > 0)) {
 					p->y = -127;
 					p->x = (p->y - f.b) / f.m; n++;
-					if (n > 2) { __asm(nop);__asm(Halt); }
+					if (n > 2) { mens_Warnning_Debug("Error de Software f.get_Evaluar_");//__asm(nop);__asm(Halt); 
+					             }
 					goto L173;}}//is ok
 			if (p->x == 192) {
 				if (p->y > 0) { p->y = 0; p->x = ((p->y) - f.b) / f.m; }
 				else {
 					if (p->y < -127) {
-						__asm(nop);__asm(Halt);}}}
+						mens_Warnning_Debug("Error de Software f.get_Evaluar_");//__asm(nop);__asm(Halt);
+						 }}}
 			if ((p->y < -127) && (p->x == 0)) {
 				p->y = -127; p->x = ((p->y) - f.b) / f.m;	}}//fin del for
 		
 		if ((P.Pm.y > 0) || (P.Pm.y < -127)) {
-			__asm(nop);__asm(Halt);}
+			mens_Warnning_Debug("Error de Software f.get_Evaluar_");//__asm(nop);__asm(Halt);
+			}
 		if ((P.Pn.y > 0) || (P.Pn.y < -127)) {
-			__asm(nop);__asm(Halt);}
+			mens_Warnning_Debug("Error de Software f.get_Evaluar_");//__asm(nop);__asm(Halt);
+			 }
 		if ((P.Pm.x < 0) || (P.Pm.x > 192)) {
-			__asm(nop);__asm(Halt);}
+			mens_Warnning_Debug("Error de Software f.get_Evaluar_");//__asm(nop);__asm(Halt);
+			}
 		if ((P.Pn.x < 0) || (P.Pn.x > 192)) {
-			__asm(nop);__asm(Halt);}
+			mens_Warnning_Debug("Error de Software f.get_Evaluar_");//__asm(nop);__asm(Halt);
+			}
 	return P;
 }//fin get evaluar -----------------------------------------
 
@@ -1209,23 +1236,27 @@ unsigned char estado=0;
 	  else{if(y>0){estado=2;}//para arriba es positiva
 	       else estado=3;}	  //para abajo es negativa
 	  switch(estado){
-		  case 1:__asm(nop);__asm(Halt);break;
+		  case 1:mens_Warnning_Debug("Error de software: f.GetEvaluar3");//(nop);__asm(Halt);
+		         break;
 		  case 2:y=0;x=frecta(&f,'y',y);P.Pm.x=x;
 		         P.Pm.y=y;break;		
 		  case 3:P.Pm.x=0;P.Pm.y=y;break;
-		  default:__asm(nop);__asm(Halt);break;}
+		  default:mens_Warnning_Debug("Error de software: f.GetEvaluar3");//__asm(nop);__asm(Halt);
+		          break;}
 	  //Lado derecho Pn
 	  y=frecta(&f,'x',192);//es y postiva o negativa?
 	  if(absf(y)<0.5){estado=1;}//casi esta en cerca del centro origen
 	  else{if(y>-127){estado=2;}//para arriba es   -127<y<0
 	       else estado=3;}	  //para abajo abajo  y<-127
 	  switch(estado){
-	  		  case 1:__asm(nop);__asm(Halt);break;
+	  		  case 1:mens_Warnning_Debug("Error de software: f.GetEvaluar3");//__asm(nop);__asm(Halt);
+			         break;
 	  		  case 2:x=192;y=frecta(&f,'x',x);P.Pn.x=x;
 	  		         P.Pm.y=y;break;
 	  		  case 3:y=-127;x=frecta(&f,'y',y);
 	  		         P.Pm.x=x;P.Pm.y=y;break;
-	  		  default:__asm(nop);__asm(Halt);break;}
+	  		  default:mens_Warnning_Debug("Error de software: f.GetEvaluar3");//__asm(nop);__asm(Halt);
+			          break;}
 	  	  
 	  
 	  
@@ -1245,7 +1276,8 @@ struct Coordsf get_Puntos(struct Ec_Recta f,float angulo,unsigned char linea,uns
 	//vfd.menu.dds.zoom.factor=1;
 	float x,y;
 	//Revisar en que cuadrate pertence
-	if(angulo<0){__asm(nop);__asm(Halt);}//no se procesan angulos negativos
+	if(angulo<0){mens_Warnning_Debug("Error de software: f.get_Puntos");//__asm(nop);__asm(Halt);
+	             return NULL;}//no se procesan angulos negativos
 	if(angulo<90) estado=1;//angulo de cero a 90
 	else{if(absf(angulo-90)<1.2){estado=2;}//angulo de 90° o casi de 90°
 	     else{estado=3;}}//angulo>90°}
@@ -1277,7 +1309,9 @@ struct Coordsf get_Puntos(struct Ec_Recta f,float angulo,unsigned char linea,uns
 				else{y=-127;x=frecta(&f,'y',y);}
 				P.Pn.x=x;P.Pn.y=y;break;
 		case 0:
-		default:__asm(nop);__asm(Halt);break;}//error de software
+		default:mens_Warnning_Debug("Error de software: f.get_Puntos");//__asm(nop);__asm(Halt);
+		         return NULL;
+				 break;}//error de software
 		
    for (i = 0, p = &P.Pm; i < 2; i++, p++){	
 	   if(p->y<-127) error|=0x01;
@@ -1285,9 +1319,9 @@ struct Coordsf get_Puntos(struct Ec_Recta f,float angulo,unsigned char linea,uns
 	   if(p->x>192 ) error|=0x04;//       EScalera de Debug/Depuración
 	   if(p->x<0   ) error|=0x08;//Error, Debug/Depuracion, error 0000 1010
 	   if(error>0){
-		   __asm(nop);
-		   __asm(Halt);
-		   __asm(nop);}}
+		   //__asm(nop);
+		   mens_Warnning_Debug("Error de software: f.get_Puntos");//__asm(Halt);
+		   }}
 return P;
 }//fin get evaluar -----------------------------------------zoom
 
@@ -1413,7 +1447,9 @@ struct Coordsf get_Evaluar_2(struct Coordsf P,struct Ec_Recta f,float angulo){
 	struct Coordf* p;
 	float x,y;
 	//Revisar en que cuadrate pertence
-	if(angulo<0){__asm(nop);__asm(Halt);}//no se procesan angulos negativos
+	if(angulo<0){//__asm(nop);__asm(Halt);
+	              mens_Warnning_Debug("error de Sotware f.get Evaluar2");return NULL;
+	             }//no se procesan angulos negativos
 	if(angulo<90) estado=1;//angulo de cero a 90
 	else{if(absf(angulo-90)<1.2){estado=2;}//angulo de 90° o casi de 90°
 	     else{estado=3;}}//angulo>90°}
@@ -1438,7 +1474,8 @@ struct Coordsf get_Evaluar_2(struct Coordsf P,struct Ec_Recta f,float angulo){
 				else{y=-127;x=frecta(&f,'y',y);}
 				P.Pn.x=x;P.Pn.y=y;break;
 		case 0:
-		default:__asm(nop);__asm(Halt);break;}//error de software
+		default:mens_Warnning_Debug("error de Sotware f.get Evaluar2");return NULL;//__asm(nop);__asm(Halt);
+		        break;}//error de software
 		
    for (i = 0, p = &P.Pm; i < 2; i++, p++){	
 	   if(p->y<-127) error|=0x01;
@@ -1446,9 +1483,9 @@ struct Coordsf get_Evaluar_2(struct Coordsf P,struct Ec_Recta f,float angulo){
 	   if(p->x>192 ) error|=0x04;//       EScalera de Debug/Depuración
 	   if(p->x<0   ) error|=0x08;//Error, Debug/Depuracion, error 0000 1010
 	   if(error>0){
-		   __asm(nop);
-		   __asm(Halt);
-		   __asm(nop);}}
+		   //__asm(nop);
+		   mens_Warnning_Debug("error de Sotware f.get Evaluar2");return NULL;//__asm(Halt);
+		   }}
 return P;
 }//fin get evaluar -----------------------------------------zoom
 
@@ -1472,7 +1509,8 @@ unsigned char zoomPalanca;//aleja o acerca?
     else {if(vfd.menu.dds.zoom.Zoom<zoom1){
     	    zoomPalanca=ACERCAR;
             vfd.menu.dds.zoom.Zoom++;}
-    	  else{__asm(nop);__asm(Halt);__asm(nop);}}
+    	  else{mens_Warnning_Debug("error de Sotware f.recalc buff dss mod uno");return;//__asm(nop);__asm(Halt);__asm(nop);
+		      }}
 	for(j=0;j<SIZE_Y;j++)
 	 for(i=0;i<SIZE_X;i++)
 		 vfd.menu.dds.rePaint.xy0[j][i]=0;
@@ -1485,7 +1523,7 @@ unsigned char zoomPalanca;//aleja o acerca?
                    reconvertir_coord_reducir_uno(xn,j,cuadrante,&xr,&yr,zoomPalanca);//reconvertir coordenada actual y redcirla a escala uno menor
                    bit=getRegistro_X_bit(&reg,xr);//obtener el registro y el bit de esta nueva coordenada
                    vfd.menu.dds.rePaint.xy0[yr][reg]|= bit;
-                   __asm(nop);
+                   //__asm(nop);
                    }}//Guradar nueva coordenada modificada de zoom buf temporal 
 	//para fines de debug se combinan ambos buffers
 	for(j=0;j<SIZE_Y;j++) //hacer un OR con los pixeles que tenemos con
@@ -1526,9 +1564,9 @@ unsigned char a,b,c,d;
                if(yn>0)
     	         *yr=d;//yn-1;
               break;
-			   __asm(nop);
-			   __asm(Halt);
-			   __asm(nop);
+			   //__asm(nop);
+			   //__asm(Halt);
+			   mens_Warnning_Debug("error de Sotware f.reconvertir coord reducir uno");return;//__asm(nop);
 		default:break;}
 }//fin reconvertir_coord_reducir_uno
 
@@ -1558,8 +1596,9 @@ float get_angulo_Perpendicular(float m,float angulo){
 	else{if(angulo==90) return 0;
 	     else{if(m>0) return(90-angulo);
 	     	  else{if(m<0) return(90+angulo);
-	     	       else{__asm(nop);
-	     	            __asm(Halt);}}}}
+	     	       else{//__asm(nop);
+	     	            mens_Warnning_Debug("error de Sotware f.get Evaluar2");return 0;//__asm(Halt);
+						 }}}}
 return -1;	
 }//fin de obetener el angulo de la recta perpendicular a la directriz maestra
 
@@ -1611,9 +1650,9 @@ unsigned char b[4], * up;
 	if ((f.Pm.x > 192) || (f.Pn.x > 192))
 		error |= 0x08;
 	if (error > 0) { 
-		__asm(nop);
-		__asm(Halt);
-		__asm(nop);}//Debug  
+		//__asm(nop);
+		mens_Warnning_Debug("error de Sotware f.trad coord 2 vfd");return NULL;//__asm(Halt);
+		}//Debug  
 	if (f.Pm.y < 0)
 		f.Pm.y *= -1;
 	if (f.Pn.y < 0)

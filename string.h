@@ -44,14 +44,14 @@ float get_Float_From_ASCII(unsigned char *p);
 unsigned char strcpy1(unsigned char *dest,unsigned char *orig,unsigned char size );
 unsigned char strcpy2(unsigned char *dest,const unsigned char *orig,unsigned char size );
 void getASCIIfromUCharArray(unsigned char *orig,unsigned char *dest,unsigned char size);
-void Formato_USInt(unsigned char *orig,unsigned char *dest,unsigned char size,unsigned char *n);
+unsigned char Formato_USInt(unsigned char *orig,unsigned char *dest,unsigned char size,unsigned char *n);
 void get_Char2ASCII(unsigned char *orig,unsigned char *dest,unsigned char size);
 unsigned char Formato_Phase(unsigned char *orig);
 void suma_BCD2(unsigned char a5,unsigned char a4,unsigned char a3,unsigned char a2,unsigned char a1,unsigned char dm1,unsigned char m1,unsigned char c1,unsigned char d1,unsigned char u1,unsigned char *p);
 void convertir_ULInt_to_ASCII(unsigned char *p,unsigned long int var);
 void suma_BCD_digito2(unsigned char op,unsigned char n,unsigned char *p,unsigned char flo);
 unsigned char Formato_ULInt(unsigned char i,unsigned char *p);
-unsigned char* getCharsFromFloat1(unsigned char *frac,float f,unsigned char *inst);
+//unsigned char* getCharsFromFloat1(unsigned char *frac,float f,unsigned char *inst);
 unsigned char getCharsFromUINT_var1(unsigned char *p,unsigned short int var,unsigned char *v);
 void clearFormato(unsigned char *a);
 

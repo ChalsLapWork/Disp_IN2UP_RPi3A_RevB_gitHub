@@ -3,6 +3,7 @@
 #include "Memoria.h"
 #include <stdio.h>
 #include <string.h>
+#include "queue.h"
 
 
 
@@ -71,22 +72,6 @@ void getCharsFromUINT_var(unsigned char *p,unsigned short int var){
    
 
 
-/*convierte los numeros en sus numeros BCD de 5 cifras para ser desplegas en display
- * */
-void convertir_usint_to_BCD(unsigned char *p,unsigned short int var){
-unsigned char i;	
-const unsigned short int B[]={0x8000,0x4000,0x2000,0x1000,0x0800,0x0400,0x0200,0x0100,0x0080,0x0040,0x0020,0x0010,0x0008,0x0004,0x0002,0x0001};	
-const unsigned char DM[]={3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-const unsigned char  M[]={2,6,8,4,2,1,0,0,0,0,0,0,0,0,0,0};
-const unsigned char  C[]={7,3,1,0,0,0,5,2,1,0,0,0,0,0,0,0};
-const unsigned char  D[]={6,8,9,9,4,2,1,5,2,6,3,1,0,0,0,0};
-const unsigned char  U[]={8,4,2,6,8,4,2,6,8,4,2,6,8,4,2,1};
-         for(i=0;i<5;i++)
-        	  *(p+i)=0;
-         for(i=0;i<16;i++)
-        	 if((var&B[i])==B[i])
-        		  suma_BCD(DM[i],M[i],C[i],D[i],U[i],p);
-}//--------------------------------------------------------------------------------
 
 
 void suma_BCD(unsigned char dm1,unsigned char m1,unsigned char c1,unsigned char d1,unsigned char u1,unsigned char *p){
@@ -99,7 +84,7 @@ void suma_BCD(unsigned char dm1,unsigned char m1,unsigned char c1,unsigned char 
 
 
 /*  *(p+0)=DM    *(p+1)=M    *(p+2)=C   *(p+3)=D   *(p+4)=U
- * */
+ * def1 */
 void suma_BCD_digito(unsigned char op,unsigned char n,unsigned char *p){
 unsigned char u,d,c,m,dm;
         dm=*(p+0);          
@@ -159,52 +144,6 @@ unsigned char func_Alge(unsigned char x){
 }//fin func algebraica++++++++++++++++++++++
 
 
-
-/*da formato a los numero unsigned short int e.g.  n="00032" resultado="32"000 
- *   e.g.    n="00000"  res="0"0000    e.g. n="01234" res="1234"0
- *    para poder mandarlo al display aparti del indice cero que es el MSB  
- *    regresa el numero de digitos a desplegar en el display de 1 a 5  
- *     size: es el tamaño del origen
- *     n: REGRESA  el numero de chars a desplegar*/
-void Formato_USInt(unsigned char *orig,unsigned char *dest,unsigned char size,unsigned char *n){
-auto unsigned char estado;
-auto unsigned char ret=FALSE;
-auto unsigned char i=0,j;
-unsigned char ret2;
-  while(ret!=TRUE){
-	if(i>5){return;}  
-    switch(estado){// 00000
-    	case 1:if((*(orig+i)>='0')||(*(orig+i)<='9')){
-    		      if(*(orig+i)=='0'){//regresa el indice donde  esta el primero a desplegar
-    		    	   if(i<4){i++;}
-    		    	   else{estado++;}}
-    		      else{estado++;}}
-    		   else{return;}
-    		   break;
-    	case 2:if(i>0)
-    		      estado++;
-    		   else estado=9;
-    	       break;//01234, "xxxx0" "xxx00" "xx000"
-    	case 3:if(i>4){return;}//no debe se mayor a 4
-    		   estado++;j=0;ret2=5-i;
-    		   break;
-    	case 4:if(j>4){ estado++;j=0;}//limpiamos destino
-    	       else {*(dest+j)=0;j++;}
-    	       break;
-    	case 5:*(dest+j)=*(orig+i);
-    	       if(++i>4)
-    	    	     estado++;
-    	       else{j++;}
-    	       break;
-    	case 6:ret=TRUE;break;
-    	case 9:ret2=5;//no ha habido nada que recorrer porque e.g. var="54321"
-    		   vaciar_A2B(orig,dest,0,size-1);
-    	       ret=TRUE;
-    	       break;
-    	default:estado=1;ret=0;break;}	
-    }//fin while ------------------------------
-*n=ret2;
-}//fin Formato_USInt-------------------------------------------------------------
 
 //El array va a cambiar los numeros por asciis
 void get_5_Chars_to_ASCII(unsigned char *array){
@@ -282,42 +221,6 @@ int count = 0; // Contador de ceros iniciales
     memcpy(array, temp, len);// Copiar de vuelta al array original
 }//fin format central++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
-//n: es el numero que queremos obtener sus asciis
-//*cc: es el apuntador a un array u string de tamaño tres, se apunta al cero
-// indice 0:centena 1:decena 2:unidad
-void getASCIIFromUChar1(unsigned char n,unsigned char *cc){
-	unsigned char n1, n2=0, i, j, * p,e=0;
-	p = cc;
-	if (n == 0) {
-		*cc++ = '0'; *cc++ = '0'; *cc = '0';
-		return;}
-	if (n < 200) {
-		if (n > 99) {
-			*cc = '1'; n1 = n - 100;
-			if (n1 < 10) {  }
-			if (n1 > 99) { e+=1; }}
-		else { *cc = '0'; n1 = n; }}
-	else {
-        *cc = '2'; n1 = n - 200;
-		if (n1 > 99) {  e+=2; }}
-	if (n1 > 99) {  e+=3; }
-	if (n1 > 9) {
-		for (i = 10, j = 1; i < 100; i += 10, j++) {
-			if (((n1 - i) < 10) || ((n1 - i) == 0))
-				break;}
-		*(cc + 1) = j + 0x30;
-		if (n1 > i)
-			n2 = n1 - i;}
-	else {*(cc + 1) = '0';
-		  n2 = n1;}
-	if (n2 > 9) {  e+=4; }
-	*(cc + 2) = n2 + '0';
-	if(e>0){printf("\033[33m \nError en get ascii from char \033[0m ");}
-return;
-}//fin get char from unsigned char---------------------------------------
-
-
 /** Evalua si la variables tiene el valor 
  * entre 0 y 9 si si, se le convierte en ascii es para 
  procesar el frec de phase*/
@@ -367,23 +270,6 @@ unsigned char i;
 return 1;    
 }//--------------------------------------------------------
 
-//para el angulo solo hasta 180.x 
-//se tienen que pasar a double porque en float hay un error de 0.1
-unsigned char getCharsFromFloat(unsigned char *frac,float f){
-int i;
-double ff,frac2;
-unsigned char signo;
-	    if(f==0){
-		    *frac=0;
-		    return 0;}
-		if(f<0) signo=1; else signo=0;
-		i=(int)absf(f);
-		ff=(double)f;
-		if(i>180) i=0;
-		frac2=(absd(ff)-(double)i)*10+0.001;//sacar los decimales
-		*frac=(unsigned char)frac2;
-return (unsigned char)i;
-}//fin de goet chars froam float------------------------------------
 
 /*obtiene de un unsigned char los tres charactes para ser despleados en pantalla
 * podemos mejorar este algoritmo para que calcule slo 23 veces enlugar de 255 veces pero necesitamos el
@@ -406,31 +292,12 @@ unsigned char nc2[]="0123456789a";
     	     }//fin while------------------------------
 }// convertir un numero char unsigned a tres characteres ascii--------------------------
 
+//def1
 float get_Float_from_Phase(unsigned char f,unsigned char fr){
   return((float)(f+((float)fr)/10));	
 }//--------------------------------------------------------------
 
-/*
- * strings.c
- *
- *  Created on: Mar 5, 2020
- *      Author: desarrollo-1
- */
 
-
-#include "strings.h"
-#include "system.h"
-#include "VFDmenu.h"
-#include "maths.h"
-#include "VFDisplay.h"
- 
-
-
-extern unsigned char Text[NOMBRE_PRODUCTO_SIZE];//texto que regresa  del procesador de textos
-extern struct _GLOBAL_CONTEXTO gxc,gxc2,gxc3,gxc4,gxc5,gxc6;
-//extern unsigned char igxc5;
-extern struct _Menu_  menu;
-//extern struct Displ1 
 
 
 /* *a pointer to char
@@ -473,7 +340,7 @@ return 1;
 
 //n: es el numero que queremos obtener sus asciis
 //*cc: es el apuntador a un array u string de tamaño tres, se apunta al cero
-// indice 0:centena 1:decena 2:unidad
+// indice 0:centena 1:decena 2:unidad def1
 void getASCIIFromUChar1(unsigned char n,unsigned char *cc){
 	unsigned char n1, n2=0, i, j, * p,e=0;
 	p = cc;
@@ -544,36 +411,9 @@ unsigned char i,j,m=0;
 
 
 
-
-// 54321 en chars seria c[]={5,4,3,2,1}
-/* obtiene  5 chars de una variable  unsigned int,(bug-> deberia ser short int esta variable */
-void getCharsFromUINT_var(unsigned char *p,unsigned short int var){
-//unsigned char unidad=0,dec=0,cent=0,mil=0,decmil=0;
-//unsigned int n;// este metodo puede tener bugs porque la variable debe ser unsigned shrt int	          	          
-/*         if(var>32000)
-               var=32000;
-         n=var;  
-         if(var!=0) 
-         while(n--!=0){
-             if(++unidad>9){unidad=0;
-	               if(++dec>9){dec=0;
-    	                  if(++cent>9){cent=0;
-	                        if(++mil>9){mil=0;
-    	                         if(++decmil>9){decmil=0;unidad=0;dec=0;cent=0;mil=0;decmil=0;}}}}}}      
-	     
-  	    *(p+0)=decmil;          
-	    *(p+1)=mil;
-  	    *(p+2)=cent;
-	    *(p+3)=dec;
-  	    *(p+4)=unidad;*/
-	convertir_usint_to_BCD(p,var);
-         
-}//fin get a five chars from a uint number that should be unsigned short int
-   
-
 // 5421 en chars seria c[]={5,4,3,2,1}
 /* obtiene  5 chars de una variable  unsigned int,(bug-> deberia ser short int esta variable
- * MEMORIA 2 BYTES:uchar */
+ * MEMORIA 2 BYTES:uchar DEF1*/
 unsigned char getCharsFromUINT_var1(unsigned char *p,unsigned short int var,unsigned char *v){
 auto unsigned char i;
 auto unsigned char estado;	
@@ -609,7 +449,7 @@ return ret;
 
 
 //para el angulo solo hasta 180.x 
-//se tienen que pasar a double porque en float hay un error de 0.1
+//se tienen que pasar a double porque en float hay un error de 0.1 def1
 unsigned char getCharsFromFloat(unsigned char *frac,float f){
 int i;
 double ff,frac2;
@@ -627,51 +467,6 @@ return (unsigned char)i;
 }//fin de goet chars froam float------------------------------------
 
 
-//para el angulo solo hasta 180.x 
-//se tienen que pasar a double porque en float hay un error de 0.1
-unsigned char* getCharsFromFloat1(unsigned char *frac,float f,unsigned char *inst){
-auto int i;
-auto double ff,frac2;
-auto unsigned char signo,estado,*ret;
-      
-     i=menu.subMenu.aux4_int[*inst];
-     ff=menu.subMenu.aux6_d[*inst];
-     frac2=menu.subMenu.aux7_d[*inst];
-     signo=menu.subMenu.aux2[*inst];
-     estado=menu.subMenu.estado[*inst];
-     ret=&menu.subMenu.aux1[*inst][0];
-     *ret=FALSE;
-     switch(estado){
-    	 case 1:if(f==0){
- 		            *frac=0;
- 		            *ret=TRUE;
- 		            *(ret+1)=0;
- 		            return ret;}
-    	 	 	 else estado++;
-    	         break;
-    	 case 2:if(f<0) signo=1; else signo=0;
-    	 	 	i=(int)absf(f);
-    	 	 	estado++;break;
-    	 case 3:ff=(double)f;estado++;break;
-    	 case 4:if(i>180) i=0;
-    	        frac2=(absd(ff)-(double)i)*10+0.001;//sacar los decimales  
-    	        estado++;
-    	        break;
-    	 case 5:*frac=(unsigned char)frac2;
-    	        estado++;
-    	        break;
-    	 case 6:*ret=TRUE;
-    	 	 	*(ret+1)=(unsigned char)i;
-    	 	 	estado=0;break;
-    	 default:estado=1;break;}
-i=menu.subMenu.aux4_int[*inst]=i;
-ff=menu.subMenu.aux6_d[*inst]=ff;
-frac2=menu.subMenu.aux7_d[*inst]=frac2;
-signo=menu.subMenu.aux2[*inst]=signo;
-estado=menu.subMenu.estado[*inst]=estado; 
-return ret;
-}//fin de goet chars froam float------------------------------------
-
 
 
 
@@ -680,10 +475,6 @@ float t;
   t=(*(p)-0x30)*100+(*(p+1)-0x30)*10+(*(p+2)-0x30)+(*(p+4)-0x30)*0.1f;
 return t;  
 }//fin de get number float form the flase ASCII-------------
-
-float get_Float_from_Phase(unsigned char f,unsigned char fr){
-  return((float)(f+((float)fr)/10));	
-}//--------------------------------------------------------------
 
 
 void getASCIIFromFloat(unsigned char *p,float f){
@@ -715,7 +506,7 @@ return;
 
 
 /*convierte los numeros en sus numeros BCD de 5 cifras para ser desplegas en display
- * */
+ * def1*/
 void convertir_usint_to_BCD(unsigned char *p,unsigned short int var){
 unsigned char i;	
 const unsigned short int B[]={0x8000,0x4000,0x2000,0x1000,0x0800,0x0400,0x0200,0x0100,0x0080,0x0040,0x0020,0x0010,0x0008,0x0004,0x0002,0x0001};	
@@ -731,64 +522,13 @@ const unsigned char  U[]={8,4,2,6,8,4,2,6,8,4,2,6,8,4,2,1};
         		  suma_BCD(DM[i],M[i],C[i],D[i],U[i],p);
 }//--------------------------------------------------------------------------------
 
+//def1
 void suma_BCD(unsigned char dm1,unsigned char m1,unsigned char c1,unsigned char d1,unsigned char u1,unsigned char *p){
 	 suma_BCD_digito(_DM_,dm1,p);
 	 suma_BCD_digito(_M_ ,m1,p);
 	 suma_BCD_digito(_C_ ,c1,p);
 	 suma_BCD_digito(_D_ ,d1,p);
 	 suma_BCD_digito(_U_ ,u1,p);
-}//---------------------------------------------------------------------------------
-
-/*  *(p+0)=DM    *(p+1)=M    *(p+2)=C   *(p+3)=D   *(p+4)=U
- * */
-void suma_BCD_digito(unsigned char op,unsigned char n,unsigned char *p){
-unsigned char u,d,c,m,dm;
-        dm=*(p+0);          
-	    m=*(p+1);
-  	    c=*(p+2);
-	    d=*(p+3);
-  	    u=*(p+4);
-	 switch(op){
-		 case _U_:u+=n;
-		          if(u>9){         
-		             u-=10; 
-		             d++;
-		             goto BCD1;} 
-		          else goto BCDx;;
-		          break;
-		 case _D_:d+=n;
-BCD1:             if(d>9){
-		        	 d-=10;
-		        	 c++;
-		        	 goto BCD2;}
-				  else goto BCDx;
- 	 	 	 	  break;
-		 case _C_:c+=n;
-BCD2:             if(c>9){
-	                  c-=10;
-	                  m++;
-	                  goto BCD3;}
-				  else goto BCDx;
-				  break;
-		 case _M_:m+=n;
-BCD3:	  	  	  if(m>9){
-		  	  		  m-=10;
-		  	  		  dm++;
-		  	  		  goto BCD4;}
-		  	  	  else goto BCDx;
-		  	  	  break;
-		 case _DM_:dm+=n;
-BCD4:      	     if(dm>9)
-		     		   break;
-		     	   break;
-		 default:break;}//fin switch
-BCDx:  
-  	  	*(p+0)=dm;          
-	    *(p+1)=m;
-  	    *(p+2)=c;
-	    *(p+3)=d;
-  	    *(p+4)=u;
-	      
 }//---------------------------------------------------------------------------------
 
 /*  *(p+0)=DM    *(p+1)=M    *(p+2)=C   *(p+3)=D   *(p+4)=U
@@ -836,19 +576,6 @@ const unsigned char  U[]={8,4,2,6,8,4,2,6,8,4,2,6,8,4,2,5,8,4,2,6,8,4,2,6,8,4,2,
     	  *(p+i)+='0';
 }//fin de obtener el ASCII de unsigned Long integer--------------------
 
-
-void suma_BCD2(unsigned char a5,unsigned char a4,unsigned char a3,unsigned char a2,unsigned char a1,unsigned char dm1,unsigned char m1,unsigned char c1,unsigned char d1,unsigned char u1,unsigned char *p){
-	 suma_BCD_digito2(_A5_,a5,p,0);
-	 suma_BCD_digito2(_A4_,a4,p,0);
-	 suma_BCD_digito2(_A3_,a3,p,0);
-	 suma_BCD_digito2(_A2_,a2,p,0);
-	 suma_BCD_digito2(_A1_,a1,p,0);
-	 suma_BCD_digito2(_DM_,dm1,p,0);
-	 suma_BCD_digito2(_M_ ,m1,p,0);
-	 suma_BCD_digito2(_C_ ,c1,p,0);
-	 suma_BCD_digito2(_D_ ,d1,p,0);
-	 suma_BCD_digito2(_U_ ,u1,p,0);
-}//---------------------------------------------------------------------------------
 
 
 
@@ -1232,8 +959,8 @@ unsigned char i=0,j=0,k=0;             //indice va de 0 a 19=PRODUCT_SIZE..blabl
 }//fin insertamos un espacio y recorremos los char uno a la derecha para Text de text Processor
 
 //* Logitud de la cadena si es numero o letra*/
-word length(unsigned char *c,unsigned char size){
-word count=0;                            
+unsigned short int length(unsigned char *c,unsigned char size){
+unsigned short int count=0;                            
 unsigned char i=1,estado=0;
 
   for(i=0;i<size;i++)

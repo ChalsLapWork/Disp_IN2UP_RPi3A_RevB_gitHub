@@ -305,6 +305,12 @@ struct _Menu1_{
    
 };
 
+struct _Deteccion_{
+       unsigned char EnCurso;//Hay una deteccion en curso
+
+
+};
+
 
 struct _PRODUCT1_{
    unsigned short int Cuenta_Rechazos;//numer de rechazos de producto
@@ -330,7 +336,7 @@ struct _DISPLAY_VFD_{
 	struct Queue q;//pila para manejar el VFD   
 	struct _Menu1_ menu;  
 	struct _KeyPAd_ keypad;
-
+    struct _Deteccion_ deteccion;
 	//size_t pthread_attr_t attr_mon,attr_free,atrr_Tx;//atributos  
  	struct _box_control{
 		 unsigned char boxs[SIZE_BOXES];
