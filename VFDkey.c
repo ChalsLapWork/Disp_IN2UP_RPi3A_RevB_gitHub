@@ -359,7 +359,7 @@ unsigned char *cursorx,*cursory;
 }//fin MenuInformacionUsuariokeyDN----------------------------------------
 void MenuInformacionUsuariokeyEN(void){
 unsigned char *cursorx,*cursory;
-unsigned char K;
+unsigned char k;
 		cursorx=&vfd.menu.cursorx;
 		cursory=&vfd.menu.cursory;	
 	if(*cursory==POSY2) {/*cambio_de_contexto(HACER_PRUEBA_DE_RUIDO;*/  return;}

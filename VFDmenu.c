@@ -30,7 +30,7 @@ auto unsigned char ret=0;
 	  /* PANTALLA NIVEL 0************************************************************** */
 		 case PORTAL_INICIO: MenuActualScreen.menuNodo=PORTAL_INICIO;
 		                     MenuActualScreen.permisos=DESARROLLADOR_PERMISO;//------------------------------------EN-REVISION
-		                     //MenuActualScreen.func=0;
+		                     MenuActualScreen.func=0;
 		                     //MenuActualScreen.func1=PortalinicioDisplay; // -------------------------------------------------------EN-REVISION    		 
 		                     MenuActualScreen.func1=PortalinicioDisplay;
 		                     MenuActualScreen.funcKeyUP=PortaliniciokeyUP;
@@ -42,7 +42,7 @@ auto unsigned char ret=0;
 		                     break;	
 		 case MENU_INSIGHT:  MenuActualScreen.menuNodo=MENU_INSIGHT;
 							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
-							 //MenuActualScreen.func=0;
+							 MenuActualScreen.func=0;
 							 MenuActualScreen.func1=displayMenuInsight;
 							 MenuActualScreen.funcKeyUP=MenuInsightkeyUP;
 							 MenuActualScreen.funcKeyDN=MenuInsightkeyDN;
@@ -54,7 +54,7 @@ auto unsigned char ret=0;
 /* MENUS NIVEL 2  ******************************************************************/     
 		 case AJUSTE_DE_PRODUCTO:MenuActualScreen.menuNodo=AJUSTE_DE_PRODUCTO;
 		 	 	 	 	 	 	 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
-		 	 	 	 	 	 	 MenuActualScreen.func1=displayMenuAjustedeProducto;//no tiene porque es un menu
+		 	 	 	 	 	 	 MenuActualScreen.func=displayMenuAjustedeProducto;//no tiene porque es un menu
 		 	 	 	 	 	 	 MenuActualScreen.funcKeyUP=AjusteProductokeyUP;
 		 	 	 	 	 	     MenuActualScreen.funcKeyRT=AjusteProductokeyRT;	 
 		 	 	 	 	 	     MenuActualScreen.funcKeyLF=AjusteProductokeyLF;
@@ -65,7 +65,7 @@ auto unsigned char ret=0;
 		 case AJUSTE_PARAMETRICO_DE_PRODUCTO:
 							 MenuActualScreen.menuNodo=AJUSTE_PARAMETRICO_DE_PRODUCTO;
 							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
-							 MenuActualScreen.func1=DisplayAjusteParamProd;
+							 MenuActualScreen.func=DisplayAjusteParamProd;
 							 MenuActualScreen.funcKeyUP=AjusteParamProdkeyUP;
 							 MenuActualScreen.funcKeyRT=AjusteParamProdkeyRT;	 
 							 MenuActualScreen.funcKeyLF=AjusteParamProdkeyLF;
@@ -76,7 +76,7 @@ auto unsigned char ret=0;
 		 case AJUSTE_DE_SISTEMA:
 			  	  	  	  	 MenuActualScreen.menuNodo=AJUSTE_DE_SISTEMA;
 							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
-							 MenuActualScreen.func1=DisplayMenuAjustedeSistema;
+							 MenuActualScreen.func=DisplayMenuAjustedeSistema;
 							 MenuActualScreen.funcKeyUP=AjustedeSistemakeyUP;
 							 MenuActualScreen.funcKeyRT=AjustedeSistemakeyRT;	 
 							 MenuActualScreen.funcKeyLF=AjustedeSistemakeyLF;
@@ -88,7 +88,7 @@ auto unsigned char ret=0;
 		 case PANTALLA_DDS://---------------------------------------------------------- PASO 3 IR A VFDkey.h-----
 							 MenuActualScreen.menuNodo=PANTALLA_DDS;
 							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
-							 MenuActualScreen.func1=DDS_HANDLER;
+							 MenuActualScreen.func=DDS_HANDLER;
 							/* MenuActualScreen.funcKeyUP=PANTALLA_DDSkeyUP_v2;
 							 MenuActualScreen.funcKeyRT=PANTALLA_DDSkeyRT_v2;	 
 							 MenuActualScreen.funcKeyLF=PANTALLA_DDSkeyLF_v2;
@@ -100,7 +100,7 @@ auto unsigned char ret=0;
 		 case INFORMACION_DE_USUARIO:			 
 			 	 	 	 	 MenuActualScreen.menuNodo=INFORMACION_DE_USUARIO;
 							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
-							 MenuActualScreen.func1=DisplayMenuInformacionUsuario;
+							 MenuActualScreen.func=DisplayMenuInformacionUsuario;
 							 MenuActualScreen.funcKeyUP=MenuInformacionUsuariokeyUP;
 							 MenuActualScreen.funcKeyRT=MenuInformacionUsuariokeyRT;	 
 							 MenuActualScreen.funcKeyLF=MenuInformacionUsuariokeyLF;

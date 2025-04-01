@@ -828,7 +828,7 @@ typedef struct{//variables globales por menu
 
 extern GlobalStruct global;
 extern GlobalStruct *AjParamProd,*ConfEntSyst; // Declarar extern para que otros archivos lo usen
-
+extern GlobalStruct *MenuInfoUser;
 
 // PROCEDIMIENTOS-+++++++++++++++++++++++++++++++++++++++++++++
 //void init_Menu(void);
