@@ -19,7 +19,8 @@ extern struct _DISPLAY_VFD_ vfd;
 //extern struct _Detection Deteccion;
 extern struct _PRODUCT1_ producto2;
 GlobalStruct global = {0};
-GlobalStruct *AjParamProd = NULL; // Inicialización
+GlobalStruct *AjParamProd= NULL; // Inicialización
+GlobalStruct *MenuInfoUser= NULL;
 extern struct _PRODUCT1_ producto2;
 
 
@@ -370,7 +371,10 @@ unsigned char *cursorx,*cursory;
 			    //VFDposicion(x[7],y[7]);//posiCION del cursor despues de desplegar el menu  
 			    *cursorx=POSX0;*cursory=POSY2;//POSICION DE LA FLECHA LA DEJAMOS EN 0,2
 			    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
-			    vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
+			    MenuInfoUser=&global;
+				MenuInfoUser->ResetDisplayNum=&global.var1;
+		        *(MenuInfoUser->ResetDisplayNum)=(unsigned char)0;		
+				vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
 }//fin Display Menu INFORMATION  usuarioo-------------------------------------------------------------
 
 

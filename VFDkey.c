@@ -359,21 +359,22 @@ unsigned char *cursorx,*cursory;
 }//fin MenuInformacionUsuariokeyDN----------------------------------------
 void MenuInformacionUsuariokeyEN(void){
 unsigned char *cursorx,*cursory;
+unsigned char K;
 		cursorx=&vfd.menu.cursorx;
 		cursory=&vfd.menu.cursory;	
 	if(*cursory==POSY2) {/*cambio_de_contexto(HACER_PRUEBA_DE_RUIDO;*/  return;}
-	if(*cursory==POSY4) {gpoc.igpoc0=0;//resetea las var de despliegue de numeros
+	if(*cursory==POSY4) {*(MenuInfoUser->ResetDisplayNum)=0; //gpoc.igpoc0=0;//resetea las var de despliegue de numeros
 		                cambio_de_contexto(MEDIDAS_DE_VOLTAJE);  return;}
 	if(*cursory==POSY6) {/*cambio_de_contexto(AJUSTE_DE_PRODUCTOINFO); */ return;}
 	if(*cursory==POSY8) {cambio_de_contexto(TIEMPO_DE_RECHAZOINFO);  return;}
 	if(*cursory==POSY10){cambio_de_contexto(AJUSTE_SISTEMA_ENTRADAS);  return;}
 	if(*cursory==POSY12){cambio_de_contexto(ID_MAQUINA);  return;}
 	if(*cursory==POSY14){DisplayCuentaProducto();  return;}
-	if(*cursory==POSY0) {if(menu.contexto.Anterior==AJUSTE_DE_SISTEMA){
-		                 cambio_de_contexto(AJUSTE_DE_SISTEMA);return;}//SI ACTIVAMOS AQUI EL menu control se ejecuta dos veces
-						if(menu.contexto.Anterior==MENU_INSIGHT){
-			                 cambio_de_contexto(MENU_INSIGHT);return;}//SI ACTIVAMOS AQUI EL menu control se ejecuta dos veces
-						else cambio_de_contexto(PORTAL_INICIO);}
+	if(*cursory==POSY0) {vfd.menu.contexto.peek(1,&k);
+	                     switch(k){
+							case AJUSTE_DE_SISTEMA:cambio_de_contexto(k);break;
+							case MENU_INSIGHT:cambio_de_contexto(k);break;
+							default:cambio_de_contexto(PORTAL_INICIO);break;}}
 }//fin MenuInformacionUsuariokeyEN---------------------------------
 /* FIN  MenuInformacionUsuariokeyEN++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * */
