@@ -276,12 +276,10 @@ unsigned char *cursory;
 			          errorCritico("Error en AjParamProd-Enter");
 					  exit(1);
 			         }//debug error de diseño se softwre
-return;}/* FIN  AjusteParamProdto  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-/* FIN  AjusteParamProd ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- * */
+/* FIN  AjusteParamProd ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
-//*****************************************************************************************
+//*************************************************************************************
 void AjustedeSistemakeyUP(void){
 unsigned char *cursorx,*cursory;
 		cursorx=&vfd.menu.cursorx;
