@@ -12,7 +12,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include "VFDisplay.h"
-#include <string.h>
 #include "VFDmenu.h"
 #include "SistOp.h"
 #include <semaphore.h>

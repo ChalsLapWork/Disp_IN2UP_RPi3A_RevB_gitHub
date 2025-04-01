@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "queue.h"
-#include "maths.c"
+#include "maths.h"
 #include "errorController.h"
 
 

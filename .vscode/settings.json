@@ -15,6 +15,7 @@
         "queue": "c",
         "memoria.h": "c",
         "vfdisplay.h": "c",
-        "maths.h": "c"
+        "maths.h": "c",
+        "stdatomic.h": "c"
     }
 }
