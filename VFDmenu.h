@@ -1000,7 +1000,6 @@ unsigned char isEnable_Keypad(unsigned char cmd);
 void DDS_Borrar_Refresh(void);
 unsigned char isEnable_Keypad2(unsigned char cmd,unsigned long int maxtime);
 void resetDDS_repetidos(unsigned short int n);
-unsigned char procSensxDigitoRT(unsigned char posx,unsigned char posy,unsigned short int *Sens);
 unsigned char procSensxDigitoLF(unsigned char posx,unsigned char posy,unsigned short int *Sens);
 void procFasexDigitoEN(unsigned char *var,unsigned char posx,unsigned char posy);
 void Cambio_de_Frecuencia_por_IIC_1(unsigned short int);

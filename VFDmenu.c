@@ -500,7 +500,7 @@ unsigned char procSensxDigitoLF(unsigned char posx,unsigned char posy,unsigned s
 	 else --(*Sens); 		 
      BarraDet_displayUINT_var(posx,posy,Sens);//displayUINT_var(POSXCFNUM,POSY2,&Sensibilidad,NONE);	
 return TRUE;
-}//fin ---procSensxDigitoRT--------------------------------------------
+}//fin ---procSensxDigitoLF--------------------------------------------
 
 
 /* this method is filted to be executed w/o error of context failure, 'cos
