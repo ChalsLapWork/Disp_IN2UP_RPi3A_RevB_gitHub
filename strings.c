@@ -789,6 +789,7 @@ unsigned char i;
         		 else{if(signo=='-') 
         		           *(p+i-1)='-';
         		      return ' ';}}}
+return 0;					  
 }// Procesamiento_con_Signo2---------------------------------
 
 

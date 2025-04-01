@@ -1,7 +1,6 @@
 
-//#ifndef SYSTEM_H_
-
-#define SYSTEM_H_
+#ifndef SYSTEM_H_
+  #define SYSTEM_H_
 
 //LED PIN WIRINpi 0 is bcm_gpio 17.
 #define BIT0_PIN 0
@@ -350,7 +349,7 @@
 #define PID17 0x11//VFDdrawLine_v4
 
 
-
+#endif
 
 
 //#endif //***************************************************************

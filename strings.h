@@ -1,4 +1,5 @@
-
+#ifndef _STRINGS_H_
+  #define _STRINGS_H_
 
 unsigned short int length(unsigned char *c,unsigned char size);
 void insertChar(unsigned char *s,unsigned char size,unsigned char index,unsigned char c);
@@ -70,3 +71,4 @@ unsigned char Formato_ULInt(unsigned char i,unsigned char *p);
 //unsigned char* getCharsFromFloat1(unsigned char *frac,float f,unsigned char *inst);
 unsigned char getCharsFromUINT_var1(unsigned char *p,unsigned short int var,unsigned char *v);
 void clearFormato(unsigned char *a);
+#endif

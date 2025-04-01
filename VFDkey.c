@@ -289,7 +289,7 @@ unsigned char *cursorx,*cursory;
 	 	 				 case 2:return;break;
 	 	 				 case 3:/* fall through */
 	 	 				 case 4:if(*cursory==POSY12){
-	 	 					         return;break;}/* fall through */
+	 	 					         return;break;}/* fall through */	
 	 	 				 case 5:VFDposicion(*cursorx,*cursory);
 		 	 			 	 	VFDserial_SendChar(' ');
 		 	 			        ++(*cursory);
