@@ -88,7 +88,7 @@ auto unsigned char ret=0;
 		 case PANTALLA_DDS://---------------------------------------------------------- PASO 3 IR A VFDkey.h-----
 							 MenuActualScreen.menuNodo=PANTALLA_DDS;
 							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
-							 MenuActualScreen.func=DDS_HANDLER;
+							 //MenuActualScreen.func=DDS_HANDLER;
 							/* MenuActualScreen.funcKeyUP=PANTALLA_DDSkeyUP_v2;
 							 MenuActualScreen.funcKeyRT=PANTALLA_DDSkeyRT_v2;	 
 							 MenuActualScreen.funcKeyLF=PANTALLA_DDSkeyLF_v2;
