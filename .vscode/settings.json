@@ -16,6 +16,7 @@
         "memoria.h": "c",
         "vfdisplay.h": "c",
         "maths.h": "c",
-        "stdatomic.h": "c"
+        "stdatomic.h": "c",
+        "vfdkey.h": "c"
     }
 }

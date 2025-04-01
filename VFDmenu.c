@@ -88,11 +88,12 @@ auto unsigned char ret=0;
 							 MenuActualScreen.menuNodo=PANTALLA_DDS;
 							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
 							 MenuActualScreen.func1=DDS_HANDLER;
-							 MenuActualScreen.funcKeyUP=PANTALLA_DDSkeyUP_v2;
+							/* MenuActualScreen.funcKeyUP=PANTALLA_DDSkeyUP_v2;
 							 MenuActualScreen.funcKeyRT=PANTALLA_DDSkeyRT_v2;	 
 							 MenuActualScreen.funcKeyLF=PANTALLA_DDSkeyLF_v2;
 							 MenuActualScreen.funcKeyDN=PANTALLA_DDSkeyDN_v2;
 							 MenuActualScreen.funcKeyEN=PANTALLA_DDSkeyEN_v2;
+							 */
 							 ret=TRUE;
 							 break;
 		 case INFORMACION_DE_USUARIO:			 
