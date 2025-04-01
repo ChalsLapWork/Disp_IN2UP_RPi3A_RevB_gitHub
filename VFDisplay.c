@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "strings.h"
+#include "VFDisplay.h"
 
 extern struct _DISPLAY_VFD_ vfd;
 extern struct _PRODUCT1_ producto2;
@@ -255,7 +256,7 @@ void display5UChars(unsigned char posx,unsigned char posy,unsigned char *p){
     
 		
 
-unsigned short int  digito2posicion(unsigned short int digito){
+unsigned char  digito2posicion(unsigned char digito){
     	         switch(digito){
 	                       case 1: digito=POSXDSSDIGITO1; break;
    	                       case 2: digito=POSXDSSDIGITO2; break;

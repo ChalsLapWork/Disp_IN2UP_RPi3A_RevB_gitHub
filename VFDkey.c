@@ -117,9 +117,10 @@ unsigned char *cursorx,*cursory;
 		   switch(vfd.menu.contexto.control){
 			   case OPERADOR:if(*cursory>=POSY6){//NIVEL-1
 				                    *cursory=POSY6;
-			                        return;}
-			   case ADMINISTRADOR:	   //NIVEL-3
-			   case SUPERVISOR:	   //NIVEL-2
+			                        return;}	
+							 /* fall through */		//comentario para el compilador no quitar
+			   case ADMINISTRADOR:/* fall through */	   //NIVEL-3
+			   case SUPERVISOR:	  /* fall through */ //NIVEL-2
 			   case SERVICIO://NIVEL-4	   
 				       VFDposicion(*cursorx,*cursory);
 				   	   VFDserial_SendChar(' ');
@@ -188,7 +189,7 @@ unsigned char *cursorx,*cursory;
 	   VFDposicion(POSXESQ235,POSY0); 
 	   VFDserial_SendChar(' ');
 	   VFDserial_SendChar('x');
-	   cursory=POSY6;
+	   *cursory=POSY6;
 	   VFDposicion(*cursorx,*cursory);
 	   VFDserial_SendChar('>');
 	   VFDserial_SendChar(0x01);
@@ -284,16 +285,16 @@ unsigned char *cursorx,*cursory;
 	     else{
 	 	 		 if(*cursory<POSY14){
 	 	 			 switch(vfd.menu.contexto.control){ //Autor=3
-	 	 				 case 1: 
+	 	 				 case 1: /* fall through */
 	 	 				 case 2:return;break;
-	 	 				 case 3:
+	 	 				 case 3:/* fall through */
 	 	 				 case 4:if(*cursory==POSY12){
-	 	 					         return;break;}
+	 	 					         return;break;}/* fall through */
 	 	 				 case 5:VFDposicion(*cursorx,*cursory);
 		 	 			 	 	VFDserial_SendChar(' ');
 		 	 			        ++(*cursory);
 		 	 			        VFDposicion(*cursorx,++(*cursory));
-		 	 			        VFDserial_SendChar('>');
+		 	 			        VFDserial_SendChar('>');/* fall through */
 	 	 				 default: return;break;
 	 	 			 }}}//fin switch, if, else
 return;}

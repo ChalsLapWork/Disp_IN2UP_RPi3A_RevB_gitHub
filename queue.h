@@ -520,4 +520,5 @@ int peek_contexto(struct FIFOc *fifo, int position, uint8_t *value);
 void push_fifo_contexto(uint8_t dato);
 int pop_fifo_contexto(uint8_t *value);
 int peek_fifo_contexto(int position, uint8_t *value);
+void configModificado(unsigned char contexto);
 #endif 

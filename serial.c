@@ -11,7 +11,7 @@
 #include "VFD.h"
 #include "serial.h"
 #include "VFDmenu.h"
-#include "math.h"
+#include "maths.h"
 #include "queue.h"
 #include "strings.h"
 #include "VFDthread.h"

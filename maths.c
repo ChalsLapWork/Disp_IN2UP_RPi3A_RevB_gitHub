@@ -1144,7 +1144,9 @@ L173:for (i = 0, p = &P.Pm; i < 2; i++, p++) {//Error 127
 struct Coordsf get_Evaluar_3(struct Coordsf P,struct Ec_Recta f){
 float y,x;    
 unsigned char estado=0;
-struct Coordsf ret={0};	   
+struct Coordsf ret={0};	 
+    (void)P;  // 🔹 Evita la advertencia de parámetro no usado  
+	
       //Lado izquierdo Pm
 	  y=frecta(&f,'x',0);//es y postiva o negativa?
 	  if(absf(y)<0.5){estado=1;}//casi esta en cerca del centro origen
@@ -1540,6 +1542,7 @@ struct Coorducf P;
 	   if((absf(P1.Pm.x)<P.uc.x)&&(absf(P1.Pn.x)<P.uc.x))
 		if((absf(P1.Pm.y)<P.uc.y)&&(absf(P1.Pn.y)<P.uc.y)){
 		   return TRUE;}	
+return 0;
 }//fin inZoom, dentro del zoom actual esta las coordenadas Coord
 
 

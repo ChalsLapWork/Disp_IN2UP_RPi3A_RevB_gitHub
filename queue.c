@@ -602,6 +602,13 @@ void reset_FIFO_general_UChar(struct _FIFO_1byte_ *s,
 }//fin reset_FIFO_serial_TX---fin se resetea toda la fifo
 
 
+void configModificado(unsigned char contexto){
+     //(void)contexto;
+	 vfd.menu.contexto.Modificado=contexto;//hay un modificado
+}//fin de configmodificado
+
+
+
 //FIFO para ingresar un dato a desplegar vfd.f1.append(14,0,_BOX_);
 //Return false|true   TRUE: si se agrego sin problemas
 /*unsigned char vfd_FIFO_push(struct Queue *q,struct VFD_DATA dato){

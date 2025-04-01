@@ -139,7 +139,7 @@ unsigned char  display_Sens_Lim_v2(float angulo,unsigned short int sens,unsigned
 void getBoxPattern(unsigned char box,unsigned char *mode,unsigned char *x1,unsigned char *y1,unsigned char *x2,unsigned char *y2);
 unsigned char find_contexto_Siguiente(void);
 void BarraDet_displayUINT_var(unsigned char posx,unsigned char posy,unsigned short int *usint);
-unsigned short int  digito2posicion(unsigned short int digito);
+unsigned char  digito2posicion(unsigned char digito);
 void displayUINT_var(unsigned char posx,unsigned char posy,unsigned short int *pn,unsigned char operacion);
 void display5UChars(unsigned char posx,unsigned char posy,unsigned char *p);
 void displayPhase_var(unsigned char posx,unsigned char posy);//despliega la variable de phase en la posicion

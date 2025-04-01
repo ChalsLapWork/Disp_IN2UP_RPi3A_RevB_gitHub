@@ -864,6 +864,7 @@ unsigned char i,a;//1234123123123
 			 else{return i+1; }}
 		 else i--;
 	  }while(i!=0);		 
+return 0;	  
 }//fin de encontrar el ultimo espacio del ultimo caracter
 
 //insertamos un espacio y recorremos los char uno a la derecha para Text de text Processor
