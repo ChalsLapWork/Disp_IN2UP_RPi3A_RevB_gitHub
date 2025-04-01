@@ -50,7 +50,67 @@ auto unsigned char ret=0;
 							 MenuActualScreen.funcKeyEN=MenuInsightkeyEN;//MenuInsightkeyEN;
 							 ret=TRUE;
 							 break;	
-         default: errorCritico2("error de InitArbol",19);break;                     
+/* MENUS NIVEL 2  ******************************************************************/     
+		 case AJUSTE_DE_PRODUCTO:MenuActualScreen.menuNodo=AJUSTE_DE_PRODUCTO;
+		 	 	 	 	 	 	 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
+		 	 	 	 	 	 	 MenuActualScreen.func1=displayMenuAjustedeProducto;//no tiene porque es un menu
+		 	 	 	 	 	 	 MenuActualScreen.funcKeyUP=AjusteProductokeyUP;
+		 	 	 	 	 	     MenuActualScreen.funcKeyRT=AjusteProductokeyRT;	 
+		 	 	 	 	 	     MenuActualScreen.funcKeyLF=AjusteProductokeyLF;
+		 	 	 	 	 	     MenuActualScreen.funcKeyDN=AjusteProductokeyDN;
+		 	 	 	 	 	     MenuActualScreen.funcKeyEN=AjusteProductokeyEN;
+		 	 	 	 	 	     ret=TRUE;
+		 	 	 	 	 	     break;
+		 case AJUSTE_PARAMETRICO_DE_PRODUCTO:
+							 MenuActualScreen.menuNodo=AJUSTE_PARAMETRICO_DE_PRODUCTO;
+							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
+							 MenuActualScreen.func1=DisplayAjusteParamProd;
+							 MenuActualScreen.funcKeyUP=AjusteParamProdkeyUP;
+							 MenuActualScreen.funcKeyRT=AjusteParamProdkeyRT;	 
+							 MenuActualScreen.funcKeyLF=AjusteParamProdkeyLF;
+							 MenuActualScreen.funcKeyDN=AjusteParamProdkeyDN;
+							 MenuActualScreen.funcKeyEN=AjusteParamProdkeyEN;
+							 ret=TRUE;
+							 break;
+		 case AJUSTE_DE_SISTEMA:
+			  	  	  	  	 MenuActualScreen.menuNodo=AJUSTE_DE_SISTEMA;
+							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
+							 MenuActualScreen.func1=DisplayMenuAjustedeSistema;
+							 MenuActualScreen.funcKeyUP=AjustedeSistemakeyUP;
+							 MenuActualScreen.funcKeyRT=AjustedeSistemakeyRT;	 
+							 MenuActualScreen.funcKeyLF=AjustedeSistemakeyLF;
+							 MenuActualScreen.funcKeyDN=AjustedeSistemakeyDN;
+							 MenuActualScreen.funcKeyEN=AjustedeSistemakeyEN;
+							 ret=TRUE;
+							 break;
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------- PASO-2							 
+		 case PANTALLA_DDS://---------------------------------------------------------- PASO 3 IR A VFDkey.h-----
+							 MenuActualScreen.menuNodo=PANTALLA_DDS;
+							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
+							 MenuActualScreen.func1=DDS_HANDLER;
+							 MenuActualScreen.funcKeyUP=PANTALLA_DDSkeyUP_v2;
+							 MenuActualScreen.funcKeyRT=PANTALLA_DDSkeyRT_v2;	 
+							 MenuActualScreen.funcKeyLF=PANTALLA_DDSkeyLF_v2;
+							 MenuActualScreen.funcKeyDN=PANTALLA_DDSkeyDN_v2;
+							 MenuActualScreen.funcKeyEN=PANTALLA_DDSkeyEN_v2;
+							 ret=TRUE;
+							 break;
+		 case INFORMACION_DE_USUARIO:			 
+			 	 	 	 	 MenuActualScreen.menuNodo=INFORMACION_DE_USUARIO;
+							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
+							 MenuActualScreen.func1=DisplayMenuInformacionUsuario;
+							 MenuActualScreen.funcKeyUP=MenuInformacionUsuariokeyUP;
+							 MenuActualScreen.funcKeyRT=MenuInformacionUsuariokeyRT;	 
+							 MenuActualScreen.funcKeyLF=MenuInformacionUsuariokeyLF;
+							 MenuActualScreen.funcKeyDN=MenuInformacionUsuariokeyDN;
+							 MenuActualScreen.funcKeyEN=MenuInformacionUsuariokeyEN;
+							 ret=TRUE;
+							 break;
+	
+
+
+
+         default: errorCritico2("error de InitArbol,19",19);break;                     
         }//fin switch ++EN CONSTRUCCION ++++++++++++++++++++++++++++++++++++
 return ret;
 }//fin portal inicion++++++++++++++++++++++++++++++++++++++++++++++

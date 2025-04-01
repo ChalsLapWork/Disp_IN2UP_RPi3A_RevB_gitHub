@@ -319,6 +319,70 @@ return;  }//fin AjustedeSistemakeyEN
  * AjustedeSistemakeyDN+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
+void MenuInformacionUsuariokeyUP(void){
+unsigned char *cursorx,*cursory;
+		cursorx=&vfd.menu.cursorx;
+		cursory=&vfd.menu.cursory;	
+	if(*cursory==POSY2){//PRIMERA POSICION DESPUES DE LA X    
+		   VFDposicion(POSX0,POSY2);
+		   VFDserial_SendChar(' ');*cursory=POSY0;
+		   VFDposicion(POSXESQUINA,*cursory);
+		   VFDserial_SendChar('>');VFDserial_SendChar('X');
+		   return;}//posicion primera
+		 if(*cursory==POSY0) return;
+		 if(*cursory<(POSY14+1)){
+		   VFDposicion(POSX0,*cursory); 
+		   VFDserial_SendChar(' ');--(*cursory);
+		   VFDposicion(POSX0,--(*cursory));
+		   VFDserial_SendChar('>'); return;}
+}//fin MenuInformacionUsuariokeyUP -------------------
+void MenuInformacionUsuariokeyRT(void){return;} 
+void MenuInformacionUsuariokeyLF(void){return;}
+void MenuInformacionUsuariokeyDN(void){
+unsigned char *cursorx,*cursory;
+		cursorx=&vfd.menu.cursorx;
+		cursory=&vfd.menu.cursory;
+	if(*cursory==POSY0){//PRIMERA POSICION DESPUES DE LA X
+		   VFDposicion(POSXESQUINA,POSY0);
+		   VFDserial_SendChar(' ');VFDserial_SendChar('x');
+		   *cursorx=POSX0;*cursory=POSY2;
+		   VFDposicion(*cursorx,*cursory);
+		   VFDserial_SendChar('>'); return;}
+		 if(*cursory==POSY14){//PRIMERA POSICION DESPUES DE LA X
+		   return;}
+		 if(*cursory<POSY14){
+			VFDposicion(POSX0,*cursory);
+			VFDserial_SendChar(' ');
+			*cursorx=POSX0;++(*cursory);
+			VFDposicion(*cursorx,++(*cursory));
+			VFDserial_SendChar('>'); return;}
+}//fin MenuInformacionUsuariokeyDN----------------------------------------
+void MenuInformacionUsuariokeyEN(void){
+unsigned char *cursorx,*cursory;
+		cursorx=&vfd.menu.cursorx;
+		cursory=&vfd.menu.cursory;	
+	if(*cursory==POSY2) {/*cambio_de_contexto(HACER_PRUEBA_DE_RUIDO;*/  return;}
+	if(*cursory==POSY4) {gpoc.igpoc0=0;//resetea las var de despliegue de numeros
+		                cambio_de_contexto(MEDIDAS_DE_VOLTAJE);  return;}
+	if(*cursory==POSY6) {/*cambio_de_contexto(AJUSTE_DE_PRODUCTOINFO); */ return;}
+	if(*cursory==POSY8) {cambio_de_contexto(TIEMPO_DE_RECHAZOINFO);  return;}
+	if(*cursory==POSY10){cambio_de_contexto(AJUSTE_SISTEMA_ENTRADAS);  return;}
+	if(*cursory==POSY12){cambio_de_contexto(ID_MAQUINA);  return;}
+	if(*cursory==POSY14){DisplayCuentaProducto();  return;}
+	if(*cursory==POSY0) {if(menu.contexto.Anterior==AJUSTE_DE_SISTEMA){
+		                 cambio_de_contexto(AJUSTE_DE_SISTEMA);return;}//SI ACTIVAMOS AQUI EL menu control se ejecuta dos veces
+						if(menu.contexto.Anterior==MENU_INSIGHT){
+			                 cambio_de_contexto(MENU_INSIGHT);return;}//SI ACTIVAMOS AQUI EL menu control se ejecuta dos veces
+						else cambio_de_contexto(PORTAL_INICIO);}
+}//fin MenuInformacionUsuariokeyEN---------------------------------
+/* FIN  MenuInformacionUsuariokeyEN++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * */
+
+
+
+
+
+
 
 /*******************************************************************************************************+*/
 /*******************************************************************************************************+*/
