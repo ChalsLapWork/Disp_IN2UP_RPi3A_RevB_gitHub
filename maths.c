@@ -321,7 +321,8 @@ const unsigned char byte[]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};
     	       	case 128:return 191;break;
     	       	default:break;}
     	       	break;// fin de 23          		          		     	      
-    	   default:break;}      
+    	   default:break;}    
+return 0;
 }//fin de get_Coord_Num-----------------------------------
 
 
@@ -1143,7 +1144,7 @@ L173:for (i = 0, p = &P.Pm; i < 2; i++, p++) {//Error 127
 struct Coordsf get_Evaluar_3(struct Coordsf P,struct Ec_Recta f){
 float y,x;    
 unsigned char estado=0;
-	   
+struct Coordsf ret={0};	   
       //Lado izquierdo Pm
 	  y=frecta(&f,'x',0);//es y postiva o negativa?
 	  if(absf(y)<0.5){estado=1;}//casi esta en cerca del centro origen
@@ -1174,7 +1175,7 @@ unsigned char estado=0;
 	  	  
 	  
 	  
-	
+return ret;	
 }//----------------------------------------------------------------
 
 

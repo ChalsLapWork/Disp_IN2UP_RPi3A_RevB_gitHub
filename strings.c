@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "queue.h"
+#include "maths.c"
 #include "errorController.h"
 
 
@@ -668,10 +669,11 @@ unsigned char convertir_Voltaje_A_Chars(double voltaje,unsigned char *N,unsigned
     	                 *(N)++='2';
     	                 *(N)++='0';
     	                 *N='0';
-    	                 return;}
+    	                 return 0;}
     	              break;
     	default:break;}
-cv2:switch(tarjeta){
+//cv2:
+        switch(tarjeta){
 	     case _PICKUP_: voltagePositivo_a_Chars(voltaje,N); 
 			            break;	
 	     case  _DRIVER_:voltagePositivo_a_Chars(voltaje,N);
@@ -679,8 +681,6 @@ cv2:switch(tarjeta){
 	     case  CANAL_Y:			    
 		 case  CANAL_X:return(voltagePositivo_a_Chars(voltaje,N));
 			            break;
-			              
-		
 		default:break;}
 return 0;
 }//fin de convertir_Voltaje_A_Chars---------------------------------------------------
@@ -940,7 +940,7 @@ return 0;
 
 /*return true if a it is a number from 0 to 9*/
 unsigned char isNum(char a){
-	if((a<=9)&&(a>-1))
+	if((a<=9)||(a==0))
 			return TRUE;
 	else return FALSE;
 }//isNum----------------------------------------------------------

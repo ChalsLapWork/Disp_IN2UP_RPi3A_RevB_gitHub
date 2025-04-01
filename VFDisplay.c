@@ -231,14 +231,14 @@ unsigned char *p,phase,phasefrac; //para los valores ascii del numero entero
 void displayUINT_var(unsigned char posx,unsigned char posy,unsigned short int *pn,unsigned char operacion){
 	unsigned char a[5],*p;
            p=&a[0];
-          if(operacion==RESTAR)
-             if(*pn==0)
-                  *pn=32000;
-             else *pn-=1;
-          if(operacion==SUMAR)
+          if(operacion==RESTAR){
+               if(*pn==0)
+                    *pn=32000;
+               else *pn-=1;}
+          if(operacion==SUMAR){
                 if(*pn>31999)
   	                   *pn=0;
-                else  *pn+=1;
+                else  *pn+=1;}
            getCharsFromUINT_var(p,*pn);
 	       display5UChars(posx,posy,p);
 }// fin display sensibilidad variable-----------------------------------------------
@@ -253,27 +253,6 @@ void display5UChars(unsigned char posx,unsigned char posy,unsigned char *p){
 	     
 }//fin de despleigue de 5 chars en array que representan un numero UINT de maximo 99999-------------------------
     
-
-void displayPhase_var(unsigned char posx,unsigned char posy){//despliega la variable de phase en la posicion
-unsigned char a[3];
-unsigned char *p,phase,phasefrac; //para los valores ascii del numero entero
-        p=&a[0];
-        phase=getCharsFromFloat(&phasefrac,producto2.phase);
-	    getUChar2Chars(p,phase,YES);//obtiene los tres char de un numero char unsigned
-        if(phasefrac>9)
-        	phasefrac=0;
-    	//debug    if(posx==0)
-	        //controlador de errores aqui
-       if((posx>0)&&(posx<6))
-	        posx=digito2posicion(posx); //convierte numero de orden de digito en coordenadasx del display 
-       VFDposicion(posx,posy);
-       VFDserial_SendChar(a[0]);
-       VFDserial_SendChar(a[1]);
-       VFDserial_SendChar(a[2]);
-	   VFDserial_SendChar('.');
-       VFDserial_SendChar(phasefrac+0x30);	    
-       producto2.phase=get_Float_from_Phase(phase,phasefrac);
-}//display phase var-----------------------------------------------------------------------------
 		
 
 unsigned short int  digito2posicion(unsigned short int digito){
