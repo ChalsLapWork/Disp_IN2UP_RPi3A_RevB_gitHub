@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include "strings.h"
 #include "VFDisplay.h"
+#include <stdlib.h>
 
 extern struct _DISPLAY_VFD_ vfd;
 extern struct _PRODUCT1_ producto2;
@@ -504,8 +505,8 @@ unsigned char *cursorx,*cursory;
 void procSensxDigitoEN(unsigned char *digito,unsigned char posx,unsigned char initx){
 unsigned char a[5],*p;	
 unsigned char *cursorx,*cursory;       
-       cursorx=vfd.menu.cursorx;
-	   cursory=vfd.menu.cursory;
+       cursorx=&vfd.menu.cursorx;
+	   cursory=&vfd.menu.cursory;
 	   switch(*digito){//  5 indica decena de miles y 1 unidad
 	    				  case 1:*digito=0;p=&a[0];
 	    					     *cursorx=posx;
