@@ -172,7 +172,7 @@ union W16{
        vfd.config.bits.BOX_enable=TRUE;//se autoriza a dibujar cajas
 	   //init_Sensibilidad();
 	   //usleep(100);//espera que se envien los datos del menu al VFD
-       vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
+		vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
 	   vfd.box.enable=1;
        ret=TRUE;
 return ret;   
@@ -257,7 +257,9 @@ unsigned char *cursorx,*cursory;
 		AjParamProd=&global;
 		AjParamProd->editarSensFase=&AjParamProd->var1;
         *(AjParamProd->editarSensFase)=(unsigned char)0; //variable que indica si se esta editando el numero sensibildad y Fase
-        vfd.config.bits.Menu_Ready=1;
+        AjParamProd->arg2=&global.var2;
+		*(AjParamProd->arg2)=(unsigned char)0;////se borraran los contadores
+         vfd.config.bits.Menu_Ready=1;
 }//fin display ingenieria2 gracida---------------------------------------------------
 
 

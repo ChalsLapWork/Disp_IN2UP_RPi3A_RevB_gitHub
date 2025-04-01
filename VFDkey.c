@@ -245,6 +245,40 @@ unsigned char 	phasefrac,phase;
 	       producto2.fase=get_Float_from_Phase(phase,phasefrac);   
 		   return;}
 }//FIN  AjusteParamProdkeyLF----------------------------------------------------------------
+void AjusteParamProdkeyEN(void){
+//unsigned char a[5],*p;
+unsigned char *cursory;
+        cursory=&vfd.menu.cursory;   
+	    switch(*cursory){
+	    	case POSY2: /* INIZIAIZAR MEMORIA*/ break;
+	    	case POSY4:                         break;
+	    	case POSY6: procSensxDigitoEN(AjParamProd->editarSensFase,POSXAJUSPROD-8,0); 
+	    	            break;//del case posy6
+	    	case POSY8: procFasexDigitoEN(AjParamProd->editarSensFase,POSXAJUSPROD,POSY10);
+						break;
+			case POSY10: //  _display   pushFIFOcOP  BorrarContadores_var();
+				        configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
+						cambio_de_contexto(configModificacionController(AJUSTE_PARAMETRICO_DE_PRODUCTO,AJUSTE_PARAMETRICO_DE_PRODUCTO));
+						*(AjParamProd->arg2)=RESET;//arg2=RESET;//se borraran los contadores
+						break;
+			case POSY12:cambio_de_contexto(PANTALLA_DDS); break;
+			case POSY14: //Para Pasar a Ajustes Avanzados
+//						menu.b.b.semMenuPendiente=TRUE;//HABILITAMOS  funcion en S.O de escape
+//						displayBoxDestructor(ACTIVADO);//destruir y parar la barra de deteccion.
+						//cambio_de_contexto(configModificacionController(AJUSTES_AVANZADOS,AJUSTE_PARAMETRICO_DE_PRODUCTO));
+//						menu.contexto.Anterior=AJUSTE_PARAMETRICO_DE_PRODUCTO;
+						cambio_de_contexto(AJUSTES_AVANZADOS);
+						break;
+			case POSY0:cambio_de_contexto(PORTAL_INICIO);
+			        	break;
+			default: //__asm(Halt);
+			          errorCritico("Error en AjParamProd-Enter");
+					  exit(1);
+			         }//debug error de diseño se softwre
+return;}/* FIN  AjusteParamProdto  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/* FIN  AjusteParamProd ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * */
+
 
 //*****************************************************************************************
 void AjustedeSistemakeyUP(void){

@@ -475,4 +475,109 @@ unsigned char b,rx;
 return b;	
 }//fin getRegistro_X_bit---------------------------------------------
 
+
+void DisplayCuentaProducto(void){//-----------------------------------
+unsigned char r[]="Apagar  ";
+unsigned char z[]="Permitir";
+//word n;
+unsigned char *cursorx,*cursory;
+    cursorx=&vfd.menu.cursorx;
+	cursory=&vfd.menu.cursory;
+	VFDclrscr();
+	VFDposicion(POSX192,POSY14);   //delay1us();
+	if(producto2.CuentaProducto==APAGAR){ 
+		producto2.CuentaProducto=PERMITIR; 
+		VFDserial_SendBlock(&z[0],sizeof(r));}
+	else {producto2.CuentaProducto=APAGAR;
+	    VFDserial_SendBlock(&r[0],sizeof(z));}
+	//delay1us();
+	*cursorx=POSX0;*cursory=POSY14;
+    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
+    //menu.b.b.isMenu=1;//se ejecuto este menu.
+    vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
+}// fin Display Centa de Producto-------------------------------------
 	
+	
+/* Procesador de sensibilidad or digito  cambiamos el numero en menu por digito
+ * param1: digito, digito a cambiar de valor
+ * param2: posicion donde se pinta el digito * */
+void procSensxDigitoEN(unsigned char *digito,unsigned char posx,unsigned char initx){
+unsigned char a[5],*p;	
+unsigned char *cursorx,*cursory;       
+       cursorx=vfd.menu.cursorx;
+	   cursory=vfd.menu.cursory;
+	   switch(*digito){//  5 indica decena de miles y 1 unidad
+	    				  case 1:*digito=0;p=&a[0];
+	    					     *cursorx=posx;
+	    				         getCharsFromUINT_var(p,producto2.Sensibilidad);
+	    					     VFDposicion(*cursorx,*cursory);
+	    					     VFDserial_SendChar(' ');
+	    					     VFDserial_SendChar(a[0]+0x30);
+	    					     VFDserial_SendChar(a[1]+0x30);
+	    					     VFDserial_SendChar(a[2]+0x30);
+	    					     VFDserial_SendChar(a[3]+0x30);
+	    					     VFDserial_SendChar(a[4]+0x30);			          
+	    					     *cursorx=initx;
+	    					     VFDposicion(*cursorx,*cursory);
+	    					     VFDserial_SendChar('>');
+	    					     VFDserial_SendChar(0x01);
+					             //isEnable_Keypad(WAIT);
+	    					     break;
+	    				  case 0:*digito=5;
+	    		                 VFDposicion(*cursorx,*cursory);
+			                     VFDserial_SendChar(' ');
+			                     *cursorx=posx;
+			                     VFDposicion(*cursorx,*cursory);
+			                     VFDserial_SendChar('>');
+			                     VFDserial_SendChar(0x01);
+					             //isEnable_Keypad(WAIT);
+			                     break;        
+	    				  case 5:*digito=4;p=&a[0];
+	    				         *cursorx=posx;
+	    				         VFDposicion(*cursorx,*cursory);
+	    				         getCharsFromUINT_var(p,producto2.Sensibilidad);
+	    				         VFDserial_SendChar(a[0]+0x30); 
+								 VFDserial_SendChar('>');
+								 VFDserial_SendChar(0x01);
+								 //isEnable_Keypad(WAIT);
+								 break;
+	    				  case 4:*digito=3;p=&a[0];
+								 *cursorx=posx;
+								 VFDposicion(*cursorx,*cursory);
+								 getCharsFromUINT_var(p,producto2.Sensibilidad);
+								 VFDserial_SendChar(a[0]+0x30);
+								 VFDserial_SendChar(a[1]+0x30);
+								 VFDserial_SendChar('>');
+								 VFDserial_SendChar(0x01);
+								 //isEnable_Keypad(WAIT);
+								 break;
+	    				  case 3:*digito=2;p=&a[0];
+								 *cursorx=posx;
+								 VFDposicion(*cursorx,*cursory);
+								 getCharsFromUINT_var(p,producto2.Sensibilidad);
+								 VFDserial_SendChar(a[0]+0x30);
+								 VFDserial_SendChar(a[1]+0x30);
+								 VFDserial_SendChar(a[2]+0x30);
+								 VFDserial_SendChar('>');
+								 VFDserial_SendChar(0x01);
+								 //isEnable_Keypad(WAIT);
+								 break;	 
+	    				  case 2:*digito=1;p=&a[0];
+								 *cursorx=posx;
+								 VFDposicion(*cursorx,*cursory);
+								 getCharsFromUINT_var(p,producto2.Sensibilidad);
+								 VFDserial_SendChar(a[0]+0x30);
+								 VFDserial_SendChar(a[1]+0x30);
+								 VFDserial_SendChar(a[2]+0x30);
+								 VFDserial_SendChar(a[3]+0x30);
+								 VFDserial_SendChar('>');
+								 VFDserial_SendChar(0x01);
+								 //isEnable_Keypad(WAIT);
+								 break;	 	 		 
+								 
+	    				  default://__asm(Halt);
+						          errorCritico("Error en AjParamProd-Enter");
+					  			  exit(1);
+	    	                      break;}//debug--------
+
+}//fin de procSensxDigito----------------------------------------------

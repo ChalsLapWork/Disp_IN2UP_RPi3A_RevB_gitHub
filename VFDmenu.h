@@ -820,10 +820,12 @@ struct ArbolMenu{
 //activo
 typedef struct{//variables globales por menu
    unsigned char var1;
+   unsigned char var2;
    float fvar1;
    unsigned char *editarSensFase;//editar enable sensib y fase
    unsigned char *cursorAnterior;//menu Config entradas syst
    unsigned char *ResetDisplayNum;//menu info de usuario
+   unsigned char *arg2;
 }GlobalStruct;
 
 extern GlobalStruct global;
@@ -998,7 +1000,6 @@ unsigned char isEnable_Keypad(unsigned char cmd);
 void DDS_Borrar_Refresh(void);
 unsigned char isEnable_Keypad2(unsigned char cmd,unsigned long int maxtime);
 void resetDDS_repetidos(unsigned short int n);
-void procSensxDigitoEN(unsigned char *digito,unsigned char posx,unsigned char initx);
 unsigned char procSensxDigitoRT(unsigned char posx,unsigned char posy,unsigned short int *Sens);
 unsigned char procSensxDigitoLF(unsigned char posx,unsigned char posy,unsigned short int *Sens);
 void procFasexDigitoEN(unsigned char *var,unsigned char posx,unsigned char posy);

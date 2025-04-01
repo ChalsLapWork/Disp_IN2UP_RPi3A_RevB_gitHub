@@ -315,11 +315,13 @@ struct _Deteccion_{
 struct _PRODUCT1_{
    unsigned short int Cuenta_Rechazos;//numer de rechazos de producto
    unsigned short int Cuenta_Productos;//numero de productos que ha pasado por detector
+   unsigned char CuentaProducto;//ON|OFF contar producto;
    unsigned short int Sensibilidad;//configurada para este producto
    unsigned char phase;//phase del producto, numero entero
    float fase;//fase del producto numero flotante
    unsigned char Phasefrac;// faccion del numero de fase.
    unsigned char name[NOMBRE_PRODUCTO_SIZE]; 
+   
 
 };
 
