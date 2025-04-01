@@ -188,7 +188,7 @@ unsigned char *cursorx,*cursory;
 	    displayUINT_var(POSXAJUSPROD,POSY6,&producto2.Sensibilidad,NONE);
 	    displayPhase_var(POSXAJUSPROD,POSY8);
 	   // displayFaseVar();
-	    displayCuadroMadre();//despliega el cuadro de barra de deteccion
+	    displayCuadroMadre_VFD();//despliega el cuadro de barra de deteccion
 	    vfd.box.box0=0;//se inicia la barra en 0s. sino empieza ala mitad
 	    *cursorx=POSX0;*cursory=POSY6; 
 	    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
@@ -426,6 +426,14 @@ void cursorMenuControl(unsigned char keyx){//control del cursosr por cada menu
       cursorMenuControlService(keyx,p);
 
 }//FIN CURSOR MENU CONTROL-------------------------------------------------------------------------------
+
+unsigned char procSensxDigitoLF(unsigned char posx,unsigned char posy,unsigned short int *Sens){
+	 if(*Sens==1)
+		return FALSE;  
+	 else --(*Sens); 		 
+     BarraDet_displayUINT_var(posx,posy,Sens);//displayUINT_var(POSXCFNUM,POSY2,&Sensibilidad,NONE);	
+return TRUE;
+}//fin ---procSensxDigitoRT--------------------------------------------
 
 
 /* this method is filted to be executed w/o error of context failure, 'cos

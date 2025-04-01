@@ -9,7 +9,7 @@
 
 
 extern struct _DISPLAY_VFD_ vfd;
-struct _PRODUCT1_ producto2;
+extern struct _PRODUCT1_ producto2;
 
 
 void PortaliniciokeyUP(void){return;}//fin PortaliniciokeyUP--------PONER LAS FUNCIONES KEY DEL MENU------------------6
@@ -305,7 +305,11 @@ unsigned char *cursorx,*cursory;
 	if(*cursory==POSY2){/*);ret;*/ return;}
 	if(*cursory==POSY4){ cambio_de_contexto( MENU_ADMINISTRATIVO); return;}//-------------M8:poner el contexto al que se quiere entrar
 	if(*cursory==POSY6){ cambio_de_contexto(AJUSTE_DE_VIBRACION);  return;}
-	if(*cursory==POSY8){ cambio_de_contexto(CONFIGURAR_ENTRADAS_DE_SISTEMA); *(ConfEntSyst->cursorAnterior)=POSY0;return;}
+	if(*cursory==POSY8){ cambio_de_contexto(CONFIGURAR_ENTRADAS_DE_SISTEMA);
+	
+	                           /* *(ConfEntSyst->cursorAnterior)=POSY0;*/ //<<--- PONER ESTE CUANDO SE HAGA EL MENU
+							   
+							   return;}
 	if(*cursory==POSY10){cambio_de_contexto(CONTROL_DE_FRECUENCIA);return;}
 	if(*cursory==POSY12){cambio_de_contexto(ID_COMUNICACIONES);    return;}
 	if(*cursory==POSY14){cambio_de_contexto(INGENIERIA_GRACIDA);   return;}

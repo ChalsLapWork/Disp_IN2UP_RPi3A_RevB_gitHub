@@ -1146,7 +1146,7 @@ float y,x;
 unsigned char estado=0;
 struct Coordsf ret={0};	 
     (void)P;  // 🔹 Evita la advertencia de parámetro no usado  
-	
+
       //Lado izquierdo Pm
 	  y=frecta(&f,'x',0);//es y postiva o negativa?
 	  if(absf(y)<0.5){estado=1;}//casi esta en cerca del centro origen
@@ -1544,6 +1544,13 @@ struct Coorducf P;
 		   return TRUE;}	
 return 0;
 }//fin inZoom, dentro del zoom actual esta las coordenadas Coord
+
+
+struct Coorducf get_MaxDDSzoom(unsigned char zoom){
+struct Coorducf p={0};
+   		   mens_Warnning_Debug("Error de software: f.get_MaxDDSzoom:sin codigo");
+return p;
+}//fin get max DDS zoom++++++++++++++++++++++++++++++++++++++++++
 
 
 

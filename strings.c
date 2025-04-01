@@ -538,6 +538,18 @@ const unsigned char  U[]={8,4,2,6,8,4,2,6,8,4,2,6,8,4,2,5,8,4,2,6,8,4,2,6,8,4,2,
     	  *(p+i)+='0';
 }//fin de obtener el ASCII de unsigned Long integer--------------------
 
+void suma_BCD2(unsigned char a5,unsigned char a4,unsigned char a3,unsigned char a2,unsigned char a1,unsigned char dm1,unsigned char m1,unsigned char c1,unsigned char d1,unsigned char u1,unsigned char *p){
+	 suma_BCD_digito2(_A5_,a5,p,0);
+	 suma_BCD_digito2(_A4_,a4,p,0);
+	 suma_BCD_digito2(_A3_,a3,p,0);
+	 suma_BCD_digito2(_A2_,a2,p,0);
+	 suma_BCD_digito2(_A1_,a1,p,0);
+	 suma_BCD_digito2(_DM_,dm1,p,0);
+	 suma_BCD_digito2(_M_ ,m1,p,0);
+	 suma_BCD_digito2(_C_ ,c1,p,0);
+	 suma_BCD_digito2(_D_ ,d1,p,0);
+	 suma_BCD_digito2(_U_ ,u1,p,0);
+}//---------------------------------------------------------------------------------
 
 
 
