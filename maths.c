@@ -1124,7 +1124,7 @@ struct Coordsf get_Evaluar_3(struct Coordsf P,struct Ec_Recta f){
 float y,x;    
 unsigned char estado=0;
 struct Coordsf ret={0};	 
-    (void)P;  // 🔹 Evita la advertencia de parámetro no usado  
+    (void)P;  // Evita la advertencia de parámetro no usado  
 
       //Lado izquierdo Pm
 	  y=frecta(&f,'x',0);//es y postiva o negativa?
