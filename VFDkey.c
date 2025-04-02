@@ -27,44 +27,44 @@ void MenuInsightkeyUP(void){
 unsigned char *cursorx,*cursory;
        cursorx=&vfd.menu.cursorx;
        cursory=&vfd.menu.cursory;    
-                            if(*cursory>POSY4){
-                              VFDposicion(*cursorx,*cursory);
-                              VFDserial_SendChar(' ');
-                              --(*cursory);
-                              VFDposicion(*cursorx,--(*cursory));
-                              VFDserial_SendChar('>');}
-                         else 
-                        	 if(*cursory==POSY4){
-                        		 VFDposicion(*cursorx,*cursory); 
-			                     VFDserial_SendChar(' ');
-			                     *cursorx=POSXESQ235;*cursory=POSY0; //xpos=POSXESQ235
-			                     VFDposicion(*cursorx,*cursory);
-			                     VFDserial_SendChar('>');
-			                     VFDserial_SendChar('X');  }    
-                          return;}//fin MenuInsightkeyUP--------------------------------------
+		if(*cursory>POSY4){
+			VFDposicion(*cursorx,*cursory);
+			VFDserial_SendChar(' ');
+			--(*cursory);
+			VFDposicion(*cursorx,--(*cursory));
+			VFDserial_SendChar('>');}
+		else 
+			if(*cursory==POSY4){
+				VFDposicion(*cursorx,*cursory); 
+				VFDserial_SendChar(' ');
+				*cursorx=POSXESQ235;*cursory=POSY0; //xpos=POSXESQ235
+				VFDposicion(*cursorx,*cursory);
+				VFDserial_SendChar('>');
+				VFDserial_SendChar('X');  }    
+return;}//fin MenuInsightkeyUP--------------------------------------
 void MenuInsightkeyRT(void){return;}//fin MenuInsightokeyRT--------------------------------------
 void MenuInsightkeyLF(void){return;}//fin MenuInsightokeyLF--------------------------------------
 void MenuInsightkeyDN(void){
 unsigned char *cursorx,*cursory;
        cursorx=&vfd.menu.cursorx;
        cursory=&vfd.menu.cursory;    
-                         if(*cursory==POSY0){
-	                        VFDposicion(*cursorx,*cursory);
-							VFDserial_SendChar(' ');
-							VFDserial_SendChar('x');
-							*cursorx=POSX0;*cursory=POSY4;
-							VFDposicion(*cursorx,*cursory);
-							VFDserial_SendChar('>');
-							return;}
-				         else{
-				        	if(*cursory<POSY12){
-							VFDposicion(*cursorx,*cursory);
-							VFDserial_SendChar(' ');
-							++(*cursory);
-							VFDposicion(*cursorx,++(*cursory));
-							VFDserial_SendChar('>');
-							return;}}
-	                     return;}//fin MenuInsightokeyDN--------------------------------------
+		if(*cursory==POSY0){
+			VFDposicion(*cursorx,*cursory);
+			VFDserial_SendChar(' ');
+			VFDserial_SendChar('x');
+			*cursorx=POSX0;*cursory=POSY4;
+			VFDposicion(*cursorx,*cursory);
+			VFDserial_SendChar('>');
+			return;}
+		else{
+			if(*cursory<POSY12){
+				VFDposicion(*cursorx,*cursory);
+				VFDserial_SendChar(' ');
+				++(*cursory);
+				VFDposicion(*cursorx,++(*cursory));
+				VFDserial_SendChar('>');
+				return;}}
+return;}//fin MenuInsightokeyDN--------------------------------------
 void MenuInsightkeyEN(void){
 unsigned char *cursorx,*cursory;
 cursorx=&vfd.menu.cursorx;
@@ -87,20 +87,20 @@ void AjusteProductokeyUP(void){
 unsigned char *cursorx,*cursory;
        cursorx=&vfd.menu.cursorx;
        cursory=&vfd.menu.cursory;	
-	                      if(*cursory>POSY4){
-	   			    	      VFDposicion(*cursorx,*cursory);
-	   			    	      VFDserial_SendChar(' ');
-	   			    	      --(*cursory);
-	   			    	      VFDposicion(*cursorx,--(*cursory));
-	   			    	      VFDserial_SendChar('>');
-	   			    	      return;}
-	   			          else if(*cursory==POSY4){VFDposicion(*cursorx,*cursory); 
-	   			                                  VFDserial_SendChar(' ');
-	   			                                  *cursorx=POSXESQ235;*cursory=POSY0; //xpos=POSXESQ235
-	   			                                  VFDposicion(*cursorx,*cursory);
-	   			                                  VFDserial_SendChar('>');
-	   			                                  VFDserial_SendChar('X');  }
-	                      return;}//fin PortaliniciokeyUP--------PONER LAS FUNCIONES KEY DEL MENU------------------6
+		if(*cursory>POSY4){
+			VFDposicion(*cursorx,*cursory);
+			VFDserial_SendChar(' ');
+			--(*cursory);
+			VFDposicion(*cursorx,--(*cursory));
+			VFDserial_SendChar('>');
+			return;}
+		else if(*cursory==POSY4){VFDposicion(*cursorx,*cursory); 
+								VFDserial_SendChar(' ');
+								*cursorx=POSXESQ235;*cursory=POSY0; //xpos=POSXESQ235
+								VFDposicion(*cursorx,*cursory);
+								VFDserial_SendChar('>');
+								VFDserial_SendChar('X');  }
+return;}//fin PortaliniciokeyUP--------PONER LAS FUNCIONES KEY DEL MENU------------------6
 void AjusteProductokeyRT(void){return; }//fin PortaliniciokeyRT-------LLENAR LAS FUNCIONES DE LOS KEYS------------------8
 void AjusteProductokeyLF(void){return;}//fin PortaliniciokeyLF--------------------------------------
 void AjusteProductokeyDN(void){
@@ -155,7 +155,7 @@ unsigned char *cursorx,*cursory;
 cursorx=&vfd.menu.cursorx;
 cursory=&vfd.menu.cursory;
 
-	if(*(AjParamProd->editarSensFase)>0){//->igxc0>0){//esta seleccionado cambiar por numero
+	if(*(AjParamProd->editarSensFase)>0){//->igxc0>0)//esta seleccionado cambiar por numero
 	  	 operacionVariable(POSXAJUSPROD-8,*cursory,*(AjParamProd->editarSensFase),SUMAR);
 		 configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
 		 //isEnable_Keypad(WAIT);
@@ -259,7 +259,7 @@ unsigned char *cursory;
 						break;
 			case POSY10: //  _display   pushFIFOcOP  BorrarContadores_var();
 				        configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
-						cambio_de_contexto(configModificacionController(AJUSTE_PARAMETRICO_DE_PRODUCTO,AJUSTE_PARAMETRICO_DE_PRODUCTO));
+						cambio_de_contexto(AJUSTE_PARAMETRICO_DE_PRODUCTO);
 						*(AjParamProd->arg2)=RESET;//arg2=RESET;//se borraran los contadores
 						break;
 			case POSY12:cambio_de_contexto(PANTALLA_DDS); break;
@@ -276,6 +276,7 @@ unsigned char *cursory;
 			          errorCritico("Error en AjParamProd-Enter");
 					  exit(1);
 			         }//debug error de diseño se softwre
+return;}// FIN  AjusteParamProdto  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 /* FIN  AjusteParamProd ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 
@@ -525,7 +526,7 @@ unsigned char phase,phasefrac,*cursorx,*cursory;
 unsigned char procSensxDigitoRT(unsigned char posx,unsigned char posy,unsigned short int *Sens){
 	if((*Sens)>=32000)
 		 return FALSE;
-	else  ++(*Sens); 
+	else{++(*Sens);} 
 	BarraDet_displayUINT_var(posx,posy,Sens);//displayUINT_var(POSXCFNUM,POSY2,&Sensibilidad,NONE);	
 return 1;	
 }//fin ---procSensxDigitoRT--------------------------------------------
