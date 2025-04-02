@@ -25,8 +25,6 @@ void configPuertos(void){
 
 
 void init_Display(void){
-// unsigned char init[]=0x00,0x00}; 
- //unsigned char delays={  1,  2};
-    // display_data(&init[0],&delays[0])
+
  
 }//fin de init_Display+++++++++++++++++++++

@@ -56,7 +56,7 @@ return ret;
 unsigned char get_Coord_Num(unsigned char xn,unsigned char bit){
 const unsigned char byte[]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};
 
-   switch(xn){//rx
+   switch(xn){
 	   case 0:switch(byte[bit]){//b
 		         case 1:return 192;break;
 		         case 2:return 1;break;

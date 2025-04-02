@@ -602,7 +602,6 @@ unsigned char n,m,b;
 	 if(isNumAscii(*p))
 	  if(isNumAscii(*(p+1)))
 	   if(isNumAscii(*(p+2))){
-		     //return((*p)*100+(*(p+1))*10+(*(p+2)));}
 	        n=((*p)-'0')*100;
 	        m=((*(p+1)-'0')*10)+n;
 	        b=(*(p+2)-'0')+m;
@@ -710,7 +709,7 @@ unsigned char c[SIZE2],*p;
                  signo='-';
                  voltaje=voltaje*-1;}
             else signo=' ';
-            voltINT=(unsigned short int)voltaje;//convertirlo a integer quitar decimales}
+            voltINT=(unsigned short int)voltaje;//convertirlo a integer quitar decimales
 			if(voltaje<10)
 				 n=0xAA;
 		    else{n=0;

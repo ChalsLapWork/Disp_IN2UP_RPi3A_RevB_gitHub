@@ -153,7 +153,7 @@ static unsigned char nParam,nParam0;//numero de parametros    .
 unsigned char dato;
 
  indice=0;
- do{dato=*(c+indice);                   //  while(indice<size){
+ do{dato=*(c+indice);                  
    switch(estado){
      default:estado=1;        //sin break
              if(dato==STX){estado=2;}break; 

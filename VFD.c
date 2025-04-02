@@ -116,7 +116,7 @@ void VFD_sendChar(uchar c) {
 //REGRESA TRUE si ya se ejecuto todo el comando hasta el final
 //instancia 1 y dos 
 // funcion mono-Padre || Solo puede tener un padre a la vez
-unsigned char VFDcommand(unsigned char cmd){ //unsigned char *p){
+unsigned char VFDcommand(unsigned char cmd){ //unsigned char *p)
 	//con 1 ms se le quito el error de FontSize
 	//con 100us tiene error de FontSize
 	//con 500us se le quito el error de FontSize

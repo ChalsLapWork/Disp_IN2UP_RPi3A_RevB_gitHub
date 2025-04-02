@@ -471,7 +471,7 @@ const unsigned char charpixel=8;
 		case 4:return(middle-(charpixel*2));break;
 		case 5:return(middle-(charpixel*3));break;
 		default: return(middle-((nchars/2)*charpixel));break;	}
-}//fin unsigned char display_centrarNombres(unsigned char nchars){------------------------------------
+}//fin unsigned char display_centrarNombres(unsigned char nchars)------------------------------------
 
 
 //MANEJADOR  PRINCIPAL DE EJECUCION DEL MENU++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -480,7 +480,7 @@ void menus(unsigned char key){//MANEJADOR DEL LAS FUNCIONES COORDINADAS Y SUBORD
      vfd.keypad.enable=0;//desabilitar teclado
      cursorMenuControl(key);  
 
-//fin de  void menu(unsigned char key){//MANEJADOR DEL LAS FUNCIONES COORDINADAS Y SUBORDINADAS DE LOS MENUS	   
+//fin de  void menu(unsigned char key)//MANEJADOR DEL LAS FUNCIONES COORDINADAS Y SUBORDINADAS DE LOS MENUS	   
 }// fin del Manejador principal de ejecucion del menu+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 

@@ -39,31 +39,7 @@ void init_Sensibilidad(void){
 	    
              Zoom_init();  
 	         vfd.deteccion.EnCurso=0;//no hay deteccion
-	         //Offset.Status=0;//debug poner control con EEPROM AQUI FIRST_START;//no estamos listos para evaluar el offset
-	         /*if(Deteccion.tipo==NORMAL){
-	        			cuadroBase=(Deteccion.Sensibilidad)/8;//7 cuadros base
-	        			Deteccion.LIM1=cuadroBase;
-	        			Deteccion.LIM2=cuadroBase*2;
-	        			Deteccion.LIM3=cuadroBase*3;
-	        			Deteccion.LIM4=cuadroBase*4;
-	        			Deteccion.LIM5=cuadroBase*5;
-	        			Deteccion.LIM6=cuadroBase*6;
-	        			Deteccion.LIM7=cuadroBase*7;
-	        			Deteccion.LIM8=cuadroBase*8;
-	        			Deteccion.LIM9=cuadroBase*9;
-	        			Deteccion.LIM10=cuadroBase*10;
-	        			Deteccion.LIM11=cuadroBase*11;
-	        			Deteccion.LIM12=cuadroBase*12;
-	        			Deteccion.LIM13=cuadroBase*13;
-	        			Deteccion.LIM14=cuadroBase*14;
-	        			Deteccion.LIM15=cuadroBase*15;
-	        			Deteccion.LIM16=cuadroBase*16;
-	        			Deteccion.LIM17=cuadroBase*17;
-	        		 
-	        			   }//FIN DETECCION normal
-	        			else 
-	        				__asm(Halt);//Debug it
-	        	    */
+	         
 	
 }//inizializa la sensibilidad ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -75,8 +51,6 @@ void Zoom_init(void){          //unsigned short int  x99= (32000,190)(0,95)(-320
 unsigned short int maxx,maxy,ymax,ymin;	
 	     if(vfd.menu.dds.zoom.Zoom==0)//el zoom no puede ser cero o crearia un error
 	    	 vfd.menu.dds.zoom.Zoom=99;
-	     //vfd.menu.dds.zoom.zFactor=32704/98;// Los zooms no son lineales los incrementos
-	     //vfd.menu.dds.zoom.Max=(signed short int)(32767-vfd.menu.dds.zoom.zFactor*(unsigned short int)(vfd.menu.dds.zoom.Zoom-1));//Maximo numero graficable en este zoom seleccionado			     vfd.menu.dds.zoom.Max=LIM_Y;//tamaÃ±o del radio del plano cartesiano a dibujar
 	     if(vfd.menu.dds.zoom.Max==0)
 	    	  vfd.menu.dds.zoom.Max=100;
 	     vfd.menu.dds.zoom.indiceConversion= 64/((float)vfd.menu.dds.zoom.Max);
@@ -85,7 +59,7 @@ unsigned short int maxx,maxy,ymax,ymin;
 	     vfd.menu.dds.zoom.Cy=CENTRO_Y;
 	     
 	     switch(vfd.menu.dds.zoom.Zoom){
-			case 0:errorCritico2("error de parametro de software",59);break; // __asm(Halt);//debug error de software        
+			case 0:errorCritico2("error de parametro de software",59);break;        
 			case 1: maxx=ZOOM_MAX_X_01;    maxy=ZOOM_MAX_Y_01;ymax=23919;ymin=369; break;                                 
 			case 2: maxx=ZOOM_MAX_X_02;    maxy=ZOOM_MAX_Y_02;ymax=2649;ymin=81; break;                                 
 			case 3: maxx=ZOOM_MAX_X_03;    maxy=ZOOM_MAX_Y_03;ymax=1407;ymin=43; break;                                 
@@ -192,7 +166,7 @@ unsigned short int maxx,maxy,ymax,ymin;
       vfd.menu.dds.zoom.Maxy=maxy; 
       vfd.menu.dds.zoom.Ymax=ymax;
       vfd.menu.dds.zoom.Ymin=ymin;
-	  //generarPixelsAnalogos();//(0,0);//genera una lista de valores analogos que corresponden en una lista a un pixel digital en un zoom dado
+	  //genera una lista de valores analogos que corresponden en una lista a un pixel digital en un zoom dad
       
       
 }//fin zoom init -----------------------------------------------------------------------------------------
@@ -204,7 +178,7 @@ unsigned short int maxx,maxy,ymax,ymin;
  * entre que rango y que rango corresponde un pixel digital DDS
  * version2: vamos a rellenar los arrays con los valores corrrespondienes de analogo signed a pixel DDS para
  * la conversion mas facil y rapida corespondiente al zoom seleccionado */
-void generarPixelsAnalogos(void){//signed short int Min,signed short int miny){
+void generarPixelsAnalogos(void){//signed short int Min,signed short int miny)
 
        
 }//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   	   
