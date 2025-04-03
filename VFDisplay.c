@@ -148,23 +148,30 @@ void cambio_de_contexto(unsigned char contexto){
 unsigned char find_contexto_Siguiente(void){
 unsigned char ret;     
 bool normal[256]={[0 ... 255]=false};
+bool passwd[256]={[0 ... 255]=false};
 normal[PORTAL_INICIO]=true;
 normal[MENU_INSIGHT]=true;
-normal[AJUSTE_DE_PRODUCTO]=true;
-normal[AJUSTE_PARAMETRICO_DE_PRODUCTO]=true;
 normal[AJUSTE_DE_SISTEMA]=true;
 normal[PANTALLA_DDS]=true;
 normal[INFORMACION_DE_USUARIO]=true;
 
+passwd[AJUSTE_DE_PRODUCTO]=true;
+passwd[AJUSTE_PARAMETRICO_DE_PRODUCTO]=true;
 
-  
 if(!vfd.config.bits.init_Menu){
 	     vfd.menu.contexto.solicitaCambioA=PORTAL_INICIO;
          ret=PORTAL_INICIO;}
 else{ 
+   	  
    if(normal[vfd.menu.contexto.solicitaCambioA]){	  
 	  vfd.menu.contexto.push(vfd.menu.contexto.Actual);
 	  ret=vfd.menu.contexto.solicitaCambioA;}
+   if(passwd[vfd.menu.contexto.solicitaCambioA]){
+             vfd.menu.contexto.push(vfd.menu.contexto.Actual);//de donde venimos
+			 vfd.menu.contexto.destino=vfd.menu.contexto.solicitaCambioA;//a donde vamos
+
+          }
+
      }//fin else							
 return ret;	 
 }//FIN FIND CONTEXTO siguiente++++++++++++++++++++++++++++++++++++++++++++++
