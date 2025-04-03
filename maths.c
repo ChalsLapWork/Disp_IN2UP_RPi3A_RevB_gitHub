@@ -1125,19 +1125,18 @@ float y,x;
 unsigned char estado=0;
 struct Coordsf ret={0};	 
     (void)P;  // Evita la advertencia de parámetro no usado  
-
       //Lado izquierdo Pm
 	  y=frecta(&f,'x',0);//es y postiva o negativa?
 	  if(absf(y)<0.5){estado=1;}//casi esta en cerca del centro origen
 	  else{if(y>0){estado=2;}//para arriba es positiva
 	       else estado=3;}	  //para abajo es negativa
 	  switch(estado){
-		  case 1:mens_Warnning_Debug("Error de software: f.GetEvaluar3");//(nop);__asm(Halt);
+		  case 1:mens_Warnning_Debug("Error de software: f.GetEvaluar3");
 		         break;
 		  case 2:y=0;x=frecta(&f,'y',y);P.Pm.x=x;
 		         P.Pm.y=y;break;		
 		  case 3:P.Pm.x=0;P.Pm.y=y;break;
-		  default:mens_Warnning_Debug("Error de software: f.GetEvaluar3");//__asm(nop);__asm(Halt);
+		  default:mens_Warnning_Debug("Error de software: f.GetEvaluar3");
 		          break;}
 	  //Lado derecho Pn
 	  y=frecta(&f,'x',192);//es y postiva o negativa?
@@ -1145,17 +1144,14 @@ struct Coordsf ret={0};
 	  else{if(y>-127){estado=2;}//para arriba es   -127<y<0
 	       else estado=3;}	  //para abajo abajo  y<-127
 	  switch(estado){
-	  		  case 1:mens_Warnning_Debug("Error de software: f.GetEvaluar3");//__asm(nop);__asm(Halt);
+	  		  case 1:mens_Warnning_Debug("Error de software: f.GetEvaluar3");
 			         break;
 	  		  case 2:x=192;y=frecta(&f,'x',x);P.Pn.x=x;
 	  		         P.Pm.y=y;break;
 	  		  case 3:y=-127;x=frecta(&f,'y',y);
 	  		         P.Pm.x=x;P.Pm.y=y;break;
-	  		  default:mens_Warnning_Debug("Error de software: f.GetEvaluar3");//__asm(nop);__asm(Halt);
+	  		  default:mens_Warnning_Debug("Error de software: f.GetEvaluar3");
 			          break;}
-	  	  
-	  
-	  
 return ret;	
 }//----------------------------------------------------------------
 
@@ -1176,7 +1172,7 @@ struct Coordsf get_Puntos(struct Ec_Recta f,float angulo,unsigned char linea,uns
 	             }//no se procesan angulos negativos
 	if(angulo<90) estado=1;//angulo de cero a 90
 	else{if(absf(angulo-90)<1.2){estado=2;}//angulo de 90° o casi de 90°
-	     else{estado=3;}}//angulo>90°}
+	     else{estado=3;}}//angulo>90°
 	//Procesar la coordenada segun el cuadrante
 	switch(estado){
 		case 1: y=frecta(&f,'x',192);
@@ -1240,7 +1236,7 @@ struct Coordsf get_Evaluar_2(struct Coordsf P,struct Ec_Recta f,float angulo){
 	             }//no se procesan angulos negativos
 	if(angulo<90) estado=1;//angulo de cero a 90
 	else{if(absf(angulo-90)<1.2){estado=2;}//angulo de 90° o casi de 90°
-	     else{estado=3;}}//angulo>90°}
+	     else{estado=3;}}//angulo>90°
 	//Procesar la coordenada segun el cuadrante
 	switch(estado){
 		case 1: y=frecta(&f,'x',192);
