@@ -130,7 +130,7 @@ const unsigned char  c[]="Cuenta rechazos_!";
 const unsigned char  d[]="Cuenta producto ";
 const unsigned char x[4]={80,24,24,24};
 const unsigned char y[4]={ 2,10,12,14};
-unsigned char ret=0;
+//unsigned char ret=0;
 //unsigned char *inst1,*inst2;//instancias subHilos a ejecutar que se pueden ejecutar en otros lados
 unsigned char aux3_char,aux0_uchar;
 unsigned short int aux1_usi;
@@ -173,13 +173,12 @@ union W16{
 	   //usleep(100);//espera que se envien los datos del menu al VFD
 		vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
 	   vfd.box.enable=1;
-       ret=TRUE;
-return ret;   
+       
 }// FIN DESPLIEGUE DEL PORTAL INICIO-------------------------------------------------------------------
 
 
 void displayMenuInsight(void){// MESPLIEGUE DEL MENU INSGHT----------------------------------------------
-unsigned char ret=0;
+//unsigned char ret=0;
 unsigned char z[]="Menu de Insight       x";
 unsigned char a[]=">Ajuste de Producto";
 unsigned char c[]="Ajuste Parametrico de Producto";
@@ -210,8 +209,7 @@ unsigned char y[7]={0 ,4,6,8,10,12,4};
 	  //keypad.b.enable=1;//Habilitado el teclado	
 	  vfd.box.enable=0;//disable pintar cajas barra detector
 	  vfd.config.bits.BOX_enable=TRUE;//se autoriza a dibujar cajas
-	  ret=TRUE;
-return ret;
+
 }//fin display menu inicio display----------------------------------------------------------------------------
 
 
