@@ -159,6 +159,7 @@ normal[INFORMACION_DE_USUARIO]=true;
 
   
 if(!vfd.config.bits.init_Menu){
+	     vfd.menu.contexto.solicitaCambioA=PORTAL_INICIO;
          ret=PORTAL_INICIO;}
 else{ 
    if(normal[vfd.menu.contexto.solicitaCambioA]){	  
