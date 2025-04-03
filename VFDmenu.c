@@ -32,7 +32,7 @@ auto unsigned char ret=0;
 		                     MenuActualScreen.permisos=DESARROLLADOR_PERMISO;//------------------------------------EN-REVISION
 		                     MenuActualScreen.func=0;
 		                     //MenuActualScreen.func1=PortalinicioDisplay; // -------------------------------------------------------EN-REVISION    		 
-		                     MenuActualScreen.func1=PortalinicioDisplay;
+		                     MenuActualScreen.func=PortalinicioDisplay;
 		                     MenuActualScreen.funcKeyUP=PortaliniciokeyUP;
 		                     MenuActualScreen.funcKeyRT=PortaliniciokeyRT;
 		                     MenuActualScreen.funcKeyLF=PortaliniciokeyLF;
@@ -42,8 +42,7 @@ auto unsigned char ret=0;
 		                     break;	
 		 case MENU_INSIGHT:  MenuActualScreen.menuNodo=MENU_INSIGHT;
 							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
-							 MenuActualScreen.func=0;
-							 MenuActualScreen.func1=displayMenuInsight;
+							 MenuActualScreen.func=displayMenuInsight;
 							 MenuActualScreen.funcKeyUP=MenuInsightkeyUP;
 							 MenuActualScreen.funcKeyDN=MenuInsightkeyDN;
 							 MenuActualScreen.funcKeyRT=MenuInsightkeyRT;
@@ -122,7 +121,7 @@ return ret;
 //despliega el menu principal, el recurso se solicita y gestiona
 //desde el hilo padre del manejo del menu.
 //Este metodo Solo se ejecuta una vez sin instancias
-unsigned char  PortalinicioDisplay(void){//Funcion Suprema de Despliegue de la Pantalla0
+void  PortalinicioDisplay(void){//Funcion Suprema de Despliegue de la Pantalla0
 const unsigned char s[]=VERSION2;
 unsigned char ss;
 const unsigned char  a[]="Test Set-up";
@@ -179,7 +178,7 @@ return ret;
 }// FIN DESPLIEGUE DEL PORTAL INICIO-------------------------------------------------------------------
 
 
-unsigned char displayMenuInsight(void){// MESPLIEGUE DEL MENU INSGHT----------------------------------------------
+void displayMenuInsight(void){// MESPLIEGUE DEL MENU INSGHT----------------------------------------------
 unsigned char ret=0;
 unsigned char z[]="Menu de Insight       x";
 unsigned char a[]=">Ajuste de Producto";
@@ -513,6 +512,7 @@ unsigned char i;
 		        case keyRT:Pantalla->funcKeyRT();break;
 		        case keyLF:Pantalla->funcKeyLF();break;
 		        case keyEN:Pantalla->funcKeyEN();break;
+				default:errorCritico("error de software en cursosr serivces");break;
 		         }//fin		           default:break;//fin default de segundo switch de PORTAL INICIO
     //keypad.b.enable=TRUE;
 }//fin cursorMenuControlService------------------------------------------------------

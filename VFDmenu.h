@@ -836,9 +836,8 @@ extern GlobalStruct *MenuInfoUser;
 //void init_Menu(void);
 //void initArbolMenu(void);
 //void MenuControl(void);
-//void PortalinicioDisplay(void);
+void PortalinicioDisplay(void);
 //unsigned char  PortalinicioDisplay(unsigned char *mem);//Funcion Suprema de Despliegue de la Pantalla0
-unsigned char  PortalinicioDisplay(void);
 void menus(unsigned char key);
 //void displayMenuInsight(void);
 void cursorMenuControl(unsigned char keyx);
@@ -1011,7 +1010,7 @@ void display_Error(unsigned char x,unsigned char y,unsigned char *mens,unsigned 
 unsigned char InitArbolMenu(unsigned char destino);
 //unsigned char   PortalinicioDisplay(void);
 //unsigned char  PortalinicioDisplay(byte *mem);
-unsigned char displayMenuInsight(void);
+void displayMenuInsight(void);
 unsigned char DDS_HANDLER(void);
 void displaySwitchGanancia_var1(char pantalla,unsigned char operacion);
 unsigned char InitArbolMenu2(unsigned char destino);
