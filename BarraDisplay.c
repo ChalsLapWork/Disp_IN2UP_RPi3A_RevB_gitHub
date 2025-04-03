@@ -3,6 +3,7 @@
 #include "VFD.h"
 #include "VFDmenu.h"
 #include <stdlib.h>
+#include "errorController.h"
 
 extern struct _DISPLAY_VFD_ vfd;
 
@@ -37,7 +38,8 @@ unsigned char ret=0;
 		      x1b=POS_X1_BOX1_PD;y1b=POS_Y1_BOX1_PD;x2b=POS_X2_BOX1_PD;y2b=POS_Y2_BOX1_PD;//CUADRO-1  HIJO VACIO	    
 		      x1c=POS_X1_BOX2_PD;y1c=POS_Y1_BOX2_PD;y2c=POS_X2_BOX2_PD;y2c=POS_Y2_BOX2_PD;//CUADRO-1  HIJO VACIO  	  
 		      break;  	
-		default:errorCritico("Error Cuadro-Madre: Contexto -Desconocido-");
+		default:usleep(1);
+		        errorCritico("Error Cuadro-Madre: Contexto -Desconocido-");
 			    exit(1);		        
 		        break;}	
 	VFDboxLine1(ON,BOX_VACIA,x1a,y1a,x2a,y2a);//cuadro madre
