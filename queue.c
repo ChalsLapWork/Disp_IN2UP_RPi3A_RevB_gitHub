@@ -427,7 +427,7 @@ enum{NORMAL=30,INIT_M=1,TERMINAR=90};
 	  case INIT_M+4:contexto=find_contexto_Siguiente();estado3++;break;
 	  case INIT_M+5:InitArbolMenu(contexto);estado3++;break;
 	  case INIT_M+6:vfd.config.bits.Menu_Ready=0;estado3++;break;//menu no esta terminado aun
-      case INIT_M+9:MenuActualScreen.func();estado3=TERMINAR;break;					
+      case INIT_M+7:MenuActualScreen.func();estado3=TERMINAR;break;					
 	  case TERMINAR:vfd.config.bits.init_Menu=TRUE;//no esta init el VFD
                     vfd.config.bits.MenuPendiente=FALSE;//hay pendiente un menu por desplegar
                     vfd.menu.contexto.Actual=contexto;
