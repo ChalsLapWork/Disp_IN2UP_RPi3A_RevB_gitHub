@@ -582,3 +582,62 @@ unsigned char *cursorx,*cursory;
 	    	                      break;}//debug--------
 
 }//fin de procSensxDigito----------------------------------------------
+
+
+void procFasexDigitoEN(unsigned char *var,unsigned char posx,unsigned char posy){
+unsigned char n;
+byte a[5],*p;
+    
+    if(cursory==POSY4)  n=8; else n=0;   
+	switch(*var){//5 indica decena de miles y 1 unidad
+		case 0: *var=5;
+		        VFDposicion(cursorx,cursory);
+				VFDserial_SendChar1(' ');
+				if(n==8){VFDposicion(POSXDDSNUMS+8,POSY6);
+						 VFDserial_SendChar1(' ');VFDserial_SendChar1(' ');
+						 VFDserial_SendChar1(' ');VFDserial_SendChar1(' ');
+						 VFDserial_SendChar1(' ');VFDserial_SendChar1(0x01);
+						 VFDserial_SendChar1(0x02);}
+				VFDposicion((unsigned short int)(posx+(8*(5-*var))+n),posy);
+				VFDserial_SendChar1('^');
+				VFDserial_SendChar1(0x01);
+				VFDserial_SendChar1(0x02);
+				isEnable_Keypad(WAIT);
+				break;
+		case 1: VFDposicion((unsigned short int)(posx+(8*(5-*var))+n),posy);
+				VFDserial_SendChar1(' ');
+				VFDposicion(cursorx,cursory);
+				VFDserial_SendChar1('>');
+				VFDserial_SendChar1(0x01);
+				VFDserial_SendChar1(0x02);
+				if(n==8){p=&a[0];
+				     getCharsFromUINT_var(p,Deteccion.Altura);
+				     VFDposicion(POSXDDSNUMS,POSY6);
+				     for(n=0;n<5;n++)
+				         VFDserial_SendChar1(a[n]+0x30);
+				     VFDserial_SendChar1(0x01);//esto es un delay
+				     VFDserial_SendChar1(0x02);}
+				*var=0; 
+				isEnable_Keypad(WAIT);
+				break;
+		case 2:  
+		case 3:VFDposicion((unsigned short int)(posx+(8*2)+n),posy);
+			   VFDserial_SendChar1(' ');
+			   VFDserial_SendChar1(' ');
+			   VFDserial_SendChar1('^');
+			   VFDserial_SendChar1(0x01);
+			   VFDserial_SendChar1(0x02);
+			   isEnable_Keypad(WAIT);
+			   *var=1;
+			   break;
+		case 4:
+		case 5:VFDposicion((unsigned short int)(posx+(8*(5-(*var)--))+n),posy);
+			   VFDserial_SendChar1(' ');
+			   VFDserial_SendChar1('^');
+			   VFDserial_SendChar1(0x01);
+			   VFDserial_SendChar1(0x02);
+			   isEnable_Keypad(WAIT);
+			   break;
+		default: __asm(Halt);}
+}//FIN procFasexDigitoEN-----------------------------------------
+

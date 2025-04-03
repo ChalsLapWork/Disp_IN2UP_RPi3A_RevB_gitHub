@@ -145,6 +145,7 @@ void display5UChars(unsigned char posx,unsigned char posy,unsigned char *p);
 void displayPhase_var(unsigned char posx,unsigned char posy);//despliega la variable de phase en la posicion
 void DisplayCuentaProducto(void);
 void procSensxDigitoEN(unsigned char *digito,unsigned char posx,unsigned char initx);
+void procFasexDigitoEN(unsigned char *var,unsigned char posx,unsigned char posy);
 
 
 #endif /* VFDISPLAY_H_ */
