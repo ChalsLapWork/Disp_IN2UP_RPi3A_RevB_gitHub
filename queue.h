@@ -321,7 +321,7 @@ struct _PRODUCT1_{
    float fase;//fase del producto numero flotante
    unsigned char Phasefrac;// faccion del numero de fase.
    unsigned char name[NOMBRE_PRODUCTO_SIZE]; 
-   
+   unsigned short int Altura;   
 
 };
 
