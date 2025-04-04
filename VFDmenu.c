@@ -21,6 +21,7 @@ extern struct _PRODUCT1_ producto2;
 GlobalStruct global = {0};
 GlobalStruct *AjParamProd= NULL; // Inicialización
 GlobalStruct *MenuInfoUser= NULL;
+GlobalStruct *MenuTextProc=NULL;//variables para menu texto procesor
 extern struct _PRODUCT1_ producto2;
 
 
@@ -371,10 +372,77 @@ unsigned char *cursorx,*cursory;
 			    *cursorx=POSX0;*cursory=POSY2;//POSICION DE LA FLECHA LA DEJAMOS EN 0,2
 			    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
 			    MenuInfoUser=&global;
-				MenuInfoUser->ResetDisplayNum=&global.var1;
+				MenuInfoUser->ResetDisplayNum=&global.igxc1;
 		        *(MenuInfoUser->ResetDisplayNum)=(unsigned char)0;		
 				vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
 }//fin Display Menu INFORMATION  usuarioo-------------------------------------------------------------
+
+
+
+//El ascii dela   Raiz Cuadrada es el decimal 251d.
+void displayTextoProcessor(void){//ascci  251=raiz cuadrada*********************************************
+                                 //ascci de x=120  X=88
+unsigned char i,*s,j;	
+unsigned char tx[]= {251,' ',' ','x'};//" x";	 
+unsigned char t0[]= "Nombre de Producto";
+unsigned char t1[]= "Escribir clave de acceso:";//Contrasena";
+unsigned char r1[]= "  1  2  3  4  5  6  7  8  9  0";//Y6
+unsigned char r2[]= "  Q  W  E  R  T  Y  U  I  O  P";        //Ñ=A4h
+unsigned char r3[]={' ',' ','A',' ',' ','S',' ',' ','D',' ',' ','F',' ',' ','G',' ',' ',
+							'H',' ',' ','J',' ',' ','K',' ',' ','L',' ',' ',0xA5};
+unsigned char r4[]= "  Z  X  C  V  B  N  M  .  ,   ";
+unsigned char r5[]= "  Ma Mi S           <  >  +  -";		
+unsigned char x[7]={ POSX_TEXT_PROCS,0,0,0,0 , 0,  0};
+unsigned char y[7]={   0,0,6,8,10,12, 14};
+unsigned short int n,m,*cursorx,*cursory;
+	
+	MenuTextProc=&global;//textProc=&g; 
+	cursorx=&vfd.menu.cursorx;
+	cursory=&vfd.menu.cursory; 	
+	VFDclrscr();	
+	VFDposicion(0,0);  
+	switch(menu.contexto.control){
+	  case NUEVO_PRODUCTO:VFDserial_SendBlock(&t0[0],sizeof(t0));
+	                      for(i=0;i<(NOMBRE_PRODUCTO_SIZE-1);i++)   
+	  	                               vfd.Text[i]=0;//limpiamos la var.de texto
+	  	                  MenuTextProc->igxc0=MAYUSCULAS; //->igxc0=;//iniciamos desplegando mayuculas
+	  	                  MenuTextProc->igxc1=0;//textProc->igxc1=0;//indice del arreglo del Texto. 
+	  	                  MenuTextProc->igxc4=0;//textProc->igxc4=0;//no ha habido escritura de ascii  
+		                  break;     
+	  case NOMBRE_PRODUCTO:VFDserial_SendBlock(&t0[0],sizeof(t0));
+	                       VFDposicion(0,POSY2);//Posicion del nombre
+	                       s=&producto2.name[1];
+	                       m=length(&producto2.name[0],sizeof(producto2.name));
+	                       VFDserial_SendBlock(s,m,&n);//nombre de producto display
+	                       for(i=0,j=1;j<(NOMBRE_PRODUCTO_SIZE-1);i++,j++)//transferimos el nombre a la variable texto
+	                             vfd.Text[i]=producto2.name[j];
+	                       MenuTextProc->igxc0=MAYUSCULAS;
+	                       s=&vfd.Text[0];//puntamos al 0
+	                       MenuTextProc->igxc1=findLastChar(s,NOMBRE_PRODUCTO_SIZE-1);//encontramos el ultimo espacio del ultimo caracter 
+	                       MenuTextProc->igxc4=0;//no ha habido una escritura de ascii,puede escribir en el espacio
+	                       break;    
+	  case SUPERVISOR:    
+		                  VFDserial_SendBlock(&t1[0],sizeof(t1));
+	  	  	  	  	  	  for(i=0;i<(NOMBRE_PRODUCTO_SIZE-1);i++)   
+	  	  	                   vfd.Text[i]=0;//limpiam{os la var.de texto
+						  MenuTextProc->igxc0=MAYUSCULAS;//iniciamos desplegando mayuculas
+					      MenuTextProc->igxc1=0;//indice del arreglo del Texto. 
+				          MenuTextProc->igxc4=0;//no ha habido escritura de ascii  
+						  break;     
+	  default:  usleep(1);
+				errorCritico("Error de software TextProc");//Error de ingeniria de Software
+				exit(1);
+	          break;
+	}//fin switch	
+	VFDposicion(x[0],y[0]);  
+	VFDserial_SendBlock(&tx[0],sizeof(tx));//display the exit control
+	displayTextoProcessorMayusculas();//despliega la pantalla de  mayusculas
+	*cursorx=POSX_COL1;*cursory=POSY6;
+	VFDposicion(*cursorx,*cursory);
+	VFDserial_SendChar('>');
+	vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
+}//fin de hoja ejecutiva de despleigue del controlador de texto ************************************************
+
 
 
 

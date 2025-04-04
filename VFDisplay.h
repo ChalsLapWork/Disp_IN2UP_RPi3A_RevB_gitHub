@@ -146,6 +146,12 @@ void displayPhase_var(unsigned char posx,unsigned char posy);//despliega la vari
 void DisplayCuentaProducto(void);
 void procSensxDigitoEN(unsigned char *digito,unsigned char posx,unsigned char initx);
 void procFasexDigitoEN(unsigned char *var,unsigned char posx,unsigned char posy);
-
+void displayTextoProcessorMayusculas(void);
+void displayTextoProcessorMinusculas(void);
+void displayTextoProcessorSymbol(void);
+void DisplayNewTextProc(void);
+void monitorInvalidPassword(void);
+void TextProcessorSpecial(void);
+void specialFunctions(void);
 
 #endif /* VFDISPLAY_H_ */

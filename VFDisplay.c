@@ -169,7 +169,8 @@ else{
    if(passwd[vfd.menu.contexto.solicitaCambioA]){
              vfd.menu.contexto.push(vfd.menu.contexto.Actual);//de donde venimos
 			 vfd.menu.contexto.destino=vfd.menu.contexto.solicitaCambioA;//a donde vamos
-
+             vfd.menu.contexto.solicitaCambioA=TEXT_PROCESSOR;
+			 vfd.menu.contexto.control=SUPERVISOR;//como contraseña
           }
 
      }//fin else							
@@ -651,4 +652,206 @@ unsigned char a[5],*p,*cursory,*cursorx;
 		default:errorCritico("Error f.procFasexDigitoEN");break;
 		         }//fin switch
 }//FIN procFasexDigitoEN-----------------------------------------
+
+
+void displayTextoProcessorMayusculas(void){
+unsigned char r1[]= "  1  2  3  4  5  6  7  8  9  0";//Y6
+unsigned char r2[]= "  Q  W  E  R  T  Y  U  I  O  P";        //Ñ=A5h
+unsigned char r3[]={' ',' ','A',' ',' ','S',' ',' ','D',' ',' ','F',' ',' ','G',' ',' ',
+							'H',' ',' ','J',' ',' ','K',' ',' ','L',' ',' ',0xA5};
+unsigned char r4[]= "  Z  X  C  V  B  N  M  ,  .   ";
+unsigned char r5[]= "  Ma Mi S           <  >  +  -";		
+unsigned char x[7]={ POSX_TEXT_PROCS,0,0,0,0 , 0,  0};
+unsigned char y[7]={   0,0,6,8,10,12, 14};
+	
+	    VFDposicion(x[2],y[2]);  
+	    VFDserial_SendBlock(&r1[0],sizeof(r1));
+		VFDposicion(x[3],y[3]);   
+		VFDserial_SendBlock(&r2[0],sizeof(r2));
+		VFDposicion(x[4],y[4]);   
+		VFDserial_SendBlock(&r3[0],sizeof(r3));
+		VFDposicion(x[5],y[5]);  
+		VFDserial_SendBlock(&r4[0],sizeof(r4));
+		VFDposicion(x[6],y[6]);  
+		VFDserial_SendBlock(&r5[0],sizeof(r5));  
+	    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
+	    //vfd.config.bits.Menu_Ready=1;// menu.b.b.isMenu=1;//se ejecuto este menu.
+}//fin de depliegue del procesadorr de textos para mayusculas
+
+//despliegue de minusculas del procesador de textos
+void displayTextoProcessorMinusculas(void){
+unsigned char r1[]= "  1  2  3  4  5  6  7  8  9  0";//Y6
+unsigned char r2[]= "  q  w  e  r  t  y  u  i  o  p";        //ñ=A4h
+unsigned char r3[]={' ',' ','a',' ',' ','s',' ',' ','d',' ',' ','f',' ',' ','g',' ',' ',
+						'h',' ',' ','j',' ',' ','k',' ',' ','l',' ',' ',0xA4};
+unsigned char r4[]= "  z  x  c  v  b  n  m  ,  .   ";
+unsigned char r5[]= "  Ma Mi S           <  >  +  -";		
+unsigned char x[7]={ POSX_TEXT_PROCS,0,0,0,0 , 0,  0};
+unsigned char y[7]={   0,0,6,8,10,12, 14};
+
+		    VFDposicion(x[2],y[2]); 
+		    VFDserial_SendBlock(&r1[0],sizeof(r1));
+			VFDposicion(x[3],y[3]);   
+			VFDserial_SendBlock(&r2[0],sizeof(r2));
+			VFDposicion(x[4],y[4]);   
+			VFDserial_SendBlock(&r3[0],sizeof(r3));
+			VFDposicion(x[5],y[5]);   
+			VFDserial_SendBlock(&r4[0],sizeof(r4));
+			VFDposicion(x[6],y[6]);   
+			VFDserial_SendBlock(&r5[0],sizeof(r5));  
+		    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
+		    //menu.b.b.isMenu=1;//se ejecuto este menu.
+}//fin de despliegue de minusculas del menu de proceador de texto
+
+//fin del despleigue de symbolos en el procesador de textos
+void displayTextoProcessorSymbol(void){ //ñ=A4h  //Y6
+unsigned char r1[]={' ',' ',S1,' ',' ' ,S2,' ',' ' ,S3,' ',' ' ,S4,' ',' ' ,S5,' ',' ' ,S6,' ',' ' ,S7,' ',' ' ,S8,' ',' ' ,S9,' ',' ' ,S10};
+unsigned char r2[]={' ',' ',S11,' ',' ',S12,' ',' ',S13,' ',' ',S14,' ',' ',S15,' ',' ',S16,' ',' ',S17,' ',' ',S18,' ',' ',S19,' ',' ',S20};
+unsigned char r3[]={' ',' ',S21,' ',' ',S22,' ',' ',S23,' ',' ',S24,' ',' ',S25,' ',' ',S26,' ',' ',S27,' ',' ',S28,' ',' ',S29,' ',' ',S30};
+unsigned char r4[]={' ',' ',S31,' ',' ',S32,' ',' ',S33,' ',' ',S34,' ',' ',S35,' ',' ',S36,' ',' ',S37,' ',' ',S38,' ',' ',S39,' ',' ',S40};
+unsigned char r5[]={ "  Ma Mi S           <  >  +  -"};		
+unsigned char x[7]={ POSX_TEXT_PROCS,0,0,0,0 , 0,  0};
+unsigned char y[7]={   0,0,6,8,10,12, 14};
+	         
+            VFDposicion(x[2],y[2]);   
+		    VFDserial_SendBlock(&r1[0],sizeof(r1));
+			VFDposicion(x[3],y[3]);   
+			VFDserial_SendBlock(&r2[0],sizeof(r2));
+			VFDposicion(x[4],y[4]);  
+			VFDserial_SendBlock(&r3[0],sizeof(r3));
+			VFDposicion(x[5],y[5]);  
+			VFDserial_SendBlock(&r4[0],sizeof(r4));
+			VFDposicion(x[6],y[6]);   
+			VFDserial_SendBlock(&r5[0],sizeof(r5));
+		    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
+		    //menu.b.b.isMenu=1;//se ejecuto este menu.
+}//fin del desiegue de simbolos en el menu de procesador de textos----
+
+
+
+
+//despliegue de la cadena de texto en el menu de TEXTO PROCESSOR
+void DisplayNewTextProc(void){
+unsigned char i,j;
+     j=FALSE;
+	 VFDposicion(0,POSY2);//POSICION en el reglon 2 donde se despliega la cadena
+	 for(i=0;i<NOMBRE_PRODUCTO_SIZE;i++){
+		 if(vfd.Text[i]==0)
+			 j=TRUE;
+		 if(j==FALSE)
+    	    VFDserial_SendChar(vfd.Text[i]);
+		 else VFDserial_SendChar(' ');}
+	
+}//fin de despliegue de la cadena de texto en el menu de TEXTO PROCESSOR
+
+void monitorInvalidPassword(void){//arg0 esta ocupado en CONTROL PASSWORD
+if((MenuTextProc->arg1==ERROR_PASS)&&(vfd.menu.contexto.control==SUPERVISOR)){//hubo password invalida????
+      MenuTextProc->arg1=0;//arg1=0;	 
+	  displayTextoProcessor();}
+}//fin monitorInvalidPassword-------------------------------------------------------------
+
+
+//text processor for name modify	
+void TextProcessorSpecial(void){
+unsigned char *cursorx,*cursory;
+      cursorx=&vfd.menu.cursorx;
+	  cursory=&vfd.menu.cursory;	
+	  if(*cursory==POSY14){
+		  specialFunctions();
+		  return;}
+      if(MenuTextProc->igxc1>=NOMBRE_PRODUCTO_SIZE)//Escribir algun ascii en pantalla
+          return;
+	  MenuTextProc->arg5=CAMBIAR;//se ha modificado el nombre del producto
+	  if(MenuTextProc->igxc1>(NOMBRE_PRODUCTO_SIZE-1))//si escribimos mucho llegara hasta 20 el minimo es 19
+		  return;
+	  vfd.Text[MenuTextProc->igxc1]=getAscii(*cursorx,*cursory,MenuTextProc->igxc0);//guardamos el ascii seleccionado
+	  DisplayCharTextProc(MenuTextProc->igxc1,vfd.Text[MenuTextProc->igxc1]);
+	  DisplayCursorTextProc(MenuTextProc->igxc1+1,MenuTextProc->igxc1);
+	  MenuTextProc->igxc1++;
+return;	
+}//fin TextProcessorSpecial--------------------------------------
+
+//metodo del procesador de textos
+void specialFunctions(void){
+unsigned char *cursorx,*cursory;
+unsigned char c;
+      cursorx=&vfd.menu.cursorx;
+	  cursory=&vfd.menu.cursory;	
+	 if(MenuTextProc->igxc1==0)
+		  return;
+	  switch(*cursorx){
+		  case POSX_COL1:break;
+		  case POSX_COL2:break;
+		  case POSX_COL3:break;
+		  case POSX_COL4:break;
+		  case POSX_COL5:break;
+		  case POSX_COL6:break;
+		  case POSX_COL7:MenuTextProc->igxc1=DisplayRecorrerIndiceIzqTextProc(MenuTextProc->igxc1,LEFT);break;
+		  case POSX_COL8:MenuTextProc->igxc1=DisplayRecorrerIndiceIzqTextProc(MenuTextProc->igxc1,RIGHT);break; 
+		  case POSX_COL9:MenuTextProc->igxc1=DisplayInsertSpaceTextProc(MenuTextProc->igxc1);break;
+		  case POSX_COL10:c=TextBackSpace(MenuTextProc->igxc1);//Revisar esta funcionc: lugar actual, igxm1 lugar anterior
+		                  DisplayNewTextProc();//despleiga el texto
+		                  DisplayCursorTextProc(c,MenuTextProc->igxc1);//despliega el cursos en posicion actual.
+		                  MenuTextProc->igxc1=c;
+			             break;
+		  default:break;  
+	  }//fin switch
+	
+}//fin specialFunctions-----------------------------.-------------------------------------------------------------
+
+
+void DisplayCharTextProc(unsigned char pos,unsigned char dato){
+	  VFDposicion(((pos-1)*8),POSY2);
+      VFDserial_SendChar(dato);	
+}//fin DisplayCharTextProc-------------------------------------------------------------------------------------------
+
+
+//posicion actual: a la que vamos a mover,
+void DisplayCursorTextProc(unsigned char pos_actual, unsigned char pos_anterior){
+       if(pos_actual>pos_anterior)
+    	   if(pos_actual==NOMBRE_PRODUCTO_SIZE)
+    		   return;
+	   VFDposicion((unsigned char)((pos_anterior-1)*8),POSY4);
+       VFDserial_SendChar(' ');	
+	   VFDposicion((unsigned char)((pos_actual-1)*8),POSY4);
+  	   VFDserial_SendChar('^');
+}//FIN DisplayCursorTextProc-------------------------------------------------------------------------------------------
+
+
+//ii es pa posicion actual del cursor
+unsigned char DisplayRecorrerIndiceIzqTextProc(unsigned char ii,unsigned char IzqDer){
+unsigned char i;
+        i=ii;
+        if(IzqDer==RIGHT){
+			if(i>=(NOMBRE_PRODUCTO_SIZE-1))
+				i=NOMBRE_PRODUCTO_SIZE-1;
+			else ++i;//the value of pointer is incremented
+			if(Text[i]==0)
+				Text[i]=' ';
+			DisplayCursorTextProc(i,ii);
+            return i;}
+        else{
+        	if(i==1)
+        		return i;
+        	if(i<1){usleep(19);
+        		    mens_Warnning_Debug("error en diaplay rec indice 837");// __asm(Halt);
+			       exit(1),}
+        	i--;
+        	if(Text[i]==0)
+				Text[i]=' ';
+        	DisplayCursorTextProc(i,ii);
+        	return i;}
+}//fin DisplayRecorrerIndiceIzqTextProc--------------------------------------------------
+
+//posicion actual: a la que vamos a mover,
+void DisplayCursorTextProc(unsigned char pos_actual, unsigned char pos_anterior){
+       if(pos_actual>pos_anterior)
+    	   if(pos_actual==NOMBRE_PRODUCTO_SIZE)
+    		   return;
+	   VFDposicion((unsigned short)((pos_anterior-1)*8),POSY4);
+       VFDserial_SendChar(' ');	
+	   VFDposicion((unsigned short)((pos_actual-1)*8),POSY4);
+  	   VFDserial_SendChar('^');
+	
+}//FIN DisplayCursorTextProc--------------------------------------------------------
 

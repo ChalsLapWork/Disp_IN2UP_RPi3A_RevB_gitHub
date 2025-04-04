@@ -6,6 +6,7 @@
 #include "queue.h"
 #include "maths.h"
 #include "errorController.h"
+#include "VFDmenu.h"
 
 
 extern struct _DISPLAY_VFD_ vfd;
@@ -1165,3 +1166,295 @@ unsigned char i,b,a;
 	     *(s+i)=b; 
 		 b=a;}
 }//fin insertchar----------------------------------------
+
+
+
+//NOS regresa el ascii en funcion el pantalla actual y las coordenadas actuales, en la pantalla de Text Processor
+char getAscii(unsigned char x,unsigned char y,unsigned char pantalla){
+	 switch(pantalla){
+		 case MAYUSCULAS:
+			       switch(x){
+			    	   case POSX_COL1:if(y==POSY6){
+			    		                  return '1'; break;}
+			    	                  if(y==POSY8){
+			    	                	  return 'Q';break;}
+			    	                  if(y==POSY10){
+			    	                      return 'A';break;}
+			    	                  if(y==POSY12){
+			    	                      return 'Z';break;}
+			    	                  else break;
+			    	   case POSX_COL2:if(y==POSY6){
+			    	                      return '2'; break;}
+			    	   	              if(y==POSY8){
+			    	   	              	  return 'W';break;}
+			    	   	              if(y==POSY10){
+			    	   	                  return 'S';break;}
+			    	   	              if(y==POSY12){
+			    	   	                  return 'X';break;}
+			    	   	              else break;
+			    	   case POSX_COL3:if(y==POSY6){
+			                              return '3'; break;}
+			    	   	              if(y==POSY8){
+			    	   	              	  return 'E';break;}
+			    	   	              if(y==POSY10){
+			    	   	                  return 'D';break;}
+			    	   	              if(y==POSY12){
+			    	   	                  return 'C';break;}
+			    	   	              else break;
+			    	   case POSX_COL4:if(y==POSY6){
+			    	                      return '4'; break;}
+			    	   	              if(y==POSY8){
+			    	                	  return 'R';break;}
+		         	                  if(y==POSY10){
+			    	                      return 'F';break;}
+			     	                  if(y==POSY12){
+			     	                      return 'V';break;}
+			     	                  else break;
+			    	   case POSX_COL5:if(y==POSY6){
+			    	   			          return '5'; break;}
+			     	                  if(y==POSY8){
+			      	                	  return 'T';break;}
+			       	                  if(y==POSY10){
+			       	                      return 'G';break;}
+			      	                  if(y==POSY12){
+			      	                      return 'B';break;}
+			      	                  else break;
+			    	   case POSX_COL6:if(y==POSY6){
+			    	                     return '6'; break;}
+			    	   		         if(y==POSY8){
+			    	   		        	  return 'Y';break;}
+			    	   		         if(y==POSY10){
+			    	   			          return 'H';break;}
+			    	   			     if(y==POSY12){
+			    	   			          return 'N';break;}
+			    	   			     else break;
+			       	   case POSX_COL7:if(y==POSY6){
+			     	                      return '7'; break;}
+			      	   	              if(y==POSY8){
+			      	   	              	  return 'U';break;}
+			      	   	              if(y==POSY10){
+			      	   	                  return 'J';break;}
+			        	              if(y==POSY12){
+			      	   	                  return 'M';break;}
+			      	   	              else break;
+			      	   case POSX_COL8:if(y==POSY6){
+			                              return '8'; break;}
+			      	   	              if(y==POSY8){
+			      	   	              	  return 'I';break;}
+			      	   	              if(y==POSY10){
+			      	   	                  return 'K';break;}
+			      	   	              if(y==POSY12){
+			      	   	                  return ',';break;}
+			       	   	              else break;
+			       	   case POSX_COL9:if(y==POSY6){
+			      	                      return '9'; break;}
+			    	   	              if(y==POSY8){
+			      	                	  return 'O';break;}
+			       	                  if(y==POSY10){
+			      	                      return 'L';break;}
+			       	                  if(y==POSY12){
+			      	                      return '.';break;}
+			      	                  else break;
+			      	   case POSX_COL10:if(y==POSY6){
+			      	   			          return '0'; break;}
+			       	                  if(y==POSY8){
+			       	                	  return 'P';break;}
+			       	                  if(y==POSY10){
+			       	                      return 0xA5;break;}
+			       	                  if(y==POSY12){
+			       	                      return ' ';break;}
+			       	                  else break;
+			      	   default:break;}//fin switch x
+			           break;//fin mayuscula
+		 case MINUSCULAS:
+		       switch(x){
+		    	   case POSX_COL1:if(y==POSY6){
+		    		                  return '1'; break;}
+		    	                  if(y==POSY8){
+		    	                	  return 'q';break;}
+		    	                  if(y==POSY10){
+		    	                      return 'a';break;}
+		    	                  if(y==POSY12){
+		    	                      return 'z';break;}
+		    	                  else break;
+		    	   case POSX_COL2:if(y==POSY6){
+		    	                      return '2'; break;}
+		    	   	              if(y==POSY8){
+		    	   	              	  return 'w';break;}
+		    	   	              if(y==POSY10){
+		    	   	                  return 's';break;}
+		    	   	              if(y==POSY12){
+		    	   	                  return 'x';break;}
+		    	   	              else break;
+		    	   case POSX_COL3:if(y==POSY6){
+		                              return '3'; break;}
+		    	   	              if(y==POSY8){
+		    	   	              	  return 'e';break;}
+		    	   	              if(y==POSY10){
+		    	   	                  return 'd';break;}
+		    	   	              if(y==POSY12){
+		    	   	                  return 'c';break;}
+		    	   	              else break;
+		    	   case POSX_COL4:if(y==POSY6){
+		    	                      return '4'; break;}
+		    	   	              if(y==POSY8){
+		    	                	  return 'r';break;}
+	         	                  if(y==POSY10){
+		    	                      return 'f';break;}
+		     	                  if(y==POSY12){
+		     	                      return 'v';break;}
+		     	                  else break;
+		    	   case POSX_COL5:if(y==POSY6){
+		    	   			          return '5'; break;}
+		     	                  if(y==POSY8){
+		      	                	  return 't';break;}
+		       	                  if(y==POSY10){
+		       	                      return 'g';break;}
+		      	                  if(y==POSY12){
+		      	                      return 'b';break;}
+		      	                  else break;
+		    	   case POSX_COL6:if(y==POSY6){
+		    	                     return '6'; break;}
+		    	   		         if(y==POSY8){
+		    	   		        	  return 'y';break;}
+		    	   		         if(y==POSY10){
+		    	   			          return 'h';break;}
+		    	   			     if(y==POSY12){
+		    	   			          return 'n';break;}
+		    	   			     else break;
+		       	   case POSX_COL7:if(y==POSY6){
+		     	                      return '7'; break;}
+		      	   	              if(y==POSY8){
+		      	   	              	  return 'u';break;}
+		      	   	              if(y==POSY10){
+		      	   	                  return 'j';break;}
+		        	              if(y==POSY12){
+		      	   	                  return 'm';break;}
+		      	   	              else break;
+		      	   case POSX_COL8:if(y==POSY6){
+		                              return '8'; break;}
+		      	   	              if(y==POSY8){
+		      	   	              	  return 'i';break;}
+		      	   	              if(y==POSY10){
+		      	   	                  return 'k';break;}
+		      	   	              if(y==POSY12){
+		      	   	                  return ',';break;}
+		       	   	              else break;
+		       	   case POSX_COL9:if(y==POSY6){
+		      	                      return '9'; break;}
+		    	   	              if(y==POSY8){
+		      	                	  return 'o';break;}
+		       	                  if(y==POSY10){
+		      	                      return 'l';break;}
+		       	                  if(y==POSY12){
+		      	                      return '.';break;}
+		      	                  else break;
+		      	   case POSX_COL10:if(y==POSY6){
+		      	   			          return '0'; break;}
+		       	                  if(y==POSY8){
+		       	                	  return 'p';break;}
+		       	                  if(y==POSY10){
+		       	                      return 0xA4;break;}
+		       	                  if(y==POSY12){
+		       	                      return ' ';break;}
+		       	                  else break;
+		      	   default:break;}//fin switch x
+			            break;//fin de minuscula
+		 case SYMBOL:
+		       switch(x){
+		    	   case POSX_COL1:if(y==POSY6){
+		    		                  return S1; break;}
+		    	                  if(y==POSY8){
+		    	                	  return S11;break;}
+		    	                  if(y==POSY10){
+		    	                      return S21;break;}
+		    	                  if(y==POSY12){
+		    	                      return S31;break;}
+		    	                  else break;
+		    	   case POSX_COL2:if(y==POSY6){
+		    	                      return S2; break;}
+		    	   	              if(y==POSY8){
+		    	   	              	  return S12;break;}
+		    	   	              if(y==POSY10){
+		    	   	                  return S22;break;}
+		    	   	              if(y==POSY12){
+		    	   	                  return S32;break;}
+		    	   	              else break;
+		    	   case POSX_COL3:if(y==POSY6){
+		                              return S3; break;}
+		    	   	              if(y==POSY8){
+		    	   	              	  return S13;break;}
+		    	   	              if(y==POSY10){
+		    	   	                  return S23;break;}
+		    	   	              if(y==POSY12){
+		    	   	                  return S33;break;}
+		    	   	              else break;
+		    	   case POSX_COL4:if(y==POSY6){
+		    	                      return S4; break;}
+		    	   	              if(y==POSY8){
+		    	                	  return S14;break;}
+	         	                  if(y==POSY10){
+		    	                      return S24;break;}
+		     	                  if(y==POSY12){
+		     	                      return S34;break;}
+		     	                  else break;
+		    	   case POSX_COL5:if(y==POSY6){
+		    	   			          return S5; break;}
+		     	                  if(y==POSY8){
+		      	                	  return S15;break;}
+		       	                  if(y==POSY10){
+		       	                      return S25;break;}
+		      	                  if(y==POSY12){
+		      	                      return S35;break;}
+		      	                  else break;
+		    	   case POSX_COL6:if(y==POSY6){
+		    	                     return S6; break;}
+		    	   		         if(y==POSY8){
+		    	   		        	  return S16;break;}
+		    	   		         if(y==POSY10){
+		    	   			          return S26;break;}
+		    	   			     if(y==POSY12){
+		    	   			          return S36;break;}
+		    	   			     else break;
+		       	   case POSX_COL7:if(y==POSY6){
+		     	                      return S7; break;}
+		      	   	              if(y==POSY8){
+		      	   	              	  return S17;break;}
+		      	   	              if(y==POSY10){
+		      	   	                  return S27;break;}
+		        	              if(y==POSY12){
+		      	   	                  return S37;break;}
+		      	   	              else break;
+		      	   case POSX_COL8:if(y==POSY6){
+		                              return S8; break;}
+		      	   	              if(y==POSY8){
+		      	   	              	  return S18;break;}
+		      	   	              if(y==POSY10){
+		      	   	                  return S28;break;}
+		      	   	              if(y==POSY12){
+		      	   	                  return S38;break;}
+		       	   	              else break;
+		       	   case POSX_COL9:if(y==POSY6){
+		      	                      return S9; break;}
+		    	   	              if(y==POSY8){
+		      	                	  return S19;break;}
+		       	                  if(y==POSY10){
+		      	                      return S29;break;}
+		       	                  if(y==POSY12){
+		      	                      return S39;break;}
+		      	                  else break;
+		      	   case POSX_COL10:if(y==POSY6){
+		      	   			          return S10; break;}
+		       	                  if(y==POSY8){
+		       	                	  return S20;break;}
+		       	                  if(y==POSY10){
+		       	                      return S30;break;}
+		       	                  if(y==POSY12){
+		       	                      return S40;break;}
+		       	                  else break;
+		      	   default:break;}//fin switch x
+			       break;//fin del symbolo
+		 default:break;//debug aqui software error
+	 }//fin primer switch	
+}//fin de getascii nos da el ascii escogido en las cordenadas dadas en la pantalla dada-----------------------------------
+

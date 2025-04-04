@@ -41,6 +41,11 @@ void MenuInformacionUsuariokeyLF(void);
 void MenuInformacionUsuariokeyDN(void);
 void MenuInformacionUsuariokeyEN(void);
 
+void TextoProcessorkeyUP(void);
+void TextoProcessorkeyRT(void);	 
+void TextoProcessorkeyLF(void);
+void TextoProcessorkeyDN(void);
+void TextoProcessorkeyEN(void);
 
 void operacionVariable(unsigned char posx,unsigned short int y,unsigned char igxm0,unsigned char op);
 unsigned char procSensxDigitoRT(unsigned char posx,unsigned char posy,unsigned short int *Sens);

@@ -707,6 +707,7 @@ Undefined : "contextoActual" Referenced from "AnguloVibracionProcesadorCentral" 
 #define SIZE_PID   0x08//Tama�o de control DE PID
 #define SIZE_BUFF  20//Tama�o de los Buffers
 #define SIZE_MEMO_APP 40 //tama�o de la memoria para los hilos en ejecucion
+#define SIZE_VAR5 5
 
 #define MEMO_MAX_FUNC_DISPL_MENU  50 //bytes maximo de memoria para funciones de display de menus, 
 
@@ -819,18 +820,22 @@ struct ArbolMenu{
 //mientras el menu esta 
 //activo
 typedef struct{//variables globales por menu
-   unsigned char var1;
-   unsigned char var2;
+   unsigned char igxc0;
+   unsigned char igxc1;
+   unsigned char igxc2;
+   unsigned char igxc3;
+   unsigned char igxc4;
+   unsigned char igxc5[SIZE_VAR5];//=20
    float fvar1;
    unsigned char *editarSensFase;//editar enable sensib y fase
    unsigned char *cursorAnterior;//menu Config entradas syst
    unsigned char *ResetDisplayNum;//menu info de usuario
-   unsigned char *arg2;
+   unsigned char arg0,arg1,arg2,arg4,arg5;
 }GlobalStruct;
 
 extern GlobalStruct global;
 extern GlobalStruct *AjParamProd,*ConfEntSyst; // Declarar extern para que otros archivos lo usen
-extern GlobalStruct *MenuInfoUser;
+extern GlobalStruct *MenuInfoUser,MenuTextProc;
 
 // PROCEDIMIENTOS-+++++++++++++++++++++++++++++++++++++++++++++
 //void init_Menu(void);
@@ -946,7 +951,7 @@ unsigned char getColTextProc(unsigned char dir);
 void displayTextoProcessorMayusculas(void);
 void displayTextoProcessorSymbol(void);
 void displayTextoProcessorMinusculas(void);
-char getAscii(unsigned char x,unsigned char y,unsigned char pantalla);
+//char getAscii(unsigned char x,unsigned char y,unsigned char pantalla);
 void DisplayNewTextProc(void);
 void DisplayAjusteProductoMode(void);
 void saveNewProduct(unsigned char iProd);

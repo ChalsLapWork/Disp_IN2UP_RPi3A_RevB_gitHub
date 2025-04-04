@@ -71,4 +71,5 @@ unsigned char Formato_ULInt(unsigned char i,unsigned char *p);
 //unsigned char* getCharsFromFloat1(unsigned char *frac,float f,unsigned char *inst);
 unsigned char getCharsFromUINT_var1(unsigned char *p,unsigned short int var,unsigned char *v);
 void clearFormato(unsigned char *a);
+char getAscii(unsigned char x,unsigned char y,unsigned char pantalla);
 #endif
