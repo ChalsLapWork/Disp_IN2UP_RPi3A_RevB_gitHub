@@ -176,7 +176,7 @@ struct _Contexto{
         struct FIFOc fifo;
         int  (*pop)( uint8_t *value);
 		void (*push)(uint8_t value);
-		int  (*peek)( int position, uint8_t *value);		
+		unsigned char  (*peek)( int position, uint8_t *value);		
 };
 
 
@@ -518,9 +518,9 @@ void iniciar_Run_Menu(void);
 void init_fifo_contexto(struct FIFOc *fifo);
 int pop_contexto(struct FIFOc *fifo, uint8_t *value);
 void push_contexto(struct FIFOc *fifo, uint8_t value);
-int peek_contexto(struct FIFOc *fifo, int position, uint8_t *value);
+unsigned char peek_contexto(struct FIFOc *fifo, int position, uint8_t *value);
 void push_fifo_contexto(uint8_t dato);
 int pop_fifo_contexto(uint8_t *value);
-int peek_fifo_contexto(int position, uint8_t *value);
+unsigned char peek_fifo_contexto(int position, uint8_t *value);
 void configModificado(unsigned char contexto);
 #endif 

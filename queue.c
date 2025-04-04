@@ -80,7 +80,9 @@ int pop_fifo_contexto(uint8_t *value){
 return(pop_contexto(&vfd.menu.contexto.fifo,value));
 }//fin de pop fifo contexto++++++++++++++++++++++++++++
 
-int peek_fifo_contexto(int position, uint8_t *value){
+//regresa 0:el contexto anterior que estabamos 1: anterior 2:anterior al anterior asi 
+// *value:0 si algo salio mal,1:todo bien
+unsigned char peek_fifo_contexto(int position, uint8_t *value){
 return(peek_contexto(&vfd.menu.contexto.fifo,position,value)); 
 }//fin de peek fifo de contexto+++++++++++++++++++++ 
 
@@ -488,13 +490,14 @@ Pop: A4
 Pop: A5
 Pop: A6
 FIFO: A7 A8 A9 AA AB AC AD */
-int peek_contexto(struct FIFOc *fifo, int position, uint8_t *value) {
+unsigned char peek_contexto(struct FIFOc *fifo, int position, uint8_t *value) {
     if (position < 1 || position > 5 || position > fifo->count) {
-        return 0; // Posición fuera de rango
+        *value = 0;    
+		return 0; // Posición fuera de rango
     }
     int index = (fifo->head - position + FIFOc_SIZE) % FIFOc_SIZE;
-    *value = fifo->buffer[index];
-    return 1;
+    *value = 1;
+    return fifo->buffer[index];
 }//fni peek++++++++++++++++++++++++++++++++++++++++
 
 

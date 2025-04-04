@@ -404,8 +404,7 @@ unsigned char k;
 	if(*cursory==POSY10){cambio_de_contexto(AJUSTE_SISTEMA_ENTRADAS);  return;}
 	if(*cursory==POSY12){cambio_de_contexto(ID_MAQUINA);  return;}
 	if(*cursory==POSY14){DisplayCuentaProducto();  return;}
-	if(*cursory==POSY0) {vfd.menu.contexto.peek(1,&k);
-	                     switch(k){
+	if(*cursory==POSY0) {switch(vfd.menu.contexto.peek(1,&k)){
 							case AJUSTE_DE_SISTEMA:cambio_de_contexto(k);break;
 							case MENU_INSIGHT:cambio_de_contexto(k);break;
 							default:cambio_de_contexto(PORTAL_INICIO);break;}}
@@ -552,7 +551,7 @@ cursory=&vfd.menu.cursory;
 }//fin  TextoProcessorkeyDN----------------------------------------------------
 void TextoProcessorkeyEN(void){
 unsigned char a[]= "Contrasena invalida",*p=0,c;
-unsigned char k;
+unsigned char k,v;
 unsigned char *cursorx,*cursory;
     cursorx=&vfd.menu.cursorx;
 	cursory=&vfd.menu.cursory; 
@@ -560,8 +559,8 @@ unsigned char *cursorx,*cursory;
 		if(*cursorx==POSX_TEXT_PROCS_OK){//aceptamos el nombre
 			switch(vfd.menu.contexto.control){
 				case NUEVO_PRODUCTO:
-					    MenuTextProc->igxc0=NOMBRE_PRODUCTO_SIZE-1; //->igxc0=NOMBRE_PRODUCTO_SIZE-1;
-						for(k=MenuTextProc->igxc0;k>0;k--)//insertamos el NAME_INIT
+					    MenuTextProc.igxc0=NOMBRE_PRODUCTO_SIZE-1; //->igxc0=NOMBRE_PRODUCTO_SIZE-1;
+						for(k=MenuTextProc.igxc0;k>0;k--)//insertamos el NAME_INIT
 							vfd.Text[k]=vfd.Text[k-1];
 						vfd.Text[0]=NAME_INIT;//insertar la clave de correcto
                         vaciar_A2B(&vfd.Text[0],&producto2.name[0],0,sizeof(vfd.Text)-1);
@@ -569,7 +568,7 @@ unsigned char *cursorx,*cursory;
 						return;
 						break;//fin nuevo producto
 				case NOMBRE_PRODUCTO:
-					 switch(vfd.menu.contexto.peek(1)){
+					 switch(vfd.menu.contexto.peek(1,&v)){
 					   case NUEVO_PRODUCTO:swapArrays(&producto2.name[0],&vfd.Text[0],NOMBRE_PRODUCTO_SIZE);//el nuevo nombre a name y el viejo nombre a text para guardarlo en caso de error o cambio de par
 						                   cambio_de_contexto(AJUSTES_AVANZADOS);
 					                       break;
@@ -584,29 +583,29 @@ unsigned char *cursorx,*cursory;
 					   default:break;}
 			           break;//FIN  nombre producto PROD_VAR_SIZE
 				case CONTROL_PASSWORD:
-					    if(MenuTextProc->arg2==CONFIRMAR){//es confirmacion de contraseña nueva
-					    	MenuTextProc->arg2=0;//arg2 se limpia confirmacion
-					    	if(compareString(&vfd.Text[0],&MenuTextProc->igxc5[0],NOMBRE_PRODUCTO_SIZE)){//se confirmo bien
+					    if(MenuTextProc.arg2==CONFIRMAR){//es confirmacion de contraseña nueva
+					    	MenuTextProc.arg2=0;//arg2 se limpia confirmacion
+					    	if(compareString(&vfd.Text[0],&MenuTextProc.igxc5[0],NOMBRE_PRODUCTO_SIZE)){//se confirmo bien
 						      		   setPasswords(MenuTextProc->var0,&vfd.Text[0]);
-					    		  menu.contexto.Actual=AJUSTE_DE_PRODUCTO;//sera el padre
+					    		  vfd.menu.contexto.Actual=AJUSTE_DE_PRODUCTO;//sera el padre
 					    	 	  cambio_de_contexto(CONTROL_PASSWORD);}
 					    	else{//en la confirmacion se puso mal la contraseña
-					    		  MenuTextProc->igxc0=0;//iniciamos desplegando mayuculas
-								  MenuTextProc->igxc1=0;//indice del arreglo del Texto. 
-								  MenuTextProc->igxc4=0;//no ha habido escritura de ascii
+					    		  MenuTextProc.igxc0=0;//iniciamos desplegando mayuculas
+								  MenuTextProc.igxc1=0;//indice del arreglo del Texto. 
+								  MenuTextProc.igxc4=0;//no ha habido escritura de ascii
 								  //arg0=0;//gurada el level 1 a 4 que quiere modificarse
-								  MenuTextProc->arg1=0;//error de  valida password
-								  MenuTextProc->arg2=0;//para saber si estamo en confirmcion
+								  MenuTextProc.arg1=0;//error de  valida password
+								  MenuTextProc.arg2=0;//para saber si estamo en confirmcion
 								  displayTextoProcessor();}} //se reinicia el text-procesor
 					    else{//vamos a poner una nueva password
 							if(validatePasswords(p,&vfd.Text[0])){//validamos la password
 							      saveTextBuffer(&vfd.Text[0]);//save Text buffer
-								  MenuTextProc->arg2=CONFIRMAR; //configurar arg2 para poner confirmar pass
+								  MenuTextProc.arg2=CONFIRMAR; //configurar arg2 para poner confirmar pass
 								  displayTextoProcessor();} //se reinicia el text-procesor
 							else {//anuncio de que es l password invalida
 	        	    		      VFDposicion(0,POSY2);
 	        	    		      VFDserial_SendBlock(&a[0],sizeof(a)); 
- 		                          MenuTextProc->arg1=ERROR_PASS;}}//arg0 esta ocupado
+ 		                          MenuTextProc.arg1=ERROR_PASS;}}//arg0 esta ocupado
 					    break;//fin CONTROL_PASSWORD
 				case SUPERVISOR:menu.contexto.control=validatePassword1(&vfd.Text[0]);
 				                vfd.config.bits.MenuPendiente=TRUE;//ejecuta el cambio de contexto
@@ -622,20 +621,20 @@ unsigned char *cursorx,*cursory;
 			    case NOMBRE_PRODUCTO:
 			    	      switch(vfd.menu.contexto.peek(1)){//contexto padre
 							  case AJUSTE_PARAMETRICO_DE_PRODUCTO:
-										 MenuTextProc->arg5=0;//NO se ha modificado el nombre del producto
+										 MenuTextProc.arg5=0;//NO se ha modificado el nombre del producto
 										 cambio_de_contexto(AJUSTES_AVANZADOS);                                                     
 										 break;
 							  default:break;}					 
 						  break;
-			    case CONTROL_PASSWORD:MenuTextProc->igxc0=0;//iniciamos desplegando mayuculas
-			                          MenuTextProc->igxc1=0;//indice del arreglo del Texto. 
-			                          MenuTextProc->igxc4=0;//no ha habido escritura de ascii
- 	  	  		                      MenuTextProc->arg0=0;//se usara en la validacion de password mismo contexto
- 	  	  		                      MenuTextProc->arg1=0;//error de  valida password
- 	  	  		                      MenuTextProc->arg2=0;//importante
+			    case CONTROL_PASSWORD:MenuTextProc.igxc0=0;//iniciamos desplegando mayuculas
+			                          MenuTextProc.igxc1=0;//indice del arreglo del Texto. 
+			                          MenuTextProc.igxc4=0;//no ha habido escritura de ascii
+ 	  	  		                      MenuTextProc.arg0=0;//se usara en la validacion de password mismo contexto
+ 	  	  		                      MenuTextProc.arg1=0;//error de  valida password
+ 	  	  		                      MenuTextProc.arg2=0;//importante
 			    	                  cambio_de_contexto(CONTROL_PASSWORD);
 			                          return;break;
-			    case SUPERVISOR:cambio_de_contexto(vfd.menu.contexto.peek(1));
+			    case SUPERVISOR:cambio_de_contexto(vfd.menu.contexto.peek(1,&v));
 			    	            break;
 			   default:return; break;}
    		      return;}//fin cursorx==POSX_TEXT_PROCS_X

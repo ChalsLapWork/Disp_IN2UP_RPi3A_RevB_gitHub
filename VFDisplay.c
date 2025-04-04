@@ -133,11 +133,9 @@ void getBoxPattern(unsigned char box,unsigned char *mode,unsigned char *x1,unsig
 /* detiene cualquier ejecucion en proceso del VFD
    y abre un hilo para pasarnos al contexto que se solicita*/
 void cambio_de_contexto(unsigned char contexto){
-
      vfd.config.bits.MenuPendiente=TRUE;
 	 vfd.menu.contexto.solicitaCambioA=contexto;
 	 iniciar_Run_Menu();
-
 }//FIN DE FUNCION maestra de cambio de contexto
 
 
@@ -745,8 +743,8 @@ unsigned char i,j;
 }//fin de despliegue de la cadena de texto en el menu de TEXTO PROCESSOR
 
 void monitorInvalidPassword(void){//arg0 esta ocupado en CONTROL PASSWORD
-if((MenuTextProc->arg1==ERROR_PASS)&&(vfd.menu.contexto.control==SUPERVISOR)){//hubo password invalida????
-      MenuTextProc->arg1=0;//arg1=0;	 
+if((MenuTextProc.arg1==ERROR_PASS)&&(vfd.menu.contexto.control==SUPERVISOR)){//hubo password invalida????
+      MenuTextProc.arg1=0;//arg1=0;	 
 	  displayTextoProcessor();}
 }//fin monitorInvalidPassword-------------------------------------------------------------
 
@@ -759,15 +757,15 @@ unsigned char *cursorx,*cursory;
 	  if(*cursory==POSY14){
 		  specialFunctions();
 		  return;}
-      if(MenuTextProc->igxc1>=NOMBRE_PRODUCTO_SIZE)//Escribir algun ascii en pantalla
+      if(MenuTextProc.igxc1>=NOMBRE_PRODUCTO_SIZE)//Escribir algun ascii en pantalla
           return;
-	  MenuTextProc->arg5=CAMBIAR;//se ha modificado el nombre del producto
-	  if(MenuTextProc->igxc1>(NOMBRE_PRODUCTO_SIZE-1))//si escribimos mucho llegara hasta 20 el minimo es 19
+	  MenuTextProc.arg5=CAMBIAR;//se ha modificado el nombre del producto
+	  if(MenuTextProc.igxc1>(NOMBRE_PRODUCTO_SIZE-1))//si escribimos mucho llegara hasta 20 el minimo es 19
 		  return;
-	  vfd.Text[MenuTextProc->igxc1]=getAscii(*cursorx,*cursory,MenuTextProc->igxc0);//guardamos el ascii seleccionado
-	  DisplayCharTextProc(MenuTextProc->igxc1,vfd.Text[MenuTextProc->igxc1]);
-	  DisplayCursorTextProc(MenuTextProc->igxc1+1,MenuTextProc->igxc1);
-	  MenuTextProc->igxc1++;
+	  vfd.Text[MenuTextProc.igxc1]=getAscii(*cursorx,*cursory,MenuTextProc.igxc0);//guardamos el ascii seleccionado
+	  DisplayCharTextProc(MenuTextProc.igxc1,vfd.Text[MenuTextProc.igxc1]);
+	  DisplayCursorTextProc(MenuTextProc.igxc1+1,MenuTextProc.igxc1);
+	  MenuTextProc.igxc1++;
 return;	
 }//fin TextProcessorSpecial--------------------------------------
 
@@ -777,7 +775,7 @@ unsigned char *cursorx,*cursory;
 unsigned char c;
       cursorx=&vfd.menu.cursorx;
 	  cursory=&vfd.menu.cursory;	
-	 if(MenuTextProc->igxc1==0)
+	 if(MenuTextProc.igxc1==0)
 		  return;
 	  switch(*cursorx){
 		  case POSX_COL1:break;
@@ -786,13 +784,13 @@ unsigned char c;
 		  case POSX_COL4:break;
 		  case POSX_COL5:break;
 		  case POSX_COL6:break;
-		  case POSX_COL7:MenuTextProc->igxc1=DisplayRecorrerIndiceIzqTextProc(MenuTextProc->igxc1,LEFT);break;
-		  case POSX_COL8:MenuTextProc->igxc1=DisplayRecorrerIndiceIzqTextProc(MenuTextProc->igxc1,RIGHT);break; 
-		  case POSX_COL9:MenuTextProc->igxc1=DisplayInsertSpaceTextProc(MenuTextProc->igxc1);break;
-		  case POSX_COL10:c=TextBackSpace(MenuTextProc->igxc1);//Revisar esta funcionc: lugar actual, igxm1 lugar anterior
+		  case POSX_COL7:MenuTextProc.igxc1=DisplayRecorrerIndiceIzqTextProc(MenuTextProc.igxc1,LEFT);break;
+		  case POSX_COL8:MenuTextProc.igxc1=DisplayRecorrerIndiceIzqTextProc(MenuTextProc.igxc1,RIGHT);break; 
+		  case POSX_COL9:MenuTextProc.igxc1=DisplayInsertSpaceTextProc(MenuTextProc.igxc1);break;
+		  case POSX_COL10:c=TextBackSpace(MenuTextProc.igxc1);//Revisar esta funcionc: lugar actual, igxm1 lugar anterior
 		                  DisplayNewTextProc();//despleiga el texto
-		                  DisplayCursorTextProc(c,MenuTextProc->igxc1);//despliega el cursos en posicion actual.
-		                  MenuTextProc->igxc1=c;
+		                  DisplayCursorTextProc(c,MenuTextProc.igxc1);//despliega el cursos en posicion actual.
+		                  MenuTextProc.igxc1=c;
 			             break;
 		  default:break;  
 	  }//fin switch
@@ -806,16 +804,6 @@ void DisplayCharTextProc(unsigned char pos,unsigned char dato){
 }//fin DisplayCharTextProc-------------------------------------------------------------------------------------------
 
 
-//posicion actual: a la que vamos a mover,
-void DisplayCursorTextProc(unsigned char pos_actual, unsigned char pos_anterior){
-       if(pos_actual>pos_anterior)
-    	   if(pos_actual==NOMBRE_PRODUCTO_SIZE)
-    		   return;
-	   VFDposicion((unsigned char)((pos_anterior-1)*8),POSY4);
-       VFDserial_SendChar(' ');	
-	   VFDposicion((unsigned char)((pos_actual-1)*8),POSY4);
-  	   VFDserial_SendChar('^');
-}//FIN DisplayCursorTextProc-------------------------------------------------------------------------------------------
 
 
 //ii es pa posicion actual del cursor
@@ -826,8 +814,8 @@ unsigned char i;
 			if(i>=(NOMBRE_PRODUCTO_SIZE-1))
 				i=NOMBRE_PRODUCTO_SIZE-1;
 			else ++i;//the value of pointer is incremented
-			if(Text[i]==0)
-				Text[i]=' ';
+			if(vfd.Text[i]==0)
+				vfd.Text[i]=' ';
 			DisplayCursorTextProc(i,ii);
             return i;}
         else{
@@ -837,20 +825,20 @@ unsigned char i;
         		    mens_Warnning_Debug("error en diaplay rec indice 837");// __asm(Halt);
 			       exit(1),}
         	i--;
-        	if(Text[i]==0)
-				Text[i]=' ';
+        	if(vfd.Text[i]==0)
+				vfd.Text[i]=' ';
         	DisplayCursorTextProc(i,ii);
         	return i;}
 }//fin DisplayRecorrerIndiceIzqTextProc--------------------------------------------------
 
 //posicion actual: a la que vamos a mover,
 void DisplayCursorTextProc(unsigned char pos_actual, unsigned char pos_anterior){
-       if(pos_actual>pos_anterior)
-    	   if(pos_actual==NOMBRE_PRODUCTO_SIZE)
-    		   return;
-	   VFDposicion((unsigned short)((pos_anterior-1)*8),POSY4);
+       if(pos_actual>pos_anterior){
+    	   if(pos_actual==NOMBRE_PRODUCTO_SIZE){
+    		   return;}}
+	   VFDposicion((unsigned char)((pos_anterior-1)*8),POSY4);
        VFDserial_SendChar(' ');	
-	   VFDposicion((unsigned short)((pos_actual-1)*8),POSY4);
+	   VFDposicion((unsigned char)((pos_actual-1)*8),POSY4);
   	   VFDserial_SendChar('^');
 	
 }//FIN DisplayCursorTextProc--------------------------------------------------------

@@ -34,7 +34,7 @@
 #define BAJA                  'B' //42h
 
 #define SIZE_ERROR             25//cada bit es un error. 25*8=200 errores NUMERO DE ERRORES ESTA EN BASE AL NUMERO DE BUFFER DE I2C
-
+#define NOMBRE_PRODUCTO_SIZE   25
 //definiciones de los productos select and menus
 //#define PRODUCT_SIZE      LASTADDRESS_VARS_EEPROM//55 bytes por producto, por 200 productos
 #define START_PRODUCT_ADD EEPROM_ADD_BIOS+16//direccion donde empiezan los productos
@@ -66,12 +66,13 @@
 #define PRODUCTO1_ADD         PROD_VAR0_ADD+PROD_VAR_SIZE //primer producto de ususrio
 #define MAXIMO_NUMERO_PROD    199 //No CAMBIAR DE 199 Maximo numero de prodcuctos igual que lock
 #define PRODUCTO_ULTIMO_ADD   PROD_VAR0_ADD+(PROD_VAR_SIZE*(MAXIMO_NUMERO_PROD-1))
-#define PASSWORD_LEVE1_ADD    PRODUCTO_ULTIMO_ADD+PROD_VAR_SIZE
-#define PASSWORD_LEVE2_ADD    PASSWORD_LEVE1_ADD+PASSWORD_SIZE
-#define PASSWORD_LEVE3_ADD    PASSWORD_LEVE2_ADD+PASSWORD_SIZE
-#define PASSWORD_LEVE4_ADD    PASSWORD_LEVE3_ADD+PASSWORD_SIZE
-#define AUX1_USERDEFINED_ADD  PASSWORD_LEVE4_ADD
-#define AUX2_USERDEFINED_ADD  AUX1_USERDEFINED_ADD+AUX1_USERDEFINED_SIZE //DIRECCION DONDE SE guarda el nmbre de aux2 userdefined
+//all this below deprecated
+#define PASSWORD_LEVE1_ADD    1 //PRODUCTO_ULTIMO_ADD+PROD_VAR_SIZE
+#define PASSWORD_LEVE2_ADD    2 //PASSWORD_LEVE1_ADD+PASSWORD_SIZE
+#define PASSWORD_LEVE3_ADD    3 //PASSWORD_LEVE2_ADD+PASSWORD_SIZEdeprecated
+#define PASSWORD_LEVE4_ADD    4 //PASSWORD_LEVE3_ADD+PASSWORD_SIZE
+#define AUX1_USERDEFINED_ADD  5 // PASSWORD_LEVE4_ADD
+#define AUX2_USERDEFINED_ADD  6 //AUX1_USERDEFINED_ADD+AUX1_USERDEFINED_SIZE //DIRECCION DONDE SE guarda el nmbre de aux2 userdefined
 
 //espacio de memoria A:factory reset variables,   B:System Variables
 // C: Product Vars Selected Cache   D:Test Setup Product  
