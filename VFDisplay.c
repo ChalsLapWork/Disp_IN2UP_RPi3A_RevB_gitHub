@@ -743,8 +743,8 @@ unsigned char i,j;
 }//fin de despliegue de la cadena de texto en el menu de TEXTO PROCESSOR
 
 void monitorInvalidPassword(void){//arg0 esta ocupado en CONTROL PASSWORD
-if((MenuTextProc.arg1==ERROR_PASS)&&(vfd.menu.contexto.control==SUPERVISOR)){//hubo password invalida????
-      MenuTextProc.arg1=0;//arg1=0;	 
+if((MenuTextProc->arg1==ERROR_PASS)&&(vfd.menu.contexto.control==SUPERVISOR)){//hubo password invalida????
+      MenuTextProc->arg1=0;//arg1=0;	 
 	  displayTextoProcessor();}
 }//fin monitorInvalidPassword-------------------------------------------------------------
 
@@ -757,15 +757,15 @@ unsigned char *cursorx,*cursory;
 	  if(*cursory==POSY14){
 		  specialFunctions();
 		  return;}
-      if(MenuTextProc.igxc1>=NOMBRE_PRODUCTO_SIZE)//Escribir algun ascii en pantalla
+      if(MenuTextProc->igxc1>=NOMBRE_PRODUCTO_SIZE)//Escribir algun ascii en pantalla
           return;
-	  MenuTextProc.arg5=CAMBIAR;//se ha modificado el nombre del producto
-	  if(MenuTextProc.igxc1>(NOMBRE_PRODUCTO_SIZE-1))//si escribimos mucho llegara hasta 20 el minimo es 19
+	  MenuTextProc->arg5=CAMBIAR;//se ha modificado el nombre del producto
+	  if(MenuTextProc->igxc1>(NOMBRE_PRODUCTO_SIZE-1))//si escribimos mucho llegara hasta 20 el minimo es 19
 		  return;
-	  vfd.Text[MenuTextProc.igxc1]=getAscii(*cursorx,*cursory,MenuTextProc.igxc0);//guardamos el ascii seleccionado
-	  DisplayCharTextProc(MenuTextProc.igxc1,vfd.Text[MenuTextProc.igxc1]);
-	  DisplayCursorTextProc(MenuTextProc.igxc1+1,MenuTextProc.igxc1);
-	  MenuTextProc.igxc1++;
+	  vfd.Text[MenuTextProc->igxc1]=getAscii(*cursorx,*cursory,MenuTextProc->igxc0);//guardamos el ascii seleccionado
+	  DisplayCharTextProc(MenuTextProc->igxc1,vfd.Text[MenuTextProc->igxc1]);
+	  DisplayCursorTextProc(MenuTextProc->igxc1+1,MenuTextProc->igxc1);
+	  MenuTextProc->igxc1++;
 return;	
 }//fin TextProcessorSpecial--------------------------------------
 
@@ -775,7 +775,7 @@ unsigned char *cursorx,*cursory;
 unsigned char c;
       cursorx=&vfd.menu.cursorx;
 	  cursory=&vfd.menu.cursory;	
-	 if(MenuTextProc.igxc1==0)
+	 if(MenuTextProc->igxc1==0)
 		  return;
 	  switch(*cursorx){
 		  case POSX_COL1:break;
@@ -784,13 +784,13 @@ unsigned char c;
 		  case POSX_COL4:break;
 		  case POSX_COL5:break;
 		  case POSX_COL6:break;
-		  case POSX_COL7:MenuTextProc.igxc1=DisplayRecorrerIndiceIzqTextProc(MenuTextProc.igxc1,LEFT);break;
-		  case POSX_COL8:MenuTextProc.igxc1=DisplayRecorrerIndiceIzqTextProc(MenuTextProc.igxc1,RIGHT);break; 
-		  case POSX_COL9:MenuTextProc.igxc1=DisplayInsertSpaceTextProc(MenuTextProc.igxc1);break;
-		  case POSX_COL10:c=TextBackSpace(MenuTextProc.igxc1);//Revisar esta funcionc: lugar actual, igxm1 lugar anterior
+		  case POSX_COL7:MenuTextProc->igxc1=DisplayRecorrerIndiceIzqTextProc(MenuTextProc->igxc1,LEFT);break;
+		  case POSX_COL8:MenuTextProc->igxc1=DisplayRecorrerIndiceIzqTextProc(MenuTextProc->igxc1,RIGHT);break; 
+		  case POSX_COL9:MenuTextProc->igxc1=DisplayInsertSpaceTextProc(MenuTextProc->igxc1);break;
+		  case POSX_COL10:c=TextBackSpace(MenuTextProc->igxc1);//Revisar esta funcionc: lugar actual, igxm1 lugar anterior
 		                  DisplayNewTextProc();//despleiga el texto
-		                  DisplayCursorTextProc(c,MenuTextProc.igxc1);//despliega el cursos en posicion actual.
-		                  MenuTextProc.igxc1=c;
+		                  DisplayCursorTextProc(c,MenuTextProc->igxc1);//despliega el cursos en posicion actual.
+		                  MenuTextProc->igxc1=c;
 			             break;
 		  default:break;  
 	  }//fin switch
