@@ -254,10 +254,10 @@ unsigned char *cursorx,*cursory;
 	    *cursorx=POSX0;*cursory=POSY6; 
 	    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
 		AjParamProd=&global;
-		AjParamProd->editarSensFase=&AjParamProd.igxc1;
-        *(AjParamProd->editarSensFase)=(unsigned char)0; //variable que indica si se esta editando el numero sensibildad y Fase
-        AjParamProd.arg2=&global.arg2;
-		*(AjParamProd.arg2)=(unsigned char)0;////se borraran los contadores
+		AjParamProd->editarSensFase=&AjParamProd->igxc1;
+        (*AjParamProd->editarSensFase)=(unsigned char)0; //variable que indica si se esta editando el numero sensibildad y Fase
+        AjParamProd->arg2=&global.arg2;
+		(*AjParamProd->arg2)=(unsigned char)0;////se borraran los contadores
          vfd.config.bits.Menu_Ready=1;
 }//fin display ingenieria2 gracida---------------------------------------------------
 
@@ -395,7 +395,8 @@ unsigned char r4[]= "  Z  X  C  V  B  N  M  .  ,   ";
 unsigned char r5[]= "  Ma Mi S           <  >  +  -";		
 unsigned char x[7]={ POSX_TEXT_PROCS,0,0,0,0 , 0,  0};
 unsigned char y[7]={   0,0,6,8,10,12, 14};
-unsigned short int n,m,*cursorx,*cursory;
+unsigned short int n,m;
+unsigned char *cursorx,*cursory;
 	
 	MenuTextProc=&global;//textProc=&g; 
 	cursorx=&vfd.menu.cursorx;
