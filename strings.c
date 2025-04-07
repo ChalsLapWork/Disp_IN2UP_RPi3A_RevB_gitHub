@@ -1456,5 +1456,6 @@ char getAscii(unsigned char x,unsigned char y,unsigned char pantalla){
 			       break;//fin del symbolo
 		 default:break;//debug aqui software error
 	 }//fin primer switch	
+return 0;	 
 }//fin de getascii nos da el ascii escogido en las cordenadas dadas en la pantalla dada-----------------------------------
 

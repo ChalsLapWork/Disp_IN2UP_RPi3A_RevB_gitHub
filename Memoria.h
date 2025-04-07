@@ -34,7 +34,7 @@
 #define BAJA                  'B' //42h
 
 #define SIZE_ERROR             25//cada bit es un error. 25*8=200 errores NUMERO DE ERRORES ESTA EN BASE AL NUMERO DE BUFFER DE I2C
-#define NOMBRE_PRODUCTO_SIZE   25
+//#define NOMBRE_PRODUCTO_SIZE   25
 //definiciones de los productos select and menus
 //#define PRODUCT_SIZE      LASTADDRESS_VARS_EEPROM//55 bytes por producto, por 200 productos
 #define START_PRODUCT_ADD EEPROM_ADD_BIOS+16//direccion donde empiezan los productos
