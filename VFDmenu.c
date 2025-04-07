@@ -253,9 +253,9 @@ unsigned char *cursorx,*cursory;
 	    *cursorx=POSX0;*cursory=POSY6; 
 	    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
 		AjParamProd=&global;
-		AjParamProd->editarSensFase=&AjParamProd->var1;
+		AjParamProd->editarSensFase=&AjParamProd->igxc1;
         *(AjParamProd->editarSensFase)=(unsigned char)0; //variable que indica si se esta editando el numero sensibildad y Fase
-        AjParamProd->arg2=&global.var2;
+        AjParamProd->arg2=&global.arg2;
 		*(AjParamProd->arg2)=(unsigned char)0;////se borraran los contadores
          vfd.config.bits.Menu_Ready=1;
 }//fin display ingenieria2 gracida---------------------------------------------------
@@ -401,7 +401,7 @@ unsigned short int n,m,*cursorx,*cursory;
 	cursory=&vfd.menu.cursory; 	
 	VFDclrscr();	
 	VFDposicion(0,0);  
-	switch(menu.contexto.control){
+	switch(vfd.menu.contexto.control){
 	  case NUEVO_PRODUCTO:VFDserial_SendBlock(&t0[0],sizeof(t0));
 	                      for(i=0;i<(NOMBRE_PRODUCTO_SIZE-1);i++)   
 	  	                               vfd.Text[i]=0;//limpiamos la var.de texto
