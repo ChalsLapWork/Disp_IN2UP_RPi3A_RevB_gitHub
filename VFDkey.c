@@ -560,8 +560,8 @@ unsigned char *cursorx,*cursory;
 		if(*cursorx==POSX_TEXT_PROCS_OK){//aceptamos el nombre
 			switch(vfd.menu.contexto.control){
 				case NUEVO_PRODUCTO:
-					    MenuTextProc.igxc0=NOMBRE_PRODUCTO_SIZE-1; //->igxc0=NOMBRE_PRODUCTO_SIZE-1;
-						for(k=MenuTextProc.igxc0;k>0;k--)//insertamos el NAME_INIT
+					    MenuTextProc->igxc0=NOMBRE_PRODUCTO_SIZE-1; //->igxc0=NOMBRE_PRODUCTO_SIZE-1;
+						for(k=MenuTextProc->igxc0;k>0;k--)//insertamos el NAME_INIT
 							vfd.Text[k]=vfd.Text[k-1];
 						vfd.Text[0]=NAME_INIT;//insertar la clave de correcto
                         vaciar_A2B(&vfd.Text[0],&producto2.name[0],0,sizeof(vfd.Text)-1);
@@ -584,29 +584,29 @@ unsigned char *cursorx,*cursory;
 					   default:break;}
 			           break;//FIN  nombre producto PROD_VAR_SIZE
 				case CONTROL_PASSWORD:
-					    if(MenuTextProc.arg2==CONFIRMAR){//es confirmacion de contraseña nueva
-					    	MenuTextProc.arg2=0;//arg2 se limpia confirmacion
-					    	if(compareString(&vfd.Text[0],&MenuTextProc.igxc5[0],NOMBRE_PRODUCTO_SIZE)){//se confirmo bien
-						      		   setPasswords(MenuTextProc.arg0,&vfd.Text[0]);
+					    if(MenuTextProc->arg2==CONFIRMAR){//es confirmacion de contraseña nueva
+					    	MenuTextProc->arg2=0;//arg2 se limpia confirmacion
+					    	if(compareString(&vfd.Text[0],&MenuTextProc->igxc5[0],NOMBRE_PRODUCTO_SIZE)){//se confirmo bien
+						      		   setPasswords(MenuTextProc->arg0,&vfd.Text[0]);
 					    		  vfd.menu.contexto.Actual=AJUSTE_DE_PRODUCTO;//sera el padre
 					    	 	  cambio_de_contexto(CONTROL_PASSWORD);}
 					    	else{//en la confirmacion se puso mal la contraseña
-					    		  MenuTextProc.igxc0=0;//iniciamos desplegando mayuculas
-								  MenuTextProc.igxc1=0;//indice del arreglo del Texto. 
-								  MenuTextProc.igxc4=0;//no ha habido escritura de ascii
+					    		  MenuTextProc->igxc0=0;//iniciamos desplegando mayuculas
+								  MenuTextProc->igxc1=0;//indice del arreglo del Texto. 
+								  MenuTextProc->igxc4=0;//no ha habido escritura de ascii
 								  //arg0=0;//gurada el level 1 a 4 que quiere modificarse
-								  MenuTextProc.arg1=0;//error de  valida password
-								  MenuTextProc.arg2=0;//para saber si estamo en confirmcion
+								  MenuTextProc->arg1=0;//error de  valida password
+								  MenuTextProc->arg2=0;//para saber si estamo en confirmcion
 								  displayTextoProcessor();}} //se reinicia el text-procesor
 					    else{//vamos a poner una nueva password
 							if(validatePasswords(p,&vfd.Text[0])){//validamos la password
 							      saveTextBuffer(&vfd.Text[0]);//save Text buffer
-								  MenuTextProc.arg2=CONFIRMAR; //configurar arg2 para poner confirmar pass
+								  MenuTextProc->arg2=CONFIRMAR; //configurar arg2 para poner confirmar pass
 								  displayTextoProcessor();} //se reinicia el text-procesor
 							else {//anuncio de que es l password invalida
 	        	    		      VFDposicion(0,POSY2);
 	        	    		      VFDserial_SendBlock(&a[0],sizeof(a)); 
- 		                          MenuTextProc.arg1=ERROR_PASS;}}//arg0 esta ocupado
+ 		                          MenuTextProc->arg1=ERROR_PASS;}}//arg0 esta ocupado
 					    break;//fin CONTROL_PASSWORD
 				case SUPERVISOR:vfd.menu.contexto.control=validatePassword1(&vfd.Text[0]);
 				                vfd.config.bits.MenuPendiente=TRUE;//ejecuta el cambio de contexto
@@ -622,17 +622,17 @@ unsigned char *cursorx,*cursory;
 			    case NOMBRE_PRODUCTO:
 			    	      switch(vfd.menu.contexto.peek(1,&v)){//contexto padre
 							  case AJUSTE_PARAMETRICO_DE_PRODUCTO:
-										 MenuTextProc.arg5=0;//NO se ha modificado el nombre del producto
+										 MenuTextProc->arg5=0;//NO se ha modificado el nombre del producto
 										 cambio_de_contexto(AJUSTES_AVANZADOS);                                                     
 										 break;
 							  default:break;}					 
 						  break;
-			    case CONTROL_PASSWORD:MenuTextProc.igxc0=0;//iniciamos desplegando mayuculas
-			                          MenuTextProc.igxc1=0;//indice del arreglo del Texto. 
-			                          MenuTextProc.igxc4=0;//no ha habido escritura de ascii
- 	  	  		                      MenuTextProc.arg0=0;//se usara en la validacion de password mismo contexto
- 	  	  		                      MenuTextProc.arg1=0;//error de  valida password
- 	  	  		                      MenuTextProc.arg2=0;//importante
+			    case CONTROL_PASSWORD:MenuTextProc->igxc0=0;//iniciamos desplegando mayuculas
+			                          MenuTextProc->igxc1=0;//indice del arreglo del Texto. 
+			                          MenuTextProc->igxc4=0;//no ha habido escritura de ascii
+ 	  	  		                      MenuTextProc->arg0=0;//se usara en la validacion de password mismo contexto
+ 	  	  		                      MenuTextProc->arg1=0;//error de  valida password
+ 	  	  		                      MenuTextProc->arg2=0;//importante
 			    	                  cambio_de_contexto(CONTROL_PASSWORD);
 			                          return;break;
 			    case SUPERVISOR:cambio_de_contexto(vfd.menu.contexto.peek(1,&v));
@@ -647,7 +647,7 @@ unsigned char *cursorx,*cursory;
     	    return;}
 	 if(*cursory==POSY14){
 		if(*cursorx==POSX_COL1){
-			   if(MenuTextProc.igxc0==MAYUSCULAS)
+			   if(MenuTextProc->igxc0==MAYUSCULAS)
 				   return;
 			   else{//esta activa alguna otra pantalla que no es mayusculas
 					  VFDposicion(*cursorx,*cursory);
@@ -656,10 +656,10 @@ unsigned char *cursorx,*cursory;
 					  *cursorx=POSX_COL1;*cursory=POSY14;
 					  VFDposicion(*cursorx,*cursory);
 					  VFDserial_SendChar('>');
-					  MenuTextProc.igxc0=MAYUSCULAS;
+					  MenuTextProc->igxc0=MAYUSCULAS;
 					  return;}return;}//fin col1
 		if(*cursorx==POSX_COL2){
-			  if(MenuMenuTextProc.igxc0==MINUSCULAS)
+			  if(MenuMenuTextProc->igxc0==MINUSCULAS)
 				  return;
 			  else{
 				  VFDposicion(*cursorx,*cursory);
@@ -668,10 +668,10 @@ unsigned char *cursorx,*cursory;
 			  *cursorx=POSX_COL2;*cursory=POSY14;
 			  VFDposicion(*cursorx,*cursory);
 			  VFDserial_SendChar('>');
-			  MenuMenuTextProc.igxc0=MINUSCULAS;
+			  MenuMenuTextProc->igxc0=MINUSCULAS;
 				  return;} return;}
 		if(*cursorx==POSX_COL3){
-			  if(MenuMenuTextProc.igxc0==SYMBOL)
+			  if(MenuMenuTextProc->igxc0==SYMBOL)
 				  return;
 			  else{
 				  VFDposicion(*cursorx,*cursory);
@@ -680,86 +680,86 @@ unsigned char *cursorx,*cursory;
 				  *cursorx=POSX_COL3;*cursory=POSY14;
 				  VFDposicion(*cursorx,*cursory);
 					  VFDserial_SendChar('>');
-					  MenuMenuTextProc.igxc0=SYMBOL;
+					  MenuMenuTextProc->igxc0=SYMBOL;
 				 return;}return;}
 		if(*cursorx==POSX_COL7){
-			  if((MenuMenuTextProc.igxc1)!=0){
-				if(MenuMenuTextProc.igxc1==1)
+			  if((MenuMenuTextProc->igxc1)!=0){
+				if(MenuMenuTextProc->igxc1==1)
 				   return;
-				if(MenuMenuTextProc.igxc4==DONE)
-				(MenuMenuTextProc.igxc1)-=1;
-				VFDposicion((unsigned short)((MenuMenuTextProc.igxc1)*8),POSY4);//mover el cursor uno a la izquierda
+				if(MenuMenuTextProc->igxc4==DONE)
+				(MenuMenuTextProc->igxc1)-=1;
+				VFDposicion((unsigned short)((MenuMenuTextProc->igxc1)*8),POSY4);//mover el cursor uno a la izquierda
 				VFDserial_SendChar(' ');//borramos el   ^
-				VFDposicion((unsigned short)((--(MenuMenuTextProc.igxc1))*8),POSY4);//mover el cursor uno a la izquierda
+				VFDposicion((unsigned short)((--(MenuMenuTextProc->igxc1))*8),POSY4);//mover el cursor uno a la izquierda
 				VFDserial_SendChar(FX);//escribimos el ^ uno antes de donde estaba
-				MenuMenuTextProc.igxc4=VERDE;//indica que hubo atraso del cursor
+				MenuMenuTextProc->igxc4=VERDE;//indica que hubo atraso del cursor
 				return;}
 	         return;}//fin POSX_COL7
 		if(*cursorx==POSX_COL8){//mueve cursor a la derecha
-			if(MenuMenuTextProc.igxc1<(NOMBRE_PRODUCTO_SIZE-1)){//indice del array
-			   if(MenuMenuTextProc.igxc4==DONE)
-					(MenuMenuTextProc.igxc1)-=1;
-			   VFDposicion((unsigned short)((MenuMenuTextProc.igxc1)*8),POSY4);
+			if(MenuMenuTextProc->igxc1<(NOMBRE_PRODUCTO_SIZE-1)){//indice del array
+			   if(MenuMenuTextProc->igxc4==DONE)
+					(MenuMenuTextProc->igxc1)-=1;
+			   VFDposicion((unsigned short)((MenuMenuTextProc->igxc1)*8),POSY4);
 			   VFDserial_SendChar(' ');//borramos el   ^
-			   VFDposicion((unsigned short)((++(MenuTextProc.igxc1))*8),POSY4);//mover el cursor uno a la derecha
+			   VFDposicion((unsigned short)((++(MenuTextProc->igxc1))*8),POSY4);//mover el cursor uno a la derecha
 			   VFDserial_SendChar(FX);//escribimos el ^ uno antes de donde estaba
-			   if(isNumLetter(vfd.Text[MenuMenuTextProc.igxc1])==FALSE)
-					 vfd.Text[MenuMenuTextProc.igxc1]=' ';
-			   MenuMenuTextProc.igxc4=VERDE;//indica que hubo adelanto de cursor
+			   if(isNumLetter(vfd.Text[MenuMenuTextProc->igxc1])==FALSE)
+					 vfd.Text[MenuMenuTextProc->igxc1]=' ';
+			   MenuMenuTextProc->igxc4=VERDE;//indica que hubo adelanto de cursor
 		   return;}return;}//FIN POSX_COL8
 		if(*cursorx==POSX_COL9){//agrega espacio
-			if(MenuMenuTextProc.igxc4==DONE)
-				 (MenuMenuTextProc.igxc1)-=1;
-			if(MenuMenuTextProc.igxc1<=(NOMBRE_PRODUCTO_SIZE-1)){   //indice de l array
-			  TextInsertSpace(MenuMenuTextProc.igxc1);
+			if(MenuMenuTextProc->igxc4==DONE)
+				 (MenuMenuTextProc->igxc1)-=1;
+			if(MenuMenuTextProc->igxc1<=(NOMBRE_PRODUCTO_SIZE-1)){   //indice de l array
+			  TextInsertSpace(MenuMenuTextProc->igxc1);
 			  DisplayNewTextProc();
-			 MenuMenuTextProc.igxc4=VERDE;//india que hubo un insert Space
+			 MenuMenuTextProc->igxc4=VERDE;//india que hubo un insert Space
 		   return;}return;}
 		if(*cursorx==POSX_COL10){
-			 if(MenuMenuTextProc.igxc1==0)
+			 if(MenuMenuTextProc->igxc1==0)
 				 return;
-			 if((MenuMenuTextProc.igxc4==DONE)&&(MenuMenuTextProc.igxc1==1))//fix a bug
+			 if((MenuMenuTextProc->igxc4==DONE)&&(MenuMenuTextProc->igxc1==1))//fix a bug
 				 return;
-			 if(MenuMenuTextProc.igxc4==DONE)
-				 (MenuMenuTextProc.igxc1)-=1;
-			 MenuMenuTextProc.arg5=CAMBIAR;//se ha modificado el nombre del producto
-			 c=TextBackSpace(MenuMenuTextProc.igxc1);//revisr esta funcion
+			 if(MenuMenuTextProc->igxc4==DONE)
+				 (MenuMenuTextProc->igxc1)-=1;
+			 MenuMenuTextProc->arg5=CAMBIAR;//se ha modificado el nombre del producto
+			 c=TextBackSpace(MenuMenuTextProc->igxc1);//revisr esta funcion
 			 DisplayNewTextProc();
-			 if((c>1)&&(c!=MenuMenuTextProc.igxc1)){
-				VFDposicion((unsigned short)((MenuMenuTextProc.igxc1)*8),POSY4);
+			 if((c>1)&&(c!=MenuMenuTextProc->igxc1)){
+				VFDposicion((unsigned short)((MenuMenuTextProc->igxc1)*8),POSY4);
 				VFDserial_SendChar(' ');
-				MenuMenuTextProc.igxc1=c;
-				VFDposicion((unsigned short)((MenuMenuTextProc.igxc1)*8),POSY4);
+				MenuMenuTextProc->igxc1=c;
+				VFDposicion((unsigned short)((MenuMenuTextProc->igxc1)*8),POSY4);
 				VFDserial_SendChar(FX);//escribimos el ^ uno antes de donde estaba
-				MenuMenuTextProc.igxc4=VERDE;//india que hubo un back Space    
+				MenuMenuTextProc->igxc4=VERDE;//india que hubo un back Space    
 				return;}
 			 else{return;}}
 	     return;} //fin POSY14---------------------------------------------   
-	          if(MenuMenuTextProc.igxc1<NOMBRE_PRODUCTO_SIZE){//Escribir algun ascii en pantalla
-	        	  MenuMenuTextProc.arg5=CAMBIAR;//se ha modificado el nombre del producto
-				  Text[MenuMenuTextProc.igxc1]=getAscii(*cursorx,*cursory,MenuMenuTextProc.igxc0);//guardamos el ascii seleccionado
-				  //Text[MenuTextProc.igxc1+1]=0;//siguiente es cero como limite
+	          if(MenuMenuTextProc->igxc1<NOMBRE_PRODUCTO_SIZE){//Escribir algun ascii en pantalla
+	        	  MenuMenuTextProc->arg5=CAMBIAR;//se ha modificado el nombre del producto
+				  vfd.Text[MenuMenuTextProc->igxc1]=getAscii(*cursorx,*cursory,MenuMenuTextProc->igxc0);//guardamos el ascii seleccionado
+				  //Text[MenuTextProc->igxc1+1]=0;//siguiente es cero como limite
 		          if(menu.contexto.final==NOMBRE_PRODUCTO){
-		        	  VFDposicion((unsigned short)((MenuTextProc.igxc1-1)*8),POSY2);//posicion del cursor del nombre
-		        	  VFDserial_SendChar(Text[MenuTextProc.igxc1]);
-		        	  if(MenuTextProc.igxc1!=(NOMBRE_PRODUCTO_SIZE-1)){
-							  if(MenuTextProc.igxc1!=0){//ess el indice del Text[]
-								  VFDposicion((unsigned short)((MenuTextProc.igxc1-1)*8),POSY4);
+		        	  VFDposicion((unsigned short)((MenuTextProc->igxc1-1)*8),POSY2);//posicion del cursor del nombre
+		        	  VFDserial_SendChar(vfd.Text[MenuTextProc->igxc1]);
+		        	  if(MenuTextProc->igxc1!=(NOMBRE_PRODUCTO_SIZE-1)){
+							  if(MenuTextProc->igxc1!=0){//ess el indice del Text[]
+								  VFDposicion((unsigned short)((MenuTextProc->igxc1-1)*8),POSY4);
 								  VFDserial_SendChar(' ');}
-							  VFDposicion((unsigned short)((MenuTextProc.igxc1)*8),POSY4);
+							  VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY4);
 							  VFDserial_SendChar(FX);}}
-		          else{VFDposicion((unsigned short)((MenuTextProc.igxc1)*8),POSY2);//posicion del cursor del nombre
+		          else{VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY2);//posicion del cursor del nombre
 					  if((menu.contexto.final==CONTROL_PASSWORD)||(menu.contexto.permisos==SUPERVISOR))
 						  VFDserial_SendChar('*');
 					  else	  
-						   VFDserial_SendChar(Text[MenuTextProc.igxc1]);
-					  if(MenuTextProc.igxc1!=0){//ess el indice del Text[]
-						  VFDposicion((unsigned short)((MenuTextProc.igxc1-1)*8),POSY4);
+						   VFDserial_SendChar(Text[MenuTextProc->igxc1]);
+					  if(MenuTextProc->igxc1!=0){//ess el indice del Text[]
+						  VFDposicion((unsigned short)((MenuTextProc->igxc1-1)*8),POSY4);
 						  VFDserial_SendChar(' ');}
-					  VFDposicion((unsigned short)((MenuTextProc.igxc1)*8),POSY4);
+					  VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY4);
 					  VFDserial_SendChar(FX);}
-		          MenuTextProc.igxc1++;//lo desplegamos y apuntamos al que sigue indice de Text
-		          MenuTextProc.igxc4=DONE;}//ha habido una escritua de ascii en pantalla
+		          MenuTextProc->igxc1++;//lo desplegamos y apuntamos al que sigue indice de Text
+		          MenuTextProc->igxc4=DONE;}//ha habido una escritua de ascii en pantalla
              return;}//fin Mas alla de POSY0 
           
  }//FIN DE TextoProcessorkeyEN-----------------------------------------------------------------------
