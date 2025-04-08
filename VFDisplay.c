@@ -834,7 +834,7 @@ unsigned char i;
         		    mens_Warnning_Debug("error en diaplay rec indice 837");// __asm(Halt);
 			       exit(1);}
         	i--;
-        	if(vfd.Text[i]==0)splay
+        	if(vfd.Text[i]==0)
 				vfd.Text[i]=' ';
         	DisplayCursorTextProc(i,ii);
         	return i;}
@@ -856,7 +856,7 @@ void DisplayCursorTextProc(unsigned char pos_actual, unsigned char pos_anterior)
 void saveTextBuffer(unsigned char *p){
 unsigned char i;
        for(i=0;i<NOMBRE_PRODUCTO_SIZE;i++)
-     	  igxm5[i]=*(p)++;
+	      global.igxc5[i]=*(p)++;
 }//fin saveTextBuffer-------------------------------------------------------
 
 
