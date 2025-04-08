@@ -256,7 +256,7 @@ unsigned char *cursorx,*cursory;
 		AjParamProd=&global;
 		AjParamProd->editarSensFase=&AjParamProd->igxc1;
         (*AjParamProd->editarSensFase)=(unsigned char)0; //variable que indica si se esta editando el numero sensibildad y Fase
-		(*AjParamProd->arg2)=(unsigned char)0;////se borraran los contadores
+		AjParamProd->arg2=0;////se borraran los contadores
          vfd.config.bits.Menu_Ready=1;
 }//fin display ingenieria2 gracida---------------------------------------------------
 

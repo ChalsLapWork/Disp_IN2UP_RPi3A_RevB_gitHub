@@ -262,7 +262,7 @@ unsigned char *cursory;
 			case POSY10: //  _display   pushFIFOcOP  BorrarContadores_var();
 				        configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
 						cambio_de_contexto(AJUSTE_PARAMETRICO_DE_PRODUCTO);
-						(*AjParamProd->arg2)=(unsigned char)RESET;//arg2=RESET;//se borraran los contadores
+						AjParamProd->arg2=(unsigned char)RESET;//arg2=RESET;//se borraran los contadores
 						break;
 			case POSY12:cambio_de_contexto(PANTALLA_DDS); break;
 			case POSY14: //Para Pasar a Ajustes Avanzados
@@ -523,13 +523,13 @@ unsigned char *cursorx,*cursory;
 	if(*cursory==POSY0){
 		VFDposicion(*cursorx,*cursory);
 		VFDserial_SendChar(' ');
-		if(*cursorx==POSX_TEXT_PROCS_X)
-			VFDserial_SendChar('x');
-			*cursorx=(unsigned char)POSX_COL1;
-			*cursory=(unsigned char)POSY6;
-			VFDposicion(*cursorx,*cursory);
-			VFDserial_SendChar('>');
-			return;}
+		if(*cursorx==POSX_TEXT_PROCS_X){
+			VFDserial_SendChar('x');}
+		*cursorx=(unsigned char)POSX_COL1;
+		*cursory=(unsigned char)POSY6;
+		VFDposicion(*cursorx,*cursory);
+		VFDserial_SendChar('>');
+		return;}
 	if(*cursory==POSY6){
 		VFDposicion(*cursorx,*cursory);
 		VFDserial_SendChar(' ');
@@ -575,8 +575,12 @@ unsigned char *cursorx,*cursory;
 					   case NUEVO_PRODUCTO:swapArrays(&producto2.name[0],&vfd.Text[0],NOMBRE_PRODUCTO_SIZE);//el nuevo nombre a name y el viejo nombre a text para guardarlo en caso de error o cambio de par
 						                   cambio_de_contexto(AJUSTES_AVANZADOS);
 					                       break;
-					   case AJUSTE_DE_PRODUCTO:if(vfd.menu.contexto.Modificado!=NOMBRE_PRODUCTO)
-						                              break;
+					   case AJUSTE_DE_PRODUCTO:if(vfd.menu.contexto.Modificado==NOMBRE_PRODUCTO){
+													swapArrays(&producto2.name[0],&vfd.Text[0],NOMBRE_PRODUCTO_SIZE);//el nuevo nombre a name y el viejo nombre a text para guardarlo en caso de error o cambio de parecer
+													cleanArrayName(&producto2.name[0],sizeof(producto2.name),0,0);
+													cleanArrayName(&vfd.Text[0],sizeof(vfd.Text),0,0);
+													cambio_de_contexto(AJUSTES_AVANZADOS);}
+											   break;
 					   case AJUSTE_PARAMETRICO_DE_PRODUCTO://venimos de ajuste parametrico de producto y de ajustes avanzados
 											   swapArrays(&producto2.name[0],&vfd.Text[0],NOMBRE_PRODUCTO_SIZE);//el nuevo nombre a name y el viejo nombre a text para guardarlo en caso de error o cambio de parecer
 											   cleanArrayName(&producto2.name[0],sizeof(producto2.name),0,0);
