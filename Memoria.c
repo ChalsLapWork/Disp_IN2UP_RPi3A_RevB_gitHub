@@ -4,6 +4,9 @@
 #include "system.h"
 #include "VFDmenu.h"
 
+
+#define NUM_DE_PASSWORD 5 //caNTIDAD DE password que manejamos 
+
 unsigned short int getAddPassword(unsigned char level){
 unsigned short int add=0;   
 	   switch(level){
@@ -26,9 +29,8 @@ void setPasswords(unsigned char level,unsigned char *p){
 unsigned char validatePasswords(unsigned char *Level,unsigned char *T){//validamos la password
 unsigned char *p;
 unsigned char i,nivel;	
-const unsigned char SIZE1=5;
-const unsigned char pass[SIZE1]={0,OPERADOR,SUPERVISOR,ADMINISTRADOR,SERVICIO};
-    for(i=1,nivel=1;i<SIZE1;i++,nivel++){// cuatro niveles de password
+const unsigned char pass[NUM_DE_PASSWORD]={0,OPERADOR,SUPERVISOR,ADMINISTRADOR,SERVICIO};
+    for(i=1,nivel=1;i<NUM_DE_PASSWORD;i++,nivel++){// cuatro niveles de password
        p=getPasswords(i); 
        if(compareString(T,p,PASSWORD_SIZE)){//
 	        *Level=pass[nivel];//el nivel de la password que coincidio,

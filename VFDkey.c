@@ -262,7 +262,7 @@ unsigned char *cursory;
 			case POSY10: //  _display   pushFIFOcOP  BorrarContadores_var();
 				        configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
 						cambio_de_contexto(AJUSTE_PARAMETRICO_DE_PRODUCTO);
-						(*AjParamProd->arg2)=RESET;//arg2=RESET;//se borraran los contadores
+						(*AjParamProd->arg2)=(unsigned char)RESET;//arg2=RESET;//se borraran los contadores
 						break;
 			case POSY12:cambio_de_contexto(PANTALLA_DDS); break;
 			case POSY14: //Para Pasar a Ajustes Avanzados
@@ -523,13 +523,13 @@ unsigned char *cursorx,*cursory;
 	if(*cursory==POSY0){
 		VFDposicion(*cursorx,*cursory);
 		VFDserial_SendChar(' ');
-    if(*cursorx==POSX_TEXT_PROCS_X)
-        VFDserial_SendChar('x');
-    	*cursorx=(unsigned char)POSX_COL1;
-		*cursory=(unsigned char)POSY6;
-    	VFDposicion(*cursorx,*cursory);
-	    VFDserial_SendChar('>');
-	    return;}
+		if(*cursorx==POSX_TEXT_PROCS_X)
+			VFDserial_SendChar('x');
+			*cursorx=(unsigned char)POSX_COL1;
+			*cursory=(unsigned char)POSY6;
+			VFDposicion(*cursorx,*cursory);
+			VFDserial_SendChar('>');
+			return;}
 	if(*cursory==POSY6){
 		VFDposicion(*cursorx,*cursory);
 		VFDserial_SendChar(' ');
@@ -575,7 +575,7 @@ unsigned char *cursorx,*cursory;
 					   case NUEVO_PRODUCTO:swapArrays(&producto2.name[0],&vfd.Text[0],NOMBRE_PRODUCTO_SIZE);//el nuevo nombre a name y el viejo nombre a text para guardarlo en caso de error o cambio de par
 						                   cambio_de_contexto(AJUSTES_AVANZADOS);
 					                       break;
-					   case AJUSTE_DE_PRODUCTO:if(!(vfd.menu.contexto.Modificado==NOMBRE_PRODUCTO))
+					   case AJUSTE_DE_PRODUCTO:if(vfd.menu.contexto.Modificado!=NOMBRE_PRODUCTO)
 						                              break;
 					   case AJUSTE_PARAMETRICO_DE_PRODUCTO://venimos de ajuste parametrico de producto y de ajustes avanzados
 											   swapArrays(&producto2.name[0],&vfd.Text[0],NOMBRE_PRODUCTO_SIZE);//el nuevo nombre a name y el viejo nombre a text para guardarlo en caso de error o cambio de parecer
@@ -610,7 +610,7 @@ unsigned char *cursorx,*cursory;
 	        	    		      VFDserial_SendBlock(&a[0],sizeof(a)); 
  		                          MenuTextProc->arg1=ERROR_PASS;}}//arg0 esta ocupado
 					    break;//fin CONTROL_PASSWORD
-				case SUPERVISOR:vfd.menu.contexto.control=validatePassword1(&vfd.Text[0]);
+				case SUPERVISOR:vfd.menu.contexto.control=0;//validatePassword1(&vfd.Text[0]);
 				                vfd.config.bits.MenuPendiente=TRUE;//ejecuta el cambio de contexto
 				                break;
 				default:usleep(1);
@@ -661,7 +661,7 @@ unsigned char *cursorx,*cursory;
 					  MenuTextProc->igxc0=MAYUSCULAS;
 					  return;}return;}//fin col1
 		if(*cursorx==POSX_COL2){
-			  if(MenuMenuTextProc->igxc0==MINUSCULAS)
+			  if(MenuTextProc->igxc0==MINUSCULAS)
 				  return;
 			  else{
 				  VFDposicion(*cursorx,*cursory);
@@ -670,10 +670,10 @@ unsigned char *cursorx,*cursory;
 			  *cursorx=POSX_COL2;*cursory=POSY14;
 			  VFDposicion(*cursorx,*cursory);
 			  VFDserial_SendChar('>');
-			  MenuMenuTextProc->igxc0=MINUSCULAS;
+			  MenuTextProc->igxc0=MINUSCULAS;
 				  return;} return;}
 		if(*cursorx==POSX_COL3){
-			  if(MenuMenuTextProc->igxc0==SYMBOL)
+			  if(MenuTextProc->igxc0==SYMBOL)
 				  return;
 			  else{
 				  VFDposicion(*cursorx,*cursory);
@@ -682,66 +682,66 @@ unsigned char *cursorx,*cursory;
 				  *cursorx=POSX_COL3;*cursory=POSY14;
 				  VFDposicion(*cursorx,*cursory);
 					  VFDserial_SendChar('>');
-					  MenuMenuTextProc->igxc0=SYMBOL;
+					  MenuTextProc->igxc0=SYMBOL;
 				 return;}return;}
 		if(*cursorx==POSX_COL7){
-			  if((MenuMenuTextProc->igxc1)!=0){
-				if(MenuMenuTextProc->igxc1==1)
+			  if((MenuTextProc->igxc1)!=0){
+				if(MenuTextProc->igxc1==1)
 				   return;
-				if(MenuMenuTextProc->igxc4==DONE)
-				(MenuMenuTextProc->igxc1)-=1;
-				VFDposicion((unsigned short)((MenuMenuTextProc->igxc1)*8),POSY4);//mover el cursor uno a la izquierda
+				if(MenuTextProc->igxc4==DONE)
+				(MenuTextProc->igxc1)-=1;
+				VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY4);//mover el cursor uno a la izquierda
 				VFDserial_SendChar(' ');//borramos el   ^
-				VFDposicion((unsigned short)((--(MenuMenuTextProc->igxc1))*8),POSY4);//mover el cursor uno a la izquierda
+				VFDposicion((unsigned short)((--(MenuTextProc->igxc1))*8),POSY4);//mover el cursor uno a la izquierda
 				VFDserial_SendChar(FX);//escribimos el ^ uno antes de donde estaba
-				MenuMenuTextProc->igxc4=VERDE;//indica que hubo atraso del cursor
+				MenuTextProc->igxc4=VERDE;//indica que hubo atraso del cursor
 				return;}
 	         return;}//fin POSX_COL7
 		if(*cursorx==POSX_COL8){//mueve cursor a la derecha
-			if(MenuMenuTextProc->igxc1<(NOMBRE_PRODUCTO_SIZE-1)){//indice del array
-			   if(MenuMenuTextProc->igxc4==DONE)
-					(MenuMenuTextProc->igxc1)-=1;
-			   VFDposicion((unsigned short)((MenuMenuTextProc->igxc1)*8),POSY4);
+			if(MenuTextProc->igxc1<(NOMBRE_PRODUCTO_SIZE-1)){//indice del array
+			   if(MenuTextProc->igxc4==DONE)
+					(MenuTextProc->igxc1)-=1;
+			   VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY4);
 			   VFDserial_SendChar(' ');//borramos el   ^
 			   VFDposicion((unsigned short)((++(MenuTextProc->igxc1))*8),POSY4);//mover el cursor uno a la derecha
 			   VFDserial_SendChar(FX);//escribimos el ^ uno antes de donde estaba
-			   if(isNumLetter(vfd.Text[MenuMenuTextProc->igxc1])==FALSE)
-					 vfd.Text[MenuMenuTextProc->igxc1]=' ';
-			   MenuMenuTextProc->igxc4=VERDE;//indica que hubo adelanto de cursor
+			   if(isNumLetter(vfd.Text[MenuTextProc->igxc1])==FALSE)
+					 vfd.Text[MenuTextProc->igxc1]=' ';
+			   MenuTextProc->igxc4=VERDE;//indica que hubo adelanto de cursor
 		   return;}return;}//FIN POSX_COL8
 		if(*cursorx==POSX_COL9){//agrega espacio
-			if(MenuMenuTextProc->igxc4==DONE)
-				 (MenuMenuTextProc->igxc1)-=1;
-			if(MenuMenuTextProc->igxc1<=(NOMBRE_PRODUCTO_SIZE-1)){   //indice de l array
-			  TextInsertSpace(MenuMenuTextProc->igxc1);
+			if(MenuTextProc->igxc4==DONE)
+				 (MenuTextProc->igxc1)-=1;
+			if(MenuTextProc->igxc1<=(NOMBRE_PRODUCTO_SIZE-1)){   //indice de l array
+			  TextInsertSpace(MenuTextProc->igxc1);
 			  DisplayNewTextProc();
-			 MenuMenuTextProc->igxc4=VERDE;//india que hubo un insert Space
+			 MenuTextProc->igxc4=VERDE;//india que hubo un insert Space
 		   return;}return;}
 		if(*cursorx==POSX_COL10){
-			 if(MenuMenuTextProc->igxc1==0)
+			 if(MenuTextProc->igxc1==0)
 				 return;
-			 if((MenuMenuTextProc->igxc4==DONE)&&(MenuMenuTextProc->igxc1==1))//fix a bug
+			 if((MenuTextProc->igxc4==DONE)&&(MenuTextProc->igxc1==1))//fix a bug
 				 return;
-			 if(MenuMenuTextProc->igxc4==DONE)
-				 (MenuMenuTextProc->igxc1)-=1;
-			 MenuMenuTextProc->arg5=CAMBIAR;//se ha modificado el nombre del producto
-			 c=TextBackSpace(MenuMenuTextProc->igxc1);//revisr esta funcion
+			 if(MenuTextProc->igxc4==DONE)
+				 (MenuTextProc->igxc1)-=1;
+			 MenuTextProc->arg5=CAMBIAR;//se ha modificado el nombre del producto
+			 c=TextBackSpace(MenuTextProc->igxc1);//revisr esta funcion
 			 DisplayNewTextProc();
-			 if((c>1)&&(c!=MenuMenuTextProc->igxc1)){
-				VFDposicion((unsigned short)((MenuMenuTextProc->igxc1)*8),POSY4);
+			 if((c>1)&&(c!=MenuTextProc->igxc1)){
+				VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY4);
 				VFDserial_SendChar(' ');
-				MenuMenuTextProc->igxc1=c;
-				VFDposicion((unsigned short)((MenuMenuTextProc->igxc1)*8),POSY4);
+				MenuTextProc->igxc1=c;
+				VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY4);
 				VFDserial_SendChar(FX);//escribimos el ^ uno antes de donde estaba
-				MenuMenuTextProc->igxc4=VERDE;//india que hubo un back Space    
+				MenuTextProc->igxc4=VERDE;//india que hubo un back Space    
 				return;}
 			 else{return;}}
 	     return;} //fin POSY14---------------------------------------------   
-	          if(MenuMenuTextProc->igxc1<NOMBRE_PRODUCTO_SIZE){//Escribir algun ascii en pantalla
-	        	  MenuMenuTextProc->arg5=CAMBIAR;//se ha modificado el nombre del producto
-				  vfd.Text[MenuMenuTextProc->igxc1]=getAscii(*cursorx,*cursory,MenuMenuTextProc->igxc0);//guardamos el ascii seleccionado
+	          if(MenuTextProc->igxc1<NOMBRE_PRODUCTO_SIZE){//Escribir algun ascii en pantalla
+	        	  MenuTextProc->arg5=CAMBIAR;//se ha modificado el nombre del producto
+				  vfd.Text[MenuTextProc->igxc1]=getAscii(*cursorx,*cursory,MenuTextProc->igxc0);//guardamos el ascii seleccionado
 				  //Text[MenuTextProc->igxc1+1]=0;//siguiente es cero como limite
-		          if(menu.contexto.final==NOMBRE_PRODUCTO){
+		          if(vfd.menu.contexto.final==NOMBRE_PRODUCTO){
 		        	  VFDposicion((unsigned short)((MenuTextProc->igxc1-1)*8),POSY2);//posicion del cursor del nombre
 		        	  VFDserial_SendChar(vfd.Text[MenuTextProc->igxc1]);
 		        	  if(MenuTextProc->igxc1!=(NOMBRE_PRODUCTO_SIZE-1)){
@@ -751,10 +751,10 @@ unsigned char *cursorx,*cursory;
 							  VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY4);
 							  VFDserial_SendChar(FX);}}
 		          else{VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY2);//posicion del cursor del nombre
-					  if((menu.contexto.final==CONTROL_PASSWORD)||(menu.contexto.permisos==SUPERVISOR))
+					  if((vfd.menu.contexto.final==CONTROL_PASSWORD)||(vfd.menu.contexto.permisos==SUPERVISOR))
 						  VFDserial_SendChar('*');
 					  else	  
-						   VFDserial_SendChar(Text[MenuTextProc->igxc1]);
+						   VFDserial_SendChar(vfd.Text[MenuTextProc->igxc1]);
 					  if(MenuTextProc->igxc1!=0){//ess el indice del Text[]
 						  VFDposicion((unsigned short)((MenuTextProc->igxc1-1)*8),POSY4);
 						  VFDserial_SendChar(' ');}

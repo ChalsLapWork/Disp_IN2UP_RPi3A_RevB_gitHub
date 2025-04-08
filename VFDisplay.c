@@ -10,6 +10,7 @@
 #include "strings.h"
 #include "VFDisplay.h"
 #include <stdlib.h>
+#include <unistd.h>
 
 extern struct _DISPLAY_VFD_ vfd;
 extern struct _PRODUCT1_ producto2;
@@ -757,11 +758,11 @@ unsigned char *cursorx,*cursory;
 	  if(*cursory==POSY14){
 		  specialFunctions();
 		  return;}
-      if(MenuTextProc->igxc1>=NOMBRE_PRODUCTO_SIZE)//Escribir algun ascii en pantalla
-          return;
+      if(MenuTextProc->igxc1>=NOMBRE_PRODUCTO_SIZE){//Escribir algun ascii en pantalla
+          return;}
 	  MenuTextProc->arg5=CAMBIAR;//se ha modificado el nombre del producto
-	  if(MenuTextProc->igxc1>(NOMBRE_PRODUCTO_SIZE-1))//si escribimos mucho llegara hasta 20 el minimo es 19
-		  return;
+	  if(MenuTextProc->igxc1>(NOMBRE_PRODUCTO_SIZE-1)){//si escribimos mucho llegara hasta 20 el minimo es 19
+		  return;}
 	  vfd.Text[MenuTextProc->igxc1]=getAscii(*cursorx,*cursory,MenuTextProc->igxc0);//guardamos el ascii seleccionado
 	  DisplayCharTextProc(MenuTextProc->igxc1,vfd.Text[MenuTextProc->igxc1]);
 	  DisplayCursorTextProc(MenuTextProc->igxc1+1,MenuTextProc->igxc1);
@@ -823,7 +824,7 @@ unsigned char i;
         		return i;
         	if(i<1){usleep(19);
         		    mens_Warnning_Debug("error en diaplay rec indice 837");// __asm(Halt);
-			       exit(1),}
+			       exit(1);}
         	i--;
         	if(vfd.Text[i]==0)
 				vfd.Text[i]=' ';
