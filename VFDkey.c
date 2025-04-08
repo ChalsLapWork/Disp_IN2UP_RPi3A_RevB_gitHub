@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include "errorController.h"
 #include <unistd.h>
+#include "Memoria.h"
 
 extern struct _DISPLAY_VFD_ vfd;
 extern struct _PRODUCT1_ producto2;
@@ -261,7 +262,7 @@ unsigned char *cursory;
 			case POSY10: //  _display   pushFIFOcOP  BorrarContadores_var();
 				        configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
 						cambio_de_contexto(AJUSTE_PARAMETRICO_DE_PRODUCTO);
-						*(AjParamProd->arg2)=RESET;//arg2=RESET;//se borraran los contadores
+						(*AjParamProd->arg2)=RESET;//arg2=RESET;//se borraran los contadores
 						break;
 			case POSY12:cambio_de_contexto(PANTALLA_DDS); break;
 			case POSY14: //Para Pasar a Ajustes Avanzados
@@ -510,25 +511,26 @@ cursory=&vfd.menu.cursory;
 		if(*cursory>POSY4){
 			VFDposicion(*cursorx,*cursory);
 	   	    VFDserial_SendChar(' ');
-		    +cursorx=getColTextProc(LEFT);
+		    *cursorx=getColTextProc(LEFT);
 		    VFDposicion(*cursorx,*cursory);
 		    VFDserial_SendChar('>');}
 }//FIN TextoProcessorkeyLF -------------------------------------------------------------
 void TextoProcessorkeyDN(void){
 unsigned char *cursorx,*cursory;
-cursorx=&vfd.menu.cursorx;
-cursory=&vfd.menu.cursory;
+    cursorx=&vfd.menu.cursorx;
+    cursory=&vfd.menu.cursory;
 	monitorInvalidPassword();
 	if(*cursory==POSY0){
 		VFDposicion(*cursorx,*cursory);
 		VFDserial_SendChar(' ');
     if(*cursorx==POSX_TEXT_PROCS_X)
         VFDserial_SendChar('x');
-    	*cursorx=POSX_COL1;*cursory=POSY6;
+    	*cursorx=(unsigned char)POSX_COL1;
+		*cursory=(unsigned char)POSY6;
     	VFDposicion(*cursorx,*cursory);
 	    VFDserial_SendChar('>');
 	    return;}
-	if(cursory==POSY6){
+	if(*cursory==POSY6){
 		VFDposicion(*cursorx,*cursory);
 		VFDserial_SendChar(' ');
 		*cursory+=2;

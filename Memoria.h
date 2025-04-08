@@ -125,7 +125,8 @@
 
 unsigned short int getAddPassword(unsigned char level);
 void setPasswords(unsigned char level,unsigned char *p);
-
+unsigned char *getPasswords(unsigned char level);
+unsigned char validatePasswords(unsigned char *Level,unsigned char *T);
 
 
 

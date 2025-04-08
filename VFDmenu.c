@@ -256,7 +256,6 @@ unsigned char *cursorx,*cursory;
 		AjParamProd=&global;
 		AjParamProd->editarSensFase=&AjParamProd->igxc1;
         (*AjParamProd->editarSensFase)=(unsigned char)0; //variable que indica si se esta editando el numero sensibildad y Fase
-        AjParamProd->arg2=&global.arg2;
 		(*AjParamProd->arg2)=(unsigned char)0;////se borraran los contadores
          vfd.config.bits.Menu_Ready=1;
 }//fin display ingenieria2 gracida---------------------------------------------------
@@ -415,7 +414,7 @@ unsigned char *cursorx,*cursory;
 	                       VFDposicion(0,POSY2);//Posicion del nombre
 	                       s=&producto2.name[1];
 	                       m=length(&producto2.name[0],sizeof(producto2.name));
-	                       VFDserial_SendBlock(s,m,&n);//nombre de producto display
+	                       VFDserial_SendBlock(s,m);//nombre de producto display
 	                       for(i=0,j=1;j<(NOMBRE_PRODUCTO_SIZE-1);i++,j++)//transferimos el nombre a la variable texto
 	                             vfd.Text[i]=producto2.name[j];
 	                       MenuTextProc->igxc0=MAYUSCULAS;
