@@ -947,7 +947,6 @@ void pushFIFOcOP_displayUINT_var(unsigned short int posx,unsigned short int posy
 void pushFIFOcOP_display5UChars(unsigned short int posx,unsigned short int posy,unsigned char *p);
 void displayOperativoBarraDet_Numeros(void);
 unsigned char getPosYNewProdDN(unsigned char sup,unsigned char iProd);
-unsigned char getColTextProc(unsigned char dir);
 void displayTextoProcessorMayusculas(void);
 void displayTextoProcessorSymbol(void);
 void displayTextoProcessorMinusculas(void);

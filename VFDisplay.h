@@ -153,5 +153,6 @@ void DisplayNewTextProc(void);
 void monitorInvalidPassword(void);
 void TextProcessorSpecial(void);
 void specialFunctions(void);
+unsigned char getColTextProc(unsigned char dir);
 
 #endif /* VFDISPLAY_H_ */

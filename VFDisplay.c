@@ -804,6 +804,14 @@ void DisplayCharTextProc(unsigned char pos,unsigned char dato){
       VFDserial_SendChar(dato);	
 }//fin DisplayCharTextProc-------------------------------------------------------------------------------------------
 
+unsigned char DisplayInsertSpaceTextProc(unsigned char indice){
+	unsigned char  i=0;
+	         i=indice;
+//	         i=TextInsertSpace2(indice);
+             DisplayNewTextProc();//despleiga el texto
+             return i;
+}// DisplayInsertSpaceTextProc--------------------------------------------------------
+
 
 
 
@@ -826,7 +834,7 @@ unsigned char i;
         		    mens_Warnning_Debug("error en diaplay rec indice 837");// __asm(Halt);
 			       exit(1);}
         	i--;
-        	if(vfd.Text[i]==0)
+        	if(vfd.Text[i]==0)splay
 				vfd.Text[i]=' ';
         	DisplayCursorTextProc(i,ii);
         	return i;}
@@ -844,3 +852,58 @@ void DisplayCursorTextProc(unsigned char pos_actual, unsigned char pos_anterior)
 	
 }//FIN DisplayCursorTextProc--------------------------------------------------------
 
+
+void saveTextBuffer(unsigned char *p){
+unsigned char i;
+       for(i=0;i<NOMBRE_PRODUCTO_SIZE;i++)
+     	  igxm5[i]=*(p)++;
+}//fin saveTextBuffer-------------------------------------------------------
+
+
+//nos da la columna adonde vamos basados en donde estamos
+unsigned char getColTextProc(unsigned char dir){
+	
+	switch(vfd.menu.cursorx){
+		case POSX_COL1:if(dir==RIGHT)
+			              return  POSX_COL2;
+			           else return POSX_COL10;
+		               break;
+		case POSX_COL2:if(dir==RIGHT)
+					              return  POSX_COL3;
+					           else return POSX_COL1;
+				               break;
+		case POSX_COL3:if(dir==RIGHT)
+					              return  POSX_COL4;
+					           else return POSX_COL2;
+				               break;
+		case POSX_COL4:if(dir==RIGHT)
+					              return  POSX_COL5;
+					           else return POSX_COL3;
+				               break;
+		case POSX_COL5:if(dir==RIGHT)
+					              return  POSX_COL6;
+					           else return POSX_COL4;
+				               break;
+		case POSX_COL6:if(dir==RIGHT)
+					              return  POSX_COL7;
+					           else return POSX_COL5;
+				               break;
+		case POSX_COL7:if(dir==RIGHT)
+					              return  POSX_COL8;
+					           else return POSX_COL6;
+				               break;
+		case POSX_COL8:if(dir==RIGHT)
+					              return  POSX_COL9;
+					           else return POSX_COL7;
+				               break;
+		case POSX_COL9:if(dir==RIGHT)
+					              return  POSX_COL10;
+					           else return POSX_COL8;
+				               break;
+		case POSX_COL10:if(dir==RIGHT)
+					              return  POSX_COL1;
+					           else return POSX_COL9;
+				               break;
+		default: return 0; break;																							               
+	}//fin switch	
+}//fin de get columna a onde vamos--------------------------------
