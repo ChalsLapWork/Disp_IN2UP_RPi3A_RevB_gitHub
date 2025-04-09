@@ -395,7 +395,7 @@ unsigned char *cursorx,*cursory;
 void displayTextoProcessor(void){//ascci  251=raiz cuadrada*********************************************
                                  //ascci de x=120  X=88
 unsigned char i,*s,j;	
-unsigned char tx[]= {251,' ',' ','x'};//" x";	 
+unsigned char tx[]= {"Si  No"};//" x";	 
 unsigned char t0[]= "Nombre de Producto";
 unsigned char t1[]= "Escribir clave de acceso:";//Contrasena";
 unsigned char r1[]= "  1  2  3  4  5  6  7  8  9  0";//Y6
@@ -403,7 +403,7 @@ unsigned char r2[]= "  Q  W  E  R  T  Y  U  I  O  P";        //Ñ=A4h
 unsigned char r3[]= "  A  S  D  F  G  H  J  K  L  ;";
 unsigned char r4[]= "  Z  X  C  V  B  N  M  .  ,   ";
 unsigned char r5[]= "  Ma Mi S           <  >  +  -";		
-unsigned char x[7]={ POSX_TEXT_PROCS,0,0,0,0 , 0,  0};
+unsigned char x[7]={ 205,0,0,0,0 , 0,  0};
 unsigned char y[7]={   0,0,6,8,10,12, 14};
 unsigned short int n,m;
 unsigned char *cursorx,*cursory;
