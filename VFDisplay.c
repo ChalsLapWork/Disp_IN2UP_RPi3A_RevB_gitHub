@@ -657,8 +657,7 @@ unsigned char a[5],*p,*cursory,*cursorx;
 void displayTextoProcessorMayusculas(void){
 unsigned char r1[]= "  1  2  3  4  5  6  7  8  9  0";//Y6
 unsigned char r2[]= "  Q  W  E  R  T  Y  U  I  O  P";        //Ñ=A5h
-unsigned char r3[]={' ',' ','A',' ',' ','S',' ',' ','D',' ',' ','F',' ',' ','G',' ',' ',
-							'H',' ',' ','J',' ',' ','K',' ',' ','L',' ',' ',0xA5};
+unsigned char r3[]={"  A  S  D  F  G  H  J  K  L  ;";
 unsigned char r4[]= "  Z  X  C  V  B  N  M  ,  .   ";
 unsigned char r5[]= "  Ma Mi S           <  >  +  -";		
 unsigned char x[7]={ 205,0,0,0,0 , 0,  0};
@@ -682,8 +681,7 @@ unsigned char y[7]={   0,0,6,8,10,12, 14};
 void displayTextoProcessorMinusculas(void){
 unsigned char r1[]= "  1  2  3  4  5  6  7  8  9  0";//Y6
 unsigned char r2[]= "  q  w  e  r  t  y  u  i  o  p";        //ñ=A4h
-unsigned char r3[]={' ',' ','a',' ',' ','s',' ',' ','d',' ',' ','f',' ',' ','g',' ',' ',
-						'h',' ',' ','j',' ',' ','k',' ',' ','l',' ',' ',0xA4};
+unsigned char r3[]= "  a  s  d  f  g  h  j  k  l  ;";
 unsigned char r4[]= "  z  x  c  v  b  n  m  ,  .   ";
 unsigned char r5[]= "  Ma Mi S           <  >  +  -";		
 unsigned char x[7]={ POSX_TEXT_PROCS,0,0,0,0 , 0,  0};
