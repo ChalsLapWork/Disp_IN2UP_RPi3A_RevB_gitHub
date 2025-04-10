@@ -428,7 +428,7 @@ unsigned char a[]= ">SI No";
 		return;//EN ESTE CONTEXTO NO USAMOS arg0 PORQUE guarda el DATOS
 	if(*cursory==POSY6){//DEL menu anterior que se va usar en el menu que viene
 		VFDposicion(*cursorx,*cursory);
-		//VFDserial_SendChar(' ');
+		VFDserial_SendChar(' ');
 		*cursorx=POSX_TEXT_PROCS_OK;*cursory=POSY0;
 		VFDposicion(*cursorx,*cursory);
 		//VFDserial_SendChar('>');
@@ -522,11 +522,8 @@ unsigned char a[]= "Si  No";
     cursory=&vfd.menu.cursory;
 	monitorInvalidPassword();
 	if(*cursory==POSY0){
-		VFDposicion(*cursorx,*cursory);
-		//VFDserial_SendChar(' ');
+		VFDposicion(POSX_TEXT_PROCS_OK,*cursory);
 		VFDserial_SendBlock(&a[0],sizeof(a));
-		//if(*cursorx==POSX_TEXT_PROCS_X){
-		//	VFDserial_SendChar('x');}
 		*cursorx=(unsigned char)POSX_COL1;
 		*cursory=(unsigned char)POSY6;
 		VFDposicion(*cursorx,*cursory);
