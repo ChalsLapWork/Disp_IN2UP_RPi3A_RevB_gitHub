@@ -246,7 +246,7 @@ return;
 void* imprimir_char_con_delay(void* arg) {
     //DatosHilo* datos = (DatosHilo*)arg;
     unsigned char datos=(unsigned char)(uintptr_t)arg;
-    usleep(1500000);  // 1.5 segundos = 1,500,000 microsegundos
+    usleep(375000);  // 1.5 segundos = 1,500,000 microsegundos
     VFDposicion(datos,POSY2);
     VFDserial_SendChar('*');// Imprimir espacios y luego el carácter
     return NULL;
