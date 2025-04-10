@@ -10,6 +10,7 @@
 #include "errorController.h"
 #include <unistd.h>
 #include "Memoria.h"
+#include "VFDthread.h"
 
 extern struct _DISPLAY_VFD_ vfd;
 extern struct _PRODUCT1_ producto2;
@@ -452,19 +453,19 @@ unsigned char b[]= ">SI No";
 
 	monitorInvalidPassword();
    if(*cursory==POSY0){
-	if(*cursorx==POSX_TEXT_PROCS_OK){
-		VFDposicion(*cursorx,*cursory);
-		VFDserial_SendBlock(&a[0],sizeof(a));//VFDserial_SendChar(' ');
-		*cursorx=POSX_TEXT_PROCS_X;
-		//VFDposicion(*cursorx,*cursory);
-		//VFDserial_SendChar('>');VFDserial_SendChar('X');
-		return;}
-	if(*cursorx==POSX_TEXT_PROCS_X){
-		VFDposicion(POSX_TEXT_PROCS_OK,*cursory);
-		VFDserial_SendBlock(&b[0],sizeof(b));//VFDserial_SendChar(' ');VFDserial_SendChar('x');
-		*cursorx=POSX_TEXT_PROCS_OK;
-		//VFDposicion(*cursorx,*cursory);VFDserial_SendChar('>');
-		return;}}
+		if(*cursorx==POSX_TEXT_PROCS_OK){
+			VFDposicion(*cursorx,*cursory);
+			VFDserial_SendBlock(&a[0],sizeof(a));//VFDserial_SendChar(' ');
+			*cursorx=POSX_TEXT_PROCS_X;
+			//VFDposicion(*cursorx,*cursory);
+			//VFDserial_SendChar('>');VFDserial_SendChar('X');
+			return;}
+		if(*cursorx==POSX_TEXT_PROCS_X){
+			VFDposicion(POSX_TEXT_PROCS_OK,*cursory);
+			VFDserial_SendBlock(&b[0],sizeof(b));//VFDserial_SendChar(' ');VFDserial_SendChar('x');
+			*cursorx=POSX_TEXT_PROCS_OK;
+			//VFDposicion(*cursorx,*cursory);VFDserial_SendChar('>');
+			return;}}
 	if(*cursory==POSY14)
 		if(*cursorx==POSX_COL3){
 			VFDposicion(*cursorx,*cursory);
@@ -644,13 +645,13 @@ unsigned char *cursorx,*cursory;
 			    	            break;
 			   default:return; break;}
    		      return;}//fin cursorx==POSX_TEXT_PROCS_X
-	   	   return;}// fin ==POSY0--------------------------------------------------------------------------
+	 return;}// fin ==POSY0--------------------------------------------------------------------------
  if(*cursory>POSY0){
 	 monitorInvalidPassword();  
      if(vfd.menu.contexto.control==NOMBRE_PRODUCTO){
     	    TextProcessorSpecial();
     	    return;}
-	 if(*cursory==POSY14){
+	 if(*cursory==POSY14){//------------------------------------------------------------------
 		if(*cursorx==POSX_COL1){
 			   if(MenuTextProc->igxc0==MAYUSCULAS)
 				   return;
@@ -739,35 +740,38 @@ unsigned char *cursorx,*cursory;
 				MenuTextProc->igxc4=VERDE;//india que hubo un back Space    
 				return;}
 			 else{return;}}
-	     return;} //fin POSY14---------------------------------------------   
-	          if(MenuTextProc->igxc1<NOMBRE_PRODUCTO_SIZE){//Escribir algun ascii en pantalla
-	        	  MenuTextProc->arg5=CAMBIAR;//se ha modificado el nombre del producto
-				  vfd.Text[MenuTextProc->igxc1]=getAscii(*cursorx,*cursory,MenuTextProc->igxc0);//guardamos el ascii seleccionado
-				  //Text[MenuTextProc->igxc1+1]=0;//siguiente es cero como limite
-		          if(vfd.menu.contexto.final==NOMBRE_PRODUCTO){
-		        	  VFDposicion((unsigned short)((MenuTextProc->igxc1-1)*8),POSY2);//posicion del cursor del nombre
-		        	  VFDserial_SendChar(vfd.Text[MenuTextProc->igxc1]);
-		        	  if(MenuTextProc->igxc1!=(NOMBRE_PRODUCTO_SIZE-1)){
-							  if(MenuTextProc->igxc1!=0){//ess el indice del Text[]
-								  VFDposicion((unsigned short)((MenuTextProc->igxc1-1)*8),POSY4);
-								  VFDserial_SendChar(' ');}
-							  VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY4);
-							  VFDserial_SendChar(FX);}}
-		          else{VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY2);//posicion del cursor del nombre
-					  if((vfd.menu.contexto.final==CONTROL_PASSWORD)||(vfd.menu.contexto.permisos==SUPERVISOR))
-						  VFDserial_SendChar('*');
-					  else	  
-						   VFDserial_SendChar(vfd.Text[MenuTextProc->igxc1]);
-					  if(MenuTextProc->igxc1!=0){//ess el indice del Text[]
-						  VFDposicion((unsigned short)((MenuTextProc->igxc1-1)*8),POSY4);
-						  VFDserial_SendChar(' ');}
-					  VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY4);
-					  VFDserial_SendChar(FX);}
-		          MenuTextProc->igxc1++;//lo desplegamos y apuntamos al que sigue indice de Text
-		          MenuTextProc->igxc4=DONE;}//ha habido una escritua de ascii en pantalla
-             return;}//fin Mas alla de POSY0 
+	 return;} //fin POSY14---------------------------------------------------------------------------------------------------------   
+	if(MenuTextProc->igxc1<NOMBRE_PRODUCTO_SIZE){//Escribir algun ascii en pantalla
+		MenuTextProc->arg5=CAMBIAR;//se ha modificado el nombre del producto
+		vfd.Text[MenuTextProc->igxc1]=getAscii(*cursorx,*cursory,MenuTextProc->igxc0);//guardamos el ascii seleccionado
+		//Text[MenuTextProc->igxc1+1]=0;//siguiente es cero como limite
+		if(vfd.menu.contexto.final==NOMBRE_PRODUCTO){
+			VFDposicion((unsigned short)((MenuTextProc->igxc1-1)*8),POSY2);//posicion del cursor del nombre
+			VFDserial_SendChar(vfd.Text[MenuTextProc->igxc1]);
+			if(MenuTextProc->igxc1!=(NOMBRE_PRODUCTO_SIZE-1)){
+					if(MenuTextProc->igxc1!=0){//ess el indice del Text[]
+						VFDposicion((unsigned short)((MenuTextProc->igxc1-1)*8),POSY4);
+						VFDserial_SendChar(' ');}
+					VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY4);
+					VFDserial_SendChar(FX);}}
+		else{VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY2);//posicion del cursor del nombre
+				if((vfd.menu.contexto.final==CONTROL_PASSWORD)||(vfd.menu.contexto.permisos==SUPERVISOR)){
+					VFDserial_SendChar(vfd.Text[MenuTextProc->igxc1]);
+					//VFDserial_SendChar('*');
+					VFDserial_SendChar_Asterisco(*cursorx);
+				    }
+				else	  
+					VFDserial_SendChar(vfd.Text[MenuTextProc->igxc1]);
+				if(MenuTextProc->igxc1!=0){//ess el indice del Text[]
+					VFDposicion((unsigned short)((MenuTextProc->igxc1-1)*8),POSY4);
+					VFDserial_SendChar(' ');}
+				VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY4);
+				VFDserial_SendChar(FX);}
+		MenuTextProc->igxc1++;//lo desplegamos y apuntamos al que sigue indice de Text
+		MenuTextProc->igxc4=DONE;}//ha habido una escritua de ascii en pantalla
+     return;}//fin Mas alla de POSY0 ------------------------------------------------------------------------------------------
           
- }//FIN DE TextoProcessorkeyEN-----------------------------------------------------------------------
+ }//FIN DE TextoProcessorkeyEN-------------------------------------------------------------------------------------------------
 
 
 

@@ -14,3 +14,5 @@ unsigned char VFDserial_SendBlock_buf(void *ptr, size_t size);
 void init_VFD_Threads(void);
 void activar_Teclado(void);
 void* resetKeypadEnable(void* arg);
+void* imprimir_char_con_delay(void* arg);
+void VFDserial_SendChar_Asterisco(unsigned char cursorx);
