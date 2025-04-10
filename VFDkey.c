@@ -419,6 +419,8 @@ unsigned char k;
 /**  TEXT PROCESSSOR*******************************************************************************++*****/
 void TextoProcessorkeyUP(void){
 unsigned char *cursorx,*cursory;
+unsigned char a[]= ">SI No";
+
     cursorx=&vfd.menu.cursorx;
 	cursory=&vfd.menu.cursory;    	
 	monitorInvalidPassword();
@@ -426,41 +428,42 @@ unsigned char *cursorx,*cursory;
 		return;//EN ESTE CONTEXTO NO USAMOS arg0 PORQUE guarda el DATOS
 	if(*cursory==POSY6){//DEL menu anterior que se va usar en el menu que viene
 		VFDposicion(*cursorx,*cursory);
-		VFDserial_SendChar(' ');
+		//VFDserial_SendChar(' ');
 		*cursorx=POSX_TEXT_PROCS_OK;*cursory=POSY0;
 		VFDposicion(*cursorx,*cursory);
-		VFDserial_SendChar('>');
+		//VFDserial_SendChar('>');
+		VFDserial_SendBlock(&a[0],sizeof(a));
 		return;}
 	if(*cursory>POSY6)
-	if(*cursory<(POSY14+1)){
-		VFDposicion(*cursorx,*cursory);
-		VFDserial_SendChar(' ');
-		*cursory-=2;
-		VFDposicion(*cursorx,*cursory);
-		VFDserial_SendChar('>');
-		return;}
+	  if(*cursory<(POSY14+1)){
+			VFDposicion(*cursorx,*cursory);
+			VFDserial_SendChar(' ');
+			*cursory-=2;
+			VFDposicion(*cursorx,*cursory);
+			VFDserial_SendChar('>');
+			return;}
 }//FIN TextoProcessorkeyUP-----------------------------------------------------------------------
 void TextoProcessorkeyRT(void){
 unsigned char *cursorx,*cursory;
 cursorx=&vfd.menu.cursorx;
 cursory=&vfd.menu.cursory;
+unsigned char a[]= "Si >NO";
+unsigned char b[]= ">SI No";
+
 	monitorInvalidPassword();
    if(*cursory==POSY0){
 	if(*cursorx==POSX_TEXT_PROCS_OK){
 		VFDposicion(*cursorx,*cursory);
-		VFDserial_SendChar(' ');
+		VFDserial_SendBlock(&a[0],sizeof(a));//VFDserial_SendChar(' ');
 		*cursorx=POSX_TEXT_PROCS_X;
-		VFDposicion(*cursorx,*cursory);
-		VFDserial_SendChar('>');
-		VFDserial_SendChar('X');
+		//VFDposicion(*cursorx,*cursory);
+		//VFDserial_SendChar('>');VFDserial_SendChar('X');
 		return;}
 	if(*cursorx==POSX_TEXT_PROCS_X){
-		VFDposicion(*cursorx,*cursory);
-		VFDserial_SendChar(' ');
-		VFDserial_SendChar('x');
+		VFDposicion(POSX_TEXT_PROCS_OK,*cursory);
+		VFDserial_SendBlock(&a[0],sizeof(a));//VFDserial_SendChar(' ');VFDserial_SendChar('x');
 		*cursorx=POSX_TEXT_PROCS_OK;
-		VFDposicion(*cursorx,*cursory);
-		VFDserial_SendChar('>');
+		//VFDposicion(*cursorx,*cursory);VFDserial_SendChar('>');
 		return;}}
 	if(*cursory==POSY14)
 		if(*cursorx==POSX_COL3){
@@ -482,23 +485,20 @@ void TextoProcessorkeyLF(void){
 unsigned char *cursorx,*cursory;
 cursorx=&vfd.menu.cursorx;
 cursory=&vfd.menu.cursory;
+unsigned char a[]= "Si >NO";
+unsigned char b[]= ">SI No";
+
 	monitorInvalidPassword();	
   if(*cursory==POSY0){
 	 if(*cursorx==POSX_TEXT_PROCS_OK){
 		   VFDposicion(*cursorx,*cursory);
-		   VFDserial_SendChar(' ');
+		   VFDserial_SendBlock(&a[0],sizeof(a));
  		   *cursorx=POSX_TEXT_PROCS_X;
-		   VFDposicion(*cursorx,*cursory);
-		   VFDserial_SendChar('>');
-		   VFDserial_SendChar('X');
 			 return;}
 	  if(*cursorx==POSX_TEXT_PROCS_X){
-	    	VFDposicion(*cursorx,*cursory);
-		    VFDserial_SendChar(' ');
-		    VFDserial_SendChar('x');
+	    	VFDposicion(POSX_TEXT_PROCS_OK,*cursory);
+			VFDserial_SendBlock(&b[0],sizeof(b));
 		    *cursorx=POSX_TEXT_PROCS_OK;
-			VFDposicion(*cursorx,*cursory);
-			VFDserial_SendChar('>');
 			return;}}
 	   if(*cursory==POSY14)
 	   if(*cursorx==POSX_COL7){
@@ -517,14 +517,16 @@ cursory=&vfd.menu.cursory;
 }//FIN TextoProcessorkeyLF -------------------------------------------------------------
 void TextoProcessorkeyDN(void){
 unsigned char *cursorx,*cursory;
+unsigned char a[]= "Si  No";
     cursorx=&vfd.menu.cursorx;
     cursory=&vfd.menu.cursory;
 	monitorInvalidPassword();
 	if(*cursory==POSY0){
 		VFDposicion(*cursorx,*cursory);
-		VFDserial_SendChar(' ');
-		if(*cursorx==POSX_TEXT_PROCS_X){
-			VFDserial_SendChar('x');}
+		//VFDserial_SendChar(' ');
+		VFDserial_SendBlock(&a[0],sizeof(a));
+		//if(*cursorx==POSX_TEXT_PROCS_X){
+		//	VFDserial_SendChar('x');}
 		*cursorx=(unsigned char)POSX_COL1;
 		*cursory=(unsigned char)POSY6;
 		VFDposicion(*cursorx,*cursory);

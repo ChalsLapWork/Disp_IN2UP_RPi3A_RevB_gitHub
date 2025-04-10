@@ -660,8 +660,8 @@ unsigned char r2[]= "  Q  W  E  R  T  Y  U  I  O  P";        //Ñ=A5h
 unsigned char r3[]= "  A  S  D  F  G  H  J  K  L  ;";
 unsigned char r4[]= "  Z  X  C  V  B  N  M  ,  .   ";
 unsigned char r5[]= "  Ma Mi S           <  >  +  -";		
-unsigned char x[7]={ 205,0,0,0,0 , 0,  0};
-unsigned char y[7]={   0,0,6,8,10,12, 14};
+unsigned char x[7]={POSX_TEXT_PROCS_OK,0,0,0,0 , 0,  0};//POSX_TEXT_PROCS_OK=205
+unsigned char y[7]={  0,0,6,8,10,12, 14};
 	
 	    VFDposicion(x[2],y[2]);  
 	    VFDserial_SendBlock(&r1[0],sizeof(r1));
