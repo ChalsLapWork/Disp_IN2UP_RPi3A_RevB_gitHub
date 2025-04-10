@@ -169,6 +169,7 @@ else{
              vfd.menu.contexto.push(vfd.menu.contexto.Actual);//de donde venimos
 			 vfd.menu.contexto.destino=vfd.menu.contexto.solicitaCambioA;//a donde vamos
              vfd.menu.contexto.solicitaCambioA=TEXT_PROCESSOR;
+			 vfd.menu.contexto.permisos=SUPERVISOR;//contraseña
 			 ret=TEXT_PROCESSOR;
 			 vfd.menu.contexto.control=SUPERVISOR;//como contraseña
           }

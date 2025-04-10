@@ -257,7 +257,7 @@ pthread_t hilo_Asterisco;
 
     if(pthread_create(&hilo_Asterisco,NULL,imprimir_char_con_delay,(void*)(uintptr_t)cursorx)!=0){
          perror("pthrear_create error asterisco");
-         return 1;} // No se hace pthread_join, el hilo se ejecuta en segundo plano
+         return;} // No se hace pthread_join, el hilo se ejecuta en segundo plano
     pthread_detach(hilo_Asterisco);// // Lo marcamos como "detached" para que libere recursos al terminar
 }//fin VFDserial_SendChar_Asterisco--------------------------------------------
 

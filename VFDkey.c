@@ -755,7 +755,7 @@ unsigned char *cursorx,*cursory;
 					VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY4);
 					VFDserial_SendChar(FX);}}
 		else{VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY2);//posicion del cursor del nombre
-				if((vfd.menu.contexto.final==CONTROL_PASSWORD)||(vfd.menu.contexto.permisos==SUPERVISOR)){
+			if((vfd.menu.contexto.final==CONTROL_PASSWORD)||(vfd.menu.contexto.permisos==SUPERVISOR)){
 					VFDserial_SendChar(vfd.Text[MenuTextProc->igxc1]);
 					//VFDserial_SendChar('*');
 					VFDserial_SendChar_Asterisco(*cursorx);
