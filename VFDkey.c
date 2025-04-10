@@ -461,7 +461,7 @@ unsigned char b[]= ">SI No";
 		return;}
 	if(*cursorx==POSX_TEXT_PROCS_X){
 		VFDposicion(POSX_TEXT_PROCS_OK,*cursory);
-		VFDserial_SendBlock(&a[0],sizeof(a));//VFDserial_SendChar(' ');VFDserial_SendChar('x');
+		VFDserial_SendBlock(&b[0],sizeof(b));//VFDserial_SendChar(' ');VFDserial_SendChar('x');
 		*cursorx=POSX_TEXT_PROCS_OK;
 		//VFDposicion(*cursorx,*cursory);VFDserial_SendChar('>');
 		return;}}
