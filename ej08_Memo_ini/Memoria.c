@@ -114,12 +114,11 @@ void leer_seguridad_a_struct(Seguridad *sec) {
 void* config_thread(void* arg) {
 //Seguridad *sys = (Seguridad*)arg;
 
-    if(no_existe_init())
-           crear_init();
-    if(no_existe_Seguridad()) 
-           crear_seccion_Seguridad();
-    leer_seguridad_a_struct(&g_seguridad);              
-
+    if(no_existe_init()){
+           crear_init();}
+    if(no_existe_Seguridad()){ 
+           crear_seccion_Seguridad();}
+    leer_seguridad_a_struct(&g_seguridad);            
     g_seguridad.seguridad_iniciada=0xAA;
     //printf("[CONFIG] Archivo %s creado exitosamente.\n", CONFIG_FILE);
     pthread_exit(NULL);
