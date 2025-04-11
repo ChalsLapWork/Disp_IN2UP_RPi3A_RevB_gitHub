@@ -21,6 +21,16 @@ int main() {
     
     init_vars();// Inicia las variables del sistema (puede crear el archivo si no existe)
     
+    sleep(3);
+    printf("\033[33m");
+    printf("level1: %s\n", g_seguridad.level1);
+    printf("level2: %s\n", g_seguridad.level2);
+    printf("level3: %s\n", g_seguridad.level3);
+    printf("level4: %s\n", g_seguridad.level4);
+    printf("level5: %s\n", g_seguridad.level5);
+    printf("\033[0m");
+
+
     for (int i = 0; i < 5; i++) {// Simular que el programa sigue haciendo cosas
         printf("[MAIN] Haciendo cosas importantes... (%d)\n", i + 1);
         sleep(1);}
