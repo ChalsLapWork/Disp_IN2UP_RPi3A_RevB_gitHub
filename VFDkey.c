@@ -614,7 +614,15 @@ unsigned char *cursorx,*cursory;
 	        	    		      VFDserial_SendBlock(&a[0],sizeof(a)); 
  		                          MenuTextProc->arg1=ERROR_PASS;}}//arg0 esta ocupado
 					    break;//fin CONTROL_PASSWORD
-				case SUPERVISOR:vfd.menu.contexto.control=0;//validatePassword1(&vfd.Text[0]);
+				case SUPERVISOR:vfd.menu.contexto.control=0;
+				                if(validatePassword(&Level,&vfd.Text[0])){
+                                     vfd.config.bits.MenuPendiente=TRUE;
+									       
+
+								}
+
+
+				                validatePassword1(&vfd.Text[0]);
 				                vfd.config.bits.MenuPendiente=TRUE;//ejecuta el cambio de contexto
 				                break;
 				default:usleep(1);
