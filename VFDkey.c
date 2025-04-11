@@ -555,7 +555,7 @@ unsigned char a[]= "Si  No";
 void TextoProcessorkeyEN(void){
 unsigned char a[]= "Contrasena invalida",*p=0,c;
 unsigned char k,v;
-unsigned char *cursorx,*cursory;
+unsigned char *cursorx,*cursory,Level;
     cursorx=&vfd.menu.cursorx;
 	cursory=&vfd.menu.cursory; 
 	if(*cursory==POSY0){//cambio_de_contexto(NuevoProducto.menuPadre;
@@ -617,7 +617,7 @@ unsigned char *cursorx,*cursory;
 				case SUPERVISOR:vfd.menu.contexto.control=0;
 				                if(validatePassword(&Level,&vfd.Text[0])){
                                      vfd.config.bits.MenuPendiente=TRUE;
-									       
+									 setNivelAcceso(Level);
 
 								}
 

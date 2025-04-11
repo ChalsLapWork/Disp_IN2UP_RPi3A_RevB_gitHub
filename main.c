@@ -17,6 +17,7 @@
   #include <wiringPi.h>
 #endif
 #include "serial.h"
+#include "Memoria.c"
 
 #define DEPURANDO_SIN_DISPLAY_ENCENDIDO 1//1=CIERTO 0=DISPLAY ESTA ENCENDIDO Y FUNCIONANDO
 
@@ -60,6 +61,7 @@ int main(void){
   configPuertos();
   init_queues();
   usleep(500);
+  init_vars();
   init_menu();
 
   /*int swap=0;

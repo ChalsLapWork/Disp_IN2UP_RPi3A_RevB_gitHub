@@ -154,5 +154,6 @@ void monitorInvalidPassword(void);
 void TextProcessorSpecial(void);
 void specialFunctions(void);
 unsigned char getColTextProc(unsigned char dir);
+void setNivelAcceso(unsigned char level);
 
 #endif /* VFDISPLAY_H_ */

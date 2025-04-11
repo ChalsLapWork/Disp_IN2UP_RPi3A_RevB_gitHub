@@ -28,8 +28,8 @@ void setPasswords(unsigned char level,unsigned char *p){
  *  *T la cadena a evualuar */
 unsigned char validatePasswords(unsigned char *Level,unsigned char *T){//validamos la password
 unsigned char *p;
-unsigned char i,nivel;	
-const unsigned char pass[NUM_DE_PASSWORD]={0,OPERADOR,SUPERVISOR,ADMINISTRADOR,SERVICIO};
+unsigned char i,nivel;	//OPERADOR=2,SUPERVISOR=3,ADMINISTRADOR=4,SERVICIO=5
+const unsigned char pass[NUM_DE_PASSWORD]={1,OPERADOR,SUPERVISOR,ADMINISTRADOR,SERVICIO};
     for(i=1,nivel=1;i<NUM_DE_PASSWORD;i++,nivel++){// cuatro niveles de password
        p=getPasswords(i); 
        if(compareString(T,p,PASSWORD_SIZE)){//
@@ -44,3 +44,10 @@ unsigned char *getPasswords(unsigned char level){
 static unsigned char s[]="password";
 return &s[0];
 }//fin getPasswords---------------------------------------------------------------
+
+/*Saca del sistema de archivos las variables del sistema  */
+void init_vars(void){
+     
+	  
+
+}//fin init vars+++++++++++++++++++++++++++++++++++
