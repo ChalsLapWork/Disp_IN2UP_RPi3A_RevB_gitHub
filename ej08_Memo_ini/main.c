@@ -1,48 +1,29 @@
-#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include "config.h"
+#include <unistd.h>     // para sleep()
+#include <sys/stat.h>   // para verificar si existe el archivo
 
-static VariablesSistema vars;  // Declaración de la variable global
+// Nombre del archivo de configuración
+#define CONFIG_FILE "systema.ini"
 
-void* hilo_cargar_variables(void *arg) {
-    Config config;
-    if (cargar_config("systema.ini", &config) != 0) {
-        reportar_error_config("No se pudo cargar el archivo systema.ini");
-        pthread_exit(NULL);
-    }
 
-    const char *v;
 
-    v = obtener_valor(&config, "seguridad", "level_1");
-    if (v) strncpy(vars.password_level1, v, MAX_VALOR);
 
-    v = obtener_valor(&config, "debug", "enabled");
-    if (v) strncpy(vars.modo_debug, v, MAX_VALOR);
 
-    pthread_exit(NULL);
-}
 
-void init_vars() {
-    pthread_t hilo;
-    int rc = pthread_create(&hilo, NULL, hilo_cargar_variables, NULL);
-    if (rc != 0) {
-        printf("No se pudo crear el hilo de configuración\n");
-        return;
-    }
 
-    pthread_detach(hilo);
-}
-
+// Función principal del programa
 int main() {
-    init_vars();
+    printf("[MAIN] Iniciando el programa...\n");
+    printf(" de prueba para crear el init vars ...\n");
+    
+    init_vars();// Inicia las variables del sistema (puede crear el archivo si no existe)
+    
+    for (int i = 0; i < 5; i++) {// Simular que el programa sigue haciendo cosas
+        printf("[MAIN] Haciendo cosas importantes... (%d)\n", i + 1);
+        sleep(1);}
 
-    for (int i = 0; i < 10; i++) {
-        printf("Main haciendo cosas importantes...\n");
-        sleep(1);
-    }
-
+    printf("[MAIN] Programa finalizado.\n");
     return 0;
 }
