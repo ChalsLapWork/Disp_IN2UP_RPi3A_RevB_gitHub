@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>     // para sleep()
 #include <sys/stat.h>   // para verificar si existe el archivo
+#include "Memoria.h"
 
 // Nombre del archivo de configuración
 #define CONFIG_FILE "systema.ini"
