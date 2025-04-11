@@ -1,1 +1,0 @@
-unsigned char recalcular_valor_Ser_Barr_det(unsigned char val);

@@ -14,6 +14,8 @@
  *      Digital Signal Processor Main controller
  */
 
+#include "maths.h"
+
 #ifndef DSP_H_
 #define DSP_H_
 
@@ -291,30 +293,7 @@
 #define ZOOM99_C     */
 //typedef signed short xx;
 
-struct ZoomControl{//para crear  el zoom y las ecuaciones  polinomicas de acondicionamiento de señal para el DDS
-	   signed short int Max;//valor maximo del cuadro central de la pantalla
-	   //signed short int Maxn;//valor negativo
-	   //float a; //coeficiente del termino grado2
-	   //float b;//coeficiente del termino grado 1
-	   //float c; //coeficiente del termino grado 0
-	   double zFactor;// son los mas menos 32768 entre los 100 zoom's
-	   float indiceConversion;//lo que se multiplica para escalar al zoom seleccionado
-	   unsigned char Cx; //coordenada x del centro de la pantalla
-	   unsigned char Cy;//coordenadas y del centro de la pantalla
-	   unsigned char Zoom;//es el zoom se seleccionado actual
-	   unsigned short int pixelSizeX;//limite del numero digital despleglable en DDS en funcion del Zoom
-	   unsigned short int Maxx;//limite del numero digital desplegable en DDS en funciona del Zoom
-	   unsigned short int pixelSizeY;//limite del numero digital despleglable en DDS en funcion del Zoom
-	   unsigned short int Maxy;//limite del numero digital desplegable en DDS en funciona del Zoom
-	   signed short int lapso;//es el Maximo - Minimo	
-	   unsigned short int Ymax;//maximo valor a graficar el zoom en Y, linea de sensibilidad para este zoom
-	   unsigned short int Ymin;//minimo valor en la posicion-1 de linea de sesibilidad 
-       //zoom.indiceConversion
-	  // float factor;//factor de multiplicacion por zoom
-	   float (*factor)(unsigned char);//apiunta ala funcion que nos da el factor en funcion del zooom
-	   struct Coordusi (*MaxZoom)(unsigned char);//maximo valor para ese zoom en x 
-      
-};
+
 
 //variables usadas en el mismo contexto
 struct _GLOBAL_CONTEXTO{
@@ -389,7 +368,7 @@ struct _Detection{
     //unsigned char phasefrac;
                  float Phase;
 //    unsigned char BarraDeteccionStatus;//se esta dibujando una caja? indica si esta ocupada dibujando, no podemos cambiarnos de menu mientras este mandando datos al DDS 
-    unsigned char CuadroMadreReady;//el cuadro madre esta construido y listo?.
+    //unsigned char CuadroMadreReady;//el cuadro madre esta construido y listo?.
     unsigned char boxinit;//init box, init dibujo de boxes
     unsigned char signalDDSx; //señal para dds ya acondicionada
     unsigned char signalDDSy;//señal para dds ya acondicionada

@@ -9,6 +9,8 @@
 #include "errorController.h"
 #include "VFD.h"
 #include "queue.h"
+#include <stdint.h>
+#include "VFDmenu.h"
 
 
 
@@ -19,6 +21,8 @@
 
 #define PROBAR_HILOS_CONS_PROD_VFD 0 //1:probar hilos productor consumidor VFD
 
+
+extern struct _DISPLAY_VFD_ vfd;
 
 // Estructura para almacenar datos en el buffer circular
 typedef struct {
@@ -151,6 +155,22 @@ void *VFDserial_SendBlockConsumidor(void *arg) {
 return NULL;
 }///fin VFDserial_SendBlockConsumidor++++++++++++++++++++++++++++++++++++++++++++++++
 
+//activar teclado despues de un tiempo
+void activar_Teclado(void){
+pthread_t thread;
+    pthread_create(&thread, NULL, resetKeypadEnable, NULL);
+    pthread_detach(thread);// Desprendemos el hilo para que se ejecute independientemente
+}//fin activar teclado+++++++++++++++++++++++++++++++++++++++++++++
+
+
+// Función que será ejecutada por el hilo
+void* resetKeypadEnable(void* arg) {
+    usleep(700000);  // Espera 500 milisegundos (500,000 microsegundos)
+    vfd.keypad.enable = 1;  // Ponemos la bandera enable a 1
+    //printf("vfd.keypad.enable = 1\n");
+return NULL;
+}//fin reset keypad eneable++++++++++++++++++++++++++++++++++++++++
+
 // Función que procesa buffer3 completo (como un gran array de datos)
 void VFDserial_SendBlock_Tx(unsigned char *buffer, size_t len) {
 unsigned char estado = 0, cmd=0, crc_calculado, crc_recibido;
@@ -222,6 +242,24 @@ unsigned char *array_crc,index=0,new_len;
        }//fin while  Avanzamos al siguiente byte en el buffer
 return;
 }//fin VFDserial_SendBlock_Tx+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void* imprimir_char_con_delay(void* arg) {
+    //DatosHilo* datos = (DatosHilo*)arg;
+    unsigned char datos=(unsigned char)(uintptr_t)arg;
+    usleep(375000);  // 1.5 segundos = 1,500,000 microsegundos
+    VFDposicion(datos,POSY2);
+    VFDserial_SendChar('*');// Imprimir espacios y luego el carácter
+    return NULL;
+}//fin imprimir_char_con_delay------------------------------------------------
+
+void VFDserial_SendChar_Asterisco(unsigned char cursorx){
+pthread_t hilo_Asterisco;
+
+    if(pthread_create(&hilo_Asterisco,NULL,imprimir_char_con_delay,(void*)(uintptr_t)cursorx)!=0){
+         perror("pthrear_create error asterisco");
+         return;} // No se hace pthread_join, el hilo se ejecuta en segundo plano
+    pthread_detach(hilo_Asterisco);// // Lo marcamos como "detached" para que libere recursos al terminar
+}//fin VFDserial_SendChar_Asterisco--------------------------------------------
 
 
 

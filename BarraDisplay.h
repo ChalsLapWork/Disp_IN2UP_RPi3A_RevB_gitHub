@@ -435,6 +435,6 @@
 
 
 
-void displayCuadroMadre(void);
+//void displayCuadroMadre(void);
 unsigned char displayCuadroMadre_VFD(void);
 #endif /* BARRADISPLAY_H_ ************************************************************/

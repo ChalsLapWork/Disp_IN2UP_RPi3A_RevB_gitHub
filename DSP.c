@@ -1,6 +1,6 @@
 #include "DSP.h"
 #include "errorController.h"
-
+#include "queue.h"
 
 /* MODO DE PROCESAMIENTO PARA GIRAR LOS DATOS A LA VIBRACION DE LAS ORDENADAS*/
 #define MODO_DE_VIBRACION   GIRO_DE_PLANO_CARTESIANO// GIRO_DE_COORDENADAS_POLARES //GIRO_DE_PLANO_CARTESIANO, GIRO_DE_COORDENADAS_POLARES
@@ -29,40 +29,17 @@
 unsigned short int pixelConversionX[3];//DDS_X_8d8];//convierte el pixel Analogo a pixel del zoom actual
 unsigned short int pixelConversionY[3];//DDS_Y_8d8];//convierte el pixel Analogo a pixel del zoom actual
 
-struct _Detection Deteccion;
-struct ZoomControl zoom;
-
+//struct _Detection Deteccion;
+//struct ZoomControl zoom;
+extern struct _DISPLAY_VFD_ vfd;
+extern struct _PRODUCT1_ producto2;
 
 void init_Sensibilidad(void){
 //unsigned short int cuadroBase;//conversor de sensilidad para 	
 	    
              Zoom_init();  
-	         Deteccion.EnCurso=0;//no hay deteccion
-	         //Offset.Status=0;//debug poner control con EEPROM AQUI FIRST_START;//no estamos listos para evaluar el offset
-	         /*if(Deteccion.tipo==NORMAL){
-	        			cuadroBase=(Deteccion.Sensibilidad)/8;//7 cuadros base
-	        			Deteccion.LIM1=cuadroBase;
-	        			Deteccion.LIM2=cuadroBase*2;
-	        			Deteccion.LIM3=cuadroBase*3;
-	        			Deteccion.LIM4=cuadroBase*4;
-	        			Deteccion.LIM5=cuadroBase*5;
-	        			Deteccion.LIM6=cuadroBase*6;
-	        			Deteccion.LIM7=cuadroBase*7;
-	        			Deteccion.LIM8=cuadroBase*8;
-	        			Deteccion.LIM9=cuadroBase*9;
-	        			Deteccion.LIM10=cuadroBase*10;
-	        			Deteccion.LIM11=cuadroBase*11;
-	        			Deteccion.LIM12=cuadroBase*12;
-	        			Deteccion.LIM13=cuadroBase*13;
-	        			Deteccion.LIM14=cuadroBase*14;
-	        			Deteccion.LIM15=cuadroBase*15;
-	        			Deteccion.LIM16=cuadroBase*16;
-	        			Deteccion.LIM17=cuadroBase*17;
-	        		 
-	        			   }//FIN DETECCION normal
-	        			else 
-	        				__asm(Halt);//Debug it
-	        	    */
+	         vfd.deteccion.EnCurso=0;//no hay deteccion
+	         
 	
 }//inizializa la sensibilidad ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -72,19 +49,17 @@ void init_Sensibilidad(void){
 //Zoom_init  SE DEBE EJECUTAR CUANDO CAMBIA EL ZOOM  y se esta en el contexto pantalla DDS*/
 void Zoom_init(void){          //unsigned short int  x99= (32000,190)(0,95)(-32000,0)
 unsigned short int maxx,maxy,ymax,ymin;	
-	     if(zoom.Zoom==0)//el zoom no puede ser cero o crearia un error
-	    	 zoom.Zoom=99;
-	     //zoom.zFactor=32704/98;// Los zooms no son lineales los incrementos
-	     //zoom.Max=(signed short int)(32767-zoom.zFactor*(unsigned short int)(zoom.Zoom-1));//Maximo numero graficable en este zoom seleccionado			     zoom.Max=LIM_Y;//tamaÃ±o del radio del plano cartesiano a dibujar
-	     if(zoom.Max==0)
-	    	  zoom.Max=100;
-	     zoom.indiceConversion= 64/((float)zoom.Max);
+	     if(vfd.menu.dds.zoom.Zoom==0)//el zoom no puede ser cero o crearia un error
+	    	 vfd.menu.dds.zoom.Zoom=99;
+	     if(vfd.menu.dds.zoom.Max==0)
+	    	  vfd.menu.dds.zoom.Max=100;
+	     vfd.menu.dds.zoom.indiceConversion= 64/((float)vfd.menu.dds.zoom.Max);
 	     
-	 zoom.Cx=CENTRO_X;
-	     zoom.Cy=CENTRO_Y;
+	 vfd.menu.dds.zoom.Cx=CENTRO_X;
+	     vfd.menu.dds.zoom.Cy=CENTRO_Y;
 	     
-	     switch(zoom.Zoom){
-			case 0:errorCritico2("error de parametro de software",59);break; // __asm(Halt);//debug error de software        
+	     switch(vfd.menu.dds.zoom.Zoom){
+			case 0:errorCritico2("error de parametro de software",59);break;        
 			case 1: maxx=ZOOM_MAX_X_01;    maxy=ZOOM_MAX_Y_01;ymax=23919;ymin=369; break;                                 
 			case 2: maxx=ZOOM_MAX_X_02;    maxy=ZOOM_MAX_Y_02;ymax=2649;ymin=81; break;                                 
 			case 3: maxx=ZOOM_MAX_X_03;    maxy=ZOOM_MAX_Y_03;ymax=1407;ymin=43; break;                                 
@@ -187,11 +162,11 @@ unsigned short int maxx,maxy,ymax,ymin;
 			        
 			default:break;	
 	      	     }//fin zoom		
-      zoom.Maxx=maxx;//limite del numero digital desplegable en DDS en funciona del Zoom
-      zoom.Maxy=maxy; 
-      zoom.Ymax=ymax;
-      zoom.Ymin=ymin;
-	  //generarPixelsAnalogos();//(0,0);//genera una lista de valores analogos que corresponden en una lista a un pixel digital en un zoom dado
+      vfd.menu.dds.zoom.Maxx=maxx;//limite del numero digital desplegable en DDS en funciona del Zoom
+      vfd.menu.dds.zoom.Maxy=maxy; 
+      vfd.menu.dds.zoom.Ymax=ymax;
+      vfd.menu.dds.zoom.Ymin=ymin;
+	  //genera una lista de valores analogos que corresponden en una lista a un pixel digital en un zoom dad
       
       
 }//fin zoom init -----------------------------------------------------------------------------------------
@@ -203,7 +178,7 @@ unsigned short int maxx,maxy,ymax,ymin;
  * entre que rango y que rango corresponde un pixel digital DDS
  * version2: vamos a rellenar los arrays con los valores corrrespondienes de analogo signed a pixel DDS para
  * la conversion mas facil y rapida corespondiente al zoom seleccionado */
-void generarPixelsAnalogos(void){//signed short int Min,signed short int miny){
+void generarPixelsAnalogos(void){//signed short int Min,signed short int miny)
 
        
 }//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   	   

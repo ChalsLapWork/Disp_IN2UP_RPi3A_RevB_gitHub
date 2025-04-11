@@ -1,7 +1,6 @@
 
-//#ifndef SYSTEM_H_
-
-#define SYSTEM_H_
+#ifndef SYSTEM_H_
+  #define SYSTEM_H_
 
 //LED PIN WIRINpi 0 is bcm_gpio 17.
 #define BIT0_PIN 0
@@ -74,46 +73,46 @@
 #define _BOOT_      14  //estamos en el init antes del main booteando
 #define SUBE        16
 //#define STOP        17
-#define RIGHT        'R'
-#define CENTRAL      19
-#define LEFT         'L'
-#define CENTER       'c'
-#define ZEROS        '0'
-#define MAYUSCULAS   21
-#define MINUSCULAS   22
-#define SYMBOL       23
-#define GET          24
-#define PABAJO        '!'
-#define PARRIBA       '¡'
-#define ACTIVADO      'A'
-#define ACERCAR       'a'
-#define ALEJAR        '@'
-#define BUSY          'B'
-#define BUSY_WAIT     '@'
-#define EJECUTAR      'C'
-#define _DRIVER_      'D'
-#define DINAMICO      'D'
-#define DESACTIVADO   'd'
-#define EMPTY         'E'
-#define ESTATICO      'E'
-#define ERROR_PASS    'e'
-#define FULL          'F'
-#define INIT          'I'
-#define EJECUTANDOSE  'J'
-#define NUMEROS       'N'
-#define _PICKUP_      'P'
-#define ROJO          'R'
-#define SET           'S'
-#define CANAL_X       'X'
-#define CANAL_Y       'Y'
+#define RIGHT        0x41 //'R'
+#define CENTRAL      0x42// 19
+#define LEFT         0x43 //'L'
+#define CENTER       0x44 //'c'
+#define ZEROS        0x45 //'0'
+#define MAYUSCULAS   0x46 
+#define MINUSCULAS   0x47
+#define SYMBOL       0x48
+#define GET          0x49
+#define PABAJO       0x4A
+#define PARRIBA      0xAB //'¡'<- problema con este char en compilacion
+#define ACTIVADO     0x4C
+#define ACERCAR      0x4D
+#define ALEJAR       0x4E
+#define BUSY         0x4F
+#define BUSY_WAIT    0x50
+#define EJECUTAR     0x51
+#define _DRIVER_     0x52
+#define DINAMICO     0x53
+#define DESACTIVADO  0x54
+#define EMPTY        0x55
+#define ESTATICO     0x56
+#define ERROR_PASS   0x57
+#define FULL         0x58
+#define INIT         0x59
+#define EJECUTANDOSE 0x5A
+#define NUMEROS      0x5B
+#define _PICKUP_     0x5C
+#define ROJO         0x5D
+#define SET          0x5E
+#define CANAL_X      0x5F
+#define CANAL_Y      0x60
 #define VERDE         'V'//verde ya usado no cambiar
-#define libre_1       '1'// lugar libre para usar
-#define CMD_POS_CHAR  '2'//COMANDO_FASE  lugar libre para usar  comando display fase de 5 chars
+#define libre_1      0x61// lugar libre para usar
+#define CMD_POS_CHAR 0x62//COMANDO_FASE  lugar libre para usar  comando display fase de 5 chars
 //#define COMANDO_POS   '3'//comando solo posicion se manda la posicion
 //#define COMANDO_CHAR  '4'//comando solo un char asi nomas 
 #define CMD_POS5CHARS '5'//COMANDO ENVIAR POSICION Y luego 5 chars
-#define _DELAY_US     'u'
-#define _DELAY_MS     'm'
+#define _DELAY_US     0x66
+#define _DELAY_MS     0x67
 
 
 #define EVENT_DDS_ON   0x80  //axxx xxxx flag event DDS TRUE
@@ -221,9 +220,9 @@
 #define _DESTIN_  2	
 #define _AUTHOR_  3
 //--------------------------------------
-#define ADMINISTRADOR  'A'
-#define SERVICIO       'S'
-#define OPERADOR       'O'
+#define ADMINISTRADOR  0x41//'A'
+#define SERVICIO       0x53//'S'
+#define OPERADOR       0x4F//'O'
 
 
 
@@ -260,6 +259,7 @@
 #define CMD_BARRA      0x11 //Param:1byte Hasta donde llego la barra de deteccion.
 #define CMD_DET_PM     0x12 //PAram:4bytes parametro de SEnsibilidad y phase.
 #define CMD_SENS_PHASE 0x13 //display Sens&phase in Portal inicio, 
+#define CMD_TECLADO    0X14 //comando Teclado para mover el cursos del menu
 
 
 //SIZES-------------------------------------------------------
@@ -349,7 +349,7 @@
 #define PID17 0x11//VFDdrawLine_v4
 
 
-
+#endif
 
 
 //#endif //***************************************************************

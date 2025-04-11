@@ -42,7 +42,7 @@
 */	
 
 #define VERSION_FIRMWARE   "Version F.W 33.11.0" //add frecq CONTROL from menu, Driver to control ADC's 
-#define VERSION2 "v40.0.3.35"   //branch:RevE2 
+#define VERSION2 "v40.0.3.55"   //branch:RevE2 
 
 
 
@@ -297,7 +297,9 @@ los ADC se perdio la sincronia de los pulsos deSCLK cada 1mseg
                                   de construir un S.O para manejo de memoria.
 								  estamos deplegando el PORTALinicio con hilos independientes de despleiegue VFD
      v40.0.2.??   16-feb-25   comando serial y controlar la barra de deteccion por comandos, portal inicio, desplegado
-*   
+*   "v40.0.3.55"              comando serial teclado,
+                               parametros en portal inicio con serial, todos los parametros 
+							    cambio de menu a menuinsight, 
 *                    
 *                                  
  *                    LABORTORIO PROGRAMACION DEPURACION LISTA
@@ -516,14 +518,14 @@ Undefined : "contextoActual" Referenced from "AnguloVibracionProcesadorCentral" 
 #define POSXSELPROD                24 //POSICION DE INICIO nombres DE SELECCION DE PRODUCTO
 #define POSXSELPRODCURSORX         16//POSICION DE SEL PRODUCTO MENU cursorX
 #define POSXSI                     78
-#define POSY0                      0
-#define POSY2                      2
-#define POSY4                      4  //POSICION EN DISPLAY A QUE VALE 4
-#define POSY6                      6
-#define POSY8                      8
-#define POSY10                     10
-#define POSY12                     12
-#define POSY14                     14
+#define POSY0                      ((unsigned char)0)
+#define POSY2                      ((unsigned char)2)
+#define POSY4                      ((unsigned char)4)  //POSICION EN DISPLAY A QUE VALE 4
+#define POSY6                      ((unsigned char)6)
+#define POSY8                      ((unsigned char)8)
+#define POSY10                     ((unsigned char)10)
+#define POSY12                     ((unsigned char)12)
+#define POSY14                     ((unsigned char)14)
 #define POSXDIGPRUEBASSAL          136//posicion del digito de estado del menu PRUEBAS_SALIDAS
 #define POSXDIGPRUEBAENT           104//posicion del digito de estado del menu PRUEBAS_ENTRADAS
 #define POSX_COL1                  8//16 //TEXT PROCESSOR columna-1 de x
@@ -705,6 +707,7 @@ Undefined : "contextoActual" Referenced from "AnguloVibracionProcesadorCentral" 
 #define SIZE_PID   0x08//Tama�o de control DE PID
 #define SIZE_BUFF  20//Tama�o de los Buffers
 #define SIZE_MEMO_APP 40 //tama�o de la memoria para los hilos en ejecucion
+#define SIZE_VAR5 5
 
 #define MEMO_MAX_FUNC_DISPL_MENU  50 //bytes maximo de memoria para funciones de display de menus, 
 
@@ -813,13 +816,33 @@ struct ArbolMenu{
     void (*funcKeyEN)(void);  
 };
 
+//variables Globales se usan solo 
+//mientras el menu esta 
+//activo
+typedef struct{//variables globales por menu
+   unsigned char igxc0;
+   unsigned char igxc1;
+   unsigned char igxc2;
+   unsigned char igxc3;
+   unsigned char igxc4;
+   unsigned char igxc5[SIZE_VAR5];//=20
+   float fvar1;
+   unsigned char *editarSensFase;//editar enable sensib y fase
+   unsigned char *cursorAnterior;//menu Config entradas syst
+   unsigned char *ResetDisplayNum;//menu info de usuario
+   unsigned char arg0,arg1,arg2,arg4,arg5;
+}GlobalStruct;
+
+extern GlobalStruct global;
+extern GlobalStruct *AjParamProd,*ConfEntSyst; // Declarar extern para que otros archivos lo usen
+extern GlobalStruct *MenuInfoUser,*MenuTextProc;
 
 // PROCEDIMIENTOS-+++++++++++++++++++++++++++++++++++++++++++++
 //void init_Menu(void);
 //void initArbolMenu(void);
 //void MenuControl(void);
-//void PortalinicioDisplay(void);
-unsigned char  PortalinicioDisplay(unsigned char *mem);//Funcion Suprema de Despliegue de la Pantalla0
+void PortalinicioDisplay(void);
+//unsigned char  PortalinicioDisplay(unsigned char *mem);//Funcion Suprema de Despliegue de la Pantalla0
 void menus(unsigned char key);
 //void displayMenuInsight(void);
 void cursorMenuControl(unsigned char keyx);
@@ -889,7 +912,6 @@ void convertBTC2chars(unsigned char *p,signed short int *dato);
 char getDM(signed short int *n);
 void  Display_BIOS(void);
 //void run_Menu(void);
-void display5UChars(unsigned short int posx,unsigned short int posy,unsigned char *p);
 unsigned int displaytUINT_varxDigito(unsigned short int posx,unsigned short int posy,char operacion,unsigned short int digito,unsigned short int *pvar);
 char displayPhase_varxDigito(unsigned short int posx, unsigned short int posy,char operacion,unsigned short int digitopos);
 void displaySwitchGanancia_var(char pantalla,unsigned char operacion);
@@ -925,11 +947,10 @@ void pushFIFOcOP_displayUINT_var(unsigned short int posx,unsigned short int posy
 void pushFIFOcOP_display5UChars(unsigned short int posx,unsigned short int posy,unsigned char *p);
 void displayOperativoBarraDet_Numeros(void);
 unsigned char getPosYNewProdDN(unsigned char sup,unsigned char iProd);
-unsigned char getColTextProc(unsigned char dir);
 void displayTextoProcessorMayusculas(void);
 void displayTextoProcessorSymbol(void);
 void displayTextoProcessorMinusculas(void);
-char getAscii(unsigned char x,unsigned char y,unsigned char pantalla);
+//char getAscii(unsigned char x,unsigned char y,unsigned char pantalla);
 void DisplayNewTextProc(void);
 void DisplayAjusteProductoMode(void);
 void saveNewProduct(unsigned char iProd);
@@ -982,10 +1003,8 @@ unsigned char isEnable_Keypad(unsigned char cmd);
 void DDS_Borrar_Refresh(void);
 unsigned char isEnable_Keypad2(unsigned char cmd,unsigned long int maxtime);
 void resetDDS_repetidos(unsigned short int n);
-void procSensxDigitoEN(unsigned char *digito,unsigned char posx,unsigned char initx);
-unsigned char procSensxDigitoRT(unsigned char posx,unsigned char posy,unsigned short int *Sens);
 unsigned char procSensxDigitoLF(unsigned char posx,unsigned char posy,unsigned short int *Sens);
-void procFasexDigitoEN(unsigned char *var,unsigned char posx,unsigned char posy);
+//void procFasexDigitoEN(unsigned char *var,unsigned char posx,unsigned char posy);
 void Cambio_de_Frecuencia_por_IIC_1(unsigned short int);
 void prueba_SalidasOFF(unsigned char posy,void (*func)(unsigned char));
 void keypad_Timer(void);
@@ -995,9 +1014,8 @@ void display_Error(unsigned char x,unsigned char y,unsigned char *mens,unsigned 
 unsigned char InitArbolMenu(unsigned char destino);
 //unsigned char   PortalinicioDisplay(void);
 //unsigned char  PortalinicioDisplay(byte *mem);
-unsigned char displayMenuInsight(void);
+void displayMenuInsight(void);
 unsigned char DDS_HANDLER(void);
-unsigned char display5UChars1(unsigned short int posx,unsigned short int posy,unsigned char *p);
 void displaySwitchGanancia_var1(char pantalla,unsigned char operacion);
 unsigned char InitArbolMenu2(unsigned char destino);
 unsigned char xRun_Menu(unsigned char *p);

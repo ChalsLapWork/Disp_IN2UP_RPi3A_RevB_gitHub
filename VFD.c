@@ -116,7 +116,7 @@ void VFD_sendChar(uchar c) {
 //REGRESA TRUE si ya se ejecuto todo el comando hasta el final
 //instancia 1 y dos 
 // funcion mono-Padre || Solo puede tener un padre a la vez
-unsigned char VFDcommand(unsigned char cmd){ //unsigned char *p){
+unsigned char VFDcommand(unsigned char cmd){ //unsigned char *p)
 	//con 1 ms se le quito el error de FontSize
 	//con 100us tiene error de FontSize
 	//con 500us se le quito el error de FontSize
@@ -218,7 +218,6 @@ return VFDserial_SendBlock_buf(&a,sizeof(a));//Init VFD
 }//------------------------------------------------------------------
 
 
-
 //REGRESA TRUE si ya se ejecuto todo el comando hasta el final
 unsigned char VFDcommand_init(unsigned char cmd){
 unsigned char ret=FALSE;
@@ -231,7 +230,7 @@ return ret;
 }//fin vfd command----------------------------------------------------
 
 /* Metodo Multi-Padre pero solo una Estancia ala Vez      */
-unsigned char VFDserial_SendBlock1(const void *Ptr,unsigned char size1){
+unsigned char VFDserial_SendBlock(const void *Ptr,unsigned char size1){
 unsigned char array[40];
     
     const unsigned char *data = (const unsigned char *)Ptr;// Convertir los datos a unsigned char y copiarlos al índice 3 del array
