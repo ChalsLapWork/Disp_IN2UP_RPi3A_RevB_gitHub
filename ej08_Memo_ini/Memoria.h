@@ -22,6 +22,7 @@ typedef struct {
     char level3[SIZE_PASSWORD];
     char level4[SIZE_PASSWORD];
     char level5[SIZE_PASSWORD];
+    unsigned char seguridad_iniciada;
 } Seguridad;
 
 extern Seguridad g_seguridad;

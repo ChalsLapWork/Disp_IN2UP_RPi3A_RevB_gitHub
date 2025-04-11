@@ -120,6 +120,7 @@ void* config_thread(void* arg) {
            crear_seccion_Seguridad();
     leer_seguridad_a_struct(&g_seguridad);              
 
+    g_seguridad.seguridad_iniciada=0xAA;
     //printf("[CONFIG] Archivo %s creado exitosamente.\n", CONFIG_FILE);
     pthread_exit(NULL);
 }//fin config threads++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

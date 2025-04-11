@@ -21,7 +21,9 @@ int main() {
     
     init_vars();// Inicia las variables del sistema (puede crear el archivo si no existe)
     
-    sleep(3);
+    
+    while(g_seguridad.seguridad_iniciada!=0xAA){
+           sleep(3);}       
     printf("\033[33m");
     printf("level1: %s\n", g_seguridad.level1);
     printf("level2: %s\n", g_seguridad.level2);
