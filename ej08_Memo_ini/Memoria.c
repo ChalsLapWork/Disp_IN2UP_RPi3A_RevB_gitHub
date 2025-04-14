@@ -99,13 +99,13 @@ void leer_seguridad_a_struct(Seguridad *sec) {
         if (strstr(line, "[Seguridad]")) {
             dentro = 1;
             continue;}
-        if (dentro) {
+        if (dentro) {     //%[^\"] comando: lee todo hasta encontrar comilla de cierre
             if (line[0] == '[') break; // terminó sección
-            sscanf(line, "level1=\"%[^\"]\"", sec->level1);
-            sscanf(line, "level2=\"%[^\"]\"", sec->level2);
-            sscanf(line, "level3=\"%[^\"]\"", sec->level3);
-            sscanf(line, "level4=\"%[^\"]\"", sec->level4);
-            sscanf(line, "level5=\"%[^\"]\"", sec->level5);}
+            sscanf(line, "level_1=\"%[^\"]\"", sec->level1);
+            sscanf(line, "level_2=\"%[^\"]\"", sec->level2);
+            sscanf(line, "level_3=\"%[^\"]\"", sec->level3);
+            sscanf(line, "level_4=\"%[^\"]\"", sec->level4);
+            sscanf(line, "level_5=\"%[^\"]\"", sec->level5);}
         }//FIN WHILE-------------------------------------------------
     fclose(f);
 }//FIN leer_seguridad_a_struct++++++++++++++++++++++++++++++++++++++++
