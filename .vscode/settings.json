@@ -18,6 +18,7 @@
         "maths.h": "c",
         "stdatomic.h": "c",
         "vfdkey.h": "c",
-        "vfdmenu.h": "c"
+        "vfdmenu.h": "c",
+        "config.h": "c"
     }
 }

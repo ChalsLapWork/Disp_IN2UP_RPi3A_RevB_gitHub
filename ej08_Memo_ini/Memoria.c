@@ -108,16 +108,22 @@ void leer_seguridad_a_struct(Seguridad *sec) {
             sscanf(line, "level_5=\"%[^\"]\"", sec->level5);}
         }//FIN WHILE-------------------------------------------------
     fclose(f);
-}//FIN leer_seguridad_a_struct++++++++++++++++++++++++++++++++++++++++
+       // Verificar campos vacíos y asignar valores por defecto
+    if (sec->level1[0] == '\0') strcpy(sec->level1, "1");
+    if (sec->level2[0] == '\0') strcpy(sec->level2, "2");
+    if (sec->level3[0] == '\0') strcpy(sec->level3, "3");
+    if (sec->level4[0] == '\0') strcpy(sec->level4, "4");
+    if (sec->level5[0] == '\0') strcpy(sec->level5, "5");
+}//FIN leer_seguridad_a_srtruct++++++++++++++++++++++++++++++++++++++++
 
 // Función que se ejecutará en el hilo
 void* config_thread(void* arg) {
 //Seguridad *sys = (Seguridad*)arg;
 
-    if(no_existe_init()){
-           crear_init();}
-    if(no_existe_Seguridad()){ 
-           crear_seccion_Seguridad();}
+    if(no_existe_init()){//archivo init
+           crear_init();}//crear archivo init
+    if(no_existe_Seguridad()){ //seccion seguridad en archivo init
+           crear_seccion_Seguridad();}//crear la seccion
     leer_seguridad_a_struct(&g_seguridad);            
     g_seguridad.seguridad_iniciada=0xAA;
     //printf("[CONFIG] Archivo %s creado exitosamente.\n", CONFIG_FILE);

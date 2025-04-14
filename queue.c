@@ -68,6 +68,7 @@ unsigned char debug;
 	vfd.menu.contexto.pop=pop_fifo_contexto;
 	vfd.menu.contexto.push=push_fifo_contexto;
 	vfd.menu.contexto.peek=peek_fifo_contexto;
+    g_seguridad.seguridad_iniciada=0;
 
 }//fin init queue+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
