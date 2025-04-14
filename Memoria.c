@@ -22,7 +22,6 @@ typedef struct {// Estructura interna para pasar datos al hilo
 
 Seguridad g_seguridad = {0};  // Inicializada vacía
 
-
 // Verifica si el tipo de mensaje es uno válido
 static int tipo_valido(const char* tipo) {
     return strcmp(tipo, "Error") == 0 ||
