@@ -160,7 +160,7 @@ void crear_init();
 int no_existe_Seguridad();
 void crear_seccion_Seguridad();
 void leer_seguridad_a_struct(Seguridad *sec);
-void mensaje(const char* texto, const char* color);
+void mensPrompt(const char* texto, const char* color);
 void log_mensaje(const char* tipo, const char* mensaje);
 
 #endif /* MEMOCONFIG_H_ ***************************************************************************/

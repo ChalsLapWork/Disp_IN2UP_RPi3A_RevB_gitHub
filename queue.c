@@ -21,11 +21,12 @@
   #include <wiringPi.h>
 #endif
 
-
+#include "Memoria.h"
 
 
 struct _DISPLAY_VFD_ vfd;
 struct _PRODUCT1_ producto2;
+extern Seguridad g_seguridad;
 
 // Buffer compartido
 //unsigned char buffer[BUFFER_SIZE];

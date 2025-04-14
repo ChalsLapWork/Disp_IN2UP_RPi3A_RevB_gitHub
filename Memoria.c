@@ -32,7 +32,7 @@ static int tipo_valido(const char* tipo) {
 }//fin de tipo valido+++++++++++++++++++++++++++++++++
 
 // Función para imprimir texto en color
-	void mensaje(const char* texto, const char* color) {
+void mensPrompt(const char* texto, const char* color) {
     printf("%s%s%s\n", color, texto, CRESET);
 }//FIN DE MENSAJE+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -66,7 +66,7 @@ void log_mensaje(const char* tipo, const char* mensaje) {
     LogData* data = malloc(sizeof(LogData));
     if (!data) {
         perror("malloc hilo log mensaje");
-		mensaje("Error de malloc al hacer el log ",CAMAR);
+		mensPrompt("Error de malloc al hacer el log ",CAMAR);
         return;}
     strncpy(data->tipo, tipo, sizeof(data->tipo) - 1);
     data->tipo[sizeof(data->tipo) - 1] = '\0';
@@ -74,7 +74,7 @@ void log_mensaje(const char* tipo, const char* mensaje) {
     data->mensaje[sizeof(data->mensaje) - 1] = '\0';
     if (pthread_create(&hilo, NULL, log_thread_func, data) != 0) {
         perror("pthread_create");
-		mensaje("Error al escribir el LOG",CAMAR);
+		mensPrompt("Error al escribir el LOG",CAMAR);
         free(data);
         return;}
     pthread_detach(hilo);
@@ -114,12 +114,9 @@ const char *niveles[] = {
             return 1;}
        }}//fin for----------------------------------------------------
   else{log_mensaje("error","falta carga variables del passwrd en sistema RAM");}//NO se han descargado las passwords del sistema.ini
+return 0;
 }//fin validate password++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
-
-return FALSE; //no hubo ninguna password igual------------    
-}//fin validatePassword-----------------------------------------------------------------------------
 
 //regresamos apuntador de una clave solamente seleccionada
 unsigned char *getPasswords(unsigned char level){
@@ -170,7 +167,7 @@ void crear_init() {
         "; tiempo en milisegundos\n"
         );//fin fprintf-----------------------------------------
     fclose(f);
-    mensaje("[CONFIG] Archivo creado.",CAQUA);
+    mensPrompt("[CONFIG] Archivo creado.",CAQUA);
 }//fin crear_init-----------------------------------------------
 
 // Verifica si la sección [Seguridad] está presente
@@ -200,7 +197,7 @@ void crear_seccion_Seguridad() {
         "level5=\"5\"\n"
           );//fin de fprintf+++++++++++
     fclose(f);
-    mensaje("[CONFIG] Sección [Seguridad] agregada.",CAQUA);
+    mensPrompt("[CONFIG] Sección [Seguridad] agregada.",CAQUA);
 }//fin crear_seccion_Seguridad-------------------------------------
 
 // Llena la estructura Seguridad desde el archivo

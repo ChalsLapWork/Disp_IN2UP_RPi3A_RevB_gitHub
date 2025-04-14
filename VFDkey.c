@@ -605,7 +605,7 @@ unsigned char *cursorx,*cursory,Level;
 								  MenuTextProc->arg2=0;//para saber si estamo en confirmcion
 								  displayTextoProcessor();}} //se reinicia el text-procesor
 					    else{//vamos a poner una nueva password
-							if(validatePasswords(p,&vfd.Text[0])){//validamos la password
+							if(validatePassword(p,&vfd.Text[0])){//validamos la password
 							      saveTextBuffer(&vfd.Text[0]);//save Text buffer
 								  MenuTextProc->arg2=CONFIRMAR; //configurar arg2 para poner confirmar pass
 								  displayTextoProcessor();} //se reinicia el text-procesor
