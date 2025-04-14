@@ -126,9 +126,9 @@
 #define SIZE_PASSWORD 20 //size max of password 
 
 // Definición de colores (códigos ANSI)
-#define RESET   "\033[0m"
+/*#define RESET2   "\033[0m"
 #define NEGRO   "\033[30m"
-#define ROJO    "\033[31m"
+#define ROJO2    "\033[31m"
 #define VERDE   "\033[32m"
 #define AMARILLO "\033[33m"
 #define AZUL    "\033[34m"
@@ -137,7 +137,7 @@
 #define CYAN    "\033[36m"
 #define AZULITO  CYAN
 #define BLANCO  "\033[37m"
-
+*/
 
 typedef struct {
     char level1[SIZE_PASSWORD];
@@ -151,7 +151,7 @@ extern Seguridad g_seguridad;
 unsigned short int getAddPassword(unsigned char level);
 void setPasswords(unsigned char level,unsigned char *p);
 unsigned char *getPasswords(unsigned char level);
-unsigned char validatePasswords(unsigned char *Level,unsigned char *T);
+unsigned char validatePassword(unsigned char *Level,unsigned char *T);
 
 void* config_thread(void* arg);// Prototipo de función
 void init_vars();

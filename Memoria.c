@@ -31,6 +31,12 @@ static int tipo_valido(const char* tipo) {
            strcmp(tipo, "Metales") == 0;
 }//fin de tipo valido+++++++++++++++++++++++++++++++++
 
+// Función para imprimir texto en color
+	void mensaje(const char* texto, const char* color) {
+    printf("%s%s%s\n", color, texto, CRESET);
+}//FIN DE MENSAJE+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
 // Función ejecutada por el hilo para escribir en el log
 static void* log_thread_func(void* arg) {
     LogData* data = (LogData*)arg;
@@ -60,7 +66,7 @@ void log_mensaje(const char* tipo, const char* mensaje) {
     LogData* data = malloc(sizeof(LogData));
     if (!data) {
         perror("malloc hilo log mensaje");
-		mensaje("Error de malloc al hacer el log ",AMARILLO);
+		mensaje("Error de malloc al hacer el log ",CAMAR);
         return;}
     strncpy(data->tipo, tipo, sizeof(data->tipo) - 1);
     data->tipo[sizeof(data->tipo) - 1] = '\0';
@@ -68,15 +74,11 @@ void log_mensaje(const char* tipo, const char* mensaje) {
     data->mensaje[sizeof(data->mensaje) - 1] = '\0';
     if (pthread_create(&hilo, NULL, log_thread_func, data) != 0) {
         perror("pthread_create");
-		mensaje("Error al escribir el LOG",AMARILLO);
+		mensaje("Error al escribir el LOG",CAMAR);
         free(data);
         return;}
     pthread_detach(hilo);
 }// fin de funcion log mensaje++++++++++++++++++++++++++++++++++
-// Función para imprimir texto en color
-	void mensaje(const char* texto, const char* color) {
-    printf("%s%s%s\n", color, texto, RESET);
-}//FIN DE MENSAJE+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 unsigned short int getAddPassword(unsigned char level){
 unsigned short int add=0;   
@@ -168,7 +170,7 @@ void crear_init() {
         "; tiempo en milisegundos\n"
         );//fin fprintf-----------------------------------------
     fclose(f);
-    mensaje("[CONFIG] Archivo creado.",AZULITO);
+    mensaje("[CONFIG] Archivo creado.",CAQUA);
 }//fin crear_init-----------------------------------------------
 
 // Verifica si la sección [Seguridad] está presente
@@ -198,7 +200,7 @@ void crear_seccion_Seguridad() {
         "level5=\"5\"\n"
           );//fin de fprintf+++++++++++
     fclose(f);
-    mensaje("[CONFIG] Sección [Seguridad] agregada.",AZULITO);
+    mensaje("[CONFIG] Sección [Seguridad] agregada.",CAQUA);
 }//fin crear_seccion_Seguridad-------------------------------------
 
 // Llena la estructura Seguridad desde el archivo

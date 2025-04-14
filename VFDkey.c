@@ -700,7 +700,7 @@ unsigned char *cursorx,*cursory,Level;
 				VFDserial_SendChar(' ');//borramos el   ^
 				VFDposicion((unsigned short)((--(MenuTextProc->igxc1))*8),POSY4);//mover el cursor uno a la izquierda
 				VFDserial_SendChar(FX);//escribimos el ^ uno antes de donde estaba
-				MenuTextProc->igxc4=VERDE;//indica que hubo atraso del cursor
+				MenuTextProc->igxc4=VERDE1;//indica que hubo atraso del cursor
 				return;}
 	         return;}//fin POSX_COL7
 		if(*cursorx==POSX_COL8){//mueve cursor a la derecha
@@ -713,7 +713,7 @@ unsigned char *cursorx,*cursory,Level;
 			   VFDserial_SendChar(FX);//escribimos el ^ uno antes de donde estaba
 			   if(isNumLetter(vfd.Text[MenuTextProc->igxc1])==FALSE)
 					 vfd.Text[MenuTextProc->igxc1]=' ';
-			   MenuTextProc->igxc4=VERDE;//indica que hubo adelanto de cursor
+			   MenuTextProc->igxc4=VERDE1;//indica que hubo adelanto de cursor
 		   return;}return;}//FIN POSX_COL8
 		if(*cursorx==POSX_COL9){//agrega espacio
 			if(MenuTextProc->igxc4==DONE)
@@ -721,7 +721,7 @@ unsigned char *cursorx,*cursory,Level;
 			if(MenuTextProc->igxc1<=(NOMBRE_PRODUCTO_SIZE-1)){   //indice de l array
 			  TextInsertSpace(MenuTextProc->igxc1);
 			  DisplayNewTextProc();
-			 MenuTextProc->igxc4=VERDE;//india que hubo un insert Space
+			 MenuTextProc->igxc4=VERDE1;//indiCa que hubo un insert Space
 		   return;}return;}
 		if(*cursorx==POSX_COL10){
 			 if(MenuTextProc->igxc1==0)
@@ -739,7 +739,7 @@ unsigned char *cursorx,*cursory,Level;
 				MenuTextProc->igxc1=c;
 				VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY4);
 				VFDserial_SendChar(FX);//escribimos el ^ uno antes de donde estaba
-				MenuTextProc->igxc4=VERDE;//india que hubo un back Space    
+				MenuTextProc->igxc4=VERDE1;//india que hubo un back Space    
 				return;}
 			 else{return;}}
 	 return;} //fin POSY14---------------------------------------------------------------------------------------------------------   

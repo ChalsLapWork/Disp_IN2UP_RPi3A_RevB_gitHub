@@ -105,7 +105,7 @@
 #define SET          0x5E
 #define CANAL_X      0x5F
 #define CANAL_Y      0x60
-#define VERDE         'V'//verde ya usado no cambiar
+//#define VERDE         'V'//ha sido reasignado a errorController no -Mover
 #define libre_1      0x61// lugar libre para usar
 #define CMD_POS_CHAR 0x62//COMANDO_FASE  lugar libre para usar  comando display fase de 5 chars
 //#define COMANDO_POS   '3'//comando solo posicion se manda la posicion
