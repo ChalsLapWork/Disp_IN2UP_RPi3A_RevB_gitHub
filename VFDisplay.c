@@ -11,6 +11,7 @@
 #include "VFDisplay.h"
 #include <stdlib.h>
 #include <unistd.h>
+#include "Memoria.h"
 
 extern struct _DISPLAY_VFD_ vfd;
 extern struct _PRODUCT1_ producto2;
@@ -197,6 +198,9 @@ return ret;
 }//FIN FIND CONTEXTO siguiente++++++++++++++++++++++++++++++++++++++++++++++
 
 void display_Mov_Cursor_Down(void){
+unsigned char *cursorx,*cursory;
+ 	cursorx=&vfd.menu.cursorx;
+	cursory=&vfd.menu.cursory; 
 	VFDposicion(*cursorx,*cursory);
 	VFDserial_SendChar(' ');
 	++(*cursory);

@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include "VFDisplay.h"
 #include <stdlib.h>
+#include <string.h>
 
 struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
 //extern struct _PRODUCTO1_ producto;
@@ -276,7 +277,7 @@ unsigned char *cursorx,*cursory;
 
 void displayMenuAjustedeProducto(void){
 unsigned char z[]="Menu de Ajuste de Producto  x";
-unsigned char *textos[]={">Hacer prueba de ejemplo",
+         char *textos[]={">Hacer prueba de ejemplo",
                          "Seleccionar producto",
 						 "Nuevo producto",
 					  	 "Ajuste de producto",
