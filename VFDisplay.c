@@ -196,6 +196,23 @@ else{
 return ret;	 
 }//FIN FIND CONTEXTO siguiente++++++++++++++++++++++++++++++++++++++++++++++
 
+void display_Mov_Cursor_Down(void){
+	VFDposicion(*cursorx,*cursory);
+	VFDserial_SendChar(' ');
+	++(*cursory);
+	VFDposicion(*cursorx,++(*cursory));
+	VFDserial_SendChar('>');
+}//fin mover el cursor para abajo uno++++++++++++++++++++++++++++
+
+
+unsigned char validad_Nivel_Acceso(unsigned char level){
+	 if(level<6)
+	     return TRUE;
+     else{log_mensaje("error"," Error de software, nivel de acceso invalido");
+		  return FALSE;}		 
+}//validar el nivel de acceso++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
 //Desplega datos usando el sistema operativo cuando hay una barra 
 void BarraDet_displayUINT_var(unsigned char posx,unsigned char posy,unsigned short int *usint){
 unsigned char a[5],*p,n=0;

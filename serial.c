@@ -15,6 +15,7 @@
 #include "queue.h"
 #include "strings.h"
 #include "VFDthread.h"
+#include "Memoria.h"
 
 #define BUF_SIZE 256
 #define BUFFER6_SIZE BUF_SIZE  // Tamaño del nuevo buffer6

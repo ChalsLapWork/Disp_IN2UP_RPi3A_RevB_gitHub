@@ -155,5 +155,6 @@ void TextProcessorSpecial(void);
 void specialFunctions(void);
 unsigned char getColTextProc(unsigned char dir);
 void setNivelAcceso(unsigned char level);
-
+unsigned char validad_Nivel_Acceso(unsigned char level);
+void display_Mov_Cursor_Down(void);
 #endif /* VFDISPLAY_H_ */

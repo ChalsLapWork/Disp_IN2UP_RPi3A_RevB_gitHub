@@ -119,20 +119,12 @@ unsigned char *cursorx,*cursory;
 			VFDserial_SendChar('>');return;}
 	else{if(*cursory<POSY14){
 		   switch(vfd.menu.contexto.control){
-			   case OPERADOR:if(*cursory>=POSY6){//NIVEL-1
-				                    *cursory=POSY6;
-			                        return;}	
-							 /* fall through */		//comentario para el compilador no quitar
-			   case ADMINISTRADOR:/* fall through */	   //NIVEL-3
-			   case SUPERVISOR:	  /* fall through */ //NIVEL-2
-			   case SERVICIO://NIVEL-4	   
-				       VFDposicion(*cursorx,*cursory);
-				   	   VFDserial_SendChar(' ');
-				  	   ++(*cursory);
-				   	   VFDposicion(*cursorx,++(*cursory));
-				       VFDserial_SendChar('>');
-				   	   return;break;
-			   default:return;break; }}}//fin switch ----------------------------------------------
+			   default:/* fall through */
+			   case 1:if(*cursory<POSY6){display_Mov_Cursor_Down();}break;
+			   case 2: /* fall through */		//comentario para el compilador no quitar
+			   case 3: /* fall through */	   //NIVEL-3
+			   case 4:if(*cursory<POSY12){display_Mov_Cursor_Down();}break;
+			   case 5:display_Mov_Cursor_Down();break;}}}//fin switch -----------------------------
 return;}//f----------------------------------------------------------------------------------------
 void AjusteProductokeyEN(void){
 unsigned char *cursorx,*cursory,anterior;

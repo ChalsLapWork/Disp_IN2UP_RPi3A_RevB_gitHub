@@ -276,38 +276,36 @@ unsigned char *cursorx,*cursory;
 
 void displayMenuAjustedeProducto(void){
 unsigned char z[]="Menu de Ajuste de Producto  x";
-unsigned char a[]=">Hacer prueba de ejemplo";
-unsigned char c[]="Seleccionar producto";
-unsigned char w[]="Nuevo producto";
-unsigned char v[]="Ajuste de producto";
-unsigned char b[]="Borrar Producto";
-unsigned char q[]="Copiar Producto"; 
+unsigned char *textos[]={">Hacer prueba de ejemplo",
+                         "Seleccionar producto",
+						 "Nuevo producto",
+					  	 "Ajuste de producto",
+					   	 "Borrar Producto",
+					  	 "Copiar Producto"};
 unsigned char x[7]={20,0,8,8, 8, 8, 8};
 unsigned char y[7]={0 ,4,6,8,10,12,14};
 unsigned char *cursorx,*cursory;
-//word n;
+unsigned char var_ctl;//variable control
+unsigned char nmenus;//menus disponibles
+            if(!validad_Nivel_Acceso(vfd.NIVEL_ACCESO)){
+				   return;}
+            var_ctl=vfd.NIVEL_ACCESO;//variable control
+			//nmenus=3;//tres diferentes tipos de menus
 			cursorx=&vfd.menu.cursorx;
 			cursory=&vfd.menu.cursory;	
-		    VFDclrscr();
-			VFDposicion(x[0],y[0]); //  delay1us();
-		    VFDserial_SendBlock(&z[0],sizeof(z));//delay1us();
-			VFDposicion(x[1],y[1]);//   delay1us();
-		    VFDserial_SendBlock(&a[0],sizeof(a));//delay1us();
-			VFDposicion(x[2],y[2]);   //delay1us();
-		    VFDserial_SendBlock(&c[0],sizeof(c));//delay1us();
-			VFDposicion(x[3],y[3]); //  delay1us();
-			VFDserial_SendBlock(&w[0],sizeof(w));//delay1us();
-			VFDposicion(x[4],y[4]); //  delay1us();
-		    VFDserial_SendBlock(&v[0],sizeof(v));//delay1us();
-			VFDposicion(x[5],y[5]);  // delay1us();
-		    VFDserial_SendBlock(&b[0],sizeof(b));//delay1us();
-		    VFDposicion(x[6],y[6]);   //delay1us();
-		    VFDserial_SendBlock(&q[0],sizeof(q));//delay1us();
-		    //VFDposicion(x[7],y[7]);//posiCION del cursor despues de desplegar el menu  
+            switch(var_ctl){
+			  case 1: nmenus=2;break;//mostrar solo las primeras 2 opciones
+			  case 2: case 3:case 4:nmenus=5;break;// mostrar hasta borrar prod
+			  case 5: nmenus=6;break;//Mostrar todos
+			  default:nmenus=2;break;}//por defecto sin user 	
+			VFDclrscr();
+			VFDposicion(x[0],y[0]); 
+		    VFDserial_SendBlock(&z[0],sizeof(z));
+            for (int i = 0; i < nmenus; i++) {
+       			 VFDposicion(x[i+1], y[i+1]);
+        		 VFDserial_SendBlock(textos[i], strlen(textos[i]) + 1);}
 		    *cursorx=POSX0;*cursory=POSY4;
-		    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
 		    vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
-
 }//fin display menu del ajuste de producto------------------------------------------------------------------
 
 
