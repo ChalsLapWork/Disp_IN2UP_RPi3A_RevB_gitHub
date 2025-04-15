@@ -12,7 +12,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include "VFDisplay.h"
-#include <string.h>
 #include "VFDmenu.h"
 #include "SistOp.h"
 #include <semaphore.h>
@@ -22,11 +21,12 @@
   #include <wiringPi.h>
 #endif
 
-
+#include "Memoria.h"
 
 
 struct _DISPLAY_VFD_ vfd;
 struct _PRODUCT1_ producto2;
+extern Seguridad g_seguridad;
 
 // Buffer compartido
 //unsigned char buffer[BUFFER_SIZE];
@@ -65,11 +65,28 @@ unsigned char debug;
 	inicializar_VFD();//Init VFD
 	mensOK("Fin de Init Queues",CMAGNETA);
 	NoErrorOK();
+    init_fifo_contexto(&vfd.menu.contexto.fifo);
+	vfd.menu.contexto.pop=pop_fifo_contexto;
+	vfd.menu.contexto.push=push_fifo_contexto;
+	vfd.menu.contexto.peek=peek_fifo_contexto;
+    g_seguridad.seguridad_iniciada=0;
+    log_mensaje("informacion","[ OK ] System init_Queues ");
 }//fin init queue+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+void push_fifo_contexto(uint8_t dato){
+push_contexto(&vfd.menu.contexto.fifo,dato);
+}//fin e push contexto de fifo ++++++++++++++++++++
 
+int pop_fifo_contexto(uint8_t *value){
+return(pop_contexto(&vfd.menu.contexto.fifo,value));
+}//fin de pop fifo contexto++++++++++++++++++++++++++++
 
+//regresa 0:el contexto anterior que estabamos 1: anterior 2:anterior al anterior asi 
+// *value:0 si algo salio mal,1:todo bien
+unsigned char peek_fifo_contexto(int position, uint8_t *value){
+return(peek_contexto(&vfd.menu.contexto.fifo,position,value)); 
+}//fin de peek fifo de contexto+++++++++++++++++++++ 
 
 
 
@@ -208,6 +225,9 @@ enum {
 	       case CMD_BXF:
 		   case CMD_LIN:					  
            case CMD_BOX:  vfd.config.bits.recurso_VFD_Ocupado=TRUE;
+		                  if((vfd.box.enable==0)||
+						      (vfd.config.bits.BOX_enable==0))
+						       {estado=CMD_OK;break;}
 		                  writePort(0x1F);  usleep(50);
 						  writePort(0x28);  usleep(50);
 						  writePort(0x64);  usleep(50);
@@ -251,7 +271,8 @@ enum {
 						  if(*c==1) writePort(0x01); 
 						  else{writePort(0x00);}usleep(50);
 						  estado=CMD_OK;break;
-		   case CMD_BAR:  if(vfd.config.bits.BOX_enable){
+		   case CMD_BAR:  if(vfd.box.enable==0){estado=CMD_ERR;break;}
+		                  if(vfd.config.bits.BOX_enable){
                                box0=&vfd.box.box0;     
 		                       box1=&vfd.box.box;
 							   printf("\n 1:box0=%i  box1=%i\n",*box0,*box1);
@@ -376,33 +397,48 @@ unsigned char debug;
    pthread_mutex_init(&vfd.mutex.VDF_busy,NULL);//init recurso VFD
    vfd.menu.contexto.Actual=PORTAL_INICIO;
    if((debug=pthread_create(&SubProc_Run_Menu,NULL,Run_Menu,NULL))!=0)
-       errorCritico2("errorCreacion hilo",175);
-   else{pthread_detach(SubProc_Run_Menu);}//hilo independiente	   
+       //errorCritico2("errorCreacion hilo",175);
+        log_mensaje("error","[Error] Executing Run Menu ");
+   else{pthread_detach(SubProc_Run_Menu);
+        log_mensaje("informacion","[ OK ] Executing Run Menu ");}//hilo independiente	   
 }//fin del init Menu+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void iniciar_Run_Menu(void){
+  if((pthread_create(&SubProc_Run_Menu,NULL,Run_Menu,NULL))!=0)
+       errorCritico2("errorCreacion hilo",175);
+  else{pthread_detach(SubProc_Run_Menu);}//hilo independiente
+}//fin de iniciar run menu+++++++++++++++++++++++++++++++++++++
+
 
 
 //Proceso de control de Menus
 void *Run_Menu(void *arg){
 unsigned char contexto;
 unsigned char estado3;
-enum{NORMAL=30,INIT_M=1,TERMINAR=90};
-unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despliegue
+enum{NORMAL1=30,INIT_M=1,TERMINAR1=90};
+//unsigned char mem[MEMO_MAX_FUNC_DISPL_MENU];//memoria para los methodos de despliegue
 
  while(vfd.config.bits.MenuPendiente){ //hilo corriendo  
 	switch(estado3){//Maquina de Estados
-	  case INIT_M:  if(!vfd.config.bits.init_Menu)estado3++;else{estado3=30;}break;
-	  case INIT_M+1:vfd.config.bits.MenuPendiente=TRUE;
+	  case INIT_M:  estado3++;break;    
+	  case INIT_M+1:if(vfd.config.bits.recurso_VFD_Ocupado==0)
+	                         estado3++;
+					break;		   
+	  case INIT_M+2:vfd.box.enable=0;
+					vfd.config.bits.BOX_enable=0;
 	                vfd.config.bits.Menu_Ready=0;
-	                estado3++;break;
-	  case INIT_M+2:estado3++;break;//Mejora de la funcion: recurso.solicitar
-	  case INIT_M+3:contexto=find_contexto_Siguiente();estado3++;break;
-	  case INIT_M+4:InitArbolMenu(contexto);estado3++;break;
-	  case INIT_M+5:vfd.config.bits.Menu_Ready=0;estado3++;break;//menu no esta terminado aun
-	  case INIT_M+6:if(MenuActualScreen.func2(&mem[0]))estado3=TERMINAR;break;//se despliega el MenuÂ¡Â¡
-					
-	  case TERMINAR:vfd.config.bits.init_Menu=TRUE;//no esta init el VFD
+	                estado3++;
+					break;
+	  case INIT_M+3:estado3++;break;//Mejora de la funcion: recurso.solicitar
+	  case INIT_M+4:contexto=find_contexto_Siguiente();estado3++;break;
+	  case INIT_M+5:InitArbolMenu(contexto);estado3++;break;
+	  case INIT_M+6:vfd.config.bits.Menu_Ready=0;estado3++;break;//menu no esta terminado aun
+      case INIT_M+7:MenuActualScreen.func();estado3=TERMINAR1;break;					
+	  case TERMINAR1:vfd.config.bits.init_Menu=TRUE;//no esta init el VFD
                     vfd.config.bits.MenuPendiente=FALSE;//hay pendiente un menu por desplegar
                     vfd.menu.contexto.Actual=contexto;
+					vfd.menu.contexto.solicitaCambioA=0;
+					vfd.keypad.enable=1;//habilitado teclado
 					break;
 	  default:estado3=1;break;}
    }//fin de WHILE bandera de Menu Pendiente--------------------   
@@ -411,6 +447,62 @@ return NULL;
 //fin del control operativo del menu de escape-----------------------------------------
  
 
+// Inicializa la FIFO,
+void init_fifo_contexto(struct FIFOc *fifo) {
+    fifo->head = 0;
+    fifo->tail = 0;
+    fifo->count = 0;
+}//FIN init fifo+++++++++++++++++++++++++++++
+
+// Inserta un número en la FIFO, eliminando el más antiguo si está llena
+void push_contexto(struct FIFOc *fifo, uint8_t value) {
+    if (fifo->count == FIFOc_SIZE) {
+        // FIFO llena, descartamos el elemento más antiguo
+        fifo->tail = (fifo->tail + 1) % FIFOc_SIZE;
+        fifo->count--;
+    }
+    fifo->buffer[fifo->head] = value;
+    fifo->head = (fifo->head + 1) % FIFOc_SIZE;
+    fifo->count++;
+}//fin de push contexto+++++++++++++++++++++++++++++++
+
+// Extrae el número más antiguo de la FIFO
+int pop_contexto(struct FIFOc *fifo, uint8_t *value) {
+    if (fifo->count == 0) {
+        return 0; // FIFO vacía
+    }
+    *value = fifo->buffer[fifo->tail];
+    fifo->tail = (fifo->tail + 1) % FIFOc_SIZE;
+    fifo->count--;
+    return 1;
+}//fin pop contexto+++++++++++++++++++++++++++++
+
+// Lee un elemento sin sacarlo (último, penúltimo... hasta el quinto último)
+/*FIFO: A0 
+FIFO: A0 A1 
+FIFO: A0 A1 A2 
+...
+FIFO: A2 A3 A4 A5 A6 A7 A8 A9 AA AB 
+FIFO: A3 A4 A5 A6 A7 A8 A9 AA AB AC 
+FIFO: A4 A5 A6 A7 A8 A9 AA AB AC AD 
+Peek(1): AD
+Peek(2): AC
+Peek(3): AB
+Peek(4): AA
+Peek(5): A9
+Pop: A4
+Pop: A5
+Pop: A6
+FIFO: A7 A8 A9 AA AB AC AD */
+unsigned char peek_contexto(struct FIFOc *fifo, int position, uint8_t *value) {
+    if (position < 1 || position > 5 || position > fifo->count) {
+        *value = 0;    
+		return 0; // Posición fuera de rango
+    }
+    int index = (fifo->head - position + FIFOc_SIZE) % FIFOc_SIZE;
+    *value = 1;
+    return fifo->buffer[index];
+}//fni peek++++++++++++++++++++++++++++++++++++++++
 
 
 
@@ -513,6 +605,13 @@ void reset_FIFO_general_UChar(struct _FIFO_1byte_ *s,
 	   cleanArray(arr,size,0);
 	  
 }//fin reset_FIFO_serial_TX---fin se resetea toda la fifo
+
+
+void configModificado(unsigned char contexto){
+     //(void)contexto;
+	 vfd.menu.contexto.Modificado=contexto;//hay un modificado
+}//fin de configmodificado
+
 
 
 //FIFO para ingresar un dato a desplegar vfd.f1.append(14,0,_BOX_);

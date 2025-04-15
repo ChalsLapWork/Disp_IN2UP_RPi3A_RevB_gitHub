@@ -11,9 +11,10 @@
 #include "VFD.h"
 #include "serial.h"
 #include "VFDmenu.h"
-#include "math.h"
+#include "maths.h"
 #include "queue.h"
 #include "strings.h"
+#include "VFDthread.h"
 
 #define BUF_SIZE 256
 #define BUFFER6_SIZE BUF_SIZE  // Tamaño del nuevo buffer6
@@ -38,6 +39,7 @@ int init_Serial(void){
   data.serial_fd = serialOpen("/dev/ttyAMA0", 9600);  // Cambia "/dev/ttyAMA0" y 9600 según tu configuración
   if (data.serial_fd == -1) {
         printf("%s Error al abrir el puerto serial.\n %s",CAMAR,CRESET);
+        log_mensaje("error","[Error] Openning Seria Port ");
         return 1;}
 // Inicializa el mutex
     pthread_mutex_init(&data.mutex, NULL);
@@ -45,10 +47,12 @@ int init_Serial(void){
 // Crea el hilo lector
     if (pthread_create(&reader_thread, NULL, serial_reader, &data) != 0) {
         printf("%s Error al crear el hilo lector.\n %s",CAMAR,CRESET);
+        log_mensaje("error","[Error] Openning thread serial reader  ");
         return 1;}
 // Crea el hilo procesador
     if (pthread_create(&processor_thread, NULL, cons_serial_processor, &data) != 0) {
         printf("%s Error al crear el hilo procesador.\n %s",CAMAR,CRESET);
+        log_mensaje("error","[Error] Openning threading cons serial procesador ");
         return 1;}
 return 1;
 }//fin de init serial++++++++++++++++++++++++++++++++++++++++++++++++
@@ -152,7 +156,7 @@ static unsigned char nParam,nParam0;//numero de parametros    .
 unsigned char dato;
 
  indice=0;
- do{dato=*(c+indice);                   //  while(indice<size){
+ do{dato=*(c+indice);                  
    switch(estado){
      default:estado=1;        //sin break
              if(dato==STX){estado=2;}break; 
@@ -202,6 +206,9 @@ unsigned char mens3[]={"COMANDO DESCONOCIDO "};
         case CMD_SENS_PHASE:Serial_Command_Sens_Phase_Det(param);
                             printf("%s %s  %i %s:%i",CAMAR,mens2,cmd,CRESET,*param);
                             break;
+        case CMD_TECLADO:Serial_Command_Teclado(*param);
+                         printf("%s %s  %i %s:%i",CAMAR,mens,cmd,CRESET,*param);
+                         break; 
         case CMD_DET_PM:printf("%s %s %s",CMORA,mens,CRESET);break; //hace display de los parametros de Portal Inicio
         default:printf("%s %s %s",CAMAR,mens3,CRESET);break;
     }//fin switch ----------------------------------------------------------------------------
@@ -264,3 +271,17 @@ union{
      usi.c[0]=*(parametros+1);
      display_Sens_Phase(usi.usint1,*(parametros+2),*(parametros+3));
 }//fin de serial comando sensibilidad phase detectada a desplegar
+
+//comandos por serial para controlar teclado por serial
+//parametro: es la tecla a ejecutar
+void Serial_Command_Teclado(unsigned char parametro){ 
+  if(vfd.keypad.enable){//=1;//habilitar teclado
+    switch(parametro){
+		case 'E':menus(keyEN);break;//45h
+		case 'R':menus(keyRT);break;//52h
+		case 'L':menus(keyLF);break;//4Ch
+		case 'D':menus(keyDN);break;//44h
+		case 'U':menus(keyUP);break;//55h
+		default:vfd.keypad.enable=1;break;}}
+  activar_Teclado();       
+}//fin de serial comando teclado+++++++++++++++++++++++++++++

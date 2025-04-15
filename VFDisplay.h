@@ -69,7 +69,6 @@ unsigned char DisplayInsertSpaceTextProc(unsigned char indice);
 void DisplayCharTextProc(unsigned char pos,unsigned char dato);
 void DisplayCursorTextProc(unsigned char pos_actual, unsigned char pos_anterior);
 unsigned char DisplayRecorrerIndiceIzqTextProc(unsigned char ii,unsigned char IzqDer);	
-void displayUINT_var(unsigned short int posx,unsigned short int posy,unsigned short  int *pn,unsigned char operacion);
 void display_Voltage_Mediciones(unsigned char *p,unsigned char voltaje,struct _GLOBAL_CONTEXTO *g,unsigned char signo);
 void display_B_bold_DDS(unsigned char disp);
 void displayPSU_IO_var(void);
@@ -85,8 +84,7 @@ void displayNumbers(unsigned char n);
 void  displayEntradadeSistemas(unsigned char var);	
 void displayZoomDDS_var(unsigned char operacion);
 unsigned short int displayZoomDDS_varxDigito(unsigned short int posx,unsigned char operacion);
-void display_pushFIFOcOP_Phase_var(unsigned short int posx,unsigned short int posy);
-void displayPhase_var(unsigned short int posx,unsigned short int posy);
+void display_pushFIFOcOP_Phase_var(unsigned char posx,unsigned char posy);
 void displayControlContrasenaVal(unsigned char varnum);
 unsigned char  displayTime(unsigned char t);//desplega un valor de tiempo a la vez
 void displayGananciaValues(unsigned char tarjeta);
@@ -123,14 +121,12 @@ unsigned char Display_Monitor_de_Rechazos_VFD(unsigned char *p);
 //unsigned char xDisplay_Monitor_de_Phase_VFD(unsigned char *inst);
 unsigned char display_Linea_10_DDS(unsigned char DDSaux,unsigned char *inst);
 //unsigned char displayUINT_var1(unsigned short int posx,unsigned short int posy,unsigned short int *pn,unsigned char operacion,unsigned char *inst);
-unsigned char display5UChars1(unsigned short int posx,unsigned short int posy,unsigned char *p);
-unsigned char displayPhase_var1(unsigned short int posx,unsigned short int posy,unsigned char *inst,unsigned char *inst2);
 void displayZoomDDS_var1(unsigned char operacion);
 unsigned char Display_Monitor_de_Producto_VFD(unsigned char *p);
 unsigned char Display_Monitor_de_Sensibilidad_VFD(unsigned char *p);
 //unsigned char displayUINT_var1(unsigned short int posx,unsigned short int posy,unsigned short int *pn,unsigned char operacion,struct DPM m);
 unsigned char xInit_Menu(unsigned char *p);
-unsigned char displayUINT_var1(unsigned short int posx,unsigned short int posy,unsigned short int *pn,unsigned char operacion,unsigned char  *v);
+//unsigned char displayUINT_var1(unsigned short int posx,unsigned short int posy,unsigned short int *pn,unsigned char operacion,unsigned char  *v);
 unsigned char xInit_VFD(unsigned char *p);
 unsigned char Display_Monitor_de_Phase_VFD(unsigned char *p);
 unsigned char xDisplay_Barra_Y_Parametros(unsigned char *m);
@@ -141,4 +137,23 @@ unsigned char  displayControlCursorSubMenusKey_v2(unsigned char direccion,unsign
 unsigned char xDisplay_Cursores_en_DDS_VFD(unsigned char *inst);
 unsigned char  display_Sens_Lim_v2(float angulo,unsigned short int sens,unsigned char *inst,unsigned short int *usi,float *f);
 void getBoxPattern(unsigned char box,unsigned char *mode,unsigned char *x1,unsigned char *y1,unsigned char *x2,unsigned char *y2);
+unsigned char find_contexto_Siguiente(void);
+void BarraDet_displayUINT_var(unsigned char posx,unsigned char posy,unsigned short int *usint);
+unsigned char  digito2posicion(unsigned char digito);
+void displayUINT_var(unsigned char posx,unsigned char posy,unsigned short int *pn,unsigned char operacion);
+void display5UChars(unsigned char posx,unsigned char posy,unsigned char *p);
+void displayPhase_var(unsigned char posx,unsigned char posy);//despliega la variable de phase en la posicion
+void DisplayCuentaProducto(void);
+void procSensxDigitoEN(unsigned char *digito,unsigned char posx,unsigned char initx);
+void procFasexDigitoEN(unsigned char *var,unsigned char posx,unsigned char posy);
+void displayTextoProcessorMayusculas(void);
+void displayTextoProcessorMinusculas(void);
+void displayTextoProcessorSymbol(void);
+void DisplayNewTextProc(void);
+void monitorInvalidPassword(void);
+void TextProcessorSpecial(void);
+void specialFunctions(void);
+unsigned char getColTextProc(unsigned char dir);
+void setNivelAcceso(unsigned char level);
+
 #endif /* VFDISPLAY_H_ */

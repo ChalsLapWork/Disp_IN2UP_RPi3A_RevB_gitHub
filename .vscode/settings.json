@@ -11,6 +11,15 @@
         "errorcontroller.h": "c",
         "strings.h": "c",
         "math.h": "c",
-        "errno.h": "c"
+        "errno.h": "c",
+        "queue": "c",
+        "memoria.h": "c",
+        "vfdisplay.h": "c",
+        "maths.h": "c",
+        "stdatomic.h": "c",
+        "vfdkey.h": "c",
+        "vfdmenu.h": "c",
+        "config.h": "c",
+        "serial.h": "c"
     }
 }

@@ -1,6 +1,7 @@
 #ifndef __QUEUE_H__
   #define __QUEUE_H__  
 
+#include <stdint.h>
 
 #ifndef _PTHREAD_H_
   #define _PTHREAD_H_
@@ -44,7 +45,10 @@
 #define SIZE_MAX_FIFO 10//TAMAÑÑO de fifo de transmision a VFD
 
 #define SIZE_MAX_SENDBLOCK 20 //TAMAÑO maximo de envio en bloque de la funcion
+#define FIFOc_SIZE 10 //fifo de contexto
 
+#define NOMBRE_PRODUCTO_SIZE  20
+#define NAME_INIT             0xE8 //DETERMINA QUE LA cadena de nombre del producto es un producto con nombre real y no solo basura
 
 
 /*version 310322-1641 add reset genaral */
@@ -149,6 +153,13 @@ struct _FIFO_func_{
 	  unsigned char (*resetFIFOS)(void);//resetear todas las FIFOs Y arrays y registros
 };//fin _FIFO_func_----------------------------------------
 
+struct FIFOc {
+    uint8_t buffer[FIFOc_SIZE];  // Almacena números de 1 byte (8 bits)
+    int head;  // Índice de inserción
+    int tail;  // Índice de extracción
+    int count; // Cantidad de elementos almacenados
+};//contexto
+
 struct _Contexto{
 		unsigned char Actual;  //contexto Actual
 		unsigned char Modificado;
@@ -162,21 +173,159 @@ struct _Contexto{
 		unsigned char Anterior3;
 		unsigned char Anterior4;
 		unsigned char solicitaCambioA;//a donde se ccambiar de contexto
+        struct FIFOc fifo;
+        int  (*pop)( uint8_t *value);
+		void (*push)(uint8_t value);
+		unsigned char  (*peek)( int position, uint8_t *value);		
 };
 
+
+
+struct _KeyPAd_{
+   unsigned char enable;//enable teclado
+};
+
+
+struct ZoomControl{//para crear  el zoom y las ecuaciones  polinomicas de acondicionamiento de señal para el DDS
+	   signed short int Max;//valor maximo del cuadro central de la pantalla
+	   //signed short int Maxn;//valor negativo
+	   //float a; //coeficiente del termino grado2
+	   //float b;//coeficiente del termino grado 1
+	   //float c; //coeficiente del termino grado 0
+	   double zFactor;// son los mas menos 32768 entre los 100 zoom's
+	   float indiceConversion;//lo que se multiplica para escalar al zoom seleccionado
+	   unsigned char Cx; //coordenada x del centro de la pantalla
+	   unsigned char Cy;//coordenadas y del centro de la pantalla
+	   unsigned char Zoom;//es el zoom se seleccionado actual
+	   unsigned short int pixelSizeX;//limite del numero digital despleglable en DDS en funcion del Zoom
+	   unsigned short int Maxx;//limite del numero digital desplegable en DDS en funciona del Zoom
+	   unsigned short int pixelSizeY;//limite del numero digital despleglable en DDS en funcion del Zoom
+	   unsigned short int Maxy;//limite del numero digital desplegable en DDS en funciona del Zoom
+	   signed short int lapso;//es el Maximo - Minimo	
+	   unsigned short int Ymax;//maximo valor a graficar el zoom en Y, linea de sensibilidad para este zoom
+	   unsigned short int Ymin;//minimo valor en la posicion-1 de linea de sesibilidad 
+       //zoom.indiceConversion
+	  // float factor;//factor de multiplicacion por zoom
+	   float (*factor)(unsigned char);//apiunta ala funcion que nos da el factor en funcion del zooom
+	   struct Coordusi (*MaxZoom)(unsigned char);//maximo valor para ese zoom en x 
+};
+
+
+struct _Comando_DDS{//comando DDS para graficar en touch
+	//struct _PIX_ pix;
+	union Bytex{
+	   unsigned char Bnderas;
+	   struct{
+		   unsigned char DDS_Reload:1;//cuando se recarga el DDS por un zoom CON LOS valores anteriores guardadso de las detecciones
+		   unsigned char Apagando:1;//le dice que nos vamos a salir del menu DDS, para que no mande datos del DDS en otro menu
+	       unsigned char EventDDS:1;//nos dice que tenemos autorizacion para ejecutar graficacion en DDS		 
+		   unsigned char DDS1_BORRAR:1;//Borrando de el DDS
+		   unsigned char DDS1_TIMER:1;
+		   unsigned char clean_Buffers:1;//para decirle cuando limpiar los buffers que guardan los datos de los puntos pintados en el DDS para repintrlos
+		   unsigned char Aspect_Zoom:1;
+		   unsigned char debug:1;
+		   unsigned char Gain_AB:1;
+	   }bit;
+	}Bnderas;
+	
+	struct _Display_{
+		unsigned char flag_TX_Pixel; //timer para desplegar en DDS
+		unsigned short int delay;//para manejo de delay por comando y timer de display VFD
+	}display;
+	
+	struct _TOUCHSCREEN_{
+		signed short int bufferX[SIZE_BUFFER_DDS_FIFO];//buffer DDS fifo TRansmision Serial
+		signed short int bufferY[SIZE_BUFFER_DDS_FIFO];//buffer y DDS FIFO Transmision Serial
+		signed short int *headx; //head de buffer x
+		signed short int *tailx; //head de buffer y
+		signed short int *popx;  //pointer to pop from fifo
+		signed short int *pushx; //
+		signed short int *heady; //head de buffer x
+		signed short int *taily; //head de buffer y
+		signed short int *popy;  //
+		signed short int *pushy;
+	    unsigned char ncount;//numero de nodos ocupados en la fifo
+	}touch;
+	
+	struct _SAVE_PIXELS_{
+		signed short int xPixel[SIZE_TEMP_PIXEL];
+		signed short int yPixel[SIZE_TEMP_PIXEL];
+		signed short int *p[8];
+#if(SIZE_TEMP_PIXEL<254)		
+		unsigned char ncount;
+#else   
+	    unsigned short int ncount;
+#endif	    
+	}SaveTempPix; 	
+		
+//	unsigned char (*pop)(signed short int *x,signed short int *y);//pop function
+//    unsigned char (*push)(signed short int x,signed short int y);
+    unsigned char (*remove)(signed short int *x,signed short int *y);//quita el nodo primer en indicce 0
+    unsigned char (*append)(signed short int x,signed short int y);//pone un nodo al final dela cola
+    
+    struct _DispayPixel_{//para pintar el pixel
+    	unsigned char *pop,*popx,*popy;
+    	unsigned char *push,*pushx,*pushy;
+    	unsigned char *tail,*tailx,*taily;
+    	unsigned char *head,*headx,*heady;
+    	unsigned char buffX[SIZE_DDS_PIXEL];
+    	unsigned char buffY[SIZE_DDS_PIXEL];
+    	unsigned char pen[SIZE_DDS_PIXEL];
+#if(SIZE_DDS_PIXEL<254)
+    	unsigned char ncount;
+#else 
+    	unsigned short int ncount;
+#endif    	
+    }pixel;
+        
+    struct _Repaint_ZOOM{
+    	//signed short int xx[SIZE_DDS_ZOOM];
+        //signed short int yy[SIZE_DDS_ZOOM];
+    	unsigned char  xy[SIZE_Y][SIZE_X];
+    	unsigned char xy0[SIZE_Y][SIZE_X];
+    	unsigned short int ii;
+    	unsigned char j,k,uy;
+    	unsigned char ix,iy,b;
+    	unsigned char x1[100],y1[100];//depurar
+    	unsigned short int debug5;
+    	unsigned short int debug6;
+    }rePaint; 
+
+  struct ZoomControl zoom;
+   
+};//fin DDS STRUCT++++++++++++++++++++++++++++++
+
 struct _Menu1_{
-   struct _Contexto contexto;    
+   struct _Contexto contexto;
+   unsigned char cursorx;
+   unsigned char cursory;
+   struct _Comando_DDS dds;
+   unsigned char CuadroMadreReady;//el cuadro madre esta construido y listo?.
+
+   
+};
+
+struct _Deteccion_{
+       unsigned char EnCurso;//Hay una deteccion en curso
+
+
 };
 
 
 struct _PRODUCT1_{
    unsigned short int Cuenta_Rechazos;//numer de rechazos de producto
    unsigned short int Cuenta_Productos;//numero de productos que ha pasado por detector
+   unsigned char CuentaProducto;//ON|OFF contar producto;
    unsigned short int Sensibilidad;//configurada para este producto
    unsigned char phase;//phase del producto, numero entero
    float fase;//fase del producto numero flotante
    unsigned char Phasefrac;// faccion del numero de fase.
+   unsigned char name[NOMBRE_PRODUCTO_SIZE]; 
+   unsigned short int Altura;   
+
 };
+
+
 
 
 struct _DISPLAY_VFD_{
@@ -188,6 +337,10 @@ struct _DISPLAY_VFD_{
     struct _Sync2   mutex;//syncronia y control de hilos
 	struct Queue q;//pila para manejar el VFD   
 	struct _Menu1_ menu;  
+	struct _KeyPAd_ keypad;
+    struct _Deteccion_ deteccion;
+	unsigned char Text[NOMBRE_PRODUCTO_SIZE];//texto que regresa  del procesador de textos
+    unsigned char NIVEL_ACCESO;//nivel de accesso
 
 	//size_t pthread_attr_t attr_mon,attr_free,atrr_Tx;//atributos  
  	struct _box_control{
@@ -195,6 +348,7 @@ struct _DISPLAY_VFD_{
 		 unsigned char box0;
 		 unsigned char box; 
 		 unsigned short int timer;//se activa  por timer y resetea el array
+	     unsigned char enable;//display cajas o lo que sea
 	   }box;
 	
 	struct _Vars_{
@@ -252,7 +406,7 @@ unsigned char FIFO_Display_DDS_Char_pop2(unsigned char *x,unsigned char *y);
 unsigned char FIFO_Display_DDS_Char_push(unsigned char datox,unsigned char datoy);
 unsigned char *gotonext(unsigned char *last,unsigned char *first,unsigned char *tail);
 unsigned char FIFO_displayBox_pop(void);
-void BarraDet_displayUINT_var(unsigned char posx,unsigned char posy,unsigned short int *usint);
+//void BarraDet_displayUINT_var(unsigned char posx,unsigned char posy,unsigned short int *usint);
 unsigned char FIFO_displayBox_push(unsigned char box);
 unsigned char FIFO_displayBox_isEmpty(void);
 void FIFO_Display_DDS_Char_clean(void);
@@ -361,6 +515,13 @@ void *Run_Menu(void *arg);
 unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char size);
 //void VFDserial_SendBlock_Tx1(unsigned char *buffer, size_t len);
 //unsigned char VFDserial_SendBlock_data(void *ptr, size_t size); 
-
-
+void iniciar_Run_Menu(void);
+void init_fifo_contexto(struct FIFOc *fifo);
+int pop_contexto(struct FIFOc *fifo, uint8_t *value);
+void push_contexto(struct FIFOc *fifo, uint8_t value);
+unsigned char peek_contexto(struct FIFOc *fifo, int position, uint8_t *value);
+void push_fifo_contexto(uint8_t dato);
+int pop_fifo_contexto(uint8_t *value);
+unsigned char peek_fifo_contexto(int position, uint8_t *value);
+void configModificado(unsigned char contexto);
 #endif 

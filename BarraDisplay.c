@@ -2,6 +2,9 @@
 #include "system.h"
 #include "VFD.h"
 #include "VFDmenu.h"
+#include <stdlib.h>
+#include "errorController.h"
+#include <unistd.h>
 
 extern struct _DISPLAY_VFD_ vfd;
 
@@ -14,7 +17,7 @@ unsigned char x2a,x2b,x2c;
 unsigned char y2a,y2b,y2c;
 unsigned char ret=0;
 
-	switch(vfd.menu.contexto.Actual){
+	switch(vfd.menu.contexto.solicitaCambioA){
 		case AJUSTE_DE_VIBRACION:x1a=POS_X1_BOX_AV; y1a=POS_Y1_BOX_AV; x2a=POS_X2_BOX_AV; y2a=POS_Y2_BOX_AV;
 		                         x1b=POS_X1_BOX1_AV;y1b=POS_Y1_BOX1_AV;x2b=POS_X2_BOX1_AV;y2b=POS_Y2_BOX1_AV;
 		                         x1c=POS_X1_BOX2_AV;y1c=POS_Y1_BOX2_AV;x2c=POS_X2_BOX2_AV;y2c=POS_Y2_BOX2_AV;
@@ -36,7 +39,10 @@ unsigned char ret=0;
 		      x1b=POS_X1_BOX1_PD;y1b=POS_Y1_BOX1_PD;x2b=POS_X2_BOX1_PD;y2b=POS_Y2_BOX1_PD;//CUADRO-1  HIJO VACIO	    
 		      x1c=POS_X1_BOX2_PD;y1c=POS_Y1_BOX2_PD;y2c=POS_X2_BOX2_PD;y2c=POS_Y2_BOX2_PD;//CUADRO-1  HIJO VACIO  	  
 		      break;  	
-		default:break;}	
+		default:usleep(1);
+		        errorCritico("Error Cuadro-Madre: Contexto -Desconocido-");
+			    exit(1);		        
+		        break;}	
 	VFDboxLine1(ON,BOX_VACIA,x1a,y1a,x2a,y2a);//cuadro madre
 	VFDboxLine1(ON,BOX_VACIA,x1b,y1b,x2b,y2b);//cuadrito vacio No.1
     VFDboxLine1(ON,BOX_VACIA,x1c,y1c,x2c,y2c);//cuadrito vacio No.2

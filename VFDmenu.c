@@ -9,13 +9,21 @@
 #include "BarraDisplay.h"
 #include "strings.h"
 #include "stdbool.h"
+#include "VFDkey.h"
+#include <unistd.h>
+#include "VFDisplay.h"
+#include <stdlib.h>
 
 struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
-extern struct _PRODUCTO1_ producto;
+//extern struct _PRODUCTO1_ producto;
 extern struct _DISPLAY_VFD_ vfd;
-extern struct _Detection Deteccion;
+//extern struct _Detection Deteccion;
 extern struct _PRODUCT1_ producto2;
-
+GlobalStruct global = {0};
+GlobalStruct *AjParamProd= NULL; // Inicialización
+GlobalStruct *MenuInfoUser= NULL;
+GlobalStruct *MenuTextProc=NULL;//variables para menu texto procesor
+extern struct _PRODUCT1_ producto2;
 
 
 unsigned char InitArbolMenu(unsigned char destino){// initializar estructura de datos de los menus
@@ -24,17 +32,100 @@ auto unsigned char ret=0;
 	  /* PANTALLA NIVEL 0************************************************************** */
 		 case PORTAL_INICIO: MenuActualScreen.menuNodo=PORTAL_INICIO;
 		                     MenuActualScreen.permisos=DESARROLLADOR_PERMISO;//------------------------------------EN-REVISION
-		                     //MenuActualScreen.func=0;
+		                     MenuActualScreen.func=0;
 		                     //MenuActualScreen.func1=PortalinicioDisplay; // -------------------------------------------------------EN-REVISION    		 
-		                     MenuActualScreen.func2=PortalinicioDisplay;
-		                    // MenuActualScreen.funcKeyUP=PortaliniciokeyUP;
-		                     // MenuActualScreen.funcKeyRT=PortaliniciokeyRT;
-		                     // MenuActualScreen.funcKeyLF=PortaliniciokeyLF;
-		                    //  MenuActualScreen.funcKeyDN=PortaliniciokeyDN;//Insert the function pointer
-		                    //  MenuActualScreen.funcKeyEN=PortaliniciokeyEN;//---poner en los apuntadores apuntar a las funciones--------------4
+		                     MenuActualScreen.func=PortalinicioDisplay;
+		                     MenuActualScreen.funcKeyUP=PortaliniciokeyUP;
+		                     MenuActualScreen.funcKeyRT=PortaliniciokeyRT;
+		                     MenuActualScreen.funcKeyLF=PortaliniciokeyLF;
+		                     MenuActualScreen.funcKeyDN=PortaliniciokeyDN;//Insert the function pointer
+		                     MenuActualScreen.funcKeyEN=PortaliniciokeyEN;//---poner en los apuntadores apuntar a las funciones--------------4
 							 ret=TRUE;
-		                     break;		
-         default: errorCritico2("error de InitArbol",19);break;                     
+		                     break;	
+		 case MENU_INSIGHT:  MenuActualScreen.menuNodo=MENU_INSIGHT;
+							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
+							 MenuActualScreen.func=displayMenuInsight;
+							 MenuActualScreen.funcKeyUP=MenuInsightkeyUP;
+							 MenuActualScreen.funcKeyDN=MenuInsightkeyDN;
+							 MenuActualScreen.funcKeyRT=MenuInsightkeyRT;
+							 MenuActualScreen.funcKeyLF=MenuInsightkeyLF;
+							 MenuActualScreen.funcKeyEN=MenuInsightkeyEN;//MenuInsightkeyEN;
+							 ret=TRUE;
+							 break;	
+/* MENUS NIVEL 2  ******************************************************************/     
+		 case AJUSTE_DE_PRODUCTO:MenuActualScreen.menuNodo=AJUSTE_DE_PRODUCTO;
+		 	 	 	 	 	 	 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
+		 	 	 	 	 	 	 MenuActualScreen.func=displayMenuAjustedeProducto;//no tiene porque es un menu
+		 	 	 	 	 	 	 MenuActualScreen.funcKeyUP=AjusteProductokeyUP;
+		 	 	 	 	 	     MenuActualScreen.funcKeyRT=AjusteProductokeyRT;	 
+		 	 	 	 	 	     MenuActualScreen.funcKeyLF=AjusteProductokeyLF;
+		 	 	 	 	 	     MenuActualScreen.funcKeyDN=AjusteProductokeyDN;
+		 	 	 	 	 	     MenuActualScreen.funcKeyEN=AjusteProductokeyEN;
+		 	 	 	 	 	     ret=TRUE;
+		 	 	 	 	 	     break;
+		 case AJUSTE_PARAMETRICO_DE_PRODUCTO:
+							 MenuActualScreen.menuNodo=AJUSTE_PARAMETRICO_DE_PRODUCTO;
+							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
+							 MenuActualScreen.func=DisplayAjusteParamProd;
+							 MenuActualScreen.funcKeyUP=AjusteParamProdkeyUP;
+							 MenuActualScreen.funcKeyRT=AjusteParamProdkeyRT;	 
+							 MenuActualScreen.funcKeyLF=AjusteParamProdkeyLF;
+							 MenuActualScreen.funcKeyDN=AjusteParamProdkeyDN;
+							 MenuActualScreen.funcKeyEN=AjusteParamProdkeyEN;
+							 ret=TRUE;
+							 break;
+		 case AJUSTE_DE_SISTEMA:
+			  	  	  	  	 MenuActualScreen.menuNodo=AJUSTE_DE_SISTEMA;
+							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
+							 MenuActualScreen.func=DisplayMenuAjustedeSistema;
+							 MenuActualScreen.funcKeyUP=AjustedeSistemakeyUP;
+							 MenuActualScreen.funcKeyRT=AjustedeSistemakeyRT;	 
+							 MenuActualScreen.funcKeyLF=AjustedeSistemakeyLF;
+							 MenuActualScreen.funcKeyDN=AjustedeSistemakeyDN;
+							 MenuActualScreen.funcKeyEN=AjustedeSistemakeyEN;
+							 ret=TRUE;
+							 break;
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------- PASO-2							 
+		 case PANTALLA_DDS://---------------------------------------------------------- PASO 3 IR A VFDkey.h-----
+							 MenuActualScreen.menuNodo=PANTALLA_DDS;
+							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
+							 //MenuActualScreen.func=DDS_HANDLER;
+							/* MenuActualScreen.funcKeyUP=PANTALLA_DDSkeyUP_v2;
+							 MenuActualScreen.funcKeyRT=PANTALLA_DDSkeyRT_v2;	 
+							 MenuActualScreen.funcKeyLF=PANTALLA_DDSkeyLF_v2;
+							 MenuActualScreen.funcKeyDN=PANTALLA_DDSkeyDN_v2;
+							 MenuActualScreen.funcKeyEN=PANTALLA_DDSkeyEN_v2;
+							 */
+							 ret=TRUE;
+							 break;
+		 case INFORMACION_DE_USUARIO:			 
+			 	 	 	 	 MenuActualScreen.menuNodo=INFORMACION_DE_USUARIO;
+							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
+							 MenuActualScreen.func=DisplayMenuInformacionUsuario;
+							 MenuActualScreen.funcKeyUP=MenuInformacionUsuariokeyUP;
+							 MenuActualScreen.funcKeyRT=MenuInformacionUsuariokeyRT;	 
+							 MenuActualScreen.funcKeyLF=MenuInformacionUsuariokeyLF;
+							 MenuActualScreen.funcKeyDN=MenuInformacionUsuariokeyDN;
+							 MenuActualScreen.funcKeyEN=MenuInformacionUsuariokeyEN;
+							 ret=TRUE;
+							 break;
+		case TEXT_PROCESSOR:
+							 MenuActualScreen.menuNodo=TEXT_PROCESSOR;
+							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
+							 MenuActualScreen.func=displayTextoProcessor;
+							 MenuActualScreen.funcKeyUP=TextoProcessorkeyUP;
+							 MenuActualScreen.funcKeyRT=TextoProcessorkeyRT;	 
+							 MenuActualScreen.funcKeyLF=TextoProcessorkeyLF;
+							 MenuActualScreen.funcKeyDN=TextoProcessorkeyDN;
+							 MenuActualScreen.funcKeyEN=TextoProcessorkeyEN;
+	//						  TextoProcessor.menuPadre=NONE;
+							 ret=TRUE;
+							 break;    
+	
+
+
+
+         default: errorCritico2("error de InitArbol,19",19);break;                     
         }//fin switch ++EN CONSTRUCCION ++++++++++++++++++++++++++++++++++++
 return ret;
 }//fin portal inicion++++++++++++++++++++++++++++++++++++++++++++++
@@ -44,7 +135,7 @@ return ret;
 //despliega el menu principal, el recurso se solicita y gestiona
 //desde el hilo padre del manejo del menu.
 //Este metodo Solo se ejecuta una vez sin instancias
-unsigned char  PortalinicioDisplay(unsigned char *mem){//Funcion Suprema de Despliegue de la Pantalla0
+void  PortalinicioDisplay(void){//Funcion Suprema de Despliegue de la Pantalla0
 const unsigned char s[]=VERSION2;
 unsigned char ss;
 const unsigned char  a[]="Test Set-up";
@@ -53,7 +144,7 @@ const unsigned char  c[]="Cuenta rechazos_!";
 const unsigned char  d[]="Cuenta producto ";
 const unsigned char x[4]={80,24,24,24};
 const unsigned char y[4]={ 2,10,12,14};
-unsigned char ret=0;
+//unsigned char ret=0;
 //unsigned char *inst1,*inst2;//instancias subHilos a ejecutar que se pueden ejecutar en otros lados
 unsigned char aux3_char,aux0_uchar;
 unsigned short int aux1_usi;
@@ -65,36 +156,27 @@ union W16{
 }word_16bits;
 
 
- /*while(1){		
-    VFDserial_SendBlock1(&a[0],sizeof(a));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
-	VFDserial_SendBlock1(&b[0],sizeof(b));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
-	VFDserial_SendBlock1(&c[0],sizeof(c));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
-	VFDserial_SendBlock1(&d[0],sizeof(d));//if(VFDserial_SendBlock2(&s[0],sizeof(s),&n,inst1)) estado++;break;   //version
-	VFDposicion(x1,y1);
-	if(x1++>40) x1=1;
-	if(y1>14) y1=0;else{y1+=2;}}*/
-
 	  mensOK("Estoy en portal Inicio",CAMARILLO);
-      Deteccion.CuadroMadreReady=FALSE;
+      vfd.menu.CuadroMadreReady=FALSE;
       NoErrorOK();			  
       VFDclrscr();
 	  delay_ms_VFD(500);
       VFDposicion(65,0);
-      VFDserial_SendBlock1(&s[0],sizeof(s));//version
-	  aux3_char=producto.name[1];
-	  aux1_usi=length(&producto.name[0],sizeof(producto.name));  	 
+      VFDserial_SendBlock(&s[0],sizeof(s));//version
+	  aux3_char=producto2.name[1];
+	  aux1_usi=length(&producto2.name[0],sizeof(producto2.name));  	 
       aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);
       (Status_Prod == MEMO) ? VFDposicion(aux0_uchar, 2) : VFDposicion(x[0], y[0]);
 
-	   VFDserial_SendBlock1(&a[0],sizeof(a)); 
+	   VFDserial_SendBlock(&a[0],sizeof(a)); 
 	   VFDposicion(x[1],y[1]);
-	   VFDserial_SendBlock1(&b[0],sizeof(b));
+	   VFDserial_SendBlock(&b[0],sizeof(b));
        VFDposicion(x[2],y[2]);
-       VFDserial_SendBlock1(&c[0],sizeof(c));
+       VFDserial_SendBlock(&c[0],sizeof(c));
        VFDposicion(x[3],y[3]);
-       VFDserial_SendBlock1(&d[0],sizeof(d));
+       VFDserial_SendBlock(&d[0],sizeof(d));
 	   displayCuadroMadre_VFD();
-       Deteccion.CuadroMadreReady=TRUE;
+       vfd.menu.CuadroMadreReady=TRUE;
 	   vfd.box.box0=0;//se inicia desde el primer cuadro a graficar. 
 	   vfd.box.box=0;//se inicializa la barra de deteccion.
 	   vfd.box.timer=0;
@@ -103,11 +185,277 @@ union W16{
        vfd.config.bits.BOX_enable=TRUE;//se autoriza a dibujar cajas
 	   //init_Sensibilidad();
 	   //usleep(100);//espera que se envien los datos del menu al VFD
-       vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
-	   
-       ret=TRUE;
-return ret;   
+		vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
+	   vfd.box.enable=1;
+       
 }// FIN DESPLIEGUE DEL PORTAL INICIO-------------------------------------------------------------------
+
+
+void displayMenuInsight(void){// MESPLIEGUE DEL MENU INSGHT----------------------------------------------
+//unsigned char ret=0;
+unsigned char z[]="Menu de Insight       x";
+unsigned char a[]=">Ajuste de Producto";
+unsigned char c[]="Ajuste Parametrico de Producto";
+unsigned char w[]="Ajuste de sistema";
+unsigned char v[]="Pantalla DDS";
+unsigned char b[]="Informacion del usuario";
+unsigned char x[7]={65,0,8,8, 8, 8,8};
+unsigned char y[7]={0 ,4,6,8,10,12,4};
+//word n;
+	
+      VFDclrscr();
+      VFDposicion(x[0],y[0]);
+      VFDserial_SendBlock(&z[0],sizeof(z));
+	  VFDposicion(x[1],y[1]);
+	  VFDserial_SendBlock(&a[0],sizeof(a));
+	  VFDposicion(x[2],y[2]);
+      VFDserial_SendBlock(&c[0],sizeof(c));
+	  VFDposicion(x[3],y[3]);
+	  VFDserial_SendBlock(&w[0],sizeof(w));
+	  VFDposicion(x[4],y[4]);
+	  VFDserial_SendBlock(&v[0],sizeof(v));
+	  VFDposicion(x[5],y[5]);
+	  VFDserial_SendBlock(&b[0],sizeof(b));
+	  VFDposicion(x[6],y[6]);
+	  vfd.menu.cursorx=POSX0;
+	  vfd.menu.cursory=POSY4;
+	  vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
+	  //keypad.b.enable=1;//Habilitado el teclado	
+	  vfd.box.enable=0;//disable pintar cajas barra detector
+	  vfd.config.bits.BOX_enable=TRUE;//se autoriza a dibujar cajas
+
+}//fin display menu inicio display----------------------------------------------------------------------------
+
+
+
+
+void DisplayAjusteParamProd(void){
+unsigned char a[]=" x";
+//unsigned char b[]=VERSION_FIRMWARE;
+//unsigned char c[]=">Inizializar memoria"; //2
+//unsigned char d[]="PSU E/S";              //4
+unsigned char e[]=">Sensibilidad"; //6
+unsigned char f[]="Fase         ";// 8en revision, debemos leer el valor de la variable si es uno o cero
+unsigned char h[]="Borrar contadores"; //10
+unsigned char i[]="Pantalla DDS";               //12
+unsigned char j[]="Ajustes Avanzados";   //14
+unsigned char x[9]={POSXESQ235,0,0,8,0, 8, 8, 8, 8};
+unsigned char y[9]={         0,0,2,4,6, 8,10,12,14};
+unsigned char *cursorx,*cursory;
+//word n;
+		cursorx=&vfd.menu.cursorx;
+		cursory=&vfd.menu.cursory;
+		VFDclrscr();
+		VFDposicion(x[0],y[0]);  
+		VFDserial_SendBlock(&a[0],sizeof(a));
+		VFDposicion(x[4],y[4]);   
+	    VFDserial_SendBlock(&e[0],sizeof(e));
+		VFDposicion(x[5],y[5]); 
+	    VFDserial_SendBlock(&f[0],sizeof(f));
+		VFDposicion(x[6],y[6]);   
+	    VFDserial_SendBlock(&h[0],sizeof(h));
+	    VFDposicion(x[7],y[7]);   
+	    VFDserial_SendBlock(&i[0],sizeof(i));
+	    VFDposicion(x[8],y[8]);
+	    VFDserial_SendBlock(&j[0],sizeof(j));
+	    displayUINT_var(POSXAJUSPROD,POSY6,&producto2.Sensibilidad,NONE);
+	    displayPhase_var(POSXAJUSPROD,POSY8);
+	   // displayFaseVar();
+	    displayCuadroMadre_VFD();//despliega el cuadro de barra de deteccion
+	    vfd.box.box0=0;//se inicia la barra en 0s. sino empieza ala mitad
+	    *cursorx=POSX0;*cursory=POSY6; 
+	    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
+		AjParamProd=&global;
+		AjParamProd->editarSensFase=&AjParamProd->igxc1;
+        (*AjParamProd->editarSensFase)=(unsigned char)0; //variable que indica si se esta editando el numero sensibildad y Fase
+		AjParamProd->arg2=0;////se borraran los contadores
+         vfd.config.bits.Menu_Ready=1;
+}//fin display ingenieria2 gracida---------------------------------------------------
+
+
+
+void displayMenuAjustedeProducto(void){
+unsigned char z[]="Menu de Ajuste de Producto  x";
+unsigned char a[]=">Hacer prueba de ejemplo";
+unsigned char c[]="Seleccionar producto";
+unsigned char w[]="Nuevo producto";
+unsigned char v[]="Ajuste de producto";
+unsigned char b[]="Borrar Producto";
+unsigned char q[]="Copiar Producto"; 
+unsigned char x[7]={20,0,8,8, 8, 8, 8};
+unsigned char y[7]={0 ,4,6,8,10,12,14};
+unsigned char *cursorx,*cursory;
+//word n;
+			cursorx=&vfd.menu.cursorx;
+			cursory=&vfd.menu.cursory;	
+		    VFDclrscr();
+			VFDposicion(x[0],y[0]); //  delay1us();
+		    VFDserial_SendBlock(&z[0],sizeof(z));//delay1us();
+			VFDposicion(x[1],y[1]);//   delay1us();
+		    VFDserial_SendBlock(&a[0],sizeof(a));//delay1us();
+			VFDposicion(x[2],y[2]);   //delay1us();
+		    VFDserial_SendBlock(&c[0],sizeof(c));//delay1us();
+			VFDposicion(x[3],y[3]); //  delay1us();
+			VFDserial_SendBlock(&w[0],sizeof(w));//delay1us();
+			VFDposicion(x[4],y[4]); //  delay1us();
+		    VFDserial_SendBlock(&v[0],sizeof(v));//delay1us();
+			VFDposicion(x[5],y[5]);  // delay1us();
+		    VFDserial_SendBlock(&b[0],sizeof(b));//delay1us();
+		    VFDposicion(x[6],y[6]);   //delay1us();
+		    VFDserial_SendBlock(&q[0],sizeof(q));//delay1us();
+		    //VFDposicion(x[7],y[7]);//posiCION del cursor despues de desplegar el menu  
+		    *cursorx=POSX0;*cursory=POSY4;
+		    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
+		    vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
+
+}//fin display menu del ajuste de producto------------------------------------------------------------------
+
+
+
+void DisplayMenuAjustedeSistema(void){//despliega el menu del AJUSTE DE SISTEMA-------------
+unsigned char z[]="Menu de Ajuste de Sistema   x";
+unsigned char a[]=">Menu Administrativo           ";
+unsigned char c[]=" Ajuste de vibracion           ";
+unsigned char w[]=" Configurar entradas de sistema";
+unsigned char v[]=" Control de frecuencia";
+unsigned char b[]=" ID de comunicaciones";
+unsigned char q[]=" Ingenieria Gracida"; 
+unsigned char x[7]={20,0,0,0,0, 0, 0};
+unsigned char y[7]={0 ,4,6,8,10,12,14};
+unsigned char *cursorx,*cursory;
+//word n;
+			  cursorx=&vfd.menu.cursorx;
+			  cursory=&vfd.menu.cursory;	
+  			  VFDclrscr();
+			  VFDposicion(x[0],y[0]); //  delay1us();
+		      VFDserial_SendBlock(&z[0],sizeof(z));//delay1us();
+		  	  VFDposicion(x[1],y[1]);   //delay1us();
+		      VFDserial_SendBlock(&a[0],sizeof(a));//delay1us();
+			  VFDposicion(x[2],y[2]);   //delay1us();
+		      VFDserial_SendBlock(&c[0],sizeof(c));//delay1us();
+			  VFDposicion(x[3],y[3]);   //delay1us();
+			  VFDserial_SendBlock(&w[0],sizeof(w));//delay1us();
+			  VFDposicion(x[4],y[4]);   //delay1us();
+		      VFDserial_SendBlock(&v[0],sizeof(v));//delay1us();
+			  VFDposicion(x[5],y[5]);  // delay1us();
+		      VFDserial_SendBlock(&b[0],sizeof(b));//delay1us();
+		      VFDposicion(x[6],y[6]);  // delay1us();
+		      VFDserial_SendBlock(&q[0],sizeof(q));//delay1us();
+		      //VFDposicion(x[7],y[7]);//posiCION del cursor despues de desplegar el menu  
+		      *cursorx=POSX0;*cursory=POSY4;
+			  //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
+			  vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
+}//fin display del menu de AJUSTE DE SISTEMA-----------------------------------------------------------------
+
+
+void DisplayMenuInformacionUsuario(void){
+unsigned char r[]=" x";
+unsigned char z[]=">Hacer pruebas de ruido";
+unsigned char a[]="Medidas de voltaje";
+unsigned char c[]="Ajustes de producto";
+unsigned char w[]="Tiempos de Rechazo";
+unsigned char v[]="Ajuste sistema de entradas";
+unsigned char b[]="ID de maquinas";//en revision--en desarrollo, debemmos leer el valor de la variable en 1 y0
+unsigned char q[]="Cuenta producto"; 
+unsigned char x[8]={POSXESQUINA,0,8,8,8, 8, 8, 8};
+unsigned char y[8]={          0,2,4,6,8,10,12,14};
+unsigned char *cursorx,*cursory;
+//word n;
+			    cursorx=&vfd.menu.cursorx;
+			    cursory=&vfd.menu.cursory;	
+			    VFDclrscr();
+				VFDposicion(x[0],y[0]);   //delay1us();
+				VFDserial_SendBlock(&r[0],sizeof(r));//delay1us();
+				VFDposicion(x[1],y[1]);   //delay1us();
+			    VFDserial_SendBlock(&z[0],sizeof(z));//delay1us();
+				VFDposicion(x[2],y[2]);  // delay1us();
+			    VFDserial_SendBlock(&a[0],sizeof(a));//delay1us();
+				VFDposicion(x[3],y[3]);   //delay1us();
+			    VFDserial_SendBlock(&c[0],sizeof(c));//delay1us();
+				VFDposicion(x[4],y[4]);   //delay1us();
+				VFDserial_SendBlock(&w[0],sizeof(w));//delay1us();
+				VFDposicion(x[5],y[5]);   //delay1us();
+			    VFDserial_SendBlock(&v[0],sizeof(v));//delay1us();
+				VFDposicion(x[6],y[6]);   //delay1us();
+			    VFDserial_SendBlock(&b[0],sizeof(b));//delay1us();
+			    VFDposicion(x[7],y[7]);   //delay1us();
+			    VFDserial_SendBlock(&q[0],sizeof(q));//delay1us();
+			    //VFDposicion(x[7],y[7]);//posiCION del cursor despues de desplegar el menu  
+			    *cursorx=POSX0;*cursory=POSY2;//POSICION DE LA FLECHA LA DEJAMOS EN 0,2
+			    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
+			    MenuInfoUser=&global;
+				MenuInfoUser->ResetDisplayNum=&global.igxc1;
+		        *(MenuInfoUser->ResetDisplayNum)=(unsigned char)0;		
+				vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
+}//fin Display Menu INFORMATION  usuarioo-------------------------------------------------------------
+
+
+
+//El ascii dela   Raiz Cuadrada es el decimal 251d.
+void displayTextoProcessor(void){//ascci  251=raiz cuadrada*********************************************
+                                 //ascci de x=120  X=88
+unsigned char i,*s,j;	
+unsigned char tx[]= {"Si  No"};//" x";	 
+unsigned char t0[]= "Nombre de Producto";
+unsigned char t1[]= "Escribir clave de acceso:";//Contrasena";
+unsigned char r1[]= "  1  2  3  4  5  6  7  8  9  0";//Y6
+unsigned char r2[]= "  Q  W  E  R  T  Y  U  I  O  P";        //Ñ=A4h
+unsigned char r3[]= "  A  S  D  F  G  H  J  K  L  ;";
+unsigned char r4[]= "  Z  X  C  V  B  N  M  .  ,   ";
+unsigned char r5[]= "  Ma Mi S           <  >  +  -";		
+unsigned char x[7]={ 205,0,0,0,0 , 0,  0};
+unsigned char y[7]={   0,0,6,8,10,12, 14};
+unsigned short int n,m;
+unsigned char *cursorx,*cursory;
+	
+	MenuTextProc=&global;//textProc=&g; 
+	cursorx=&vfd.menu.cursorx;
+	cursory=&vfd.menu.cursory; 	
+	VFDclrscr();	
+	VFDposicion(0,0);  
+	switch(vfd.menu.contexto.control){
+	  case NUEVO_PRODUCTO:VFDserial_SendBlock(&t0[0],sizeof(t0));
+	                      for(i=0;i<(NOMBRE_PRODUCTO_SIZE-1);i++)   
+	  	                               vfd.Text[i]=0;//limpiamos la var.de texto
+	  	                  MenuTextProc->igxc0=MAYUSCULAS; //->igxc0=;//iniciamos desplegando mayuculas
+	  	                  MenuTextProc->igxc1=0;//textProc->igxc1=0;//indice del arreglo del Texto. 
+	  	                  MenuTextProc->igxc4=0;//textProc->igxc4=0;//no ha habido escritura de ascii  
+		                  break;     
+	  case NOMBRE_PRODUCTO:VFDserial_SendBlock(&t0[0],sizeof(t0));
+	                       VFDposicion(0,POSY2);//Posicion del nombre
+	                       s=&producto2.name[1];
+	                       m=length(&producto2.name[0],sizeof(producto2.name));
+	                       VFDserial_SendBlock(s,m);//nombre de producto display
+	                       for(i=0,j=1;j<(NOMBRE_PRODUCTO_SIZE-1);i++,j++)//transferimos el nombre a la variable texto
+	                             vfd.Text[i]=producto2.name[j];
+	                       MenuTextProc->igxc0=MAYUSCULAS;
+	                       s=&vfd.Text[0];//puntamos al 0
+	                       MenuTextProc->igxc1=findLastChar(s,NOMBRE_PRODUCTO_SIZE-1);//encontramos el ultimo espacio del ultimo caracter 
+	                       MenuTextProc->igxc4=0;//no ha habido una escritura de ascii,puede escribir en el espacio
+	                       break;    
+	  case SUPERVISOR:    
+		                  VFDserial_SendBlock(&t1[0],sizeof(t1));
+	  	  	  	  	  	  for(i=0;i<(NOMBRE_PRODUCTO_SIZE-1);i++)   
+	  	  	                   vfd.Text[i]=0;//limpiam{os la var.de texto
+						  MenuTextProc->igxc0=MAYUSCULAS;//iniciamos desplegando mayuculas
+					      MenuTextProc->igxc1=0;//indice del arreglo del Texto. 
+				          MenuTextProc->igxc4=0;//no ha habido escritura de ascii  
+						  break;     
+	  default:  usleep(1);
+				errorCritico("Error de software TextProc");//Error de ingeniria de Software
+				exit(1);
+	          break;
+	}//fin switch	
+	VFDposicion(x[0],y[0]);  
+	VFDserial_SendBlock(&tx[0],sizeof(tx));//display the exit control
+	displayTextoProcessorMayusculas();//despliega la pantalla de  mayusculas
+	*cursorx=POSX_COL1;*cursory=POSY6;
+	VFDposicion(*cursorx,*cursory);
+	VFDserial_SendChar('>');
+	vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
+}//fin de hoja ejecutiva de despleigue del controlador de texto ************************************************
+
+
 
 
 
@@ -179,8 +527,9 @@ if((vfd.config.bits.MenuPendiente==0)&&
     (vfd.config.bits.Menu_Ready==1)){
 		if(vfd.menu.contexto.Actual==PORTAL_INICIO){
 		       VFDposicion(POS_X_SENS,POSY10);	
-			   VFDserial_SendBlock1(&a[0],sizeof(a)); 
-               VFDserial_Sendusint(sens,POS_X_SENS,POSY10,CENTER);
+			   VFDserial_SendBlock(&a[0],sizeof(a)); 
+               usleep(1000);//500mseg 
+			   VFDserial_Sendusint(sens,POS_X_SENS,POSY10,CENTER);
 			   VFDserial_SendPhase(phase,phasefrac,POS_X_PHASE,POSY10,RIGHT);//no mover el formato de RIGHT porque left y centrado dara "3  .5"  
 				 }}            
  
@@ -199,4 +548,50 @@ const unsigned char charpixel=8;
 		case 4:return(middle-(charpixel*2));break;
 		case 5:return(middle-(charpixel*3));break;
 		default: return(middle-((nchars/2)*charpixel));break;	}
-}//fin unsigned char display_centrarNombres(unsigned char nchars){------------------------------------
+}//fin unsigned char display_centrarNombres(unsigned char nchars)------------------------------------
+
+
+//MANEJADOR  PRINCIPAL DE EJECUCION DEL MENU++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+void menus(unsigned char key){//MANEJADOR DEL LAS FUNCIONES COORDINADAS Y SUBORDINADAS DE LOS MENUS
+          /* y tambien tiene entradas a SUB-MENUS EL MENUCONTROL SE ejecuta en el enter del case*/
+     vfd.keypad.enable=0;//desabilitar teclado
+     cursorMenuControl(key);  
+
+//fin de  void menu(unsigned char key)//MANEJADOR DEL LAS FUNCIONES COORDINADAS Y SUBORDINADAS DE LOS MENUS	   
+}// fin del Manejador principal de ejecucion del menu+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+//CONTROL DEL CURSOR EN CADA MENU, keyx, ES LA  TECLA QUE SE PRESIONO
+void cursorMenuControl(unsigned char keyx){//control del cursosr por cada menu
+ const short int xpos=235,xpos2=239;
+ struct ArbolMenu *p=0;  
+ 
+	  p=&MenuActualScreen;        		
+      cursorMenuControlService(keyx,p);
+
+}//FIN CURSOR MENU CONTROL-------------------------------------------------------------------------------
+
+unsigned char procSensxDigitoLF(unsigned char posx,unsigned char posy,unsigned short int *Sens){
+	 if(*Sens==1)
+		return FALSE;  
+	 else --(*Sens); 		 
+     BarraDet_displayUINT_var(posx,posy,Sens);//displayUINT_var(POSXCFNUM,POSY2,&Sensibilidad,NONE);	
+return TRUE;
+}//fin ---procSensxDigitoLF--------------------------------------------
+
+
+/* this method is filted to be executed w/o error of context failure, 'cos
+ * the filter it has been pass through, it control the execution concequence of every key */
+void cursorMenuControlService(unsigned char key,struct ArbolMenu *Pantalla){//(key,void (*a)())
+unsigned char i;
+   // keypad.b.enable=FALSE;
+	switch(key){case keyUP:Pantalla->funcKeyUP();break;
+		        case keyDN:Pantalla->funcKeyDN();break;
+		        case keyRT:Pantalla->funcKeyRT();break;
+		        case keyLF:Pantalla->funcKeyLF();break;
+		        case keyEN:Pantalla->funcKeyEN();break;
+				default:errorCritico("error de software en cursosr serivces");break;
+		         }//fin		           default:break;//fin default de segundo switch de PORTAL INICIO
+    //keypad.b.enable=TRUE;
+}//fin cursorMenuControlService------------------------------------------------------
+
