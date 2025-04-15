@@ -169,7 +169,7 @@ void crear_init() {
     mensPrompt("[CONFIG] Archivo creado.",CAQUA);
 }//fin crear_init-----------------------------------------------
 
-// Verifica si la sección [Seguridad] está presente
+// Verifica si la sección [Seguridad] está presente		
 int no_existe_Seguridad() {
     FILE *f = fopen(CONFIG_FILE, "r");
     if (!f) return 1;

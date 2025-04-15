@@ -17,7 +17,7 @@
   #include <wiringPi.h>
 #endif
 #include "serial.h"
-#include "Memoria.c"
+#include "Memoria.h"
 
 #define DEPURANDO_SIN_DISPLAY_ENCENDIDO 1//1=CIERTO 0=DISPLAY ESTA ENCENDIDO Y FUNCIONANDO
 

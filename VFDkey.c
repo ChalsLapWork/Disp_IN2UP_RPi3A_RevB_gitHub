@@ -616,7 +616,7 @@ unsigned char *cursorx,*cursory,Level;
 					    break;//fin CONTROL_PASSWORD
 				case SUPERVISOR:vfd.menu.contexto.control=0;
 				                if(validatePassword(&Level,&vfd.Text[0])){
-                                     cambio_contexto(vfd.menu.contexto.destino);
+                                     cambio_de_contexto(vfd.menu.contexto.destino);
 									 setNivelAcceso(Level);}//ejecuta el cambio de contexto
 				                break;
 				default:usleep(1);

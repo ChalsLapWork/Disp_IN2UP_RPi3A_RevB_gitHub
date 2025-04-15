@@ -154,11 +154,11 @@ unsigned char *getPasswords(unsigned char level);
 unsigned char validatePassword(unsigned char *Level,unsigned char *T);
 
 void* config_thread(void* arg);// Prototipo de función
-void init_vars();
-int no_existe_init();
-void crear_init();
-int no_existe_Seguridad();
-void crear_seccion_Seguridad();
+void init_vars(void);
+int no_existe_init(void);
+void crear_init(void);
+int no_existe_Seguridad(void);
+void crear_seccion_Seguridad(void);
 void leer_seguridad_a_struct(Seguridad *sec);
 void mensPrompt(const char* texto, const char* color);
 void log_mensaje(const char* tipo, const char* mensaje);
