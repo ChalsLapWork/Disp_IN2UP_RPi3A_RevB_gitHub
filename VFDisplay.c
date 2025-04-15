@@ -156,9 +156,9 @@ void setNivelAcceso(unsigned char level){
 /* Methodo sin sistema operativo
  *  Regresamos     Tamaño de memoria: 1 */	
 unsigned char find_contexto_Siguiente(void){
-unsigned char ret;     
-bool normal[256]={[0 ... 255]=false};
-bool passwd[256]={[0 ... 255]=false};
+unsigned char ret=0;     
+bool normal[256]     ={[0 ... 255]=false};//menu sin password ni especial
+bool passwd[256]	 ={[0 ... 255]=false};//menu que se necesita password
 normal[PORTAL_INICIO]=true;
 normal[MENU_INSIGHT]=true;
 normal[AJUSTE_DE_SISTEMA]=true;
@@ -170,22 +170,29 @@ passwd[AJUSTE_PARAMETRICO_DE_PRODUCTO]=true;
 
 if(!vfd.config.bits.init_Menu){
 	     vfd.menu.contexto.solicitaCambioA=PORTAL_INICIO;
-         ret=PORTAL_INICIO;}
+         return PORTAL_INICIO;}
 else{ 
    	  
    if(normal[vfd.menu.contexto.solicitaCambioA]){	  
 	  vfd.menu.contexto.push(vfd.menu.contexto.Actual);
-	  ret=vfd.menu.contexto.solicitaCambioA;}
+	  return vfd.menu.contexto.solicitaCambioA;}
    if(passwd[vfd.menu.contexto.solicitaCambioA]){
+	    if((vdf.menu.contexto.actual==TEXT_PROCESSOR)&&
+		    (vfd.menu.contexto.control==SUPERVISOR)){
+                 vfd.menu.contexto.solicitaCambioA=vfd.menu.contexto.destino;
+				 vfd.menu.contexto.destino=0;
+				 vfd.menu.contexto.control=0;
+				 vfd.menu.contexto.permisos=vfd.NIVEL_ACCESO;
+			     return vfd.menu.contexto.solicitaCambioA;}
+		else{
              vfd.menu.contexto.push(vfd.menu.contexto.Actual);//de donde venimos
 			 vfd.menu.contexto.destino=vfd.menu.contexto.solicitaCambioA;//a donde vamos
              vfd.menu.contexto.solicitaCambioA=TEXT_PROCESSOR;
-			 vfd.menu.contexto.permisos=SUPERVISOR;//contraseña
-			 ret=TEXT_PROCESSOR;
+			 //vfd.menu.contexto.permisos=SUPERVISOR;//contraseña
 			 vfd.menu.contexto.control=SUPERVISOR;//como contraseña
-          }
-
-     }//fin else							
+			 return TEXT_PROCESSOR;
+           }}//fin else menu que pide password-------------------------
+     }//fin else ya esta hecho el init							
 return ret;	 
 }//FIN FIND CONTEXTO siguiente++++++++++++++++++++++++++++++++++++++++++++++
 

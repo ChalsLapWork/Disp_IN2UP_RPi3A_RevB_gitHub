@@ -614,16 +614,18 @@ unsigned char *cursorx,*cursory,Level;
 	        	    		      VFDserial_SendBlock(&a[0],sizeof(a)); 
  		                          MenuTextProc->arg1=ERROR_PASS;}}//arg0 esta ocupado
 					    break;//fin CONTROL_PASSWORD
-				case SUPERVISOR:vfd.menu.contexto.control=0;
+				case SUPERVISOR://vfd.menu.contexto.control=0;<<-se necesita para cambiar de contexto
 				                if(validatePassword(&Level,&vfd.Text[0])){
                                      cambio_de_contexto(vfd.menu.contexto.destino);
 									 setNivelAcceso(Level);}//ejecuta el cambio de contexto
+								else{cambio_de_contexto(PORTAL_INICIO);
+								     setNivelAcceso(0);}	 
 				                break;
 				default:usleep(1);
 				  		mensOK("Error:TextoProcessorkeyEN ",32);
 				        break;}
             return;}//ACEPTAMOS NOMBRE;fin OK cursorx==POSX_TEXT_PROCS_OK---------
-       if(*cursorx==POSX_TEXT_PROCS_X){//NO ACEPTAMOS EL NOMBRE--------------------
+       if(*cursorx==POSX_TEXT_PROCS_X){//N	O ACEPTAMOS EL NOMBRE--------------------
 		   switch(vfd.menu.contexto.control){
 			    case NUEVO_PRODUCTO:   cambio_de_contexto(MENU_INSIGHT);
 			                           return;break;
@@ -757,7 +759,7 @@ unsigned char *cursorx,*cursory,Level;
 					VFDposicion((unsigned short)((MenuTextProc->igxc1)*8),POSY4);
 					VFDserial_SendChar(FX);}}
 		else{VFDposicion((unsigned char)((MenuTextProc->igxc1)*8),POSY2);//posicion del cursor del nombre
-			if((vfd.menu.contexto.final==CONTROL_PASSWORD)||(vfd.menu.contexto.permisos==SUPERVISOR)){
+			if((vfd.menu.contexto.final==CONTROL_PASSWORD)||(vfd.menu.contexto.control==SUPERVISOR)){
 					VFDserial_SendChar(vfd.Text[MenuTextProc->igxc1]);//VFDserial_SendChar('*');
 					VFDserial_SendChar_Asterisco((MenuTextProc->igxc1)*8);}
 				else	  
