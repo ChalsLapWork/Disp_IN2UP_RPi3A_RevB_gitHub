@@ -177,7 +177,7 @@ else{
 	  vfd.menu.contexto.push(vfd.menu.contexto.Actual);
 	  return vfd.menu.contexto.solicitaCambioA;}
    if(passwd[vfd.menu.contexto.solicitaCambioA]){
-	    if((vdf.menu.contexto.actual==TEXT_PROCESSOR)&&
+	    if((vfd.menu.contexto.actual==TEXT_PROCESSOR)&&
 		    (vfd.menu.contexto.control==SUPERVISOR)){
                  vfd.menu.contexto.solicitaCambioA=vfd.menu.contexto.destino;
 				 vfd.menu.contexto.destino=0;
