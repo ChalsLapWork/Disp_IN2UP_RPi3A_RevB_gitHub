@@ -58,16 +58,17 @@ static void* log_thread_func(void* arg) {
 
 // Función pública para registrar un mensaje con tipo
 void log_mensaje(const char* tipo, const char* mensaje) {
+char tipo2[15];	
     if (!tipo_valido(tipo)) {
-        fprintf(stderr, "Tipo de mensaje inválido: %s\n", tipo);
-        return;}
+		 strcpy(tipo2,"informacion");}
+	else{snprintf(tipo2,sizeof(tipo2),"%s",tipo);}// Copia exactamente lo necesario + asegura '\0'
     pthread_t hilo;
     LogData* data = malloc(sizeof(LogData));
     if (!data) {
         perror("malloc hilo log mensaje");
 		mensPrompt("Error de malloc al hacer el log ",CAMAR);
         return;}
-    strncpy(data->tipo, tipo, sizeof(data->tipo) - 1);
+    strncpy(data->tipo, tipo2, sizeof(data->tipo) - 1);
     data->tipo[sizeof(data->tipo) - 1] = '\0';
     strncpy(data->mensaje, mensaje, sizeof(data->mensaje) - 1);
     data->mensaje[sizeof(data->mensaje) - 1] = '\0';
@@ -129,8 +130,10 @@ return &s[0];
 void init_vars(void){
 pthread_t tid;
     if (pthread_create(&tid, NULL, config_thread, NULL) != 0) {
-        perror(" init_vars - pthread_create");
+        //perror(" init_vars - pthread_create");
+        log_mensaje("error","[Error] Creation thread system var to RAM");
         return;}
+	else{log_mensaje("informacion","[ OK ] Creation thread system var to RAM");}	
     pthread_detach(tid);// El hilo es autónomo, no esperamos que termine     
 }//fin init vars+++++++++++++++++++++++++++++++++++++++++++
 

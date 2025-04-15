@@ -39,6 +39,7 @@ int init_Serial(void){
   data.serial_fd = serialOpen("/dev/ttyAMA0", 9600);  // Cambia "/dev/ttyAMA0" y 9600 según tu configuración
   if (data.serial_fd == -1) {
         printf("%s Error al abrir el puerto serial.\n %s",CAMAR,CRESET);
+        log_mensaje("error","[Error] Openning Seria Port ");
         return 1;}
 // Inicializa el mutex
     pthread_mutex_init(&data.mutex, NULL);
@@ -46,10 +47,12 @@ int init_Serial(void){
 // Crea el hilo lector
     if (pthread_create(&reader_thread, NULL, serial_reader, &data) != 0) {
         printf("%s Error al crear el hilo lector.\n %s",CAMAR,CRESET);
+        log_mensaje("error","[Error] Openning thread serial reader  ");
         return 1;}
 // Crea el hilo procesador
     if (pthread_create(&processor_thread, NULL, cons_serial_processor, &data) != 0) {
         printf("%s Error al crear el hilo procesador.\n %s",CAMAR,CRESET);
+        log_mensaje("error","[Error] Openning threading cons serial procesador ");
         return 1;}
 return 1;
 }//fin de init serial++++++++++++++++++++++++++++++++++++++++++++++++

@@ -70,7 +70,7 @@ unsigned char debug;
 	vfd.menu.contexto.push=push_fifo_contexto;
 	vfd.menu.contexto.peek=peek_fifo_contexto;
     g_seguridad.seguridad_iniciada=0;
-
+    log_mensaje("informacion","[ OK ] System init_Queues ");
 }//fin init queue+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -397,8 +397,10 @@ unsigned char debug;
    pthread_mutex_init(&vfd.mutex.VDF_busy,NULL);//init recurso VFD
    vfd.menu.contexto.Actual=PORTAL_INICIO;
    if((debug=pthread_create(&SubProc_Run_Menu,NULL,Run_Menu,NULL))!=0)
-       errorCritico2("errorCreacion hilo",175);
-   else{pthread_detach(SubProc_Run_Menu);}//hilo independiente	   
+       //errorCritico2("errorCreacion hilo",175);
+        log_mensaje("error","[Error] Executing Run Menu ");
+   else{pthread_detach(SubProc_Run_Menu);
+        log_mensaje("informacion","[ OK ] Executing Run Menu ");}//hilo independiente	   
 }//fin del init Menu+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 void iniciar_Run_Menu(void){

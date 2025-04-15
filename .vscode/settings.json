@@ -19,6 +19,7 @@
         "stdatomic.h": "c",
         "vfdkey.h": "c",
         "vfdmenu.h": "c",
-        "config.h": "c"
+        "config.h": "c",
+        "serial.h": "c"
     }
 }
