@@ -144,11 +144,11 @@ void cambio_de_contexto(unsigned char contexto){
 void setNivelAcceso(unsigned char level){
 
   switch(level){
-     case 1:vfd.NIVEL_ACCESO=1;break;
-	 case 2:vfd.NIVEL_ACCESO=2;break;
-	 case 3:vfd.NIVEL_ACCESO=3;break;
-	 case 4:vfd.NIVEL_ACCESO=4;break;
-	 case 5:vfd.NIVEL_ACCESO=5;break;
+     case '1':vfd.NIVEL_ACCESO=1;break;
+	 case '2':vfd.NIVEL_ACCESO=2;break;
+	 case '3':vfd.NIVEL_ACCESO=3;break;
+	 case '4':vfd.NIVEL_ACCESO=4;break;
+	 case '5':vfd.NIVEL_ACCESO=5;break;
 	 default:vfd.NIVEL_ACCESO=1;break;}
 
 }//fin poner nivel de acceso++++++++++++++++++++++++++++

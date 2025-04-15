@@ -124,7 +124,7 @@ unsigned char *cursorx,*cursory;
 			   case 2: /* fall through */		//comentario para el compilador no quitar
 			   case 3: /* fall through */	   //NIVEL-3
 			   case 4:if(*cursory<POSY12){display_Mov_Cursor_Down();}break;
-			   case 5:display_Mov_Cursor_Down();break;}}}//fin switch -----------------------------
+			   case 5:display_Mov_Cursor_Down();break;}}}//fin switch ----------------------------
 return;}//f----------------------------------------------------------------------------------------
 void AjusteProductokeyEN(void){
 unsigned char *cursorx,*cursory,anterior;
