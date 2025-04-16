@@ -14,6 +14,7 @@
 #include "VFDisplay.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
 //extern struct _PRODUCTO1_ producto;
@@ -293,7 +294,7 @@ unsigned char nmenus;//menus disponibles
 				   return;}
 			cursorx=&vfd.menu.cursorx;
 			cursory=&vfd.menu.cursory;	
-            printf("DESPUES: var_ctl = %d, vfd.NIVEL_ACCESO = %d\n\033[0m", var_ctl, vfd.NIVEL_ACCESO);
+            printf("DESPUES:  vfd.NIVEL_ACCESO = %d\n\033[0m",  vfd.NIVEL_ACCESO);
             switch(vfd.NIVEL_ACCESO){
 			  case 1: nmenus=2;break;//mostrar solo las primeras 2 opciones
 			  case 2: case 3:case 4:nmenus=5;break;// mostrar hasta borrar prod
