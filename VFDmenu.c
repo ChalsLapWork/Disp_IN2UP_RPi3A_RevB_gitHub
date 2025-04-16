@@ -288,10 +288,12 @@ unsigned char y[7]={0 ,4,6,8,10,12,14};
 unsigned char *cursorx,*cursory;
 //unsigned char var_ctl;//variable control
 unsigned char nmenus;//menus disponibles
+            printf("\033[33m ANTES: vfd.NIVEL_ACCESO = %d\n", vfd.NIVEL_ACCESO);
             if(!validad_Nivel_Acceso(vfd.NIVEL_ACCESO)){
 				   return;}
 			cursorx=&vfd.menu.cursorx;
 			cursory=&vfd.menu.cursory;	
+            printf("DESPUES: var_ctl = %d, vfd.NIVEL_ACCESO = %d\n\033[0m", var_ctl, vfd.NIVEL_ACCESO);
             switch(vfd.NIVEL_ACCESO){
 			  case 1: nmenus=2;break;//mostrar solo las primeras 2 opciones
 			  case 2: case 3:case 4:nmenus=5;break;// mostrar hasta borrar prod

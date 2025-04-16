@@ -94,7 +94,7 @@ void *serial_reader(void *arg) {
                 data->sizedata=bytes_read;
                 pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
                 //printf("%s[LECTOR] Datos leídos:%s %s %s\n",CAZUL,CAMAR, temp_buffer,CRESET);  // Depuración
-               printf("%sDatos recibidos (hex):%s%i %s", CVERD,CAMAR,sizedata,CRESET);
+                //printf("%sDatos recibidos (hex):%s%i %s", CVERD,CAMAR,sizedata,CRESET);
                for (int i = 0; i < sizedata; i++) {
                     printf("%s%02X %s ", CROJO, temp_buffer[i], CRESET);}
                for (int i = 0; i < sizedata; i++) {
@@ -130,10 +130,10 @@ void *cons_serial_processor(void *arg) {
                  mens_Warnning_Debug(" error en consumidor serial");exit(1);}
             local_buffer[sizedata]='\0';//Asegura el caracter nulo al final
             pthread_mutex_unlock(&data->mutex);// Desbloquea el mutex
-            printf("%s[Consumdr] a procesar:%s %i %s %s %s",CAQUA,CAMAR,sizedata,CMORA, local_buffer,CAQUA);
+            /*printf("%s[Consumdr] a procesar:%s %i %s %s %s",CAQUA,CAMAR,sizedata,CMORA, local_buffer,CAQUA);
             for(int i=0;i<sizedata;i++){
                     printf("%02X  ",local_buffer[i]);}
-            printf("\n%s",CRESET);        
+            printf("\n%s",CRESET);*/        
             Procesamiento_de_cadena_serProc(&local_buffer[0],sizedata);}// Procesa los datos (en este caso, simplemente los imprime)
         else {
             pthread_mutex_unlock(&data->mutex);}// Desbloquea el mutex si no hay datos nuevos
@@ -202,13 +202,13 @@ unsigned char mens3[]={"COMANDO DESCONOCIDO "};
         case CMD_DET_ON:printf("%s %s %s",CVERD,mens,CRESET);break; //aumenta el conteo de Rechazo
         case CMD_BARRA://2+8+9+1 cuadritos
                        Serial_Command_Barra_Detection(*param); 
-                       printf("%s %s  %i %s:%i",CAMAR,mens,cmd,CRESET,*param);
+                       //printf("%s %s  %i %s:%i",CAMAR,mens,cmd,CRESET,*param);
                        break;  //mueve la barra de deteccion
         case CMD_SENS_PHASE:Serial_Command_Sens_Phase_Det(param);
-                            printf("%s %s  %i %s:%i",CAMAR,mens2,cmd,CRESET,*param);
+                            //printf("%s %s  %i %s:%i",CAMAR,mens2,cmd,CRESET,*param);
                             break;
         case CMD_TECLADO:Serial_Command_Teclado(*param);
-                         printf("%s %s  %i %s:%i",CAMAR,mens,cmd,CRESET,*param);
+                         //printf("%s %s  %i %s:%i",CAMAR,mens,cmd,CRESET,*param);
                          break; 
         case CMD_DET_PM:printf("%s %s %s",CMORA,mens,CRESET);break; //hace display de los parametros de Portal Inicio
         default:printf("%s %s %s",CAMAR,mens3,CRESET);break;
