@@ -608,10 +608,11 @@ unsigned char *cursorx,*cursory,Level;
 					    break;//fin CONTROL_PASSWORD
 				case SUPERVISOR://vfd.menu.contexto.control=0;<<-se necesita para cambiar de contexto
 				                if(validatePassword(&Level,&vfd.Text[0])){
+									 setNivelAcceso(Level);//debe esar antes de mandar llamar al menu
                                      cambio_de_contexto(vfd.menu.contexto.destino);
-									 setNivelAcceso(Level);}//ejecuta el cambio de contexto
-								else{cambio_de_contexto(PORTAL_INICIO);
-								     setNivelAcceso(0);}	 
+									 }//ejecuta el cambio de contexto
+								else{setNivelAcceso(0);
+									 cambio_de_contexto(PORTAL_INICIO);}	 
 				                break;
 				default:usleep(1);
 				  		mensOK("Error:TextoProcessorkeyEN ",32);
