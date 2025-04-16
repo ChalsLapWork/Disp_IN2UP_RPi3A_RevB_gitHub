@@ -286,15 +286,13 @@ unsigned char z[]="Menu de Ajuste de Producto  x";
 unsigned char x[7]={20,0,8,8, 8, 8, 8};
 unsigned char y[7]={0 ,4,6,8,10,12,14};
 unsigned char *cursorx,*cursory;
-unsigned char var_ctl;//variable control
+//unsigned char var_ctl;//variable control
 unsigned char nmenus;//menus disponibles
             if(!validad_Nivel_Acceso(vfd.NIVEL_ACCESO)){
 				   return;}
-            var_ctl=vfd.NIVEL_ACCESO;//variable control
-			//nmenus=3;//tres diferentes tipos de menus
 			cursorx=&vfd.menu.cursorx;
 			cursory=&vfd.menu.cursory;	
-            switch(var_ctl){
+            switch(vfd.NIVEL_ACCESO){
 			  case 1: nmenus=2;break;//mostrar solo las primeras 2 opciones
 			  case 2: case 3:case 4:nmenus=5;break;// mostrar hasta borrar prod
 			  case 5: nmenus=6;break;//Mostrar todos
