@@ -275,16 +275,16 @@ enum {
 		                  if(vfd.config.bits.BOX_enable){
                                box0=&vfd.box.box0;     
 		                       box1=&vfd.box.box;
-							   printf("\n 1:box0=%i  box1=%i\n",*box0,*box1);
+							   //printf("\n 1:box0=%i  box1=%i\n",*box0,*box1);
 							   *box1=*c;  //*box0=0;
-							   printf("\n 2:box0=%i  box1=%i\n",*box0,*box1);
+							   //printf("\n 2:box0=%i  box1=%i\n",*box0,*box1);
 							   for(int i=0;i<20;i++){
 							              a[i]=0;}
 							   a[0]=0x1F;a[1]=0x28;a[2]=0x64;a[3]=0x11;
 		                       estado++;}
 					      else{estado=CMD_ERR;}
 						  break;		  
-		   case CMD_BAR+1:printf("\n 3:box0=%i  box1=%i\n",*box0,*box1);
+		   case CMD_BAR+1://printf("\n 3:box0=%i  box1=%i\n",*box0,*box1);
 		                  if(*box0>MAX_BOXES)
 						                *box0=0;
 		                  if(*box0==*box1){

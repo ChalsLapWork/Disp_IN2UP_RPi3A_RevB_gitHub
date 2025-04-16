@@ -89,7 +89,7 @@ unsigned char VFDserial_SendBlock_buf(void *ptr, size_t size) {
     pthread_mutex_lock(&mutex_buffer);
     buffer_circular[in].len = size;
     memcpy(buffer_circular[in].data, ptr, size);
-    printf("\033[32m Hilo Principal: Datos agregados al buffer (len: %zu)\033[0m\n", size);
+    //printf("\033[32m Hilo Principal: Datos agregados al buffer (len: %zu)\033[0m\n", size);
     in = (in + 1) % NUM_ENTRADAS;
     pthread_mutex_unlock(&mutex_buffer);
     sem_post(&sem_llenos);//incrementa valor lugares llenos
@@ -116,7 +116,7 @@ int semaforo;
             case 6:memcpy(buffer2 + buffer2_len, buffer_circular[out].data, len);
                    buffer2_len+=len;
                    sem_post(&sem_vacios);//incrementa vacios,
-                   printf("Productor: Copió datos al buffer2 (len: %i, total en buffer2: %zu)\n", len, buffer2_len);
+                   //printf("Productor: Copió datos al buffer2 (len: %i, total en buffer2: %zu)\n", len, buffer2_len);
                    out = (out + 1) % NUM_ENTRADAS;
                    estado++;break;
             case 7:sem_getvalue(&sem_llenos,&semaforo);
@@ -145,7 +145,7 @@ void *VFDserial_SendBlockConsumidor(void *arg) {
             memcpy(buffer3, buffer2, len);
             buffer3_len = len;
             buffer2_len = 0;
-            printf("Consumidor: Transferencia de datos de buffer2 a buffer3 (len: %zu)\n", len);
+            //printf("Consumidor: Transferencia de datos de buffer2 a buffer3 (len: %zu)\n", len);
             pthread_mutex_unlock(&mutex_buffer2);
             // Llamar a VFDserial_SendBlock_Tx para procesar buffer3 completo
             VFDserial_SendBlock_Tx(buffer3, buffer3_len); } 
@@ -186,7 +186,8 @@ unsigned char *array_crc,index=0,new_len;
     while (i < len) {
         switch (estado) {
             case 0://printf("Estado 0: Buscando STX...\n");// Buscar STX
-                   if(*str==STX){printf("Encontrado STX en la posición %zu\n", i);estado++;}  // Avanzamos al siguiente estad
+                   if(*str==STX){//printf("Encontrado STX en la posición %zu\n", i);
+                                 estado++;}  // Avanzamos al siguiente estad
                    str++;i++;break;
             case 1://printf("Estado 1: Leyendo el byte de longitud (LEN)...\n");  // Leer el byte de longitud (LEN)
                    //if (*str+3>=len-i){// Verificamos que haya suficiente espacio

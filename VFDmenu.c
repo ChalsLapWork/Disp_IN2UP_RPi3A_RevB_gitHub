@@ -163,8 +163,9 @@ union W16{
       NoErrorOK();			  
       VFDclrscr();
 	  delay_ms_VFD(500);
-      VFDposicion(65,0);
+      VFDposicion(65,0);delay_ms_VFD(200);
       VFDserial_SendBlock(&s[0],sizeof(s));//version
+      delay_ms_VFD(300);//aveces se borra 
 	  aux3_char=producto2.name[1];
 	  aux1_usi=length(&producto2.name[0],sizeof(producto2.name));  	 
       aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);
