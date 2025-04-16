@@ -5,6 +5,9 @@
 #define MEMOCONFIG_H_
 
 
+#include <sqlite3.h>
+
+
 
 #define  MULTI_100_286_875    'M'//0x70U//DEFINE EL TIPO DE MAQUINA MULTI(100,286,875)
 #define  MULTI_30_100_26      'm'//0x71U
@@ -147,6 +150,15 @@ typedef struct {
     char level5[SIZE_PASSWORD];
     unsigned char seguridad_iniciada;
 } Seguridad;
+
+typedef enum {
+    TYPE_INT,
+    TYPE_UCHAR,
+    TYPE_STRING,
+    TYPE_FLOAT
+} ItemType;
+
+
 extern Seguridad g_seguridad;
 unsigned short int getAddPassword(unsigned char level);
 void setPasswords(unsigned char level,unsigned char *p);
@@ -162,5 +174,21 @@ void crear_seccion_Seguridad(void);
 void leer_seguridad_a_struct(Seguridad *sec);
 void mensPrompt(const char* texto, const char* color);
 void log_mensaje(const char* tipo, const char* mensaje);
+
+
+int conectar_db(const char *filename);
+void cerrar_db();
+int crear_db_si_no_existe();
+int agregarProducto(const char *nombre);
+int quitarProducto(int productoID);
+int editarProducto(int productoID, const char *nuevoNombre);
+int agregarItemTipo(int productoID, const char *nombre, const char *tipoStr, const void *valor);
+int borrarItem(int productoID, const char *nombre);
+int getItemProducto(int productoID, const char *nombre, ItemType *tipo, void *resultado);
+int escribirItemProducto(int productoID, const char *nombre, ItemType tipo, const void *valor);
+
+
+
+
 
 #endif /* MEMOCONFIG_H_ ***************************************************************************/

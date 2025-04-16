@@ -62,6 +62,7 @@ int main(void){
   init_queues();
   usleep(500);
   init_vars();
+  init_Product();//sin hilos.
   init_menu();
 
   /*int swap=0;

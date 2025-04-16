@@ -248,31 +248,35 @@ unsigned char *cursorx,*cursory;
 //word n;
 		cursorx=&vfd.menu.cursorx;
 		cursory=&vfd.menu.cursory;
-		VFDclrscr();
-		VFDposicion(x[0],y[0]);  
-		VFDserial_SendBlock(&a[0],sizeof(a));
-		VFDposicion(x[4],y[4]);   
-	    VFDserial_SendBlock(&e[0],sizeof(e));
-		VFDposicion(x[5],y[5]); 
-	    VFDserial_SendBlock(&f[0],sizeof(f));
-		VFDposicion(x[6],y[6]);   
-	    VFDserial_SendBlock(&h[0],sizeof(h));
-	    VFDposicion(x[7],y[7]);   
-	    VFDserial_SendBlock(&i[0],sizeof(i));
-	    VFDposicion(x[8],y[8]);
-	    VFDserial_SendBlock(&j[0],sizeof(j));
-	    displayUINT_var(POSXAJUSPROD,POSY6,&producto2.Sensibilidad,NONE);
-	    displayPhase_var(POSXAJUSPROD,POSY8);
-	   // displayFaseVar();
-	    displayCuadroMadre_VFD();//despliega el cuadro de barra de deteccion
-	    vfd.box.box0=0;//se inicia la barra en 0s. sino empieza ala mitad
-	    *cursorx=POSX0;*cursory=POSY6; 
-	    //isEnable_Keypad(WAIT);//Desabilita el teclado uno milisegundos.
-		AjParamProd=&global;
-		AjParamProd->editarSensFase=&AjParamProd->igxc1;
-        (*AjParamProd->editarSensFase)=(unsigned char)0; //variable que indica si se esta editando el numero sensibildad y Fase
-		AjParamProd->arg2=0;////se borraran los contadores
-         vfd.config.bits.Menu_Ready=1;
+        if(!validad_Nivel_Acceso(vfd.NIVEL_ACCESO)){
+				   return;}
+        if(vfd.NIVEL_ACCESO<2){
+			 vfd.config.bits.Menu_Ready=1;
+             cambio_de_contexto(PORTAL_INICIO);}
+		else{	   
+			VFDclrscr();
+			VFDposicion(x[0],y[0]);  
+			VFDserial_SendBlock(&a[0],sizeof(a));
+			VFDposicion(x[4],y[4]);   
+			VFDserial_SendBlock(&e[0],sizeof(e));
+			VFDposicion(x[5],y[5]); 
+			VFDserial_SendBlock(&f[0],sizeof(f));
+			VFDposicion(x[6],y[6]);   
+			VFDserial_SendBlock(&h[0],sizeof(h));
+			VFDposicion(x[7],y[7]);   
+			VFDserial_SendBlock(&i[0],sizeof(i));
+			VFDposicion(x[8],y[8]);
+			VFDserial_SendBlock(&j[0],sizeof(j));
+			displayUINT_var(POSXAJUSPROD,POSY6,&producto2.Sensibilidad,NONE);
+			displayPhase_var(POSXAJUSPROD,POSY8);
+			displayCuadroMadre_VFD();//despliega el cuadro de barra de deteccion
+			display_init_barra_deteccion();
+			*cursorx=POSX0;*cursory=POSY6; 
+			AjParamProd=&global;
+			AjParamProd->editarSensFase=&AjParamProd->igxc1;
+			(*AjParamProd->editarSensFase)=(unsigned char)0; //variable que indica si se esta editando el numero sensibildad y Fase
+			AjParamProd->arg2=0;////se borraran los contadores
+			vfd.config.bits.Menu_Ready=1;}
 }//fin display ingenieria2 gracida---------------------------------------------------
 
 
@@ -290,12 +294,12 @@ unsigned char y[7]={0 ,4,6,8,10,12,14};
 unsigned char *cursorx,*cursory;
 //unsigned char var_ctl;//variable control
 unsigned char nmenus;//menus disponibles
-            printf("\033[33m ANTES: vfd.NIVEL_ACCESO = %d\n", vfd.NIVEL_ACCESO);
+            //printf("\033[33m ANTES: vfd.NIVEL_ACCESO = %d\n", vfd.NIVEL_ACCESO);
             if(!validad_Nivel_Acceso(vfd.NIVEL_ACCESO)){
 				   return;}
 			cursorx=&vfd.menu.cursorx;
 			cursory=&vfd.menu.cursory;	
-            printf("DESPUES:  vfd.NIVEL_ACCESO = %d\n\033[0m",  vfd.NIVEL_ACCESO);
+            //printf("DESPUES:  vfd.NIVEL_ACCESO = %d\n\033[0m",  vfd.NIVEL_ACCESO);
             switch(vfd.NIVEL_ACCESO){
 			  case 1: nmenus=2;break;//mostrar solo las primeras 2 opciones
 			  case 2: case 3:case 4:nmenus=5;break;// mostrar hasta borrar prod

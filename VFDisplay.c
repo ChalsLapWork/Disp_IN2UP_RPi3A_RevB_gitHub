@@ -946,3 +946,15 @@ unsigned char getColTextProc(unsigned char dir){
 		default: return 0; break;																							               
 	}//fin switch	
 }//fin de get columna a onde vamos--------------------------------
+
+void display_init_barra_deteccion(void){
+       vfd.menu.CuadroMadreReady=TRUE;
+	   vfd.box.box0=0;//se inicia desde el primer cuadro a graficar. 
+	   vfd.box.box=0;//se inicializa la barra de deteccion.
+	   vfd.box.timer=0;
+	   for(int i=0;i<SIZE_BOXES;i++)
+	         vfd.box.boxs[i]=0;//init boxees variables 
+       vfd.config.bits.BOX_enable=TRUE;//se autoriza a dibujar cajas
+	   
+
+}//fin de display init barra deteccion+++++++++++++++++

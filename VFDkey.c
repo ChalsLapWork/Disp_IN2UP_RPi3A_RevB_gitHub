@@ -611,7 +611,7 @@ unsigned char *cursorx,*cursory,Level;
 									 setNivelAcceso(Level);//debe esar antes de mandar llamar al menu
                                      cambio_de_contexto(vfd.menu.contexto.destino);
 									 }//ejecuta el cambio de contexto
-								else{setNivelAcceso(0);
+								else{setNivelAcceso(0);//antes de mandar llamar al menu
 									 cambio_de_contexto(PORTAL_INICIO);}	 
 				                break;
 				default:usleep(1);

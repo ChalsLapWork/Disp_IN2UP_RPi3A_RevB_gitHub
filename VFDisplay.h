@@ -157,4 +157,7 @@ unsigned char getColTextProc(unsigned char dir);
 void setNivelAcceso(unsigned char level);
 unsigned char validad_Nivel_Acceso(unsigned char level);
 void display_Mov_Cursor_Down(void);
+void display_init_barra_deteccion(void);
+
+
 #endif /* VFDISPLAY_H_ */
