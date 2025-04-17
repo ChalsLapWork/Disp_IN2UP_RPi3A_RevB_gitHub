@@ -957,4 +957,4 @@ void display_init_barra_deteccion(void){
        vfd.config.bits.BOX_enable=TRUE;//se autoriza a dibujar cajas
 	   
 
-}//fin de display init barra deteccion+++++++++++++++++
+}//fin de display init barra deteccion++++++++++++++++
