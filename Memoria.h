@@ -189,7 +189,7 @@ int getItemProducto(int productoID, const char *nombre, ItemType *tipo, void *re
 int escribirItemProducto(int productoID, const char *nombre, ItemType tipo, const void *valor);
 int getIdProductoPorNombre(const char *nombre);
 void init_menu(void);
-
+void init_Product(void);
 
 
 
