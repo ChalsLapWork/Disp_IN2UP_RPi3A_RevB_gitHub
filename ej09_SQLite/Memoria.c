@@ -55,7 +55,7 @@ int crear_db_si_no_existe() {
         unsigned char uc = 1;
         float f = 2.5;
         int i = 1234;
-        char nombre[20] = "Producto A";
+        char nombre[20] = "Test Set-up";
 
         agregarItemTipo(id, "name", "string", nombre);
         agregarItemTipo(id, "GananciaDrive", "uchar", &uc);

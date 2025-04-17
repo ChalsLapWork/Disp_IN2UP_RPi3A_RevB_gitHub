@@ -126,6 +126,7 @@
 //no mas alla del contexto
 
 #define CONFIG_FILE "systema.ini"
+#define PROD_FILE "productos.db"
 #define SIZE_PASSWORD 20 //size max of password 
 
 // Definición de colores (códigos ANSI)
@@ -186,7 +187,7 @@ int agregarItemTipo(int productoID, const char *nombre, const char *tipoStr, con
 int borrarItem(int productoID, const char *nombre);
 int getItemProducto(int productoID, const char *nombre, ItemType *tipo, void *resultado);
 int escribirItemProducto(int productoID, const char *nombre, ItemType tipo, const void *valor);
-
+int getIdProductoPorNombre(const char *nombre);
 
 
 
