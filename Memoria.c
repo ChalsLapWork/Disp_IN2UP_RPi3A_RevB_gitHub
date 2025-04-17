@@ -294,10 +294,12 @@ void init_Product(void){
 	  mens_Warnning_Debug("Error al crear tablas db prodcutos");
 	  return;}
       
-  int id=getIdProductoPorNombre("Test Set-up");	  
-  n=getItemProducto(id, "Sensibilidad", "int", &sens);
-  n+=getItemProducto(id, "phase", "uchar", &phase);
-  n+=getItemProducto(id, "phasefrac", "uchar", &phasefrac);
+  int id=getIdProductoPorNombre("Test Set-up");	
+  ItemType tipo  = TYPE_INT;  
+  ItemType tipo2 = TYPE_UCHAR;  
+  n=getItemProducto(id, "Sensibilidad", &tipo, &sens);
+  n+=getItemProducto(id, "phase", &tipo2, &phase);
+  n+=getItemProducto(id, "phasefrac",  &tipo2, &phasefrac);
   if(n==3){ producto2.Sensibilidad=(unsigned short int)sens;
             producto2.phase=phase;
 			producto2.Phasefrac=phasefrac;}

@@ -11,7 +11,7 @@ SRC_UP = #$(wildcard ../*.c)
 INCLUDE = #-I../
 
 # Bibliotecas
-LIBS = -lwiringPi
+LIBS = -lwiringPi -lsqlite3
 
 # Opciones del compilador
 CFLAGS = -g -Wall -Wextra -O0 -Wno-unused-parameter -Wno-maybe-uninitialized -Wno-unused-variable -Wno-uninitialized -Wno-unused-but-set-variable -Wno-unused-function  -v
