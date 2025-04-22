@@ -910,49 +910,9 @@ unsigned char i=0,j=0,k=0;             //indice va de 0 a 19=PRODUCT_SIZE..blabl
       return i;     
 }//fin insertamos un espacio y recorremos los char uno a la derecha para Text de text Processor
 
-//* Logitud de la cadena si es numero o letra def1*/
-unsigned short int length(void *c,unsigned char size){
-unsigned short int count=0;                            
-unsigned char i=1,estado=0;
-
-  for(i=0;i<size;i++)
-    switch(estado){
-	   case 0:if(*c!=NAME_INIT) //primer char es ame init?
-		          insertChar(c,size,0,NAME_INIT); 
-	          estado++;
-	          break;
-	   case 1:if(*(c+1)==0)
-		         return 0;
-	          if(isNumLetter(*(c+1)))
-	        	   estado++;
-	          else{ *(c+1)=0;return 0;}
-	          break;
-	   case 2:if(isNumLetter(*(c+i)))
-		            break;
-	          else return ((unsigned short)(i-1));
-              break;
-	   default:break;}       
-return size;  
-}//ends the char chain lenght assess .---------------------------------------------------------------
 
    
 
-
-
-unsigned short int length2(unsigned char *c){
-unsigned short int count=0;
-	unsigned char i=1;
-		 if(*c==NAME_INIT){
-			 for(i=1;i<NOMBRE_PRODUCTO_SIZE;i++){
-			   if(isNumLetter(*(c+i)))
-			       count++;
-			   else return count;} }
-		 else //este es un error de software o memoria
-			 return 0;//debug aqui se necesita el manejo de errores  
-		 if(count==(NOMBRE_PRODUCTO_SIZE-1))
-			 return count;
-return 0;		
-}//ends the lenght assess for a pointer to string
 
 /*return true if a it is a number from 0 to 9*/
 unsigned char isNum(char a){

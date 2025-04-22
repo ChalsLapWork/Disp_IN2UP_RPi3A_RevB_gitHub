@@ -978,7 +978,6 @@ void DisplayNuevoProducto(void (*func)(void));
 void DisplayPasteProduct(void);
 unsigned char display_centrarNombres(unsigned char nchars);
 unsigned char length3(unsigned char *c);
-unsigned char length3(unsigned char *c);
 unsigned long int menu_delay(unsigned char op);
 void displayNameProd(unsigned char *p,unsigned char posy);
 void cleanBufferText(unsigned char *p);
