@@ -170,7 +170,6 @@ union W16{
 	  aux1_usi=length(&producto2.name[0],sizeof(producto2.name));  	 
       aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);
       (Status_Prod == MEMO) ? VFDposicion(aux0_uchar, 2) : VFDposicion(x[0], y[0]);
-
 	   VFDserial_SendBlock(&a[0],sizeof(a)); 
 	   VFDposicion(x[1],y[1]);
 	   VFDserial_SendBlock(&b[0],sizeof(b));
@@ -189,8 +188,7 @@ union W16{
 	   //init_Sensibilidad();
 	   //usleep(100);//espera que se envien los datos del menu al VFD
 		vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
-	   vfd.box.enable=1;
-       
+       vfd.config.bits.BOX_enable=TRUE;//SE AUTORIZA COntruir cajas
 }// FIN DESPLIEGUE DEL PORTAL INICIO-------------------------------------------------------------------
 
 
@@ -222,10 +220,8 @@ unsigned char y[7]={0 ,4,6,8,10,12,4};
 	  VFDposicion(x[6],y[6]);
 	  vfd.menu.cursorx=POSX0;
 	  vfd.menu.cursory=POSY4;
-	  vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
-	  //keypad.b.enable=1;//Habilitado el teclado	
-	  vfd.box.enable=0;//disable pintar cajas barra detector
-	  vfd.config.bits.BOX_enable=TRUE;//se autoriza a dibujar cajas
+	  vfd.config.bits.Menu_Ready=1;//se ejecuto este menu
+	  vfd.config.bits.BOX_enable=FALSE;//No se autoriza a dibujar cajas
 
 }//fin display menu inicio display----------------------------------------------------------------------------
 
@@ -503,7 +499,7 @@ const unsigned char POS_X_CONT_PROD=185;
 const unsigned char POS_Y_CONT_RECHAZ=POSY12;
 const unsigned char POS_Y_CONT_PROD=POSY14;
 static unsigned char detection0,Rechazo0,producto0;//estado anterior de la deteccion
-
+unsigned char n=0;
 
 if((deteccion>50)&&(detection0<50))
       producto2.Cuenta_Rechazos++;
@@ -512,11 +508,12 @@ if((detection0<25)&&(deteccion>30))
 
 if((vfd.config.bits.MenuPendiente==0)&&
     (vfd.config.bits.Menu_Ready==1)){
-		if(vfd.menu.contexto.Actual==PORTAL_INICIO){
-			if(Rechazo0!=producto2.Cuenta_Rechazos)
-				VFDserial_Sendusint(producto2.Cuenta_Rechazos,POS_X_CONT_RECHAZ,POS_Y_CONT_RECHAZ,CENTER);
-			if(producto0!=producto2.Cuenta_Productos)		  
-				VFDserial_Sendusint(producto2.Cuenta_Productos,POS_X_CONT_PROD,POS_Y_CONT_PROD,CENTER);}}
+		if(vfd.menu.contexto.Actual==PORTAL_INICIO){n=0;
+			if(Rechazo0!=producto2.Cuenta_Rechazos){n++;
+				VFDserial_Sendusint(producto2.Cuenta_Rechazos,POS_X_CONT_RECHAZ,POS_Y_CONT_RECHAZ,CENTER);}
+			if(producto0!=producto2.Cuenta_Productos){n++;		  
+				VFDserial_Sendusint(producto2.Cuenta_Productos,POS_X_CONT_PROD,POS_Y_CONT_PROD,CENTER);}
+			if(n>0){actualizador_datos1();}}}
 
   detection0=deteccion;//se guarda estado anterior		  
   Rechazo0=producto2.Cuenta_Rechazos;
