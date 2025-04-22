@@ -724,9 +724,9 @@ void cargar_estado_Contadores(void) {
             break;}
         if (en_seccion_producto) {
             if (strncmp(linea, "cuenta_Rechazos=", 16) == 0) {
-                cuenta_Rechazos = atoi(strchr(linea, '"') + 1);
+                producto2.Cuenta_Rechazos = atoi(strchr(linea, '"') + 1);
             } else if (strncmp(linea, "cuenta_Producto=", 16) == 0) {
-                cuenta_Producto = atoi(strchr(linea, '"') + 1);}}}
+                producto2.Cuenta_Productos = atoi(strchr(linea, '"') + 1);}}}
   fclose(archivo);
 }//fin de vargar las variables de cont rechazo y cont producto+++++++++++++++++++++++++++++
 

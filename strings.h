@@ -50,9 +50,9 @@ void operacion_ASCII_Phase2(unsigned char digito,unsigned char op,unsigned char 
 void getASCII_from_Fase(unsigned char *p,unsigned char fase,unsigned char frac);
 void setASCII_to_Fase(unsigned char *p,unsigned char *fase,unsigned char *frac);
 unsigned short int sizeof1(unsigned char *p,unsigned short int size);
-void vaciar_A2B(unsigned char *a,unsigned char *b,unsigned char i,unsigned char f);
+void vaciar_A2B(void *aa,void *bb,unsigned char i,unsigned char f);
 void cleanArray(unsigned char *arr,unsigned short int size,unsigned char k);
-void swapArrays(unsigned char *a,unsigned char *b,unsigned char size);
+void swapArrays(void *a,void *b,unsigned char size);
 void cleanArrayName(unsigned char *a,unsigned char size,unsigned char k,unsigned char m);
 void insertChar(unsigned char *s,unsigned char size,unsigned char index,unsigned char c);
 void getCharFromFloat(unsigned char *p,float f);
@@ -72,4 +72,6 @@ unsigned char Formato_ULInt(unsigned char i,unsigned char *p);
 unsigned char getCharsFromUINT_var1(unsigned char *p,unsigned short int var,unsigned char *v);
 void clearFormato(unsigned char *a);
 char getAscii(unsigned char x,unsigned char y,unsigned char pantalla);
+void cleanArrayName2(char *a,unsigned char size,unsigned char k,unsigned char m);
+
 #endif

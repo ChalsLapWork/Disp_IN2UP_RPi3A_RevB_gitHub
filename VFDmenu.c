@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <VFDthread.h>
+#include "VFDthread.h"
 
 struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
 //extern struct _PRODUCTO1_ producto;

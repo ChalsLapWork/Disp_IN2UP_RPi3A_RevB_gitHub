@@ -1024,7 +1024,7 @@ unsigned char ret2;
     	       break;
     	case 6:ret=TRUE;break;
     	case 9:ret2=5;//no ha habido nada que recorrer porque e.g. var="54321"
-    		   vaciar_A2B(orig,dest,0,size-1);
+    		   vaciar_A2B((void *)orig,(void *)dest,0,size-1);
     	       ret=TRUE;
     	       break;
     	default:estado=1;ret=0;break;}	
@@ -1097,8 +1097,10 @@ return m;
 /*  vaciar cadena A -> B con los indices indicados
  * inidice inicial i, indice final f
  *  final cuenta desde indice 0 al ultimo indice deseado y es todo serial sizeof(a)-1*/
-void vaciar_A2B(unsigned char *a,unsigned char *b,unsigned char i,unsigned char f){
+void vaciar_A2B(void *aa,void *bb,unsigned char i,unsigned char f){
 unsigned char ii;	
+unsigned char *a=(unsigned char *)aa;
+unsigned char *b=(unsigned char *)bb;
 	if(i>f)
 		return;
 	if(f==0)
@@ -1120,13 +1122,17 @@ unsigned short int i;
 
 /* pasamos lo de una array al otro array y lode otro array al primer array
  *  a: array 1, b: array2, size: tamaño de los arrays*/
-void swapArrays(unsigned char *a,unsigned char *b,unsigned char size){
+void swapArrays(void *a,void *b,unsigned char size){
 unsigned char i,k;	
+unsigned char *a1 = (unsigned char *)a;
+unsigned char *b1 = (unsigned char *)b;
 	for(i=0;i<size;i++){
-	   k=*(a+i);
-	   *(a+i)=*(b+i);
-	   *(b+i)=k;}
+	   k=*(a1+i);
+	   *(a1+i)=*(b1+i);
+	   *(b1+i)=k;}
 }//fin swapArrays-----------------------------------------------------------------
+
+
 
 
 //convierte los char del array en ASCII--------------------------
@@ -1155,6 +1161,21 @@ unsigned char i,estado=0;;
     	  case 1:*(a+i)=m;break;
     	  default:i=0;estado=0;break;}}
 }//fin de cleanArrayName------------------------------------------------------------------
+
+/* Limpia un array que tiene chars despues de donde termina la cadena
+ * si detecta un k apartir de alli todos seran M*/
+void cleanArrayName2(char *a,unsigned char size,unsigned char k,unsigned char m){
+unsigned char i,estado=0;;
+    for(i=0;i<size;i++){
+      switch(estado){
+    	  case 0:if(*(a+i)==k)
+    		        estado++;
+    		     break;   
+    	  case 1:*(a+i)=m;break;
+    	  default:i=0;estado=0;break;}}
+}//fin de cleanArrayName------------------------------------------------------------------
+
+
 
 /* insertar el char en el indice indicado en index, 
  * pero se recorre todo los char a la izquierda */

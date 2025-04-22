@@ -558,24 +558,24 @@ unsigned char *cursorx,*cursory,Level;
 						for(k=MenuTextProc->igxc0;k>0;k--)//insertamos el NAME_INIT
 							vfd.Text[k]=vfd.Text[k-1];
 						vfd.Text[0]=NAME_INIT;//insertar la clave de correcto
-                        vaciar_A2B(&vfd.Text[0],&producto2.name[0],0,sizeof(vfd.Text)-1);
+                        vaciar_A2B((void *)&vfd.Text[0],(void *)&producto2.name[0],0,sizeof(vfd.Text)-1);
 						cambio_de_contexto(AJUSTE_DE_PRODUCTO_MODE); //pasamos al siguiente screen AJUSTE DE PRODUCTO MODE
 						return;
 						break;//fin nuevo producto
 				case NOMBRE_PRODUCTO:
 					 switch(vfd.menu.contexto.peek(1,&v)){
-					   case NUEVO_PRODUCTO:swapArrays(&producto2.name[0],&vfd.Text[0],NOMBRE_PRODUCTO_SIZE);//el nuevo nombre a name y el viejo nombre a text para guardarlo en caso de error o cambio de par
+					   case NUEVO_PRODUCTO:swapArrays((void *)&producto2.name[0],(void *)&vfd.Text[0],NOMBRE_PRODUCTO_SIZE);//el nuevo nombre a name y el viejo nombre a text para guardarlo en caso de error o cambio de par
 						                   cambio_de_contexto(AJUSTES_AVANZADOS);
 					                       break;
 					   case AJUSTE_DE_PRODUCTO:if(vfd.menu.contexto.Modificado==NOMBRE_PRODUCTO){
-													swapArrays(&producto2.name[0],&vfd.Text[0],NOMBRE_PRODUCTO_SIZE);//el nuevo nombre a name y el viejo nombre a text para guardarlo en caso de error o cambio de parecer
+													swapArrays((void *)&producto2.name[0],(void *)&vfd.Text[0],NOMBRE_PRODUCTO_SIZE);//el nuevo nombre a name y el viejo nombre a text para guardarlo en caso de error o cambio de parecer
 													cleanArrayName(&producto2.name[0],sizeof(producto2.name),0,0);
 													cleanArrayName(&vfd.Text[0],sizeof(vfd.Text),0,0);
 													cambio_de_contexto(AJUSTES_AVANZADOS);}
 											   break;
 					   case AJUSTE_PARAMETRICO_DE_PRODUCTO://venimos de ajuste parametrico de producto y de ajustes avanzados
-											   swapArrays(&producto2.name[0],&vfd.Text[0],NOMBRE_PRODUCTO_SIZE);//el nuevo nombre a name y el viejo nombre a text para guardarlo en caso de error o cambio de parecer
-											   cleanArrayName(&producto2.name[0],sizeof(producto2.name),0,0);
+											   swapArrays((void *)&producto2.name[0],(void *)&vfd.Text[0],NOMBRE_PRODUCTO_SIZE);//el nuevo nombre a name y el viejo nombre a text para guardarlo en caso de error o cambio de parecer
+											   cleanArrayName2(&producto2.name[0],sizeof(producto2.name),0,0);
 											   cleanArrayName(&vfd.Text[0],sizeof(vfd.Text),0,0);
 											   cambio_de_contexto(AJUSTES_AVANZADOS);
 											   break;

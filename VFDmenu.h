@@ -455,7 +455,7 @@ Undefined : "contextoActual" Referenced from "AnguloVibracionProcesadorCentral" 
 //#define ERROR_LISTA                           0x2B//2D 2E 2F 30 31 32 33 34 35 36 37 38 39 3A 3B 3C 3D 3E 3F 40 41 42 43 44 45
 //#define STATUS_FACTORY_SIZE                   2 
 #define STATUS_FACTORY     	                  0x46//46 47
-#define NOMBRE_PRODUCTO_SIZE                  20
+//#define NOMBRE_PRODUCTO_SIZE                  20
 //#define NOMBRE_PRODUCTO                       0x48//48 49 4A 4B 4C 4D 4E 4F 50 51 52 53 54 55 56 57 58 59 5A 5B
 
 
