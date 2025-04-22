@@ -166,10 +166,8 @@ union W16{
       VFDposicion(65,0);
 	  delay_ms_VFD(500);
       VFDserial_SendBlock(&s[0],sizeof(s));//version
-      delay_ms_VFD(500);//aveces se borra 
-	  aux3_char=producto2.name[1];
-	  aux1_usi=length((void *)&producto2.name[0],sizeof(producto2.name));  	 
-      aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);
+      delay_ms_VFD(500);//aveces se borra   	 
+      aux0_uchar = display_centrarNombres((unsigned char)strlen(producto2.name));
       (Status_Prod == MEMO) ? VFDposicion(aux0_uchar, 2) : VFDposicion(x[0], y[0]);
 	   VFDserial_SendBlock((const void *)producto2.name, (unsigned char)strlen(producto2.name));  // VFDserial_SendBlock(&a[0],sizeof(a));//NOMBRE PRODUCTO 
 	   VFDposicion(x[1],y[1]);
