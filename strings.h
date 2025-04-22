@@ -1,7 +1,7 @@
 #ifndef _STRINGS_H_
   #define _STRINGS_H_
 
-unsigned short int length(unsigned char *c,unsigned char size);
+unsigned short int length(void *c,unsigned char size);
 void insertChar(unsigned char *s,unsigned char size,unsigned char index,unsigned char c);
 unsigned char isNumLetter(char a);
 void getCharsFromUINT_var(unsigned char *p,unsigned short int var);
@@ -53,7 +53,7 @@ unsigned short int sizeof1(unsigned char *p,unsigned short int size);
 void vaciar_A2B(void *aa,void *bb,unsigned char i,unsigned char f);
 void cleanArray(unsigned char *arr,unsigned short int size,unsigned char k);
 void swapArrays(void *a,void *b,unsigned char size);
-void cleanArrayName(unsigned char *a,unsigned char size,unsigned char k,unsigned char m);
+void cleanArrayName(void *a,unsigned char size,unsigned char k,unsigned char m);
 void insertChar(unsigned char *s,unsigned char size,unsigned char index,unsigned char c);
 void getCharFromFloat(unsigned char *p,float f);
 void getASCIIFromFloat(unsigned char *p,float f);
@@ -72,6 +72,5 @@ unsigned char Formato_ULInt(unsigned char i,unsigned char *p);
 unsigned char getCharsFromUINT_var1(unsigned char *p,unsigned short int var,unsigned char *v);
 void clearFormato(unsigned char *a);
 char getAscii(unsigned char x,unsigned char y,unsigned char pantalla);
-void cleanArrayName2(char *a,unsigned char size,unsigned char k,unsigned char m);
 
 #endif

@@ -168,10 +168,10 @@ union W16{
       VFDserial_SendBlock(&s[0],sizeof(s));//version
       delay_ms_VFD(500);//aveces se borra 
 	  aux3_char=producto2.name[1];
-	  aux1_usi=length(&producto2.name[0],sizeof(producto2.name));  	 
+	  aux1_usi=length((void *)&producto2.name[0],sizeof(producto2.name));  	 
       aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);
       (Status_Prod == MEMO) ? VFDposicion(aux0_uchar, 2) : VFDposicion(x[0], y[0]);
-	   VFDserial_SendBlock((const void *)producto2.nombre, (unsigned char)strlen(producto2.nombre));  // VFDserial_SendBlock(&a[0],sizeof(a));//NOMBRE PRODUCTO 
+	   VFDserial_SendBlock((const void *)producto2.name, (unsigned char)strlen(producto2.name));  // VFDserial_SendBlock(&a[0],sizeof(a));//NOMBRE PRODUCTO 
 	   VFDposicion(x[1],y[1]);
 	   VFDserial_SendBlock(&b[0],sizeof(b));
        VFDposicion(x[2],y[2]);
@@ -426,9 +426,7 @@ unsigned char *cursorx,*cursory;
 		                  break;     
 	  case NOMBRE_PRODUCTO:VFDserial_SendBlock(&t0[0],sizeof(t0));
 	                       VFDposicion(0,POSY2);//Posicion del nombre
-	                       s=&producto2.name[1];
-	                       m=length(&producto2.name[0],sizeof(producto2.name));
-	                       VFDserial_SendBlock(s,m);//nombre de producto display
+	                       VFDserial_SendBlock((void *)&producto2.name[0],sizeof(producto2.name));//nombre de producto display
 	                       for(i=0,j=1;j<(NOMBRE_PRODUCTO_SIZE-1);i++,j++)//transferimos el nombre a la variable texto
 	                             vfd.Text[i]=producto2.name[j];
 	                       MenuTextProc->igxc0=MAYUSCULAS;

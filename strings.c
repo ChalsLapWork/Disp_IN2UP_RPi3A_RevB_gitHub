@@ -911,7 +911,7 @@ unsigned char i=0,j=0,k=0;             //indice va de 0 a 19=PRODUCT_SIZE..blabl
 }//fin insertamos un espacio y recorremos los char uno a la derecha para Text de text Processor
 
 //* Logitud de la cadena si es numero o letra def1*/
-unsigned short int length(unsigned char *c,unsigned char size){
+unsigned short int length(void *c,unsigned char size){
 unsigned short int count=0;                            
 unsigned char i=1,estado=0;
 
@@ -936,6 +936,8 @@ return size;
 }//ends the char chain lenght assess .---------------------------------------------------------------
 
    
+
+
 
 unsigned short int length2(unsigned char *c){
 unsigned short int count=0;
@@ -1151,21 +1153,9 @@ return 0;
 
 /* Limpia un array que tiene chars despues de donde termina la cadena
  * si detecta un k apartir de alli todos seran M*/
-void cleanArrayName(unsigned char *a,unsigned char size,unsigned char k,unsigned char m){
-unsigned char i,estado=0;;
-    for(i=0;i<size;i++){
-      switch(estado){
-    	  case 0:if(*(a+i)==k)
-    		        estado++;
-    		     break;   
-    	  case 1:*(a+i)=m;break;
-    	  default:i=0;estado=0;break;}}
-}//fin de cleanArrayName------------------------------------------------------------------
-
-/* Limpia un array que tiene chars despues de donde termina la cadena
- * si detecta un k apartir de alli todos seran M*/
-void cleanArrayName2(char *a,unsigned char size,unsigned char k,unsigned char m){
-unsigned char i,estado=0;;
+void cleanArrayName(void *aa,unsigned char size,unsigned char k,unsigned char m){
+unsigned char i,estado=0;
+unsigned char *a=(unsigned char *)aa;
     for(i=0;i<size;i++){
       switch(estado){
     	  case 0:if(*(a+i)==k)
