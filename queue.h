@@ -47,7 +47,7 @@
 #define SIZE_MAX_SENDBLOCK 20 //TAMAÑO maximo de envio en bloque de la funcion
 #define FIFOc_SIZE 10 //fifo de contexto
 
-#define NOMBRE_PRODUCTO_SIZE  20
+#define NOMBRE_PRODUCTO_SIZE  30
 #define NAME_INIT             0xE8 //DETERMINA QUE LA cadena de nombre del producto es un producto con nombre real y no solo basura
 
 
@@ -320,9 +320,9 @@ struct _PRODUCT1_{
    unsigned char phase;//phase del producto, numero entero
    float fase;//fase del producto numero flotante
    unsigned char Phasefrac;// faccion del numero de fase.
-   unsigned char name[NOMBRE_PRODUCTO_SIZE]; 
+    char name[NOMBRE_PRODUCTO_SIZE]; 
    unsigned short int Altura;   
-
+   int id;//es el id del producto en la base de datos
 };
 
 
@@ -348,7 +348,7 @@ struct _DISPLAY_VFD_{
 		 unsigned char box0;
 		 unsigned char box; 
 		 unsigned short int timer;//se activa  por timer y resetea el array
-	     unsigned char enable;//display cajas o lo que sea
+	     //unsigned char enable;deprecated //display cajas o lo que sea
 	   }box;
 	
 	struct _Vars_{

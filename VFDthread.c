@@ -11,7 +11,7 @@
 #include "queue.h"
 #include <stdint.h>
 #include "VFDmenu.h"
-
+#include "Memoria.h"
 
 
 #ifndef debug_level1
@@ -45,6 +45,11 @@ sem_t sem_llenos, sem_vacios;
 pthread_mutex_t mutex_buffer2 = PTHREAD_MUTEX_INITIALIZER;
 
 pthread_t hilo_productor, hilo_consumidor;
+
+pthread_mutex_t lock_Actualizar = PTHREAD_MUTEX_INITIALIZER;//// Mutex para proteger variables compartidas
+volatile int reiniciar_temporizador = 0;//// Variables compartidas
+volatile int temporizador_activo = 0;
+pthread_t temporizador_thread;
 
 
 /*  init los threads de manera mas facil   * */
@@ -263,5 +268,35 @@ pthread_t hilo_Asterisco;
 }//fin VFDserial_SendChar_Asterisco--------------------------------------------
 
 
+//se actualizan datos que son cuenta de producto y cuanta de rechazos
+void actualizador_datos1(void){ 
+    pthread_mutex_lock(&lock_Actualizar);
+    if (!temporizador_activo) {temporizador_activo = 1;
+        reiniciar_temporizador = 0; // Por si quedó activado
+        pthread_create(&temporizador_thread, NULL, temporizador_func, NULL);
+        pthread_detach(temporizador_thread);} // No nos interesa esperar que termine
+    //else {reiniciar_temporizador = 1;}//
+    pthread_mutex_unlock(&lock_Actualizar);
+}//fin actualizar datos1+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//Se crea hilo para poder escribir cuenta prod y rechazsos
+void* temporizador_func(void *arg) {
+    int segundos = 300; // 5 minutos
+    for (int i = 0; i < segundos; i++) {
+        sleep(1);
+        pthread_mutex_lock(&lock_Actualizar);
+        if (reiniciar_temporizador) {
+            reiniciar_temporizador = 0;
+            pthread_mutex_unlock(&lock_Actualizar);
+            temporizador_activo = 0;  // Permitir lanzar uno nuevo
+            return NULL;  }// Cancelar este hilo, se iniciará otro nuevo
+        pthread_mutex_unlock(&lock_Actualizar);}
+    pthread_mutex_lock(&lock_Actualizar);
+    guardar_estado_Contadores();
+    sleep(3);//que espere 3 segundos. antes que se vuelva a guardar +5seg
+    temporizador_activo = 0;  // Marcamos que ya se puede iniciar otro hilo
+    pthread_mutex_unlock(&lock_Actualizar);
+return NULL;
+}//fin actualizar datos++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 

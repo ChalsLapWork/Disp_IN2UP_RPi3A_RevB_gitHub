@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <VFDthread.h>
 
 struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
 //extern struct _PRODUCTO1_ producto;
@@ -170,7 +171,7 @@ union W16{
 	  aux1_usi=length(&producto2.name[0],sizeof(producto2.name));  	 
       aux0_uchar=display_centrarNombres((unsigned char)aux1_usi);
       (Status_Prod == MEMO) ? VFDposicion(aux0_uchar, 2) : VFDposicion(x[0], y[0]);
-	   VFDserial_SendBlock(&a[0],sizeof(a)); 
+	   VFDserial_SendBlock((const void *)producto2.nombre, (unsigned char)strlen(producto2.nombre));  // VFDserial_SendBlock(&a[0],sizeof(a));//NOMBRE PRODUCTO 
 	   VFDposicion(x[1],y[1]);
 	   VFDserial_SendBlock(&b[0],sizeof(b));
        VFDposicion(x[2],y[2]);
@@ -272,6 +273,7 @@ unsigned char *cursorx,*cursory;
 			AjParamProd->editarSensFase=&AjParamProd->igxc1;
 			(*AjParamProd->editarSensFase)=(unsigned char)0; //variable que indica si se esta editando el numero sensibildad y Fase
 			AjParamProd->arg2=0;////se borraran los contadores
+			vfd.config.bits.BOX_enable=TRUE;// se autoriza a dibujar cajas
 			vfd.config.bits.Menu_Ready=1;}
 }//fin display ingenieria2 gracida---------------------------------------------------
 

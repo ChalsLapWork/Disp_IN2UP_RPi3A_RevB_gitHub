@@ -16,3 +16,5 @@ void activar_Teclado(void);
 void* resetKeypadEnable(void* arg);
 void* imprimir_char_con_delay(void* arg);
 void VFDserial_SendChar_Asterisco(unsigned char cursorx);
+void* temporizador_func(void *arg);
+void actualizador_datos1(void);

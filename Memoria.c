@@ -14,13 +14,16 @@
 #include <sqlite3.h>
 
 
+
+
+
+
 #define NUM_DE_PASSWORD 5 //caNTIDAD DE password que manejamos 
 #define AGREGAR_UCHAR(id, nombre, num) { unsigned char tmp = (num); agregarItemTipo((id), (nombre), "uchar", &tmp); }
 #define AGREGAR_INT(id, nombre, num) \
     do { int tmp = (num); agregarItemTipo((id), (nombre), "int", &tmp); } while(0)
 #define AGREGAR_FLOAT(id, nombre, num) \
     do { float tmp = (num); agregarItemTipo((id), (nombre), "float", &tmp); } while(0)
-
 
 
 typedef struct {// Estructura interna para pasar datos al hilo
@@ -31,6 +34,8 @@ typedef struct {// Estructura interna para pasar datos al hilo
 Seguridad g_seguridad = {0};  // Inicializada vacía
 sqlite3 *db = NULL;
 extern struct _PRODUCT1_ producto2;
+
+
 
 // Verifica si el tipo de mensaje es uno válido
 static int tipo_valido(const char* tipo) {
@@ -294,7 +299,11 @@ void init_Product(void){
 	  mens_Warnning_Debug("Error al crear tablas db prodcutos");
 	  return;}
       
-  int id=getIdProductoPorNombre("Test Set-up");	
+  //int id=getIdProductoPorNombre("Test Set-up");	
+  int id=get_id_From_ConfigFile();
+  if(cargar_Nombre_Producto(id)==-1)//se baja el nombre char del prod  file->vars
+    log_mensaje("error","Error al leer name product init");
+  producto2.id=id;
   ItemType tipo  = TYPE_INT;  
   ItemType tipo2 = TYPE_UCHAR;  
   n=getItemProducto(id, "Sensibilidad", &tipo, &sens);
@@ -657,3 +666,128 @@ const char *sql = "SELECT id FROM productos WHERE nombre = ?";
     sqlite3_finalize(stmt);
 return id;
 }//get  id del nombre del producto++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+void guardar_estado_Contadores(void){
+    FILE *f_original = fopen(CONFIG_FILE, "r");
+    FILE *f_temp = fopen("temp.ini", "w");
+
+    if (!f_original || !f_temp) {
+        printf("Error al abrir archivo\n");
+        log_mensaje("error","error al guardar contadores");
+        if (f_original) fclose(f_original);
+        if (f_temp) fclose(f_temp);
+        return;}
+
+    char linea[256];
+    int en_producto = 0;
+
+    while (fgets(linea, sizeof(linea), f_original)) {
+        if (strncmp(linea, "[Producto]", 10) == 0) {
+            en_producto = 1;
+            fputs(linea, f_temp);
+            continue;}
+
+        if (en_producto && linea[0] == '[' && linea[1] != '\0') {
+            en_producto = 0;}  // Salimos de la sección
+
+        if (en_producto && strncmp(linea, "cuenta_Rechazos=", 16) == 0) {
+            fprintf(f_temp, "cuenta_Rechazos=\"%d\"\n", producto2.Cuenta_Productos);}
+        else if (en_producto && strncmp(linea, "cuenta_Producto=", 16) == 0) {
+            fprintf(f_temp, "cuenta_Producto=\"%d\"\n", producto2.Cuenta_Rechazos);}
+        else {fputs(linea, f_temp);}  // Línea sin cambios
+    }//fin while-------------------------------------------------------------
+    fclose(f_original);
+    fclose(f_temp);
+    remove(CONFIG_FILE);// Reemplazar original
+    rename("temp.ini", CONFIG_FILE);
+}//fin de guardar estados de contadores---------------------------------------------
+
+
+//cargar al inicio del sistema las variables de
+//contar producto y rechazos.
+void cargar_estado_Contadores(void) {
+    FILE *archivo = fopen(CONFIG_FILE, "r");
+    if (!archivo) {
+        perror("No se pudo abrir el archivo de configuración");
+        
+        return;}
+    char linea[256];
+    int en_seccion_producto = 0;
+    while (fgets(linea, sizeof(linea), archivo)) {
+        linea[strcspn(linea, "\r\n")] = '\0';// Elimina salto de línea
+        if (strncmp(linea, "[Producto]", 10) == 0) {// Busca la sección [Producto]
+            en_seccion_producto = 1;
+            continue;}
+        if (en_seccion_producto && linea[0] == '[') {// Si encontramos otra sección, salimos
+            break;}
+        if (en_seccion_producto) {
+            if (strncmp(linea, "cuenta_Rechazos=", 16) == 0) {
+                cuenta_Rechazos = atoi(strchr(linea, '"') + 1);
+            } else if (strncmp(linea, "cuenta_Producto=", 16) == 0) {
+                cuenta_Producto = atoi(strchr(linea, '"') + 1);}}}
+  fclose(archivo);
+}//fin de vargar las variables de cont rechazo y cont producto+++++++++++++++++++++++++++++
+
+
+/* obtiene el numero del producto seleccionado que estuvo operando para 
+con ese numero sacar los datos del producto de la base de datos*/
+int get_id_From_ConfigFile(void) {
+    FILE *archivo = fopen(CONFIG_FILE, "r");
+    if (!archivo) {
+        perror("No se pudo abrir el archivo de configuración");
+        return 1;}//regresa, osea test Setup
+    char linea[256];
+    int en_seccion_producto = 0;
+    while (fgets(linea, sizeof(linea), archivo)) {
+        linea[strcspn(linea, "\r\n")] = '\0'; // Elimina salto de línea
+        if (strncmp(linea, "[Producto]", 10) == 0) {
+            en_seccion_producto = 1;
+            continue;}
+        if (en_seccion_producto && linea[0] == '[') {
+            break;} // Ya no estamos en sección Producto
+        if (en_seccion_producto && strncmp(linea, "Producto_id=", 12) == 0) {
+            char *comillas = strchr(linea, '"');
+            if (comillas) {
+                int id = atoi(comillas + 1);
+                fclose(archivo);
+                return id;}}}
+    fclose(archivo);
+return 1; // No se encontró Producto_id,asi que sera test-setup
+}//leer el producto del archivo de sysstema.ini++++++++++++++++++++++++++++++++++++++++++
+
+
+
+int cargar_Nombre_Producto(int id) {
+sqlite3 *db;
+sqlite3_stmt *stmt;
+int rc;
+const char *sql = "SELECT nombre FROM Productos WHERE id = ?";
+
+    rc = sqlite3_open(PROD_FILE, &db);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "No se pudo abrir la base de datos: %s\n", sqlite3_errmsg(db));
+        return -1;}
+
+    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "Error al preparar consulta: %s\n", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return -1;}
+
+    sqlite3_bind_int(stmt, 1, id);// Bind del ID del producto
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        const unsigned char *nombre = sqlite3_column_text(stmt, 0);
+        strncpy(producto2.name, (const char *)nombre, sizeof(producto2.name) - 1);
+        producto2.name[sizeof(producto2.name) - 1] = '\0';} // Asegura null-termination
+    else {
+        fprintf(stderr, "No se encontró el producto con ID %d\n", id);
+        sqlite3_finalize(stmt);
+        sqlite3_close(db);
+        return -1;}
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+    return 0;
+}//fin de cargar nombre de producto en la var name global+++++++++++++++

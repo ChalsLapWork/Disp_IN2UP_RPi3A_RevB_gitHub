@@ -71,6 +71,7 @@ unsigned char debug;
 	vfd.menu.contexto.peek=peek_fifo_contexto;
     g_seguridad.seguridad_iniciada=0;
     log_mensaje("informacion","[ OK ] System init_Queues ");
+	cargar_estado_Contadores();//var contar prod y rechazo from file
 }//fin init queue+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -225,9 +226,8 @@ enum {
 	       case CMD_BXF:
 		   case CMD_LIN:					  
            case CMD_BOX:  vfd.config.bits.recurso_VFD_Ocupado=TRUE;
-		                  if((vfd.box.enable==0)||
-						      (vfd.config.bits.BOX_enable==0))
-						       {estado=CMD_OK;break;}
+		                  if(!vfd.config.bits.BOX_enable)
+						              {estado=CMD_OK;break;}
 		                  writePort(0x1F);  usleep(50);
 						  writePort(0x28);  usleep(50);
 						  writePort(0x64);  usleep(50);
@@ -271,8 +271,7 @@ enum {
 						  if(*c==1) writePort(0x01); 
 						  else{writePort(0x00);}usleep(50);
 						  estado=CMD_OK;break;
-		   case CMD_BAR:  if(vfd.box.enable==0){estado=CMD_ERR;break;}
-		                  if(vfd.config.bits.BOX_enable){
+		   case CMD_BAR:  if(vfd.config.bits.BOX_enable){
                                box0=&vfd.box.box0;     
 		                       box1=&vfd.box.box;
 							   //printf("\n 1:box0=%i  box1=%i\n",*box0,*box1);
@@ -424,8 +423,7 @@ enum{NORMAL1=30,INIT_M=1,TERMINAR1=90};
 	  case INIT_M+1:if(vfd.config.bits.recurso_VFD_Ocupado==0)
 	                         estado3++;
 					break;		   
-	  case INIT_M+2:vfd.box.enable=0;
-					vfd.config.bits.BOX_enable=0;
+	  case INIT_M+2:vfd.config.bits.BOX_enable=0;
 	                vfd.config.bits.Menu_Ready=0;
 	                estado3++;
 					break;

@@ -190,7 +190,8 @@ int escribirItemProducto(int productoID, const char *nombre, ItemType tipo, cons
 int getIdProductoPorNombre(const char *nombre);
 void init_menu(void);
 void init_Product(void);
-
-
-
+void guardar_estado_Contadores(void);
+void cargar_estado_Contadores(void);
+int get_id_From_ConfigFile(void);
+int cargar_Nombre_Producto(int id);
 #endif /* MEMOCONFIG_H_ ***************************************************************************/
