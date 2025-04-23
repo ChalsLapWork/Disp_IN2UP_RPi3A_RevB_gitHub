@@ -169,7 +169,7 @@ union W16{
       delay_ms_VFD(500);//aveces se borra   	 
       aux0_uchar = display_centrarNombres((unsigned char)strlen(producto2.name));
       (Status_Prod == MEMO) ? VFDposicion(aux0_uchar, 2) : VFDposicion(x[0], y[0]);
-	   VFDserial_SendBlock((const void *)producto2.name, (unsigned char)strlen(producto2.name));  // VFDserial_SendBlock(&a[0],sizeof(a));//NOMBRE PRODUCTO 
+	   VFDserial_SendBlock((const void *)producto2.name, (unsigned char)strlen(producto2.name)+1);  // VFDserial_SendBlock(&a[0],sizeof(a));//NOMBRE PRODUCTO 
 	   VFDposicion(x[1],y[1]);
 	   VFDserial_SendBlock(&b[0],sizeof(b));
        VFDposicion(x[2],y[2]);
@@ -262,6 +262,9 @@ unsigned char *cursorx,*cursory;
 			VFDserial_SendBlock(&i[0],sizeof(i));
 			VFDposicion(x[8],y[8]);
 			VFDserial_SendBlock(&j[0],sizeof(j));
+	        unsigned char pos= display_centrarNombres((unsigned char)strlen(producto2.name));
+            VFDposicion(pos, POSY0);
+			VFDserial_SendBlock((const void *)producto2.name, (unsigned char)strlen(producto2.name)+1);   
 			displayUINT_var(POSXAJUSPROD,POSY6,&producto2.Sensibilidad,NONE);
 			displayPhase_var(POSXAJUSPROD,POSY8);
 			displayCuadroMadre_VFD();//despliega el cuadro de barra de deteccion
@@ -484,6 +487,7 @@ unsigned char *cursorx,*cursory;
 void display_Barra_Deteccion(unsigned char barra){
  bool validos[256]={[0 ... 255]=false};//se ponen todos los valores en falso
  validos[PORTAL_INICIO]=true; //poner aqui los menus que contienen la barra de deteccion    
+ validos[AJUSTE_PARAMETRICO_DE_PRODUCTO]=true; //poner aqui los menus que contienen la barra de deteccion     
     if(vfd.menu.contexto.solicitaCambioA>0) return; //hay un cambio de menu
 	if(validos[vfd.menu.contexto.Actual]){
 		     VFDserial_SendBarraDet(barra);}     

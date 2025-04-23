@@ -203,7 +203,8 @@ void AjusteParamProdkeyRT(void){
 unsigned char *cursorx,*cursory;
 unsigned char 	phasefrac,phase;
 	cursorx=&vfd.menu.cursorx;
-	cursory=&vfd.menu.cursory;	
+	cursory=&vfd.menu.cursory;
+  if((*AjParamProd->editarSensFase)==0){//solo sino se esta editando				
 	if(*cursory==POSY6){
 		procSensxDigitoRT(POSXAJUSPROD,POSY6,&producto2.Sensibilidad);
 	    configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
@@ -217,7 +218,7 @@ unsigned char 	phasefrac,phase;
 				phasefrac=0;}}
 		display_pushFIFOcOP_Phase_var(POSXAJUSPROD,POSY8);
 		configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
-		return;}
+		return;}}
 }//FIN AjusteParamProdkeyRT ---------------------------------------------------------------
 void AjusteParamProdkeyLF(void){
 unsigned char *cursorx,*cursory;
@@ -225,9 +226,10 @@ unsigned char 	phasefrac,phase;
 
 	cursorx=&vfd.menu.cursorx;
 	cursory=&vfd.menu.cursory;	
-	if(*cursory==POSY6){	
-	   procSensxDigitoLF(POSXAJUSPROD,POSY6,&producto2.Sensibilidad);
-	   configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);}
+  if((*AjParamProd->editarSensFase)==0){//solo sino se esta editando			
+	if(*cursory==POSY6){
+			procSensxDigitoLF(POSXAJUSPROD,POSY6,&producto2.Sensibilidad);
+	   		configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);return;}
     if(*cursory==POSY8){
 		   phase=getCharsFromFloat(&phasefrac,producto2.fase);
 		   if(phasefrac!=0)
@@ -239,7 +241,7 @@ unsigned char 	phasefrac,phase;
 		   display_pushFIFOcOP_Phase_var(POSXAJUSPROD,POSY8);//fin contextobuffer 0
 		   configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
 	       producto2.fase=get_Float_from_Phase(phase,phasefrac);   
-		   return;}
+		   return;}}
 }//FIN  AjusteParamProdkeyLF----------------------------------------------------------------
 void AjusteParamProdkeyEN(void){
 //unsigned char a[5],*p;
