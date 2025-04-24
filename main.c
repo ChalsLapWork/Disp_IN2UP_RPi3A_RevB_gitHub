@@ -63,6 +63,7 @@ int main(void){
   usleep(500);
   init_vars();
   init_Product();//sin hilos.
+  init_system();
   init_menu();
 
   /*int swap=0;

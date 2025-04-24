@@ -341,6 +341,7 @@ struct _DISPLAY_VFD_{
     struct _Deteccion_ deteccion;
 	unsigned char Text[NOMBRE_PRODUCTO_SIZE];//texto que regresa  del procesador de textos
     unsigned char NIVEL_ACCESO;//nivel de accesso
+    char tipo_de_Maquina[SIZE_TIPO_MAQ];
 
 	//size_t pthread_attr_t attr_mon,attr_free,atrr_Tx;//atributos  
  	struct _box_control{

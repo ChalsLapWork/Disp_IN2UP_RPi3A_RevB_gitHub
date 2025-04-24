@@ -136,6 +136,7 @@
 
 #define SIZE_EEPROM 2000
 
+#define SIZE_TIPO_MAQ 18 //size tipo maq, longitud nombre de array
 
 #define GIRO_DE_PLANO_CARTESIANO    0x6B
 #define GIRO_DE_COORDENADAS_POLARES 0x5A

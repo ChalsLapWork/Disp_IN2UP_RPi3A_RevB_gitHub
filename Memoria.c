@@ -389,6 +389,45 @@ int crear_db_si_no_existe(void) {
 return 1;
 }//crear_db_si_no_existe+++++++++++++++++++++++++++++++++++++++++++++
 
+
+
+/*
+;Set Machine type:Multi(100,286,875),Multi(30,100,286)
+;Single(875,286),Single(100,30),VF(875,286),
+;VF(100,30),PHARMACEUTICAL
+*/
+void init_system(void){
+FILE *file = fopen(CONFIG_FILE, "r");//TIPO DE MAQUINA
+    if (!file) {
+        perror("No se pudo abrir systema.ini");
+        log_mensaje("error","Error File config file system vars");
+        return;}
+char line[128];
+int en_seccion_system = 0;
+
+    while (fgets(line, sizeof(line), file)) {
+        if (line[0] == ';' || line[0] == '\n') 
+                   continue;// Ignorar comentarios o líneas vacías
+        if (line[0] == '[') {// Detectar sección
+            en_seccion_system = (strncmp(line, "[system]", 8) == 0);
+            continue;}
+        // Buscar la clave si estamos en la sección [system]
+        if (en_seccion_system && strstr(line, "tipo_de_maquina") != NULL) {
+            char *valor = strchr(line, '=');
+            if (valor) {
+                valor++; // Avanza al valor
+                while (*valor == ' ' || *valor == '\"') valor++; // salta espacios y comillas iniciales
+                char *fin = valor;
+                while (*fin && *fin != '\"' && *fin != ';' && *fin != '\n') fin++;
+                *fin = '\0'; // corta el string al final del valor válido
+                strncpy(vfd.tipo_de_maquina, valor, sizeof(vfd.tipo_de_maquina) - 1);
+                vfd.tipo_de_maquina[sizeof(vfd.tipo_de_maquina) - 1] = '\0'; // seguridad
+                break;
+            }}}
+fclose(file);//fin sacar tipo de maquina----------------------
+}//fin de init system------------------++++++++++++++++++++++++++++++++++
+
+
 int agregarProducto(const char *nombre) {
     sqlite3_stmt *stmt;
     const char *sql = "INSERT INTO productos(nombre) VALUES(?);";

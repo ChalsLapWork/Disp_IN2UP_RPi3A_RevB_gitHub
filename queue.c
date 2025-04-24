@@ -436,6 +436,7 @@ enum{NORMAL1=30,INIT_M=1,TERMINAR1=90};
                     vfd.config.bits.MenuPendiente=FALSE;//hay pendiente un menu por desplegar
                     vfd.menu.contexto.Actual=contexto;
 					vfd.menu.contexto.solicitaCambioA=0;
+					vfd.menu.contexto.Modificado=0;
 					vfd.keypad.enable=1;//habilitado teclado
 					break;
 	  default:estado3=1;break;}

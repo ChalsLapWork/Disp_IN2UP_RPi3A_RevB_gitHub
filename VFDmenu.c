@@ -124,7 +124,18 @@ auto unsigned char ret=0;
 	//						  TextoProcessor.menuPadre=NONE;
 							 ret=TRUE;
 							 break;    
-	
+	case AJUSTES_AVANZADOS:
+							 MenuActualScreen.menuNodo=AJUSTES_AVANZADOS;
+							 MenuActualScreen.permisos=DESARROLLADOR_PERMISO;
+							 MenuActualScreen.func=DisplayAjustesAvanzados;
+							 MenuActualScreen.funcKeyUP=AjustesAvanzadoskeyUP;
+							 MenuActualScreen.funcKeyRT=AjustesAvanzadoskeyRT;	 
+							 MenuActualScreen.funcKeyLF=AjustesAvanzadoskeyLF;
+							 MenuActualScreen.funcKeyDN=AjustesAvanzadoskeyDN;
+							 MenuActualScreen.funcKeyEN=AjustesAvanzadoskeyEN;
+	//						 AjustesAvanzados.menuPadre=AJUSTE_PARAMETRICO_DE_PRODUCTO;
+							 ret=TRUE;
+							 break;//#if
 
 
 
@@ -274,6 +285,16 @@ unsigned char *cursorx,*cursory;
 			AjParamProd->editarSensFase=&AjParamProd->igxc1;
 			(*AjParamProd->editarSensFase)=(unsigned char)0; //variable que indica si se esta editando el numero sensibildad y Fase
 			AjParamProd->arg2=0;////se borraran los contadores
+			AjParamProd->arg0=0; //borrar Contadores.
+			AjParamProd->usi1=0;//sensibilidad0
+			AjParamProd->usi2=0;//Altura0
+			AjParamProd->usi3=0;//timepo espera
+			AjParamProd->usi4=0;//tiempo Rechazo
+			AjParamProd->arg3=0;//tiempo espera,frac
+			AjParamProd->arg4=0;//tiempo rechazo frac
+	        AjParamProd->igxc4=0;//phase
+			AjParamProd->igxc3=0;//phase frac	
+			AjParamProd->igxc0=0;//Ganancia0
 			vfd.config.bits.BOX_enable=TRUE;// se autoriza a dibujar cajas
 			vfd.config.bits.Menu_Ready=1;}
 }//fin display ingenieria2 gracida---------------------------------------------------
@@ -313,6 +334,34 @@ unsigned char nmenus;//menus disponibles
 		    *cursorx=POSX0;*cursory=POSY4;
 		    vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.
 }//fin display menu del ajuste de producto------------------------------------------------------------------
+
+void DisplayAjustesAvanzados(void){
+unsigned char nmenus,aux;	
+char *textos[]={" x",
+                ">Nombre de producto",// 8en revision, debemos leer el valor de la variable si es uno o cero
+				"Parametros de deteccion", //10
+				"Ajustes tiempo de rechazo",
+				"Frecuencia"};//12
+unsigned char x[9]={POSXESQ235,0, 8, 8, 8};
+unsigned char y[9]={         0,8,10,12,14};
+
+		    if(!validad_Nivel_Acceso(vfd.NIVEL_ACCESO)){
+				   return;}
+			if(strstr(vfd.tipo_de_Maquina,"Multi")!=NULL)
+			    nmenus=5;//contiene la cadena Multi
+		    else nmenus=4;//es de una frecuencia, no ponemos string:frecc
+		    VFDclrscr();
+			for(int i=0;i<nmenus;i++) {
+       		   VFDposicion(x[i], y[i]);
+        	   VFDserial_SendBlock(textos[i], strlen(textos[i]) + 1);}
+            aux=display_centrarNombres((unsigned char)strlen(producto2.name));
+            VFDposicion(aux, POSY0); 
+   	        VFDserial_SendBlock((const void *)producto2.name, (unsigned char)strlen(producto2.name)+1);  // VFDserial_SendBlock(&a[0],sizeof(a));//NOMBRE PRODUCTO 
+		    cursorx=POSX0;cursory=POSY8; 
+		    vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.    
+}// fin display Ajustes Avanzados-----------------------------------------------------
+
+
 
 
 

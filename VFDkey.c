@@ -150,8 +150,8 @@ unsigned char *cursorx,*cursory;
 cursorx=&vfd.menu.cursorx;
 cursory=&vfd.menu.cursory;
 
-	if(*(AjParamProd->editarSensFase)>0){//->igxc0>0)//esta seleccionado cambiar por numero
-	  	 operacionVariable(POSXAJUSPROD-8,*cursory,*(AjParamProd->editarSensFase),SUMAR);
+	if((*AjParamProd->editarSensFase)>0){//->igxc0>0)//esta seleccionado cambiar por numero
+	  	 operacionVariable(POSXAJUSPROD-8,*cursory,(*AjParamProd->editarSensFase),SUMAR);
 		 configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
 		 //isEnable_Keypad(WAIT);
 		 return;}
@@ -178,7 +178,7 @@ void AjusteParamProdkeyDN(void){
 unsigned char *cursorx,*cursory;
 	cursorx=&vfd.menu.cursorx;
 	cursory=&vfd.menu.cursory;		
-	if(*(AjParamProd->editarSensFase)>0){//esta seleccionado cambiar por numero
+	if((*AjParamProd->editarSensFase)>0){//esta seleccionado cambiar por numero
 		operacionVariable(POSXAJUSPROD-8,*cursory,*(AjParamProd->editarSensFase),RESTAR);
 		return;}
 	if(*cursory==POSY0){
@@ -254,10 +254,8 @@ unsigned char *cursory;
 	    	            break;//del case posy6
 	    	case POSY8: procFasexDigitoEN(AjParamProd->editarSensFase,POSXAJUSPROD,POSY10);
 						break;
-			case POSY10: //  _display   pushFIFOcOP  BorrarContadores_var();
-				        configModificado(AJUSTE_PARAMETRICO_DE_PRODUCTO);
-						cambio_de_contexto(AJUSTE_PARAMETRICO_DE_PRODUCTO);
-						AjParamProd->arg2=(unsigned char)RESET;//arg2=RESET;//se borraran los contadores
+			case POSY10:vfd.menu.contexto.Modificado|=AJUSTE_PARAMETRICO_DE_PRODUCTO;
+						AjParamProd->arg0=1;//Borrar Contadores=1:Activado
 						break;
 			case POSY12:cambio_de_contexto(PANTALLA_DDS); break;
 			case POSY14: //Para Pasar a Ajustes Avanzados
@@ -772,6 +770,50 @@ unsigned char *cursorx,*cursory,Level;
 
 
 
+//AJUSTES AVANZADOS KeyXX +++++++++++++++++++++++++++++++++++++++++
+void AjustesAvanzadoskeyUP(void){
+unsigned char *cursorx,*cursory;
+    cursorx=&vfd.menu.cursorx;
+	cursory=&vfd.menu.cursory;	
+	if(cursory>POSY8){//PRIMERA POSICION DESPUES DE LA X+++++++++++
+		VFDposicion(cursorx,cursory);
+		VFDserial_SendChar(' ');
+		--cursory;
+		VFDposicion(cursorx,--cursory);
+		VFDserial_SendChar('>');
+		return;}
+    else 
+    	if(cursory==POSY8){VFDposicion(cursorx,cursory); 
+            VFDserial_SendChar(' ');
+            cursorx=POSXESQ235;cursory=POSY0; 
+            VFDposicion(cursorx,cursory);
+            VFDserial_SendChar('>');
+            VFDserial_SendChar('X');  }
+}// FIN AjustesAvanzadoskeyUP-----------------------------------------
+void AjustesAvanzadoskeyRT(void){return;}	 
+void AjustesAvanzadoskeyLF(void){return;}
+void AjustesAvanzadoskeyDN(void){
+unsigned char *cursorx,*cursory,posy;
+    cursorx=&vfd.menu.cursorx;
+	cursory=&vfd.menu.cursory;	
+	if(cursory==POSY0){
+		VFDposicion(cursorx,cursory);
+		VFDserial_SendChar(' ');
+		VFDserial_SendChar('x');
+		cursorx=POSX0;cursory=POSY8;
+		VFDposicion(cursorx,cursory);
+		VFDserial_SendChar('>');return;}
+	else{
+	if(strstr(vfd.tipo_de_Maquina,"Multi")!=NULL)
+			    posy=14;//contiene la cadena Multi
+	else posy=12;//es de una frecuencia, no ponemos string:frecc
+	if(cursory<posy){
+			VFDposicion(cursorx,cursory);
+			VFDserial_SendChar(' ');
+			++cursory;
+			VFDposicion(cursorx,++cursory);
+			VFDserial_SendChar('>');return;}}
+}//FIN AjustesAvanzadoskeyDN-------------------------------------------
 
 
 

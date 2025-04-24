@@ -47,5 +47,11 @@ void TextoProcessorkeyLF(void);
 void TextoProcessorkeyDN(void);
 void TextoProcessorkeyEN(void);
 
+void AjustesAvanzadoskeyUP(void);
+void AjustesAvanzadoskeyRT(void);	 
+void AjustesAvanzadoskeyLF(void);
+void AjustesAvanzadoskeyDN(void);
+void AjustesAvanzadoskeyEN(void);
+
 void operacionVariable(unsigned char posx,unsigned short int y,unsigned char igxm0,unsigned char op);
 unsigned char procSensxDigitoRT(unsigned char posx,unsigned char posy,unsigned short int *Sens);

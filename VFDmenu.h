@@ -830,7 +830,13 @@ typedef struct{//variables globales por menu
    unsigned char *editarSensFase;//editar enable sensib y fase
    unsigned char *cursorAnterior;//menu Config entradas syst
    unsigned char *ResetDisplayNum;//menu info de usuario
-   unsigned char arg0,arg1,arg2,arg4,arg5;
+   unsigned char arg0,arg1,arg2,arg4;
+   unsigned short int usi1;
+   unsigned short int usi2;
+   unsigned short int usi3;
+   unsigned short int usi4;
+   unsigned short int usi5;
+   
 }GlobalStruct;
 
 extern GlobalStruct global;
