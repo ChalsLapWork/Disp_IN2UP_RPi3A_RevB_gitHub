@@ -1,28 +1,21 @@
+#include <pthread.h>
 #include <stdio.h>
-#include "system.h"
+#include <signal.h>
 #include "init.h"
 #include "queue.h"
-#include "VFDisplay.h"
-#include <signal.h>
 #include <unistd.h>
+#include "Memoria.h"
+#include "serial.h"
+
+
+#include "VFDisplay.h"
 #include "errorController.h"
-#ifndef _PTHREAD_H_
-  #define _PTHREAD_H_
-  #include <pthread.h>
-#endif
 #include "VFD.h"
 #include "stdlib.h"
-#include <signal.h>
-#ifndef  debug_level1 
-  #include <wiringPi.h>
-#endif
-#include "serial.h"
-#include "Memoria.h"
 
 #define DEPURANDO_SIN_DISPLAY_ENCENDIDO 1//1=CIERTO 0=DISPLAY ESTA ENCENDIDO Y FUNCIONANDO
 
-//extern pthread_t SubProc_SendBlock_TX_VFD;
-//extern pthread_t SubProc_SendBlock_chars_TX_VFD;
+
 extern pthread_t hilo_productor, hilo_consumidor;
 extern pthread_t reader_thread, processor_thread;
 
@@ -55,7 +48,7 @@ void cleanup1(void) {
 int main(void){
   printf("\nInsight v3");
 #ifndef  debug_level1 
-  wiringPiSetup();  
+    
 #endif 
   signal(SIGINT,signal_handler);//asocia el manejador de salida del programa
   configPuertos();
@@ -65,22 +58,7 @@ int main(void){
   init_Product();//sin hilos.
   init_system();
   init_menu();
-
-  /*int swap=0;
-  unsigned char k;
-  for(;;){//CODIGO DE PRUEBA DE LA BARRA DE DETECCION,
-     if(swap){swap=0;k=17;
-           procesar_Paquete(CMD_BARRA,&k,0);
-           }
-      else{swap=1;k=0;
-           procesar_Paquete(CMD_BARRA,&k,0);
-           }
-     usleep(800000); }
-*/
-
   init_Serial(); 
-
-
 
   pause();//se detiene el hilo principal hasta que llega una señal
   printf("\n       Hilo Principal Terminado");

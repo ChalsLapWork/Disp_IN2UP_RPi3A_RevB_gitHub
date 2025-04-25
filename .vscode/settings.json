@@ -20,6 +20,7 @@
         "vfdkey.h": "c",
         "vfdmenu.h": "c",
         "config.h": "c",
-        "serial.h": "c"
+        "serial.h": "c",
+        "init.h": "c"
     }
 }

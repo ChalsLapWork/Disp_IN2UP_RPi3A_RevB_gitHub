@@ -60,7 +60,6 @@ void VFDcommand(unsigned char cmd){ //unsigned char *p){
 
 
 //void VFDserial_SendChar1(unsigned char c){
-//	vfd.f1.append(c,0,_CHAR_);// FIFO_Display_DDS_Char_push(c,0xFE);//0xFE means that is just a char display          
 //}//fin VFDserial_SendChar_DDS---------------------------------
 unsigned char VFDserial_SendChar1(unsigned char c){
 	return vfd.f1.append(c,0,_CHAR_);

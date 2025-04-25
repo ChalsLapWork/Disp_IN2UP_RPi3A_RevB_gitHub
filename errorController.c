@@ -11,6 +11,10 @@ void errorCritico(char *c){
     exit(-1);
 }//fin error critico+++++++++++++++++++++++++++++++++++
 
+void printf2(char *c){
+    printf("%s",c);
+}//segundo printf++++++++++++++++++++++++++++++++++++
+
 
 // c es el string del mensaje del error critico y 'n' 
 /*  n: es numero de linea donde se encuentra el error */
@@ -31,7 +35,7 @@ void NoErrorOK(void){
      printf("\r\033[0;32m[ ok ]\033[0m");usleep(10000);
 }// ok label in verde+++++++++++++++++++++++++++++
 
-void mensOK(const char *s,unsigned char color){  
+void    mensOK(const char *s,unsigned char color){  
     switch(color){
       case 0:printf("\n       \033[0m%s",s);break;
       case 30:printf("\n       \033[30m%s\033[0m",s);break;

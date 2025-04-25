@@ -47,6 +47,7 @@
 #define SIZE_MAX_SENDBLOCK 20 //TAMAÑO maximo de envio en bloque de la funcion
 #define FIFOc_SIZE 10 //fifo de contexto
 
+#define SIZE_TIPO_MAQ 18 //size tipo maq, longitud nombre de array
 #define NOMBRE_PRODUCTO_SIZE  30
 #define NAME_INIT             0xE8 //DETERMINA QUE LA cadena de nombre del producto es un producto con nombre real y no solo basura
 
@@ -69,25 +70,6 @@ struct _FIFO_1byte_{//FIFO PARA UNA VARIABLE para un byte
 
 
 
-union _Byte5_{
-	unsigned short int bytes1;
-	struct{
-		unsigned short FIFOonReset:1;//Las FIFOS estan reseteadas?? osea que esan en ceros y desbilitadas, esto para cambiar de contexto
-		unsigned short DDSon:1;//indica si borramos registro de datos repetidos de DDS
-		unsigned short TxBuffOFF:1;//buffer de TX vacio, para saber que ya se transmitio todo
-		unsigned short init_VFD:1;//flag init VFD indica si ya se init el VFD comandos de inizializacion
-		unsigned short init_Menu:1;//flag init Menu, enciende e inicializa los menus y el primer menu en pantalla
-		unsigned short BOX_enable:1;
-		//unsigned short VDF_busy:1;//se estan mandando comandos  o posiciones
-		unsigned short ADC_DATO:1;
-		unsigned short deprecated1:1;//deprecated
-		unsigned short recurso_VFD_Ocupado:1;//recurso esta 0:libre o 1:ocupado?
-        unsigned short Menu_Ready:1;//menu solicitado ya esta desplegado y listo.
-	    unsigned short BorrarDDS:1;//borrar DDS 
-        unsigned short MenuPendiente:1;//hay algun menu pendiente de desplegar?
-
-	}bits;
-};
 
  struct _Sync{
 	//pthread_cond_t  cond_init_TX_VFD;//condicion de init VFD transmisor
@@ -97,7 +79,7 @@ union _Byte5_{
 
 };//control de sincronia entre los hilos 
  
-struct _Sync2{
+/*struct _Sync2{
    pthread_cond_t  *cond_free;
    pthread_mutex_t *m_Free;
    pthread_cond_t  *cond_Tx;
@@ -106,7 +88,7 @@ struct _Sync2{
    pthread_mutex_t *m_Mon;
    pthread_mutex_t  VDF_busy;//recurso VFD
    //unsigned char sem;//semaforo para que no se empalme su uso
-};//synscronia estructura+++++++++++++++++++++++++++++++++++
+};*/ //synscronia estructura+++++++++++++++++++++++++++++++++++
 
 
 
@@ -181,9 +163,6 @@ struct _Contexto{
 
 
 
-struct _KeyPAd_{
-   unsigned char enable;//enable teclado
-};
 
 
 struct ZoomControl{//para crear  el zoom y las ecuaciones  polinomicas de acondicionamiento de señal para el DDS
@@ -211,311 +190,25 @@ struct ZoomControl{//para crear  el zoom y las ecuaciones  polinomicas de acondi
 };
 
 
-struct _Comando_DDS{//comando DDS para graficar en touch
-	//struct _PIX_ pix;
-	union Bytex{
-	   unsigned char Bnderas;
-	   struct{
-		   unsigned char DDS_Reload:1;//cuando se recarga el DDS por un zoom CON LOS valores anteriores guardadso de las detecciones
-		   unsigned char Apagando:1;//le dice que nos vamos a salir del menu DDS, para que no mande datos del DDS en otro menu
-	       unsigned char EventDDS:1;//nos dice que tenemos autorizacion para ejecutar graficacion en DDS		 
-		   unsigned char DDS1_BORRAR:1;//Borrando de el DDS
-		   unsigned char DDS1_TIMER:1;
-		   unsigned char clean_Buffers:1;//para decirle cuando limpiar los buffers que guardan los datos de los puntos pintados en el DDS para repintrlos
-		   unsigned char Aspect_Zoom:1;
-		   unsigned char debug:1;
-		   unsigned char Gain_AB:1;
-	   }bit;
-	}Bnderas;
-	
-	struct _Display_{
-		unsigned char flag_TX_Pixel; //timer para desplegar en DDS
-		unsigned short int delay;//para manejo de delay por comando y timer de display VFD
-	}display;
-	
-	struct _TOUCHSCREEN_{
-		signed short int bufferX[SIZE_BUFFER_DDS_FIFO];//buffer DDS fifo TRansmision Serial
-		signed short int bufferY[SIZE_BUFFER_DDS_FIFO];//buffer y DDS FIFO Transmision Serial
-		signed short int *headx; //head de buffer x
-		signed short int *tailx; //head de buffer y
-		signed short int *popx;  //pointer to pop from fifo
-		signed short int *pushx; //
-		signed short int *heady; //head de buffer x
-		signed short int *taily; //head de buffer y
-		signed short int *popy;  //
-		signed short int *pushy;
-	    unsigned char ncount;//numero de nodos ocupados en la fifo
-	}touch;
-	
-	struct _SAVE_PIXELS_{
-		signed short int xPixel[SIZE_TEMP_PIXEL];
-		signed short int yPixel[SIZE_TEMP_PIXEL];
-		signed short int *p[8];
-#if(SIZE_TEMP_PIXEL<254)		
-		unsigned char ncount;
-#else   
-	    unsigned short int ncount;
-#endif	    
-	}SaveTempPix; 	
-		
-//	unsigned char (*pop)(signed short int *x,signed short int *y);//pop function
-//    unsigned char (*push)(signed short int x,signed short int y);
-    unsigned char (*remove)(signed short int *x,signed short int *y);//quita el nodo primer en indicce 0
-    unsigned char (*append)(signed short int x,signed short int y);//pone un nodo al final dela cola
-    
-    struct _DispayPixel_{//para pintar el pixel
-    	unsigned char *pop,*popx,*popy;
-    	unsigned char *push,*pushx,*pushy;
-    	unsigned char *tail,*tailx,*taily;
-    	unsigned char *head,*headx,*heady;
-    	unsigned char buffX[SIZE_DDS_PIXEL];
-    	unsigned char buffY[SIZE_DDS_PIXEL];
-    	unsigned char pen[SIZE_DDS_PIXEL];
-#if(SIZE_DDS_PIXEL<254)
-    	unsigned char ncount;
-#else 
-    	unsigned short int ncount;
-#endif    	
-    }pixel;
-        
-    struct _Repaint_ZOOM{
-    	//signed short int xx[SIZE_DDS_ZOOM];
-        //signed short int yy[SIZE_DDS_ZOOM];
-    	unsigned char  xy[SIZE_Y][SIZE_X];
-    	unsigned char xy0[SIZE_Y][SIZE_X];
-    	unsigned short int ii;
-    	unsigned char j,k,uy;
-    	unsigned char ix,iy,b;
-    	unsigned char x1[100],y1[100];//depurar
-    	unsigned short int debug5;
-    	unsigned short int debug6;
-    }rePaint; 
-
-  struct ZoomControl zoom;
-   
-};//fin DDS STRUCT++++++++++++++++++++++++++++++
-
-struct _Menu1_{
-   struct _Contexto contexto;
-   unsigned char cursorx;
-   unsigned char cursory;
-   struct _Comando_DDS dds;
-   unsigned char CuadroMadreReady;//el cuadro madre esta construido y listo?.
-
-   
-};
-
-struct _Deteccion_{
-       unsigned char EnCurso;//Hay una deteccion en curso
-
-
-};
-
-
-struct _PRODUCT1_{
-   unsigned short int Cuenta_Rechazos;//numer de rechazos de producto
-   unsigned short int Cuenta_Productos;//numero de productos que ha pasado por detector
-   unsigned char CuentaProducto;//ON|OFF contar producto;
-   unsigned short int Sensibilidad;//configurada para este producto
-   unsigned char phase;//phase del producto, numero entero
-   float fase;//fase del producto numero flotante
-   unsigned char Phasefrac;// faccion del numero de fase.
-    char name[NOMBRE_PRODUCTO_SIZE]; 
-   unsigned short int Altura;   
-   int id;//es el id del producto en la base de datos
-};
-
-
-
-
-struct _DISPLAY_VFD_{
-	struct _FIFO_1byte_ x;//parametro 1
-	struct _FIFO_1byte_ y;//parametro 2
-	struct _FIFO_1byte_ p;//parametro 3
-	struct _FIFO_func_  f1;//funciones para guardar lo que se grafica
-	union  _Byte5_ config;//banderas de configuracion y control para el display y menus
-    struct _Sync2   mutex;//syncronia y control de hilos
-	struct Queue q;//pila para manejar el VFD   
-	struct _Menu1_ menu;  
-	struct _KeyPAd_ keypad;
-    struct _Deteccion_ deteccion;
-	unsigned char Text[NOMBRE_PRODUCTO_SIZE];//texto que regresa  del procesador de textos
-    unsigned char NIVEL_ACCESO;//nivel de accesso
-    char tipo_de_Maquina[SIZE_TIPO_MAQ];
-
-	//size_t pthread_attr_t attr_mon,attr_free,atrr_Tx;//atributos  
- 	struct _box_control{
-		 unsigned char boxs[SIZE_BOXES];
-		 unsigned char box0;
-		 unsigned char box; 
-		 unsigned short int timer;//se activa  por timer y resetea el array
-	     //unsigned char enable;deprecated //display cajas o lo que sea
-	   }box;
-	
-	struct _Vars_{
-		unsigned char nbytes;//bytes a emitir
-		unsigned char dat[DATOS_SIZE];
-		unsigned short int timer;
-		unsigned short int timer_us;
-		unsigned long  int timer_ms;
-		unsigned char index;
-		unsigned char recurso;//quien ocupa este recurso.
-//		unsigned char estado;//estado de: init_VFD,
-	   }v;
-    		
-};//fin display VFD----------------------------------------------
 
 
 /*  FIN DDS ESTRUCURA ********************************************++++*/
 /*  FIN DDS ESTRUCURA ********************************************++++*/
 /*  FIN DDS ESTRUCURA ********************************************++++*/
 
-unsigned char FIFO_DDS_pop(unsigned char *dato);
-void init_FIFO_DDS(void);
-unsigned char isFIFO_DDS_empty(void);
-unsigned char isFIFO_DDS_pixel_llena(void);
-unsigned char isFIFO_DDS_pixel_empty(void);	
-unsigned char FIFO_DDS_pixel_pop(unsigned char *x,unsigned char *y,unsigned char *pen);
-void display_DDS_transmitter_Controller(void);
-void init_FIFO_DDS_Display_Pixel2(void);
-void init_FIFO_DDS_Display_Pixel2_v2(void);
-unsigned char isFIFO_DDS_Display_Pixel_llena2(void);
-unsigned char isFIFO_DDS_Display_Pixel_empty2(void);
-unsigned char FIFO_DDS_Display_Pixel_push(unsigned char datox,unsigned char datoy,unsigned char pen);
-unsigned char FIFO_DDS_Display_Pixel_pop2(unsigned char *x,unsigned char *y,unsigned char *p);
-unsigned char isFIFO_DDS_Display_Pixel_empty2_v2(void);
-unsigned char *FIFO_DDS_next_X(unsigned char *p);
-unsigned char isFIFO_DDS_Display_Pixel_empty2(void);
-void init_FIFO_DDS_pixel(void);
-void FIFO_DDS_pixels_push(unsigned char x,unsigned char y,unsigned char pen);
-unsigned char FIFO_DDS_Display_Pixel_push(unsigned char datox,unsigned char datoy,unsigned char pen);
-unsigned char isFIFO_DDS_Display_Pixel_llena2_v2(void);
-unsigned char isFIFO_DDS_pixel_llena(void);
-unsigned char isFIFO_DDS_Display_Pixel_empty_v2(void);
-unsigned char isFIFO_DDS_pixel_empty(void);
-unsigned char FIFO_DDS_Display_Pixel_pop2(unsigned char *x,unsigned char *y,unsigned char *p);	
-unsigned char FIFO_DDS_pixel_pop(unsigned char *x,unsigned char *y,unsigned char *pen);
+
 void init_queues(void);
-unsigned char FIFO_Display_DDS_Pixel_pop2(unsigned char *x,unsigned char *y,unsigned char *p);
-//unsigned char FIFO_Display_DDS_Pixel_push_v2(unsigned char datox,unsigned char datoy,unsigned char pen);
-unsigned char FIFO_Display_DDS_Pixel_pop2_v2(unsigned char *x,unsigned char *y,unsigned char *p);
-unsigned char FIFO_Display_DDS_Pixel_push(unsigned char datox,unsigned char datoy,unsigned char pen);
-unsigned char *FIFO_DDS_next_X(unsigned char *p);	
 unsigned char isFIFO_DDS_Display_Char_empty2(void);
-void init_FIFO_DDS_Display_Char2(void);
-unsigned char FIFO_Display_DDS_Char_pop2(unsigned char *x,unsigned char *y);
-unsigned char FIFO_Display_DDS_Char_push(unsigned char datox,unsigned char datoy);
-unsigned char *gotonext(unsigned char *last,unsigned char *first,unsigned char *tail);
-unsigned char FIFO_displayBox_pop(void);
-//void BarraDet_displayUINT_var(unsigned char posx,unsigned char posy,unsigned short int *usint);
-unsigned char FIFO_displayBox_push(unsigned char box);
-unsigned char FIFO_displayBox_isEmpty(void);
-void FIFO_Display_DDS_Char_clean(void);
-void FIFO_Display_DDS_Pixel_clean(void);
-unsigned char FIFObox_nextLast(void);
-void malloc_display_Box(void);
-unsigned char FIFOboxChars_nextLast(void);
-unsigned char FIFO_displayBoxChars_pop(unsigned char *x,unsigned char *y);
-unsigned char FIFO_displayBoxChar_push(unsigned char x,unsigned char y);
-void malloc_display_Box_Chars(void);
-signed short int popPushFIFO_OFFSET(signed short int *ry,signed short int xn,signed short int yn);
-void init_FIFO_OFFSET(void);
-void init_FIFOs_TX_IOUP(void);
-unsigned char getComand_FIFO_B(unsigned char n);
-unsigned char pushFIFO_TX(unsigned char cmd,unsigned char *dato);
-signed short int **next2(signed short int *inicio,signed short int *final,signed short int **pos);
-//unsigned char pushFIFO_IO_TX(unsigned char *data,unsigned char size);
-unsigned char isLoad_next(unsigned char **p);
-void reset_pointer(void);
-void pushFIFO_average_Offset(signed short int **pos,signed short int **pop,signed short int *tail,signed short int *ini,signed short int dato);
-signed short int popFIFO_average_Offset(signed short int **pos,signed short int **pop,signed short int *tail,signed short int *ini);
 unsigned char *next(unsigned char *inicio,unsigned char *final,unsigned char *pos,unsigned char *pop);
-void init_FIFO_BARRA_NUMERO(void);
-unsigned char FIFO_barraNum_push(unsigned char c);
-void FIFO_barraNum_VFDposicion(unsigned char posx,unsigned char posy);
-unsigned char  FIFO_barraNum_pop(void);
-unsigned char isFIFO_num_Not_Empty(void);
-void FIFO_barraNum_VFDserial_SendChar(unsigned char c);
-void init_FIFO_CMD_DDS(void);
-void init_FIFO_TX_serial_General(void);
-void vaciarBuffer(unsigned char *p,unsigned char *p2,unsigned short int size);
-void push_FIFO_TRANSMISION_serial_IO(unsigned char byte);
-unsigned char xpop_FIFO_CMD_DDS(signed short int *x,signed short int *y);
-unsigned char push_FIFO_CMD_DDS(signed short int x,signed short int y);
-unsigned char pop_FIFO_TRANSMISION_serial_IO(unsigned char *status);
 void reset_FIFO_serial_TX(void);
-unsigned char search_NO_Repetido(signed short int x,signed short int y);
-void init_FIFO_SaveTemp_pixel_DDS(void);
-unsigned char pop_FIFO_save_Temp_pixel_DDS(signed short int *x,signed short int *y);
-unsigned char push_FIFO__save_Temp_pixel_DDS(signed short int x,signed short int y);
-unsigned char is_FULL_FIFO_save_Temp_pixel_DDS(void);
-unsigned char is_Empty_FIFO_save_Temp_pixel_DDS(void);
-void clean_repaint_Pixels_DDS(void);
-unsigned char IIC_FIFO_push_RX(unsigned char);
-unsigned char IIC_FIFO_push_TX(unsigned char);
-unsigned char IIC_FIFO_pop_RX(void);
-unsigned char IIC_FIFO_pop_TX(void);
-unsigned char get_Paquete(unsigned char *p,unsigned char (*pop)(void));
-unsigned char is_device(unsigned char (*pop)(void),unsigned char *n);
-unsigned char is_Lenght(unsigned char(*pop)(void),unsigned char *n);
 unsigned char is_App(unsigned char(*pop)(void),unsigned char *n);
-unsigned char is_CMD(unsigned char(*pop)(void),unsigned char *n,unsigned char app);
-void get_parametros(unsigned char (*pop)(void),unsigned char *p);
-void IIC_stop(void);
-void init_FIFO_IIC(void);
-void init_FIFO_RX_serial_Keypad(struct _FIFO_1byte_ *s);	
-unsigned char FIFO_general_1byte_push(unsigned char dato,struct _FIFO_1byte_ *s);
-//unsigned char get_case_FIFO_general(struct _FIFO_1byte_ *s);
-unsigned char FIFO_general_1byte_pop(unsigned char *dato,struct _FIFO_1byte_ *s);
-void reset_FIFO_general_UChar(struct _FIFO_1byte_ *s,
-            unsigned char *arr,unsigned char size);
-void Testing_SO_Debug(void);
-unsigned char vfd_FIFO_push(struct Queue *q,struct VFD_DATA dato);
-unsigned char vfd_FIFO_pop(unsigned char *x,unsigned char *y,unsigned char *p);
-unsigned char vfd_FIFOs_RESET(void);
-void init_FIFO_General_1byte(struct _FIFO_1byte_ *s,
-             unsigned char *h,unsigned char size);
-unsigned char dds_pix_pop(signed short int *x,signed short int *y);
-unsigned char dds_pix_append(signed short int x,signed short int y);
-unsigned char dds_pix_reset(void);
-void init_System_Monitor(void);
-void reset_sys_mon(void);
-void reset_sys_mon2(void);
-unsigned char test_FIFOS_VFD(void);
-//unsigned char Recursos_Solicitud(unsigned char recurso,unsigned char pid);
-//void Recursos_Devolver(unsigned char recurso1);
-void insertVFDProcess(unsigned char process);
-unsigned char insertVFDProcess_(unsigned char process);
-unsigned char Solicitar_Recurso(unsigned char Recurso,unsigned char pid);
-unsigned char ya_esta_en_la_FIFO_VFD(unsigned char pid);
-void get_parameters_to_process_PID(unsigned char *pid1,unsigned char *index,unsigned char pid);
-unsigned char sacar_de_la_FIFO_vfd(unsigned char pid);
-unsigned char insertarlo_en_Fifo_VFD(unsigned char pid);
-//void Devolver_Recurso_VFD(unsigned char pid);
-unsigned char sacar_de_la_FIFO_IO(unsigned char pid);
-unsigned char insertarlo_en_Fifo_IO(unsigned char pid);
-unsigned char ya_esta_en_la_FIFO_IO(unsigned char pid);
-void Devolver_Recurso_VFD(unsigned char recurso,unsigned char pid);
+void reset_FIFO_general_UChar(struct _FIFO_1byte_ *s,unsigned char *arr,unsigned char size);
 void init_queues(void);
 void Terminar_subProcesos(void);
 void* Init_VFD(void* arg);
-unsigned char Transmissor_a_VFD(struct VFD_DATA v,unsigned char *mem);
-void *Proceso_Limpiador(void *arg);
-//void* SubProceso_Tx_VFD(void* arg);
-//void *SubProceso_SendBlock_Tx_VFD(void* arg);
-void init_Queue_with_Thread(struct Queue  *q);
-//unsigned char Transmissor_SendBlock_VFD(const char *str);
-//void *Subproceso_sendBlockBytes_Tx_VFD(void *arg);
 void init_menu(void);
 void *Run_Menu(void *arg);
-//void xControl_Principal_de_Menus_Operativo();
-// Prototipos
-//void *VFDserial_SendBlockProductor(void *arg);
-//void *VFDserial_SendBlockConsumidor(void *arg);
-//void VFDserial_SendBlock_Tx(DatosTransmision *datos);
 unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char size);
-//void VFDserial_SendBlock_Tx1(unsigned char *buffer, size_t len);
-//unsigned char VFDserial_SendBlock_data(void *ptr, size_t size); 
 void iniciar_Run_Menu(void);
 void init_fifo_contexto(struct FIFOc *fifo);
 int pop_contexto(struct FIFOc *fifo, uint8_t *value);

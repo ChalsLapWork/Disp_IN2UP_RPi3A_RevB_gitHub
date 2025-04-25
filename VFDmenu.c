@@ -336,7 +336,7 @@ unsigned char nmenus;//menus disponibles
 }//fin display menu del ajuste de producto------------------------------------------------------------------
 
 void DisplayAjustesAvanzados(void){
-unsigned char nmenus,aux;	
+unsigned char nmenus,aux,*cursorx,*cursory;
 char *textos[]={" x",
                 ">Nombre de producto",// 8en revision, debemos leer el valor de la variable si es uno o cero
 				"Parametros de deteccion", //10
@@ -351,13 +351,15 @@ unsigned char y[9]={         0,8,10,12,14};
 			    nmenus=5;//contiene la cadena Multi
 		    else nmenus=4;//es de una frecuencia, no ponemos string:frecc
 		    VFDclrscr();
+			cursorx=&vfd.menu.cursorx;
+			cursory=&vfd.menu.cursory;	
 			for(int i=0;i<nmenus;i++) {
        		   VFDposicion(x[i], y[i]);
         	   VFDserial_SendBlock(textos[i], strlen(textos[i]) + 1);}
             aux=display_centrarNombres((unsigned char)strlen(producto2.name));
             VFDposicion(aux, POSY0); 
    	        VFDserial_SendBlock((const void *)producto2.name, (unsigned char)strlen(producto2.name)+1);  // VFDserial_SendBlock(&a[0],sizeof(a));//NOMBRE PRODUCTO 
-		    cursorx=POSX0;cursory=POSY8; 
+		    *cursorx=POSX0;*cursory=POSY8; 
 		    vfd.config.bits.Menu_Ready=1;//se ejecuto este menu.    
 }// fin display Ajustes Avanzados-----------------------------------------------------
 

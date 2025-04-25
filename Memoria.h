@@ -6,6 +6,7 @@
 
 
 #include <sqlite3.h>
+#include "system.h"
 
 
 
@@ -125,10 +126,6 @@
 //un byte manipulado por bit se usa por contexto
 //no mas alla del contexto
 
-#define CONFIG_FILE "systema.ini"
-#define PROD_FILE "productos.db"
-#define SIZE_PASSWORD 20 //size max of password 
-
 // Definición de colores (códigos ANSI)
 /*#define RESET2   "\033[0m"
 #define NEGRO   "\033[30m"
@@ -143,14 +140,6 @@
 #define BLANCO  "\033[37m"
 */
 
-typedef struct {
-    char level1[SIZE_PASSWORD];
-    char level2[SIZE_PASSWORD];
-    char level3[SIZE_PASSWORD];
-    char level4[SIZE_PASSWORD];
-    char level5[SIZE_PASSWORD];
-    unsigned char seguridad_iniciada;
-} Seguridad;
 
 typedef enum {
     TYPE_INT,
@@ -160,7 +149,6 @@ typedef enum {
 } ItemType;
 
 
-extern Seguridad g_seguridad;
 unsigned short int getAddPassword(unsigned char level);
 void setPasswords(unsigned char level,unsigned char *p);
 unsigned char *getPasswords(unsigned char level);

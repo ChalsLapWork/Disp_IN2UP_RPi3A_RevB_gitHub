@@ -136,7 +136,6 @@
 
 #define SIZE_EEPROM 2000
 
-#define SIZE_TIPO_MAQ 18 //size tipo maq, longitud nombre de array
 
 #define GIRO_DE_PLANO_CARTESIANO    0x6B
 #define GIRO_DE_COORDENADAS_POLARES 0x5A
@@ -348,6 +347,91 @@
 #define PID15 0x0F//enterCursorDDS
 #define PID16 0x10//digitoRtLeft
 #define PID17 0x11//VFDdrawLine_v4
+
+
+#define CONFIG_FILE "systema.ini"
+#define PROD_FILE "productos.db"
+#define SIZE_PASSWORD 20 //size max of password 
+
+struct _PRODUCT1_{
+   unsigned short int Cuenta_Rechazos;//numer de rechazos de producto
+   unsigned short int Cuenta_Productos;//numero de productos que ha pasado por detector
+   unsigned char CuentaProducto;//ON|OFF contar producto;
+   unsigned short int Sensibilidad;//configurada para este producto
+   unsigned char phase;//phase del producto, numero entero
+   float fase;//fase del producto numero flotante
+   unsigned char Phasefrac;// faccion del numero de fase.
+    char name[NOMBRE_PRODUCTO_SIZE]; 
+   unsigned short int Altura;   
+   int id;//es el id del producto en la base de datos
+};
+
+struct _Menu1_{
+   struct _Contexto contexto;
+   unsigned char cursorx;
+   unsigned char cursory;
+   struct _Comando_DDS dds;
+   unsigned char CuadroMadreReady;//el cuadro madre esta construido y listo?.
+};
+
+struct _Deteccion_{
+       unsigned char EnCurso;//Hay una deteccion en curso
+};
+
+struct _KeyPAd_{
+   unsigned char enable;//enable teclado
+};
+
+union _Byte5_{
+	unsigned short int bytes1;
+	struct{
+		unsigned short FIFOonReset:1;//Las FIFOS estan reseteadas?? osea que esan en ceros y desbilitadas, esto para cambiar de contexto
+		unsigned short DDSon:1;//indica si borramos registro de datos repetidos de DDS
+		unsigned short TxBuffOFF:1;//buffer de TX vacio, para saber que ya se transmitio todo
+		unsigned short init_VFD:1;//flag init VFD indica si ya se init el VFD comandos de inizializacion
+		unsigned short init_Menu:1;//flag init Menu, enciende e inicializa los menus y el primer menu en pantalla
+		unsigned short BOX_enable:1;
+		//unsigned short VDF_busy:1;//se estan mandando comandos  o posiciones
+		unsigned short ADC_DATO:1;
+		unsigned short deprecated1:1;//deprecated
+		unsigned short recurso_VFD_Ocupado:1;//recurso esta 0:libre o 1:ocupado?
+        unsigned short Menu_Ready:1;//menu solicitado ya esta desplegado y listo.
+	    unsigned short BorrarDDS:1;//borrar DDS 
+        unsigned short MenuPendiente:1;//hay algun menu pendiente de desplegar?
+
+	}bits;
+};
+
+
+struct _DISPLAY_VFD_{vfd.mutex
+    union  _Byte5_ config;//banderas de configuracion y control para el display y menus
+    //struct _Sync2   mutex;//syncronia y control de hilos  
+    struct _Menu1_ menu;  
+    struct _KeyPAd_ keypad;
+    struct _Deteccion_ deteccion;
+    unsigned char Text[NOMBRE_PRODUCTO_SIZE];//texto que regresa  del procesador de textos
+    unsigned char NIVEL_ACCESO;//nivel de accesso
+    char tipo_de_Maquina[SIZE_TIPO_MAQ];
+ 	struct _box_control{
+		 unsigned char boxs[SIZE_BOXES];
+		 unsigned char box0;
+		 unsigned char box; 
+		 unsigned short int timer;//se activa  por timer y resetea el array
+	     //unsigned char enable;deprecated //display cajas o lo que sea
+	   }box;		
+};//fin display VFD----------------------------------------------
+
+
+typedef struct {
+    char level1[SIZE_PASSWORD];
+    char level2[SIZE_PASSWORD];
+    char level3[SIZE_PASSWORD];
+    char level4[SIZE_PASSWORD];
+    char level5[SIZE_PASSWORD];
+    unsigned char seguridad_iniciada;
+} Seguridad;
+
+extern Seguridad g_seguridad;
 
 
 #endif

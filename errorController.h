@@ -23,3 +23,4 @@ void NoErrorOK(void);
 void mensOK(const char *s,unsigned char color);
 void errorCritico2(char *c,unsigned char n);
 void mens_Warnning_Debug(char *c);
+void printf2(char *c);

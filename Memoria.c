@@ -1,7 +1,6 @@
 #include "Memoria.h"
 #include "errorController.h"
 #include "strings.h"
-#include "system.h"
 #include "VFDmenu.h"
 #include <pthread.h>
 #include <sys/stat.h>   // para verificar si existe el archivo
@@ -31,7 +30,6 @@ typedef struct {// Estructura interna para pasar datos al hilo
     char mensaje[256];
 } LogData;
 
-Seguridad g_seguridad = {0};  // Inicializada vacía
 sqlite3 *db = NULL;
 extern struct _PRODUCT1_ producto2;
 

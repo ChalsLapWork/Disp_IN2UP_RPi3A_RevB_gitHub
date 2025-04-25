@@ -208,9 +208,6 @@ return 1;
 
 //------------
 unsigned char VFDserial_SendChar(unsigned char c){
-//struct VFD_DATA dato;
-    //dato.p=_CHAR_;dato.x=c;dato.y=0;
-	//return vfd.f1.append(&qVFDtx,dato);
 unsigned char LEN=3;    
 unsigned char a[6]={STX,LEN,COMANDO_CHAR,c,0,ETX};
        a[LEN+1]=getCRC_v2(&a[1],LEN);

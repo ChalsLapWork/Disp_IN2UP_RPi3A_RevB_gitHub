@@ -1,5 +1,9 @@
 #include "system.h"
 #include "queue.h"
+#include "VFDthread.h"
+#include "Memoria.h"
+
+
 #include "strings.h"
 #include "errorController.h"
 #include "VFD.h"
@@ -13,20 +17,18 @@
 #include <stdlib.h>
 #include "VFDisplay.h"
 #include "VFDmenu.h"
-#include "SistOp.h"
 #include <semaphore.h>
-#include "VFDthread.h"
 
 #ifndef debug_level1
   #include <wiringPi.h>
 #endif
 
-#include "Memoria.h"
 
 
-struct _DISPLAY_VFD_ vfd;
-struct _PRODUCT1_ producto2;
-extern Seguridad g_seguridad;
+extern struct _DISPLAY_VFD_ vfd;
+extern struct _PRODUCT1_ producto2;
+//extern Seguridad g_seguridad;
+Seguridad g_seguridad = {0};  // Inicializada vacía
 
 // Buffer compartido
 //unsigned char buffer[BUFFER_SIZE];
@@ -54,9 +56,7 @@ void init_queues(void){
 //const unsigned char init_VFD[]={0x1BU,0x40U,0x1FU,0x28U,0x67U,0x01U,FONTSIZE2};
 unsigned char array1[] = {0x41, 0x42, 0x43, 0x44};
 unsigned char debug;
-	//init_FIFO_General_1byte(&vfd.x,&buffer6[0],SIZE_BUFFER6);
-    //init_FIFO_General_1byte(&vfd.y,&buffer7[0],SIZE_BUFFER6);
-    //init_FIFO_General_1byte(&vfd.p,&buffer8[0],SIZE_BUFFER6);
+	
     mensOK("Iniciando queueus",CCIAN);	  
 	sync1=0xAA;//mutexs ocupados
 	NoErrorOK();
@@ -511,89 +511,6 @@ void Terminar_subProcesos(void){
 }//terminar subprocesos+++++++++++++++++++++++++
 
 
-/*parametro 
- * 1: La fifo a inizializar
- * 2: pointer to first element array of fifo
- * 3:pointer to last element array of fifo
- * 4: size of fifo 
- * version 300322-1205
- * version 310322-1637 add reset as general */
-/*void init_FIFO_General_1byte(struct _FIFO_1byte_ *s,
-     unsigned char *h,unsigned char size){//FIFO_SER_KEYPAD[SIZE_SER_KEYPAD];
-	s->head=h;
-	s->tail=h+size-1;
-	s->pop=s->tail;
-	s->push=s->tail;
-	s->ncount=s->nOcupados=0;s->nLibres=size;
-	s->popf=FIFO_general_1byte_pop;
-	s->appendByte=FIFO_general_1byte_push;
-	s->size=size;
-	s->resetFIFO=reset_FIFO_general_UChar;
-}*/ //fin init_FIFO_RX_serial_Keypad------------------------------------------
-
-
-//return FALSE if is empty
-/* version 300322-1156*/
-/*unsigned char FIFO_general_1byte_pop(unsigned char *dato,
-                   struct _FIFO_1byte_ *s){	
-	if(s->ncount==0){
-        #if(debug_level1==1)
-		    printf("\nFIFO LLENA");
-	    #endif
-		return FALSE;}
-	if(s->ncount==1){
-		*dato=*(s->pop);//solo hay un dato en la FIFO
-		*(s->pop)=0;//vaciamos nodo
-		s->pop=s->push=s->tail;//reajustamos todo de inicio
-		s->ncount=0;s->nLibres++;s->nOcupados=0;}
-	else{*dato=*(s->pop);
-	     *(s->pop)=0;//vaciamos nodo
-	     if(s->ncount>0){
-	    	  s->ncount--;s->nLibres++;s->nOcupados++;}
-		 if(s->pop==s->head)
-			    s->pop=s->tail;
-		 else s->pop--;}
-return TRUE;
-}*/ //FIFO_general_1byte_push------------------------------------------
-
-//regresa TRUE  si TODO bien  vfd.f1.append(14,0,_BOX_);
-/* El buffer de la FIFO se satura son mas los que entran que los que salen
- * se satura, vamos a poner un seguro para que vacie la FIFO cuando se sature
- * y los datos que llegan cuando este saturado que se pierdan
- * RegrESA  FALSE si esta llena
- *   version 39.22.5.0
- * */
-/*unsigned char FIFO_general_1byte_push(unsigned char dato,
-                                  struct _FIFO_1byte_ *s){
-auto unsigned char ret=0;
-	  if(s->nLibres==0) 
-		   return FALSE;//FIFO llena
-	  if(s->ncount==0){
-		   s->pop=s->push=s->tail;//emparejamos pointers
-		   *(s->push)=dato;
-		   s->push--;s->ncount++;s->nLibres--;s->nOcupados++;
-           ret=TRUE;}
-	  else{if(s->push==s->head){
-		      if(s->tail==s->pop){
-		    	  *(s->push)=dato;
-		    	  s->push=s->pop;//esta llena
-		    	  s->ncount++;s->nLibres--;s->nOcupados++;}
-		      else{*(s->push)=dato;s->push=s->tail;
-		           s->ncount++;s->nLibres--;s->nOcupados++;
-                   ret=TRUE;}}
-	       else{if(s->push-1==s->pop){//nos recorreremos para atras y no topamos con pop
-		           *(s->push)=dato;
-		           s->push=s->pop;
-		           s->ncount++;s->nLibres--;s->nOcupados++;
-                   if(s->nLibres>0){errorCritico("error de algoritmo de fifo");}
-		           ret=TRUE;}
-	             else{*(s->push)=dato;s->push--;
-                          s->nLibres--;s->nOcupados++;
-	                    s->ncount++;ret=TRUE;}}}
-return ret;
-}*/ //FIFO_general_1byte_push---------------------------------------------
-
-
 
 //se resetea toda la fifo y todo queda cmo de inici
 // version 21-oct-24:10:15am
@@ -613,60 +530,3 @@ void configModificado(unsigned char contexto){
 
 
 
-//FIFO para ingresar un dato a desplegar vfd.f1.append(14,0,_BOX_);
-//Return false|true   TRUE: si se agrego sin problemas
-/*unsigned char vfd_FIFO_push(struct Queue *q,struct VFD_DATA dato){
-const unsigned char BYTES_BOX=250; //numero de ciclos, mas que bytes por comando de una box cdraw 
-unsigned char x,y,p;
-const unsigned char DELAY_TIME=1; 
-    x=dato.x;y=dato.y;p=dato.p;
-    switch(p){//1100 0000 los dos MSB indican que proqrametro es
-    	case _BOX_:if(x==0)
-    		            return FALSE; 
-    	           if(vfd.box.timer==0){
-    	        	    vfd.box.timer=DELAY_TIME*BYTES_BOX;
-    	        	    cleanArray(&vfd.box.boxs[0],SIZE_BOXES,0);
-    	                return TRUE;}
-    		       if(vfd.box.boxs[x]==0)
-    		    	   vfd.box.boxs[x]++;        
-    		       else{if(vfd.box.boxs[x]<250){
-    		    	          vfd.box.boxs[x]++;
-    		                  return TRUE;}
-    		              else return TRUE;}
-    	           break;              
-    	case _CHAR_ :y='c';break;
-    	case _PUNTO_:if((x==0)&&(y==0)){return(TRUE);}
-    	             break;
-    	case _RAYA_ : 
-    	case _POS_  :break;
-    	case _BOLD_ :break;
-    	default:break;}
-     enqueue(q,dato);
-return TRUE;//ret;
-}*/ //fin vfd_FIFO_push-------------------------------------------
-
-
-/*   */
-/*unsigned char vfd_FIFO_pop(unsigned char *x,unsigned char *y,unsigned char *p){
-unsigned char  r;	 
-	   if(vfd.x.ncount==0){
-		   if((vfd.y.ncount!=0)&&(vfd.p.ncount!=0)){
-			       //__asm(Halt);//Debug error de software
-		           errorCritico("\n error de Software de FIFO pop");}
-	       return 0;}//FIFO vacia
-	   else r=1;//FIFO regresa un valor
-       vfd.x.popf(x,&vfd.x);
-       vfd.y.popf(y,&vfd.y);
-       vfd.p.popf(p,&vfd.p);
-return r;	   
-}*///fin vfd_FIFO_pop------------------------------------------------------------
-
-/* para el cambio de contexto todas los registros y FIFOs e
- * resetean*/
-/*unsigned char vfd_FIFOs_RESET(void){
-	vfd.config.bits.FIFOonReset=1;//se activa el reset, indica que estan en reseteo
-	vfd.x.resetFIFO(&vfd.x,&buffer6[0],SIZE_BUFFER6);
-	vfd.y.resetFIFO(&vfd.y,&buffer7[0],SIZE_BUFFER6);
-	vfd.p.resetFIFO(&vfd.p,&buffer8[0],SIZE_BUFFER6);
- return TRUE;	
-}*/ //fin --------------------------------------------------------

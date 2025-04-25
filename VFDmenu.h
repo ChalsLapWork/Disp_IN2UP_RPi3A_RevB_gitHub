@@ -308,7 +308,6 @@ los ADC se perdio la sincronia de los pulsos deSCLK cada 1mseg
  *                       3.-Menu Ajuste de Sistemas con usuario 22 entra y no debe           
  *                                                                                 
  *                   Description	Resource	Path	Location	Type
-Undefined : "" Referenced from "display_DDS_transmitter_Controller" in	39_15_09_IN1UP		 	C/C++ Problem
  *                      Description	Resource	Path	Location	Type
 Undefined : "contextoActual" Referenced from "AnguloVibracionProcesadorCentral" in	39_15_09_IN1UP		 	C/C++ Problem
  *                            
@@ -830,7 +829,7 @@ typedef struct{//variables globales por menu
    unsigned char *editarSensFase;//editar enable sensib y fase
    unsigned char *cursorAnterior;//menu Config entradas syst
    unsigned char *ResetDisplayNum;//menu info de usuario
-   unsigned char arg0,arg1,arg2,arg4;
+   unsigned char arg0,arg1,arg2,arg4,arg3,arg5;
    unsigned short int usi1;
    unsigned short int usi2;
    unsigned short int usi3;
