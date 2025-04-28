@@ -127,7 +127,6 @@ unsigned char Display_Monitor_de_Sensibilidad_VFD(unsigned char *p);
 //unsigned char displayUINT_var1(unsigned short int posx,unsigned short int posy,unsigned short int *pn,unsigned char operacion,struct DPM m);
 unsigned char xInit_Menu(unsigned char *p);
 //unsigned char displayUINT_var1(unsigned short int posx,unsigned short int posy,unsigned short int *pn,unsigned char operacion,unsigned char  *v);
-unsigned char xInit_VFD(unsigned char *p);
 unsigned char Display_Monitor_de_Phase_VFD(unsigned char *p);
 unsigned char xDisplay_Barra_Y_Parametros(unsigned char *m);
 //void cambio_de_contexto_v2(unsigned char destino);

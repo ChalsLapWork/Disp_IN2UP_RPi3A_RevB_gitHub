@@ -347,6 +347,7 @@
 #define PID15 0x0F//enterCursorDDS
 #define PID16 0x10//digitoRtLeft
 #define PID17 0x11//VFDdrawLine_v4
+#define NOMBRE_PRODUCTO_SIZE  30 //numero de chars en nombre producto2
 
 
 #define CONFIG_FILE "systema.ini"
@@ -366,6 +367,24 @@ struct _PRODUCT1_{
    int id;//es el id del producto en la base de datos
 };
 
+struct _Contexto{
+		unsigned char Actual;  //contexto Actual
+		unsigned char Modificado;
+		unsigned char destino;//al que quiero ir
+		unsigned char control;//el contexto control, controla como llegar al que quiero ir
+		unsigned char final;//el contexto al que me mandan si algo sale mal
+		unsigned char permisos;//guarda los permisos actuales de cada menu
+		unsigned char Anterior0;
+		unsigned char Anterior1;
+		unsigned char Anterior2;
+		unsigned char Anterior3;
+		unsigned char Anterior4;
+		unsigned char solicitaCambioA;//a donde se ccambiar de contexto
+        struct FIFOc fifo;
+        int  (*pop)( uint8_t *value);
+		void (*push)(uint8_t value);
+		unsigned char  (*peek)( int position, uint8_t *value);		
+};
 struct _Menu1_{
    struct _Contexto contexto;
    unsigned char cursorx;

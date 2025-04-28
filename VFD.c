@@ -26,7 +26,6 @@
 
 
 extern struct _DISPLAY_VFD_ vfd;
-extern struct Queue qVFDtx;//queue de transmision vfd 
 
 
 pthread_cond_t  cond_Tx_SendBlock;//condicional exclusivo para send Block

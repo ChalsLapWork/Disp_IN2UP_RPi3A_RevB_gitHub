@@ -25,7 +25,6 @@ unsigned char Basura(unsigned char c);
 unsigned char VFDserial_SendChar1(unsigned char c);
 //unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned short Size,unsigned short *Snd,unsigned char inst);
 unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned short Size,unsigned char *inst);
-//unsigned char xInit_VFD(struct DPM m);
 //unsigned char VFDcommand(unsigned char cmd,unsigned char s);
 //unsigned char FontSizeVFD(unsigned char m);
 unsigned char VFDboxLine1(unsigned char pen,unsigned char mode,unsigned short int x1,unsigned short y1,unsigned short int x2,unsigned short y2);

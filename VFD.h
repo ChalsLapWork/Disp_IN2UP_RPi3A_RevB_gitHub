@@ -90,7 +90,6 @@ unsigned char Basura(unsigned char c);
 unsigned char VFDserial_SendChar(unsigned char c);
 //unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned short Size,unsigned short *Snd,unsigned char inst);
 //unsigned char VFDserial_SendBlock1(unsigned char *Ptr,unsigned short Size,unsigned char *inst);
-//unsigned char xInit_VFD(struct DPM m);
 //unsigned char VFDcommand(unsigned char cmd,unsigned char s);
 //unsigned char FontSizeVFD(unsigned char m);
 unsigned char VFDboxLine1(unsigned char pen,unsigned char mode,unsigned char x1,unsigned char y1,unsigned char x2,unsigned char y2);

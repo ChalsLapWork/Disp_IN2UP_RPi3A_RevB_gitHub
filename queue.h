@@ -48,7 +48,6 @@
 #define FIFOc_SIZE 10 //fifo de contexto
 
 #define SIZE_TIPO_MAQ 18 //size tipo maq, longitud nombre de array
-#define NOMBRE_PRODUCTO_SIZE  30
 #define NAME_INIT             0xE8 //DETERMINA QUE LA cadena de nombre del producto es un producto con nombre real y no solo basura
 
 
@@ -110,19 +109,6 @@ struct Node{
 
 
 
-struct Queue{
-  struct Node *head,*tail;
-  int size;  //size of the queue
-  #if(SIZE_MAX_FIFO<255)
-    unsigned char nLibres;
-	unsigned char nOcupados;
-	unsigned char Tamano;//tamaño de cantidad de datos a guardar numero fijo
-  #endif
-  struct _Sync2 s;//apuntador sync de mutex que usar la queue
-  unsigned char isPadreAlive;//el proceso que encola esta vivo?, para saber si el transmisor ya tiene que terminar
-  unsigned char *p;//pointer char to be send
-  unsigned char sizeStream;//size to be send to vfd
-};
 
 
 
@@ -130,7 +116,6 @@ struct Queue{
 
 struct _FIFO_func_{
 	  //unsigned char (*append)(unsigned char x,unsigned char y, unsigned char p);
-      unsigned char (*append)(struct Queue *q,struct VFD_DATA dato);
 	  unsigned char (*pop)(unsigned char *x,unsigned char *y, unsigned char *p);
 	  unsigned char (*resetFIFOS)(void);//resetear todas las FIFOs Y arrays y registros
 };//fin _FIFO_func_----------------------------------------
@@ -142,24 +127,7 @@ struct FIFOc {
     int count; // Cantidad de elementos almacenados
 };//contexto
 
-struct _Contexto{
-		unsigned char Actual;  //contexto Actual
-		unsigned char Modificado;
-		unsigned char destino;//al que quiero ir
-		unsigned char control;//el contexto control, controla como llegar al que quiero ir
-		unsigned char final;//el contexto al que me mandan si algo sale mal
-		unsigned char permisos;//guarda los permisos actuales de cada menu
-		unsigned char Anterior0;
-		unsigned char Anterior1;
-		unsigned char Anterior2;
-		unsigned char Anterior3;
-		unsigned char Anterior4;
-		unsigned char solicitaCambioA;//a donde se ccambiar de contexto
-        struct FIFOc fifo;
-        int  (*pop)( uint8_t *value);
-		void (*push)(uint8_t value);
-		unsigned char  (*peek)( int position, uint8_t *value);		
-};
+
 
 
 
@@ -205,7 +173,6 @@ unsigned char is_App(unsigned char(*pop)(void),unsigned char *n);
 void reset_FIFO_general_UChar(struct _FIFO_1byte_ *s,unsigned char *arr,unsigned char size);
 void init_queues(void);
 void Terminar_subProcesos(void);
-void* Init_VFD(void* arg);
 void init_menu(void);
 void *Run_Menu(void *arg);
 unsigned char procesar_Paquete(unsigned char cmd,unsigned char *c,unsigned char size);

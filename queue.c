@@ -380,11 +380,6 @@ return ret;
 
 
 
-//Proceso  unico de padre unico  y sin instancias
-void* Init_VFD(void* arg){  //Proceso Productor<---Proceso/hilo/THread
-return NULL;
-}//fin init VFD -------------------------------------------------------------------
-
 
 //despliegue de datos en el display
 void init_menu(void){

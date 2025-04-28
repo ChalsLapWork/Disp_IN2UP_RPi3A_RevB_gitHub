@@ -1,6 +1,8 @@
 #include "VFDmenu.h"
-#include "errorController.h"
 #include "system.h"
+
+
+#include "errorController.h"
 #include "Memoria.h"
 #include "delay.h"
 #include "queue.h"
@@ -18,8 +20,8 @@
 #include "VFDthread.h"
 
 struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
-//extern struct _PRODUCTO1_ producto;
 extern struct _DISPLAY_VFD_ vfd;
+
 //extern struct _Detection Deteccion;
 extern struct _PRODUCT1_ producto2;
 GlobalStruct global = {0};
