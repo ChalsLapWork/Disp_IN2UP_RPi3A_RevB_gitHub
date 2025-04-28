@@ -33,6 +33,7 @@ typedef struct {// Estructura interna para pasar datos al hilo
 
 sqlite3 *db = NULL;
 extern struct _PRODUCT1_ producto2;
+extern struct _DISPLAY_VFD_ vfd;
 
 
 

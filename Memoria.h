@@ -182,4 +182,6 @@ void guardar_estado_Contadores(void);
 void cargar_estado_Contadores(void);
 int get_id_From_ConfigFile(void);
 int cargar_Nombre_Producto(int id);
+void init_system(void);
+
 #endif /* MEMOCONFIG_H_ ***************************************************************************/
