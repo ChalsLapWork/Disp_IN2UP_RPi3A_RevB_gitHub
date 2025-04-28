@@ -4,11 +4,10 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <unistd.h>
-#include "system.h"
 #include "VFDthread.h"
+#include "queue.h"
 #include "errorController.h"
 #include "VFD.h"
-#include "queue.h"
 #include <stdint.h>
 #include "VFDmenu.h"
 #include "Memoria.h"

@@ -7,6 +7,9 @@
   #define _PTHREAD_H_
   #include <pthread.h>
 #endif
+#include <system.h>
+
+
 #define SIZE_BUF_TFT 5
 #define SIZE_IO_TX_BUFFER 85 //ARRAY donde se guarda la direccion de la cabeza del paquete a enviar
 #define SIZE_B 60//ARRAY donde se guarda los paquetes que se van a enviar
@@ -119,13 +122,6 @@ struct _FIFO_func_{
 	  unsigned char (*pop)(unsigned char *x,unsigned char *y, unsigned char *p);
 	  unsigned char (*resetFIFOS)(void);//resetear todas las FIFOs Y arrays y registros
 };//fin _FIFO_func_----------------------------------------
-
-struct FIFOc {
-    uint8_t buffer[FIFOc_SIZE];  // Almacena números de 1 byte (8 bits)
-    int head;  // Índice de inserción
-    int tail;  // Índice de extracción
-    int count; // Cantidad de elementos almacenados
-};//contexto
 
 
 

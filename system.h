@@ -1,6 +1,7 @@
 
 #ifndef SYSTEM_H_
   #define SYSTEM_H_
+#include <stdint.h>
 
 //LED PIN WIRINpi 0 is bcm_gpio 17.
 #define BIT0_PIN 0
@@ -367,6 +368,15 @@ struct _PRODUCT1_{
    int id;//es el id del producto en la base de datos
 };
 
+
+struct FIFOc {
+    uint8_t buffer[FIFOc_SIZE];  // Almacena números de 1 byte (8 bits)
+    int head;  // Índice de inserción
+    int tail;  // Índice de extracción
+    int count; // Cantidad de elementos almacenados
+};//contexto
+
+
 struct _Contexto{
 		unsigned char Actual;  //contexto Actual
 		unsigned char Modificado;
@@ -389,7 +399,7 @@ struct _Menu1_{
    struct _Contexto contexto;
    unsigned char cursorx;
    unsigned char cursory;
-   struct _Comando_DDS dds;
+   //struct _Comando_DDS dds;
    unsigned char CuadroMadreReady;//el cuadro madre esta construido y listo?.
 };
 
@@ -422,7 +432,7 @@ union _Byte5_{
 };
 
 
-struct _DISPLAY_VFD_{vfd.mutex
+struct _DISPLAY_VFD_{
     union  _Byte5_ config;//banderas de configuracion y control para el display y menus
     //struct _Sync2   mutex;//syncronia y control de hilos  
     struct _Menu1_ menu;  
