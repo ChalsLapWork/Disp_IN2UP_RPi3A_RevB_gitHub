@@ -354,6 +354,9 @@
 #define CONFIG_FILE "systema.ini"
 #define PROD_FILE "productos.db"
 #define SIZE_PASSWORD 20 //size max of password 
+#define FIFOc_SIZE 10 //fifo de contexto
+#define SIZE_BOXES    20
+#define SIZE_TIPO_MAQ 18 //size tipo maq, longitud nombre de array
 
 struct _PRODUCT1_{
    unsigned short int Cuenta_Rechazos;//numer de rechazos de producto

@@ -7,7 +7,7 @@
   #define _PTHREAD_H_
   #include <pthread.h>
 #endif
-#include <system.h>
+#include "system.h"
 
 
 #define SIZE_BUF_TFT 5
@@ -39,7 +39,6 @@
 #define SIZE_BUFFER14 20//20=No modif streaming-block size transmision a la IOUP  
 #define SIZE_BUFFER15 20 //20 no modificar FIFO guarda deteccion, para transmitirla por serial IOUP
 #define SIZE_BUFFER16 5  //buffer de recursos de vfd de gestion de
-#define SIZE_BOXES    20
 #define SIZE_SYS_MONITOR 30
 #define SIZE_TBC 15
 #define SIZE_CHAR 5
@@ -48,9 +47,7 @@
 #define SIZE_MAX_FIFO 10//TAMAÑÑO de fifo de transmision a VFD
 
 #define SIZE_MAX_SENDBLOCK 20 //TAMAÑO maximo de envio en bloque de la funcion
-#define FIFOc_SIZE 10 //fifo de contexto
 
-#define SIZE_TIPO_MAQ 18 //size tipo maq, longitud nombre de array
 #define NAME_INIT             0xE8 //DETERMINA QUE LA cadena de nombre del producto es un producto con nombre real y no solo basura
 
 
