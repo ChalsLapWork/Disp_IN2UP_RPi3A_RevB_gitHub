@@ -33,7 +33,7 @@ typedef struct {
 
 pthread_t reader_thread, processor_thread;
 thread_data_t data;
-extern struct _DISPLAY_VFD_ vfd;
+struct _DISPLAY_VFD_ vfd;
 
 int init_Serial(void){
 // Abre el puerto serial
