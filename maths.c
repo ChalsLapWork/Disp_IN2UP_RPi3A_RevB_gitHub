@@ -1,9 +1,7 @@
 
-#include "system.h"
+#include "queue.h"
 #include "DSP.h"
 #include "maths.h"
-#include "system.h"
-#include "queue.h"
 #include "VFDisplay.h"
 #include "errorController.h"
 
@@ -347,24 +345,7 @@ float fr;
 	  return((float)(fase+fr));
 }//fin convertir fase to float------------------------------------
 
-/* se recalcula con el buffer que tenemos gurdado todos los puntoos
- * actuales del dds y algunos valores fuera del dds, el nuevo zoom
- * basado en el que hay, se reacomodan los puntos en base el nuevo zoom
- * */
-void re_Calcular_Buffers_DDS(unsigned char zoom_wished){
-	 
-	 if(zoom_wished==vfd.menu.dds.zoom.Zoom)
-		 return;
-	 if(zoom_wished<vfd.menu.dds.zoom.Zoom){//se vamos a restar?
-		 if((vfd.menu.dds.zoom.Zoom-zoom_wished)==1)//solo le sera uno, la resta
-			 re_Calcular_Buffers_DDS_Modificar_Uno(vfd.menu.dds.zoom.Zoom-1);}
-	 else{//aumentar el zoom ACERCAR
-		  if((zoom_wished-vfd.menu.dds.zoom.Zoom)==1)
-			  re_Calcular_Buffers_DDS_Modificar_Uno(vfd.menu.dds.zoom.Zoom+1);}
 
-}//fin de recalculr el bufer que esta guardado en el DDS----------
-	   
-	 
 
 /* obtener la parte fracccional de un float
  *  solo el primer decimal y pasarlo a uchar
@@ -574,50 +555,6 @@ return(i);                                 //inversor
 }//fin de get checksum del paquete de datos que pretendemos enviar----------------------
 
 
-/*Return FALSE if it finish till the last coord,*/
-unsigned char is_get_number_from_pixel(unsigned char *x,unsigned char  *y){
-//unsigned char i;
-const unsigned char byte[]={0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80};
-unsigned char xx,b;
-static unsigned char bit,num,init,reg,var;
-static unsigned char debugx[20],debugy[20],i;
-static unsigned char row,col;
-          
-      row=vfd.menu.dds.rePaint.iy;
-      reg=vfd.menu.dds.rePaint.ix;
-      b=vfd.menu.dds.rePaint.b;
-      if(init!=0xAA){
-    	   init=0xAA;
-    	   vfd.menu.dds.rePaint.iy=0;
-    	   vfd.menu.dds.rePaint.ix=0;
-    	   num=0;
-    	   bit=0;
-    	  b=0x00;
-    	   *x=0;*y=0;
-    	   i=0;
-    	   row=0;
-    	   col=0;
-    	   reg=0;}
-      if(b>7){
-    	   b=0;
-    	   if((++reg)>(SIZE_X-1)){
-    		    reg=0;
-    		    if((++row)>(SIZE_Y-1)){
-    		    	init=0;
-    		    	return FALSE;}}}
-     xx=vfd.menu.dds.rePaint.xy[row][reg];
-     if(xx==0){*x=0;*y=0;}
-     else{if((xx&byte[b])==byte[b]){
-    	      *x=get_Coord_Num(reg,b);
-    	      *y=row;}
-          else{*x=0;*y=0;}}
-      
-      
-	vfd.menu.dds.rePaint.iy=row;
-	vfd.menu.dds.rePaint.ix=reg;
-	vfd.menu.dds.rePaint.b=b+1;
-return TRUE; //SEGUIMOS SACANDO NUMEROS DE LA MATRIZ
-}//in is_get_number_from_pixel
 
 
 /*obtener los bytes rovenientes de un numero
@@ -1165,7 +1102,6 @@ struct Coordsf get_Puntos(struct Ec_Recta f,float angulo,unsigned char linea,uns
 	unsigned char i, n = 0,error=0,estado=0;
 	struct Coordf* p;
 	struct Coordsf P;
-	//vfd.menu.dds.zoom.factor=1;
 	float x,y;
 	//Revisar en que cuadrate pertence
 	if(angulo<0){mens_Warnning_Debug("Error de software: f.get_Puntos");//__asm(nop);__asm(Halt);
@@ -1275,47 +1211,6 @@ return P;
 
 
 
-void re_Calcular_Buffers_DDS_Modificar_Uno(unsigned char zoom1){
-#if(SIZE_X>254)
-	unsigned short int i,j;
-#else
-	unsigned char i,j;
-#endif
-
-unsigned char xn,b,xr,yr,cuadrante,bit,reg;
-//unsigned char buff[2][SIZE_X];
-//unsigned char xy[SIZE_Y][SIZE_X];
-const unsigned char bbyte[]={1,2,4,8,16,32,64,0x80};
-unsigned char zoomPalanca;//aleja o acerca?
-    if(vfd.menu.dds.zoom.Zoom>zoom1) {
-    	 zoomPalanca=ALEJAR;
-    	 vfd.menu.dds.zoom.Zoom--;}
-    else {if(vfd.menu.dds.zoom.Zoom<zoom1){
-    	    zoomPalanca=ACERCAR;
-            vfd.menu.dds.zoom.Zoom++;}
-    	  else{mens_Warnning_Debug("error de Sotware f.recalc buff dss mod uno");return;//__asm(nop);__asm(Halt);__asm(nop);
-		      }}
-	for(j=0;j<SIZE_Y;j++)
-	 for(i=0;i<SIZE_X;i++)
-		 vfd.menu.dds.rePaint.xy0[j][i]=0;
-	for(j=0;j<SIZE_Y;j++)
-	  for(i=0;i<SIZE_X;i++)
-		  for(b=0;b<8;b++){//sacar el numero de x uno por uno del regitro x
-             if((vfd.menu.dds.rePaint.xy[j][i]&bbyte[b])==bbyte[b]){
-			       xn=get_Coord_Num(i,b);	//OBTENER EL numero que corresponde al bit activado que es un pixel de 0 a 192
-			       cuadrante=get_cuadrante(xn,j);//a que cuadrante pertenecen esta coordenada
-                   reconvertir_coord_reducir_uno(xn,j,cuadrante,&xr,&yr,zoomPalanca);//reconvertir coordenada actual y redcirla a escala uno menor
-                   bit=getRegistro_X_bit(&reg,xr);//obtener el registro y el bit de esta nueva coordenada
-                   vfd.menu.dds.rePaint.xy0[yr][reg]|= bit;
-                   //__asm(nop);
-                   }}//Guradar nueva coordenada modificada de zoom buf temporal 
-	//para fines de debug se combinan ambos buffers
-	for(j=0;j<SIZE_Y;j++) //hacer un OR con los pixeles que tenemos con
-		  for(i=0;i<SIZE_X;i++)//los reducidos a otro zoom, Debug solo
-		        vfd.menu.dds.rePaint.xy[j][i]=vfd.menu.dds.rePaint.xy0[j][i];
-		       
-		        	
-}//fin re_Calcular_Buffers_DDS_Alejar_Uno--------------
 
 
 /*//reconvertir coordenada actual y redcirla a escala uno menor 
@@ -1751,14 +1646,14 @@ struct Coordssi C={96,64};
     if((absf(P.x)>(C.x+P1.x))||(absf(P.y)>(C.y+P1.y)))
     	return FALSE;
     else return TRUE;
-}//fin de es despleglame con el zoom actual en el DDS----------------------vfd.menu.dds.zoom.Zoom
+}//fin de es despleglame con el zoom actual en el DDS---------------------
 
 
 
 
 
 /* valor maximo en x para el valor del zoom*/
-struct Coordusi Maximo_Zoom(unsigned char z){//vfd.menu.dds.zoom.Zoom
+struct Coordusi Maximo_Zoom(unsigned char z){
 struct Coordusi P;	
 	switch(z){
 		case  1: P.x=35534;/*35878.5;*/P.y=23919;break;
@@ -1861,7 +1756,7 @@ struct Coordusi P;
 		case  98:P.x=45;     P.y=30; break;
 		case  99:P.x=45;     P.y=30; break;	
 		default:break;}
-	    vfd.menu.dds.zoom.Maxx=P.x;vfd.menu.dds.zoom.Maxy=P.y;
+	    //vfd.menu.dds.zoom.Maxx=P.x;vfd.menu.dds.zoom.Maxy=P.y;que el maximo ahora se ponga en el que lo manda llamar
 return P;
 }//fin de maxmo valor para eses zoom en cuestion
 

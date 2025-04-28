@@ -1,3 +1,4 @@
+#include "system.h"
 #include "Memoria.h"
 #include "errorController.h"
 #include "strings.h"

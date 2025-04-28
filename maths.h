@@ -75,7 +75,6 @@ unsigned char FIFOcount(unsigned char var, unsigned char op);
 void getBytes_from_SSInt(unsigned char* byteMSB, unsigned char* byteLSB, signed short int ssi);
 unsigned char getSigno_Convert(signed short int* n);
 unsigned char is_get_number_from_pixel(unsigned char* x, unsigned char* y);
-void re_Calcular_Buffers_DDS_Modificar_Uno(unsigned char zoom1);
 void re_Calcular_Buffers_DDS(unsigned char zoom_wished);
 unsigned char get_Coord_Num(unsigned char xn, unsigned char bit);
 unsigned char get_cuadrante(unsigned char xi, unsigned char yi);
