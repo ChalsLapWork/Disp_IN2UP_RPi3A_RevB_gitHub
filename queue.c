@@ -25,8 +25,8 @@
 
 
 
-extern struct _DISPLAY_VFD_ vfd;
-extern struct _PRODUCT1_ producto2;
+struct _DISPLAY_VFD_ vfd;
+struct _PRODUCT1_ producto2;
 //extern Seguridad g_seguridad;
 Seguridad g_seguridad = {0};  // Inicializada vacía
 

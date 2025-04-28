@@ -1,3 +1,8 @@
+
+
+
+#include "queue.h"
+
 #include <wiringPi.h>
 #include <wiringSerial.h>
 #include <stdio.h>
@@ -7,12 +12,10 @@
 #include <string.h>
 #include <sys/select.h>
 #include "errorController.h"
-#include "system.h"
 #include "VFD.h"
 #include "serial.h"
 #include "VFDmenu.h"
 #include "maths.h"
-#include "queue.h"
 #include "strings.h"
 #include "VFDthread.h"
 #include "Memoria.h"
@@ -33,7 +36,7 @@ typedef struct {
 
 pthread_t reader_thread, processor_thread;
 thread_data_t data;
-struct _DISPLAY_VFD_ vfd;
+extern struct _DISPLAY_VFD_ vfd;
 
 int init_Serial(void){
 // Abre el puerto serial
