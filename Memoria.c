@@ -420,8 +420,8 @@ int en_seccion_system = 0;
                 char *fin = valor;
                 while (*fin && *fin != '\"' && *fin != ';' && *fin != '\n') fin++;
                 *fin = '\0'; // corta el string al final del valor válido
-                strncpy(vfd.tipo_de_maquina, valor, sizeof(vfd.tipo_de_maquina) - 1);
-                vfd.tipo_de_maquina[sizeof(vfd.tipo_de_maquina) - 1] = '\0'; // seguridad
+                strncpy(vfd.tipo_de_Maquina, valor, sizeof(vfd.tipo_de_Maquina) - 1);
+                vfd.tipo_de_Maquina[sizeof(vfd.tipo_de_Maquina) - 1] = '\0'; // seguridad
                 break;
             }}}
 fclose(file);//fin sacar tipo de maquina----------------------
