@@ -293,7 +293,7 @@ unsigned char *cursorx,*cursory;
 			AjParamProd->arg3=producto2.timeEsperaFrac;//tiempo espera,frac
 			AjParamProd->arg4=producto2.timeRechazoFrac;;//tiempo rechazo frac
 	        AjParamProd->igxc4=producto2.phase;//phase
-			AjParamProd->igxc3=producto2.phasefrac;//phase frac	
+			AjParamProd->igxc3=producto2.Phasefrac;//phase frac	
 			AjParamProd->igxc0=producto2.Ganancia;//Ganancia0
 			vfd.config.bits.BOX_enable=TRUE;// se autoriza a dibujar cajas
 			vfd.config.bits.Menu_Ready=1;}

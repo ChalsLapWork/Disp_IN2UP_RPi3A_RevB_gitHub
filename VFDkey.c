@@ -822,7 +822,7 @@ unsigned char phase,phasefrac;
 unsigned char *cursorx,*cursory;
     cursorx=&vfd.menu.cursorx;
 	cursory=&vfd.menu.cursory;	
-switch(cursory){
+switch(*cursory){
 	case POSY2: break;
 	case POSY4: break;
 	case POSY6: break;
