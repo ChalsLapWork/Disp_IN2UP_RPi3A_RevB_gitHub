@@ -37,7 +37,7 @@ extern struct _PRODUCT1_ producto2;
 void init_Sensibilidad(void){
 //unsigned short int cuadroBase;//conversor de sensilidad para 	
 	    
-             Zoom_init();  
+           //  Zoom_init();  
 	         vfd.deteccion.EnCurso=0;//no hay deteccion
 	         
 	

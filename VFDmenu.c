@@ -21,14 +21,12 @@
 
 struct ArbolMenu MenuActualScreen;//la estrucrura del menu actual en pantalla.
 extern struct _DISPLAY_VFD_ vfd;
-
-//extern struct _Detection Deteccion;
 extern struct _PRODUCT1_ producto2;
+
 GlobalStruct global = {0};
 GlobalStruct *AjParamProd= NULL; // Inicialización
 GlobalStruct *MenuInfoUser= NULL;
 GlobalStruct *MenuTextProc=NULL;//variables para menu texto procesor
-extern struct _PRODUCT1_ producto2;
 
 
 unsigned char InitArbolMenu(unsigned char destino){// initializar estructura de datos de los menus
@@ -288,15 +286,15 @@ unsigned char *cursorx,*cursory;
 			(*AjParamProd->editarSensFase)=(unsigned char)0; //variable que indica si se esta editando el numero sensibildad y Fase
 			AjParamProd->arg2=0;////se borraran los contadores
 			AjParamProd->arg0=0; //borrar Contadores.
-			AjParamProd->usi1=0;//sensibilidad0
-			AjParamProd->usi2=0;//Altura0
-			AjParamProd->usi3=0;//timepo espera
-			AjParamProd->usi4=0;//tiempo Rechazo
-			AjParamProd->arg3=0;//tiempo espera,frac
-			AjParamProd->arg4=0;//tiempo rechazo frac
-	        AjParamProd->igxc4=0;//phase
-			AjParamProd->igxc3=0;//phase frac	
-			AjParamProd->igxc0=0;//Ganancia0
+			AjParamProd->usi1=producto2.Sensibilidad;//sensibilidad0
+			AjParamProd->usi2=producto2.Altura;//Altura0
+			AjParamProd->usi3=producto2.timeEspera;//timepo espera
+			AjParamProd->usi4=producto2.timeRechazo;//tiempo Rechazo
+			AjParamProd->arg3=producto2.timeEsperaFrac;//tiempo espera,frac
+			AjParamProd->arg4=producto2.timeRechazoFrac;;//tiempo rechazo frac
+	        AjParamProd->igxc4=producto2.phase;//phase
+			AjParamProd->igxc3=producto2.phasefrac;//phase frac	
+			AjParamProd->igxc0=producto2.Ganancia;//Ganancia0
 			vfd.config.bits.BOX_enable=TRUE;// se autoriza a dibujar cajas
 			vfd.config.bits.Menu_Ready=1;}
 }//fin display ingenieria2 gracida---------------------------------------------------

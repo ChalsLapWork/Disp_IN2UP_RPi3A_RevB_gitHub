@@ -369,6 +369,11 @@ struct _PRODUCT1_{
     char name[NOMBRE_PRODUCTO_SIZE]; 
    unsigned short int Altura;   
    int id;//es el id del producto en la base de datos
+   unsigned short int timeEspera;//timepo de espera de rechazo
+   unsigned short int timeRechazo;
+   unsigned char timeEsperaFrac;//timepo de espera fraccion
+   unsigned char timeRechazoFrac;
+   unsigned char Ganancia;
 };
 
 

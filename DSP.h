@@ -498,7 +498,7 @@ void pushFIFO(signed short int x, signed short int y);
 void FiltroDigital_passWideBand(signed short int *x,signed short int *y);
 unsigned char popFIFOdata(signed short int *xx,signed short int *yy,unsigned char mode);
 	void pushFIFO_DDS(unsigned short int x,unsigned short int y);
-void Zoom_init(void);
+//void Zoom_init(void);
 signed short int getMaximun(unsigned char zoom);
 void ProcesamientoDigitalPolinomico(signed short int *x);
 void BarraDeteccion(signed short int *datax,signed short int *datay);

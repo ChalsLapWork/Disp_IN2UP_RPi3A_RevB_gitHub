@@ -1,9 +1,11 @@
+#include "system.h"
 #include "VFDkey.h"
+
 #include "VFDmenu.h"
 #include "VFDisplay.h"
 #include "queue.h"
 #include "VFD.h"
-#include "system.h"
+
 #include "maths.h"
 #include "strings.h"
 #include <stdlib.h>
@@ -813,8 +815,31 @@ unsigned char *cursorx,*cursory,posy;
 			(*cursory)+=2;
 			VFDposicion(*cursorx,*cursory);
 			VFDserial_SendChar('>');return;}}
-}//FIN AjustesAvanzadoskeyDN-------------------------------------------
+}//FIN AjustesAvanzadoskeyDN-----------------------------------------
 
+void AjustesAvanzadoskeyEN(void){
+unsigned char phase,phasefrac;	
+unsigned char *cursorx,*cursory;
+    cursorx=&vfd.menu.cursorx;
+	cursory=&vfd.menu.cursory;	
+switch(cursory){
+	case POSY2: break;
+	case POSY4: break;
+	case POSY6: break;
+	case POSY8: cambio_de_contexto(NOMBRE_PRODUCTO);break;
+	case POSY10:cambio_de_contexto(PARAMETROS_DE_DETECCION);break;
+	case POSY12:cambio_de_contexto(AJUSTE_TIEMPO_RECHAZO);break;
+	case POSY14:cambio_de_contexto(FRECUENCIA_SELECT);break; 
+	case POSY0:if(vfd.menu.contexto.Modificado>0){
+	                 //phase=getCharsFromFloat(&phasefrac,producto2.fase);
+				     //Deteccion.Phase=get_Float_from_Phase(phase,phasefrac);
+					      cambio_de_contexto(ESTAS_SEGURO);}
+				else{vfd.menu.contexto.
+					 cambio_de_contexto();}		  
+               
+			   break;
+	default:break;}
+}//FIN AjustesAvanzadoskeyEN------------------------------------------------------------------------------------------
 
 
 
