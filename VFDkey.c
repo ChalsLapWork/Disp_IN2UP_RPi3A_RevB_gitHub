@@ -835,7 +835,7 @@ switch(*cursory){
 				     //Deteccion.Phase=get_Float_from_Phase(phase,phasefrac);
 					      cambio_de_contexto(ESTAS_SEGURO);}
 				else{
-					 cambio_de_contexto();}		  
+					 cambio_de_contexto(ESTAS_SEGURO);}		  
                
 			   break;
 	default:break;}
