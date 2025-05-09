@@ -834,7 +834,7 @@ switch(*cursory){
 	                 //phase=getCharsFromFloat(&phasefrac,producto2.fase);
 				     //Deteccion.Phase=get_Float_from_Phase(phase,phasefrac);
 					      cambio_de_contexto(ESTAS_SEGURO);}
-				else{vfd.menu.contexto.
+				else{
 					 cambio_de_contexto();}		  
                
 			   break;
